@@ -376,7 +376,7 @@ function ClassesService($q, Underscore) {
 			ID: 'prod-crud',
 			Name: 'Create a Product',
 			Description: "Create or access a product to be used to create a product and category assignment",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.prod-crud.tpl.html',
+			TemplateUrl: 'courses/classTemplates/basics.prod-crud.tpl.html',
 			Interactive: true,
 			ScriptModels: {
 				Meta: {
@@ -431,8 +431,8 @@ function ClassesService($q, Underscore) {
 		{
 			ID: 'price-sched-crud',
 			Name: 'Create a Price Schedule',
-			Description: "Create or access a price schedule to be used to create a product assignment",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.price-sched-crud.tpl.html',
+			Description: "Create a price schedule that will be used to create a product assignment",
+			TemplateUrl: 'courses/classTemplates/basics.price-sched-crud.tpl.html',
 			Interactive: true,
 			ScriptModels: {
 				Meta: {
@@ -497,7 +497,7 @@ function ClassesService($q, Underscore) {
 			ID: 'prod-assignments',
 			Name: 'Create Product Assignment',
 			Description: "Assign your product to a user with your newly created price schedule",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.prod-assignments.tpl.html',
+			TemplateUrl: 'courses/classTemplates/basics.prod-assignments.tpl.html',
 			Interactive: true,
 			ScriptModels: {
 				Meta: {
@@ -537,7 +537,7 @@ function ClassesService($q, Underscore) {
 			ID: 'category-crud',
 			Name: 'Create a Category',
 			Description: "Create or access a category that you will give a user access to a product",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.category-crud.tpl.html',
+			TemplateUrl: 'courses/classTemplates/basics.category-crud.tpl.html',
 			Interactive: true,
 			Assert: [
 				{
@@ -607,7 +607,7 @@ function ClassesService($q, Underscore) {
 			ID: 'category-prod-assignment',
 			Name: 'Create Category Product Assignment',
 			Description: "Assign your category to a product",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.category-prod-assignment.tpl.html',
+			TemplateUrl: 'courses/classTemplates/basics.category-prod-assignment.tpl.html',
 			Interactive: true,
 			ScriptModels: {
 				Meta: {
@@ -647,7 +647,7 @@ function ClassesService($q, Underscore) {
 			ID: 'category-assignment',
 			Name: 'Create Category Assignment',
 			Description: "Assign your category to a user",
-			TemplateUrl: 'courses/classTemplates/user-prod-access.category-assignment.tpl.html',
+			TemplateUrl: 'courses/classTemplates/basics.category-assignment.tpl.html',
 			Interactive: true,
 			ScriptModels: {
 				Meta: {

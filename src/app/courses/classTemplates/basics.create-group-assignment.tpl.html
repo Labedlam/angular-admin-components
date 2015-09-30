@@ -6,20 +6,20 @@
     <p>
         Now for the final step of creating and using a group, assigning users to the user group. The typical
         first steps towards accessing any object as a buyer-user is to create the necessary objects
-        and then assign them as necessary. This is the first of many create and assign combinations you will be executing.
-        In fact, you will be creating three more objects and completing three more assignments in this course alone!
+        and then assign them. This is the first of many <em>create and assign</em> combinations you will be executing.
+        In fact, you will be creating three more objects and completing three more assignments in this course alone.
     </p>
     <p>
-        The reason for all of these assignments outside of the object creations themselves is to fit the profile
-        of the modular nature of OrderCloud. It may seem like it is creating more steps for you to have to create
-        and assign separately, but there is a reason for it. We want you to use exactly what you need to build an
-        application for yourself or your clients, and nothing more. If we started creating nested objects directly inside
+        The reason assignments are explicitly defined outside of object creations is because OrderCloud
+        is built as a <em>modular</em> API. Having to create and assign separately may seem like more work, but there
+        is a very good reason for it. We want you to use exactly what you need to build an application for your
+        company or your clients, and nothing more. If we started creating nested objects directly inside
         of other objects (such as products inside of a category or prices inside of a product), it
         would require you to use more than you really need, thus slowing down the development time
-        and vastly reducing your ability to define a proper project scope (this is the crux of a SAAS application;
-        You have to use the whole package they offer). And as an added plus, you will find to love the modular
-        orientation of OrderCloud once you get comfortable with it, because the separation of concerns makes it easier
-        to manage and intuitively understand the structure of your environment.
+        and vastly reducing your ability to define a proper project scope (this is the crux of a SAAS application).
+        And as an added plus, you will come to love the modular orientation of OrderCloud once you get deeper into
+        your application because the separation of concerns makes it easier to manage and intuitively
+        understand the structure of your B2B environment.
     </p>
 
     <h3 class="page-title">Creating a Group Assignment</h3>
@@ -36,17 +36,17 @@
     }" ng-model="class.docs.UserGroups.SaveMemberAssignment.RequestBody.Sample"></div>
     <p>
         Taking a look at the <code class="script">create.js</code> script, you can see what is required to
-        create a new Group assignment. Go ahead and replace the <code class="var">buyerID</code> variable with
-        the new buyer you created earlier in this course. In the <code class="var">assignment</code> variable,
+        create a new Group assignment. Start by replacing the <code class="var">buyerID</code> variable with
+        the ID of the new buyer you created earlier in this course. In the <code class="var">assignment</code> variable,
         a sample request object is currently stored with 3 values--<code>UserGroupID</code>, <code>UserID</code>,
-        and <code>BuyerID</code>. Start by taking out the <code>BuyerID</code> object, as we won't need that (and
-        it is already assumed in the parameter object).
+        and <code>BuyerID</code>. You can take out the <code>BuyerID</code> object, as we won't need that (and
+        it is already stated in the parameter value).
     </p>
     <p>
         You will be assigning two of your three new users to this group. You have two options to accomplish this.
-        First you can process the <code class="script">create.js</code> script twice with each of the users you
+        Your first option is to process the <code class="script">create.js</code> script twice with each of the users you
         are assigning. The second and more challenging option is to create a second assignment object (with a different
-        variable name, of course) and process and second SDK call in the same script with that second assignment object.
+        variable name, of course) and process a second SDK call in the same script with the new assignment object.
     </p>
     <p>
         If you are ready, go ahead and process the request by hitting "Run".

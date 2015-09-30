@@ -35,7 +35,7 @@ function CoursesService($q, Underscore) {
 			Name: 'The Basics',
 			Description: 'A real-world, interactive introduction to help you get started using OrderCloud',
 			Difficulty: 'Beginner',
-			Classes: ['buyer-crud', 'user-crud', 'group-crud', 'group-assignment', 'prod-crud', 'price-sched-crud', 'prod-assignments', 'category-crud', 'category-prod-assignment', 'category-assignment', 'get-products-as-user'],
+			Classes: ['buyer-crud', 'user-crud', 'group-crud', 'group-assignment', 'prod-crud', 'price-sched-crud', 'prod-assignments', 'category-crud', 'category-prod-assignment', 'category-assignment'],
 			ImgUrl: 'assets/basics.png'
 		}
 	];

@@ -1,0 +1,36 @@
+<header class="jumbotron">
+    <h2>{{class.current.Name}}</h2>
+</header>
+<div>
+    <h3 class="page-title">What You Need To Know</h3>
+    <p>
+        In this class, we will be creating the final assignments necessary for your first catalog to be complete
+        and your buyer user to gain access to the products you have created. This assignment is called a "Category Assignment", and creates the relationship between
+        a user and a category. This is the binding assignment for a user to get access to a product through a
+        category. Without it, a product assigned to a category is meaningless, and without a product assigned
+        to a category, this assignment is meaningless. Together, they create the relationship that gives a user
+        an indirect connection a product.
+    </p>
+    <p>
+        Note: Don't forget about the Product Assignment you made in an earlier class between the product, price
+        schedule, and group, as this is also required to make a product accessible to a user!
+    </p>
+
+    <h3 class="page-title">Creating a Category Assignment</h3>
+    <p>
+        Similar to the Category Product Assignment, this is also a very simple object. In our case, we will
+        only be using he <code>UserGroupID</code> and <code>CategoryID</code>. The UserID should be discarded since
+        we are handling it at the Group level.This assignment has one idiosyncrasy that is unlike other assignment
+        operations, in that if you do not provide a <code>UserID</code> or <code>UserGroupID</code>, it will assume
+        that you are making the assignment at the buyer level (every user under the buyer will have access).
+        Keep this in mind.
+    </p>
+    <p>
+        When you are ready, go ahead and set your <code>UserGroupID</code> and <code>CategoryID</code> (and make sure
+        to remove the <code>UserID</code> value completely.
+    </p>
+    <p>
+        When you are ready, go ahead and hit 'Run'!
+    </p>
+
+</div>

@@ -108,6 +108,16 @@ function ClassesService($q, Underscore) {
 			Description: 'Create a buyer to use in your application',
 			TemplateUrl: 'courses/classTemplates/basics.create-buyer.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'Buyers.Create',
+					AmountNeeded: 2
+				},
+				{
+					Method: 'Buyers.List',
+					AmountNeeded: 2
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -148,7 +158,7 @@ function ClassesService($q, Underscore) {
 				]
 			},
 			Dependencies: ["Buyers"],
-			ClassMethods: ['Buyers.Create', 'Buyers.Update']
+			ClassMethods: ['Buyers.Create', 'Buyers.Update', 'Buyers.List', 'Buyers.Get']
 		},
 		{
 			ID: 'group-crud',

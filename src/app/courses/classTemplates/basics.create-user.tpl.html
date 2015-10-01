@@ -23,8 +23,9 @@
         A full user object has more stored values than what you saw in the buyer object,
         as you can see below,
     </p>
-    <div style="height: 200px;" readonly
+    <div readonly
          ui-ace="{
+      onLoad: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

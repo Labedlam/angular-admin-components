@@ -1,6 +1,3 @@
-<header class="jumbotron">
-    <h2>{{class.current.Name}}</h2>
-</header>
 <div>
     <h3 class="page-title">What You Need To Know</h3>
     <p>
@@ -21,8 +18,9 @@
     <p>
         Below is a look at a full Buyer object. As you can see, it is very minimal,
     </p>
-    <div style="height: 100px;" readonly
+    <div readonly
          ui-ace="{
+      onLoad: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

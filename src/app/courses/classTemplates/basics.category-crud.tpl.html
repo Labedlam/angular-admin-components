@@ -20,8 +20,9 @@
     <p>
         Below is a sample request object of a new Category,
     </p>
-    <div style="height: 170px;" readonly
+    <div readonly
          ui-ace="{
+      onload: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

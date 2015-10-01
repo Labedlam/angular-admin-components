@@ -26,8 +26,9 @@
     <p>
         A full group assignment object is shown below,
     </p>
-    <div style="height: 85px;" readonly
+    <div readonly
          ui-ace="{
+      onLoad: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

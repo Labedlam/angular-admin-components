@@ -41,7 +41,27 @@
 		</div>
 	</nav>
 	<article id="ClassContainer" ng-class="{'interactive':!class.current.Interactive}">
-		<div id="CourseContent" ng-include="class.current.TemplateUrl"></div>
+		<div id="CourseContent">
+			<div class="course-title">{{class.current.Name}}</div>
+			<div class="reading-content" ng-include="class.current.TemplateUrl"></div>
+			<div id="ClassRequirements">
+				<div ng-init="class.goalsCollapse = true" class="heading">
+					<a href class="pull-right" ng-click="class.goalsCollapse = !class.goalsCollapse"><i class="fa" ng-class="{'fa-chevron-up': class.goalsCollapse, 'fa-chevron-down': !class.goalsCollapse }"></i></a>
+					<h4 class="title">
+						Successful Requests to Complete
+					</h4>
+
+				</div>
+				<div class="body" collapse="class.goalsCollapse">
+					<div class="progress-entry" ng-repeat="goal in class.current.Assert">
+						<small><em>{{goal.Method}}</em></small>
+						<div class="no-count" ng-show="!goal.Successes">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</div>
+						<progressbar ng-show="goal.Successes" max="goal.AmountNeeded" value="goal.Successes || 0">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</progressbar>
+					</div>
+
+				</div>
+			</div>
+		</div>
 		<div id="InteractiveUI" ng-if="class.current.Interactive">
 			<div id="ScriptInputContainer">
 				<div class="script-nav">
@@ -64,31 +84,27 @@
 			}" ng-model="script.Model"></div>
 			</div>
 			<div id="Response">
-				<div class="response-content">
-					<accordion class="howto-log">
-						<accordion-group is-open="status.open" class="log-entry" ng-repeat="response in class.allResponses">
-							<accordion-heading class="row">
-								<div class="pull-right"><a href><i class="fa" ng-class="{'fa-chevron-down': !status.open, 'fa-chevron-up': status.open}"></i></a></div>
-								<span class="log-entry-header">{{response.config.method}}</span>
-								<span class="log-entry-header">{{response.config.url | OCRoutingUrl}}</span>
-								<span class="log-entry-header">{{response.status}} {{response.statusText}}</span>
-
-							</accordion-heading>
-							<tabset class=log-entry-content justified="true">
-								<tab heading="Headers">
-									<pre class="response-block"><code>{{response.config.headers | json}}</code></pre>
-								</tab>
-								<tab heading="Raw Response">
-									<pre class="raw-response"><code>{{response.data}}</code></pre>
-								</tab>
-								<tab heading="JSON" active="true">
-									<pre class="response-block"><code class="json-response">{{response.data | json}}</code></pre>
-								</tab>
-							</tabset>
-						</accordion-group>
-					</accordion>
+				<div id="ResponseList">
+					<div class="log-item-container" ng-repeat="response in class.Responses | orderBy:'+':true">
+						<div class="log-item">
+							<div class="apiRequestDisplay" ng-class="{success: (response.status < 300 && response.status >= 200), danger: (response.status >= 300 || response.status < 200), disabled: response != class.SelectedResponse}" ng-click="class.SelectResponse(response)">
+								<pre>{{response.config.method}}</pre>
+								<pre><i class="fa pull-right" ng-class="{'fa-check':(response.status < 300 && response.status >= 200), 'fa-warning': (response.status >= 300 || response.status < 200)}"></i>{{(response.config.url | OCRoutingUrl) + (response.config.params | OCUrlParams)}} <small>{{response.status + ' ' + response.statusText}}</small></pre>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="alert alert-success response-alert" role="alert" ng-class="{slide: class.responseSuccess && class.allowNextOnSuccess}">
+				<div id="ResponseBody" readonly ui-ace="{
+					useWrapMode : true,
+					theme:'twilight',
+					mode: 'json',
+					tabSize: '4',
+					useSoftTabs: true,
+					showPrintMargin: false,
+					showGutter: false
+					}" ng-model="class.SelectedResponse.data">
+				</div>
+				<!--<div class="alert alert-success response-alert" role="alert" ng-class="{slide: class.responseSuccess && class.allowNextOnSuccess}">
 					<a class="pull-right" href ng-click="class.nextClass()">GO TO NEXT CLASS</a> <span class="response-words">All Requests Succeeded. Great Job!</span><i class="fa fa-check pull-left"></i>
 				</div>
 				<div class="alert alert-danger response-alert" role="alert" ng-class="{slide: class.responseFailure}" >
@@ -96,7 +112,7 @@
 				</div>
 				<div class="alert alert-info response-alert" role="alert" ng-class="{slide: class.responseSuccess && !class.allowNextOnSuccess}">
 					<a class="pull-right" href><i class="fa fa-close" ng-click="class.responseSuccess=false"></i></a> <span class="response-words">Request Successful. Please continue class as directed</span><i class="fa fa-check pull-left"></i>
-				</div>
+				</div>-->
 			</div>
 		</div>
 	</article>

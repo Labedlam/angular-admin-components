@@ -18,8 +18,9 @@
     <p>
         Below is a sample of a new product request object,
     </p>
-    <div style="height: 280px;" readonly
+    <div readonly
          ui-ace="{
+      onLoad: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

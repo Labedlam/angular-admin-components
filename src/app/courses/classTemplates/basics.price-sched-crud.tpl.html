@@ -12,8 +12,9 @@
         and exposed in an application.
     </p>
     <h3 class="page-title">Creating a Price Schedule</h3>
-    <div style="height: 300px;" readonly
+    <div readonly
          ui-ace="{
+      onLoad: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

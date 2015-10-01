@@ -87,11 +87,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	vm.current = SelectedClass;
 	vm.alert = {};
 	vm.context = {};
-	vm.requests = [];
-	vm.responses = [];
-	vm.allResponses = [];
-	vm.responseErrors = [];
-	vm.requestErrors = [];
+	vm.Responses = [];
 	vm.openRequestCount = 0;
 	vm.docs = {};
 	vm.classIndex = SelectedCourse.Classes.indexOf(vm.current.ID);
@@ -121,7 +117,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			});
 			if (!vm.responseFailure) {
 				vm.responseSuccess = true;
-				checkAssertions();
 			}
 		}
 		else {
@@ -131,8 +126,16 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		}
 	});
 
+	vm.setMaxLines = function(editor) {
+		editor.setOptions({
+			maxLines:100
+		});
+	};
+	vm.SelectResponse = function(response) {
+		vm.SelectedResponse = response;
+	};
 
-	function checkAssertions() {
+	/*function checkAssertions() {
 		angular.forEach(vm.current.Assert, function(assertion) {
 			var split = assertion.method.split('.');
 			var doc = vm.docs[split[0]][split[1]];
@@ -142,13 +145,13 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			var assertUrl = doc.UriTemplate;
 			console.log(assertUrl);
 			angular.forEach(vm.responses, function(response) {
-				/*if (response.method == doc.HttpVerb) {
+				/!*if (response.method == doc.HttpVerb) {
 					console.log('hello');
-				}*/
+				}*!/
 
 			});
 		})
-	}
+	}*/
 
 	function findNextCourseID() {
 		Courses.List().then(function(data) {
@@ -244,6 +247,55 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	};
 
 
+	function addMethodCount(response) {
+		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
+		var method = response.config.method;
+		var epSplit = endpoint.split('/');
+		angular.forEach(vm.docs, function(svc, svcKey) {
+			angular.forEach(svc, function(mtd, mtdKey) {
+				var newEpSplit = [];
+				angular.copy(epSplit, newEpSplit);
+				if (mtd.HttpVerb == method) {
+					var docEndpoint = mtd.UriTemplate;
+					var docEpSplit = docEndpoint.split('/');
+					console.log(docEpSplit);
+					var count = -1;
+					if (docEpSplit.length == newEpSplit.length) {
+						angular.forEach(docEpSplit, function(piece) {
+							piece = piece.split("");
+							count += 1;
+							if (piece[0] == '{' && piece[piece.length - 1] == '}') {
+								docEpSplit.splice(count, 1);
+								newEpSplit.splice(count, 1);
+							}
+
+						});
+						console.log(Underscore.difference(docEpSplit, newEpSplit), Underscore.difference(newEpSplit, docEpSplit));
+						if (Underscore.difference(docEpSplit, newEpSplit).length == 0 && Underscore.difference(newEpSplit, docEpSplit).length == 0) {
+							console.log('hello');
+							angular.forEach(vm.current.Assert, function(assertion) {
+								console.log(assertion);
+								console.log(svcKey + '.' + mtdKey, assertion.Method);
+								if (svcKey + '.' + mtdKey == assertion.Method) {
+									if (assertion.Successes) {
+										assertion.Successes += 1;
+										console.log('again');
+									}
+									else {
+										assertion.Successes = 1;
+										console.log('first');
+									}
+								}
+							})
+						}
+					}
+
+
+				}
+			})
+		})
+
+	}
 
 	if (SelectedClass.Interactive) {
 		$scope.$on('event:requestSuccess', function() {
@@ -255,20 +307,22 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1) {
-					vm.responses.push(c);
-					vm.allResponses.push(c);
-					vm.success = true;
+					c.data = $filter('json')(c.data);
+					vm.Responses.push(c);
+					console.log(c);
+					vm.SelectedResponse = c;
+					addMethodCount(c);
 				}
 				vm.openRequestCount -= 1;
-				checkAssertions();
+
 			}
 		});
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1) {
-					vm.responseErrors.push(c);
-					vm.allResponses.push(c);
-					vm.success = false;
+					c.data = $filter('json')(c.data);
+					vm.Responses.push(c);
+					vm.SelectedResponse = c;
 				}
 				vm.openRequestCount -= 1;
 			}
@@ -278,10 +332,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 
 
 	vm.Execute = function() {
-
-		vm.responseSuccess = false;
-		vm.responseFailure = false;
-
 		vm.turnOnLog = true;
 		var fullScript = '';
 		if (vm.current.ScriptModels.Meta.ExecuteAll) {

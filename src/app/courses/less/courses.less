@@ -28,6 +28,9 @@
 }
 
 #Class {
+  nav {
+	background-color: darken(@gray-darker, 5);
+  }
   &:not(.interactive) {
 	max-height:~'calc(100vh - 102px)';
 	overflow-y:auto;
@@ -108,10 +111,24 @@
 		border-color: @four51-orange;
 	  }
 	}
+
   }
   #CourseContent {
+	position: relative;
+	display: flex;
+	flex-direction: column;
 	background-color:white;
-	& > div {
+	.course-title {
+	  background-color: @gray-lighter;
+	  padding: 20px 20px;
+	  font-size: 2.2em;
+	  font-family: Lato;
+
+	  border-bottom: 1px solid darken(@gray-lighter, 7);
+	}
+	& > div:nth-child(2) {
+	  flex: 1;
+	  overflow: auto;
 	  padding:0 @padding-base-horizontal;
 	}
 	code {
@@ -127,6 +144,24 @@
 	}
 	code.string {
 	  color: darken(@ace-green, 20);
+	}
+	#ClassRequirements {
+	  color: white;
+	  padding: 5px 10px;
+	  background-color: @four51-navy;
+	  a > i {
+		color: white;
+		font-size: 1.5em;
+	  }
+	  .no-count {
+		width: 100%;
+		background-color: white;
+		text-align: center;
+		border-radius: 4px;
+		font-size: 12px;
+		padding: 2px;
+		color: black;
+	  }
 	}
 
   }
@@ -156,12 +191,19 @@
 	  & > button {
 		position:absolute;
 	  }
+	  #Response {
+		#ResponseList,
+		#ResponseBody {
+		  background-color: @gray-darker;
+		}
+	  }
 	}
 	#ScriptInputContainer {
 	  display:flex;
 	  flex-flow:column nowrap;
 	  min-width: 500px;
 	  & > .script-nav {
+		padding: 10px 10px 0 10px;
 		flex:0 1 auto;
 		display:flex;
 		flex-flow:row nowrap;
@@ -174,73 +216,7 @@
 	#ScriptInput {
 	  border-radius:0;
 	}
-	#Response {
-	  overflow: hidden;
-	  position: relative;
-	  max-width: 650px;
-	  min-width: 450px;
-	  padding:@padding-base-horizontal;
-	  & > div:nth-of-type(1) {
-		background-color:@gray-dark;
-		height:550px;
-	  }
-	  .response-content {
-		overflow-y: auto;
-		padding: @padding-base-horizontal;
-		.log-entry-header {
-		  padding-right: 20px;
-		}
-		@media(max-width: 1400px) {
-		  .log-entry-header {
-			font-size: .8em;
-		  }
-		}
-		.log-entry-content {
-		  margin-top: -50px;
-		}
-		.raw-response {
-		  word-wrap: break-word;
-		}
-		.json-response {
-		  overflow-x: auto;
-		}
-		.panel-body {
-		  padding-bottom: 0;
-		}
-		.tab-content {
-		  margin-top: 10px;
-		}
-	  }
-	  .response-alert {
-		position: absolute;
-		right: -100%;
-		bottom: 40px;
-		width: 90%;
-		opacity: 1;
-		.response-words {
-		  font-weight: 700;
-		  padding-left: 5px;
-		}
-		a {
-		  color: #3c763d;
-		}
-		i {
-		  font-size: 1.3em;
-		}
-	  }
-	  .response-alert.alert-danger a {
-		color: #a94442;
-	  }
-	  .response-alert.alert-info a {
-		color : #31708f;
-	  }
-	  .response-alert.slide {
-		right: 5%;
-		transition-duration: 0.5s;
-		transition-timing-function: ease;
-		opacity: 1;
-	  }
-	}
+
 	.code-block {
 	  display: none;
 	}

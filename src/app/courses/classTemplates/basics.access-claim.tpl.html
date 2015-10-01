@@ -25,8 +25,9 @@
         in your browsers cookies for your current admin user), and <code>DefaultUserContextID</code> is an
         advanced topic we won't be touching on right now.
     </p>
-    <div style="height: 200px;" readonly
+    <div readonly
          ui-ace="{
+      onload: class.setMaxLines,
       useWrapMode : false,
       theme:'twilight',
       mode: 'json',

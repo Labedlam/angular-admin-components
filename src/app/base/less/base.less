@@ -42,7 +42,7 @@
 	  }
 	  &:after {
 		left:auto;
-		right:8px;
+		right:10px;
 	  }
 	}
   }
@@ -55,6 +55,32 @@
 		padding-top: 10px;
 		padding-bottom:10px;
 	  }
+	}
+  }
+  #dev-center-navigation .open .dropdown-menu.mega {
+	width:400px;
+	display:flex;
+	> ul {
+	  min-width:100px;
+	  flex:0 1 auto;
+	  list-style:none;
+	  padding:0;
+	  li {
+		padding:10px 20px;
+		&:not(:last-child) {
+		  border-bottom:1px solid @list-group-border;
+		}
+		&:hover {
+		  background-color:@list-group-hover-bg;
+		}
+	  }
+	}
+	> div {
+	  flex:1;
+	  margin:0 5px 0 0;
+	  padding:5px;
+	  background-color:@list-group-hover-bg;
+	  height:200px;
 	}
   }
 }

@@ -35,4 +35,21 @@ function BaseConfig( $stateProvider ) {
 function BaseController( CurrentUser ) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
+	vm.exploreDropdown = [
+		{
+			Display: 'Console',
+			Description: 'The Console is an interactive tool for using the OrderCloud API to perform basic CRUD operations against your available instances.',
+			StateRef: 'base.console'
+		},
+		{
+			Display: 'SDKs',
+			Description: 'SDKs Description',
+			StateRef: ''
+		},
+		{
+			Display: 'Seeds',
+			Description: 'Seeds Description',
+			StateRef: ''
+		}
+	]
 }

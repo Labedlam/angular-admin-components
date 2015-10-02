@@ -19,19 +19,26 @@
 					<ul class="dropdown-menu top-caret bordered" dropdown-menu>
 						<!--<li ui-sref-active="active" ng-if="base.currentUser"><a>Get Started</a></li>-->
 						<li ><a ui-sref="base.docs">API Docs</a></li>
+						<li ><a ui-sref="base.docs">Getting Started</a></li>
 						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
 					</ul>
 				</li>
-				<li>
-					<a href="" ui-sref="base.console">Console</a>
-				</li>
-<!--				<li class="dropdown" dropdown ng-if="base.currentUser">
+				<!--<li><a href="" ui-sref="base.console">Console</a></li>-->
+				<li class="dropdown" dropdown ng-if="base.currentUser">
 					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Explore</a>
-					<ul class="dropdown-menu top-caret bordered" dropdown-menu>
-						<li ui-sref-active="active"><a ui-sref="base.console">API Console</a></li>
-						<li ui-sref-active="active"><a>Components</a></li>
-					</ul>
-				</li>-->
+					<div class="dropdown-menu top-caret bordered mega" dropdown-menu>
+						<ul>
+							<li role="presentation" ng-repeat="item in base.exploreDropdown" ng-mouseenter="base.exploreDropdown.activeItem = item" ui-sref="{{item.StateRef}}">{{item.Display}}</li>
+						</ul>
+						<div ng-if="base.exploreDropdown.activeItem">
+							{{base.exploreDropdown.activeItem.Description}}
+						</div>
+<!--						<li ui-sref-active="active"><a ui-sref="base.console">Console</a></li>
+						<li ui-sref-active="active"><a >AngularJS SDK</a></li>
+						<li ui-sref-active="active"><a >AngularJS Seed</a></li>-->
+						<!--<li ui-sref-active="active"><a>Components</a></li>-->
+					</div>
+				</li>
 				<!--<li ui-sref-active="active"  ng-if="base.currentUser"><a>My Apps</a></li>-->
 
 			</ul>

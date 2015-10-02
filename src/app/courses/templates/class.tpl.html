@@ -65,12 +65,30 @@
 		<div id="InteractiveUI" ng-if="class.current.Interactive">
 			<div id="ScriptInputContainer">
 				<div class="script-nav">
-					<span>
+					<!--<span>
 						<ul class="nav nav-tabs">
 							<li role="presentation" ng-class="{'active': (script.Title == class.current.ActiveScript)}" ng-repeat="script in class.current.ScriptModels.Scripts | orderBy: 'ListOrder'"><a ng-click="class.activeScriptFn(script.Title)"><i class="fa fa-file-code-o"></i> {{script.Title}}</a></li>
 						</ul>
 					</span>
-					<button type="button" class="btn btn-primary" ng-click="class.Execute()">Run <i class="fa fa-play-circle-o"></i></button>
+					<button type="button" class="btn btn-primary" ng-click="class.Execute()">Run <i class="fa fa-play-circle-o"></i></button>-->
+					<div class="script-selector">
+						<div class="selector-prefix">
+							SCRIPT
+						</div>
+						<div class="selector-choice">
+							{{class.current.ActiveScriptName}}
+						</div>
+						<div class="selector-icon">
+							<a ng-click="class.showScriptSelector = !class.showScriptSelector" href><i class="fa fa-chevron-down"></i></a>
+						</div>
+						<div class="selector-dropdown" ng-init="class.showScriptSelector = false" ng-show="class.showScriptSelector">
+							<div class="script-option" ng-repeat="script in class.current.ScriptModels.Scripts">
+								<h3 ng-click="class.activeScriptFn(script.Title)">{{script.Name}}</h3>
+								<span><em>{{script.Description}}</em></span>
+							</div>
+						</div>
+					</div>
+
 				</div>
 				<div style="font-size: 1.1em" id="ScriptInput" class="code-block"
 					 ng-repeat="script in class.current.ScriptModels.Scripts" ng-class="{ActiveCodeBlock: script.Title == class.current.ActiveScript}"

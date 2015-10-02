@@ -125,6 +125,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Buyer',
+						Description: 'Use this script to create your first buyer',
 						Model: "\nvar buyer = {Buyers.Create};\n\nBuyers.Create(buyer);",
 						Disable: false,
 						ListOrder: 1,
@@ -133,6 +135,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a Buyer',
+						Description: 'Use this script to get a single buyer using a search parameter',
 						Model: '\nvar buyerID = "{buyerID}";\n\nBuyers.Get(buyerID);',
 						Disable: false,
 						ListOrder: 2,
@@ -141,7 +145,9 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
-						Model: '\nBuyers.Get();',
+						Name: 'List Buyers',
+						Description: 'Use this script to access a list of buyers',
+						Model: '\nBuyers.List();',
 						Disable: false,
 						ListOrder: 3,
 						ExecuteOrder: null,
@@ -149,6 +155,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'update.js',
+						Name: 'Update a Buyer',
+						Description: 'Use this script to fully update a buyer object',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar buyer = {Buyers.Update};\n\nBuyers.Update(buyerID, buyer);',
 						Disable: false,
 						ListOrder: 4,

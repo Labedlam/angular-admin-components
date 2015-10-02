@@ -199,9 +199,17 @@
 	  }
 	}
 	#ScriptInputContainer {
+	  position: relative;
 	  display:flex;
 	  flex-flow:column nowrap;
 	  min-width: 500px;
+	  & > .run-button {
+		position: absolute;
+		bottom: 5px;
+		right: 5px;
+		width: 20%;
+		z-index: 100000;
+	  }
 	  & > .script-nav {
 		padding: 10px;
 		.script-selector {
@@ -225,27 +233,40 @@
 		  }
 		  .selector-dropdown {
 			position: absolute;
-			top: 50px;
+			top: 57px;
 			left: 0;
 			right: 0;
 			background-color: @gray-lighter;
 			z-index: 10000;
+			.box-pointer {
+			  position: absolute;
+			  z-index: 500;
+			  top: -16px;
+			  right: 0;
+			  width: 0;
+			  height: 0;
+			  border-left: 16px solid transparent;
+			  border-right: 16px solid transparent;
+			  border-bottom: 16px solid @gray-lighter;
+			  background-color: transparent;
+			}
 		  }
 		  .script-option {
 			cursor: pointer;
 			border-bottom: 1px solid @gray-light;
 			padding: 5px;
-			h3 {
+			h4 {
 			  margin: 5px;
 			}
 			span {
+			  color: darken(@gray-lighter, 35);
 			  padding: 5px;
 			}
 		  }
 		  .script-option:hover {
-			color: @four51-orange;
+			color: lighten(@four51-navy, 10);
 			span {
-			  color: lighten(@four51-navy, 15);
+			  color: lighten(@four51-navy, 25);
 			};
 			background-color: darken(@gray-lighter, 10);
 		  }

@@ -42,9 +42,9 @@
 	</nav>
 	<article id="ClassContainer" ng-class="{'interactive':!class.current.Interactive}">
 		<div id="CourseContent">
-			<div class="course-title">{{class.current.Name}}</div>
+			<div ng-show="class.current.Interactive" class="course-title">{{class.current.Name}}</div>
 			<div class="reading-content" ng-include="class.current.TemplateUrl"></div>
-			<div id="ClassRequirements">
+			<div ng-show="class.current.Interactive" id="ClassRequirements">
 				<div ng-init="class.goalsCollapse = true" class="heading">
 					<a href class="pull-right" ng-click="class.goalsCollapse = !class.goalsCollapse"><i class="fa" ng-class="{'fa-chevron-up': class.goalsCollapse, 'fa-chevron-down': !class.goalsCollapse }"></i></a>
 					<h4 class="title">
@@ -64,13 +64,10 @@
 		</div>
 		<div id="InteractiveUI" ng-if="class.current.Interactive">
 			<div id="ScriptInputContainer">
+				<div class="run-button">
+					<button class="btn btn-primary btn-block" ng-click="class.Execute()">Run</button>
+				</div>
 				<div class="script-nav">
-					<!--<span>
-						<ul class="nav nav-tabs">
-							<li role="presentation" ng-class="{'active': (script.Title == class.current.ActiveScript)}" ng-repeat="script in class.current.ScriptModels.Scripts | orderBy: 'ListOrder'"><a ng-click="class.activeScriptFn(script.Title)"><i class="fa fa-file-code-o"></i> {{script.Title}}</a></li>
-						</ul>
-					</span>
-					<button type="button" class="btn btn-primary" ng-click="class.Execute()">Run <i class="fa fa-play-circle-o"></i></button>-->
 					<div class="script-selector">
 						<div class="selector-prefix">
 							SCRIPT
@@ -79,13 +76,14 @@
 							{{class.current.ActiveScriptName}}
 						</div>
 						<div class="selector-icon">
-							<a ng-click="class.showScriptSelector = !class.showScriptSelector" href><i class="fa fa-chevron-down"></i></a>
+							<a ng-click="class.showScriptSelector = !class.showScriptSelector" href><i class="fa" ng-class="{'fa-chevron-down': !class.showScriptSelector, 'fa-chevron-up': class.showScriptSelector}"></i></a>
 						</div>
 						<div class="selector-dropdown" ng-init="class.showScriptSelector = false" ng-show="class.showScriptSelector">
-							<div class="script-option" ng-repeat="script in class.current.ScriptModels.Scripts">
-								<h3 ng-click="class.activeScriptFn(script.Title)">{{script.Name}}</h3>
+							<div class="script-option" ng-repeat="script in class.current.ScriptModels.Scripts" ng-click="class.activeScriptFn(script.Title)">
+								<h4>{{script.Name}}</h4>
 								<span><em>{{script.Description}}</em></span>
 							</div>
+							<div class="box-pointer"></div>
 						</div>
 					</div>
 
@@ -122,15 +120,9 @@
 					showGutter: false
 					}" ng-model="class.SelectedResponse.data">
 				</div>
-				<!--<div class="alert alert-success response-alert" role="alert" ng-class="{slide: class.responseSuccess && class.allowNextOnSuccess}">
+				<div class="alert alert-success response-alert" role="alert" ng-show="class.classComplete">
 					<a class="pull-right" href ng-click="class.nextClass()">GO TO NEXT CLASS</a> <span class="response-words">All Requests Succeeded. Great Job!</span><i class="fa fa-check pull-left"></i>
 				</div>
-				<div class="alert alert-danger response-alert" role="alert" ng-class="{slide: class.responseFailure}" >
-					<a class="pull-right" href><i class="fa fa-close" ng-click="class.responseFailure=false"></i></a> <span class="response-words">One or More Requests Failed.</span><i class="fa fa-warning pull-left"></i>
-				</div>
-				<div class="alert alert-info response-alert" role="alert" ng-class="{slide: class.responseSuccess && !class.allowNextOnSuccess}">
-					<a class="pull-right" href><i class="fa fa-close" ng-click="class.responseSuccess=false"></i></a> <span class="response-words">Request Successful. Please continue class as directed</span><i class="fa fa-check pull-left"></i>
-				</div>-->
 			</div>
 		</div>
 	</article>

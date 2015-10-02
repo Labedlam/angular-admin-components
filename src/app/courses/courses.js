@@ -88,6 +88,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	vm.alert = {};
 	vm.context = {};
 	vm.Responses = [];
+	vm.classComplete = false;
 
 	vm.setMaxLines = setMaxLines;
 	vm.activeScriptFn = activeScriptFn;
@@ -202,7 +203,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		}
 	}
 
-	$scope.$watch(function() {
+	/*$scope.$watch(function() {
 		return vm.openRequestCount;
 	}, function (n, o) {
 		if (vm.current.ScriptModels) {
@@ -224,7 +225,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 				console.log('not yet');
 			}
 		}
-	});
+	});*/
 
 	function setMaxLines(editor) {
 		editor.setOptions({
@@ -255,6 +256,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 
 	function Execute() {
 		vm.turnOnLog = true;
+		vm.goalsCollapse = false;
 		var fullScript = '';
 		if (vm.current.ScriptModels.Meta.ExecuteAll) {
 			fullScript = '';
@@ -324,6 +326,15 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		})
 	}
 
+	function checkAssertions() {
+		var pass = true;
+		angular.forEach(vm.current.Assert, function(assertion) {
+			if (!assertion.Successes || assertion.Successes < assertion.AmountNeeded) {
+				pass = false;
+			}
+		});
+		vm.classComplete = pass;
+	}
 
 	function addMethodCount(response) {
 		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
@@ -336,7 +347,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 				if (mtd.HttpVerb == method) {
 					var docEndpoint = mtd.UriTemplate;
 					var docEpSplit = docEndpoint.split('/');
-					console.log(docEpSplit);
 					var count = -1;
 					if (docEpSplit.length == newEpSplit.length) {
 						angular.forEach(docEpSplit, function(piece) {
@@ -348,21 +358,17 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 							}
 
 						});
-						console.log(Underscore.difference(docEpSplit, newEpSplit), Underscore.difference(newEpSplit, docEpSplit));
 						if (Underscore.difference(docEpSplit, newEpSplit).length == 0 && Underscore.difference(newEpSplit, docEpSplit).length == 0) {
 							console.log('hello');
 							angular.forEach(vm.current.Assert, function(assertion) {
-								console.log(assertion);
-								console.log(svcKey + '.' + mtdKey, assertion.Method);
 								if (svcKey + '.' + mtdKey == assertion.Method) {
 									if (assertion.Successes) {
 										assertion.Successes += 1;
-										console.log('again');
 									}
 									else {
 										assertion.Successes = 1;
-										console.log('first');
 									}
+									checkAssertions();
 								}
 							})
 						}

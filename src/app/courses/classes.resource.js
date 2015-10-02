@@ -111,11 +111,7 @@ function ClassesService($q, Underscore) {
 			Assert: [
 				{
 					Method: 'Buyers.Create',
-					AmountNeeded: 2
-				},
-				{
-					Method: 'Buyers.List',
-					AmountNeeded: 2
+					AmountNeeded: 1
 				}
 			],
 			ScriptModels: {
@@ -174,21 +170,31 @@ function ClassesService($q, Underscore) {
 			Description: 'Create your first group under your new buyer company comprised of your new users',
 			TemplateUrl: 'courses/classTemplates/basics.create-group.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'UserGroups.Create',
+					AmountNeeded: 1
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
 				},
 				Scripts: [
 					{
-					Title: 'create.js',
-					Model: '\nvar buyerID = "{buyerID}";\n\nvar group = {UserGroups.Create};\n\nUserGroups.Create(buyerID, group);',
-					Disable: false,
-					ListOrder: 1,
-					ExecuteOrder: null,
-					NextOnSuccess: true
+						Title: 'create.js',
+						Name: 'Create a Group',
+						Description: 'Use this script to create a new group of users',
+						Model: '\nvar buyerID = "{buyerID}";\n\nvar group = {UserGroups.Create};\n\nUserGroups.Create(buyerID, group);',
+						Disable: false,
+						ListOrder: 1,
+						ExecuteOrder: null,
+						NextOnSuccess: true
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a Group',
+						Description: 'Use this script to get a group of users based on a paramater',
 						Model: '\nvar buyerID = "{buyerID}";\nvar groupID = "{groupID}";\n\nUserGroups.Get(buyerID, groupID);',
 						Disable: false,
 						ListOrder: 2,
@@ -197,6 +203,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a List of Groups',
+						Description: 'Use this script to get a list of groups with optional query parameter',
 						Model: '\nvar buyerID = "{buyerID}";\nvar search = null;\nvar page = null;\nvar pageSize = null;\n\nvar group = {UserGroups.Create};\n\nUserGroups.List(buyerID, search, page, pageSize);',
 						Disable: false,
 						ListOrder: 3,
@@ -205,6 +213,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'update.js',
+						Name: 'Update a Group',
+						Description: 'Use this script to update an entire group object',
 						Model: '\nvar buyerID = "{buyerID}";\nvar groupID = "{groupID}";\n\nvar group = {UserGroups.Update};\n\nUserGroups.Update(buyerID, groupID, group);',
 						Disable: false,
 						ListOrder: 4,
@@ -213,6 +223,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'patch.js',
+						Name: 'Partially Update a Group',
+						Description: 'Use this script to update part of a group object',
 						Model: '\nvar buyerID = "{buyerID}";\nvar groupID = "{groupID}";\n\nvar groupPatch = {UserGroups.Patch};\n\nUserGroups.Patch(buyerID, groupID, groupPatch);',
 						Disable: false,
 						ListOrder: 5,
@@ -221,6 +233,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Group',
+						Description: 'Use this to Delete an entire group using a parameter',
 						Model: '\nvar buyerID = "{buyerID}";\nvar groupID = "{groupID}";\n\nUserGroups.Delete(buyerID, groupID);',
 						Disable: false,
 						ListOrder: 6,
@@ -238,6 +252,12 @@ function ClassesService($q, Underscore) {
 			Description: 'Create your first group assignment with your newly created group and users',
 			TemplateUrl: 'courses/classTemplates/basics.create-group-assignment.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'UserGroups.SaveMemberAssignment',
+					AmountNeeded: 3
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -245,6 +265,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Group Assignment',
+						Description: 'Use this script to create a new assignment between a user and a group',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar assignment = {UserGroups.SaveMemberAssignment};\n\nUserGroups.SaveMemberAssignment(buyerID, assignment);',
 						Disable: false,
 						ListOrder: 1,
@@ -253,6 +275,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'List Group Asssignments',
+						Description: 'Use this script to generate a list of user assignments to groups',
 						Model: '\nvar buyerID = "{buyerID}";\nvar userID = null;\nvar groupID = "{groupID}";\nvar page = null;\nvar pageSize = null;\n\n\nUserGroups.ListMemberAssignments(buyerID, userID, groupID, page, pageSize);',
 						Disable: false,
 						ListOrder: 2,
@@ -261,6 +285,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete Group Assignment',
+						Description: 'Use this script to delete an existing group assignment',
 						Model: '\nvar buyerID = "{buyerID}";\nvar groupID = "{groupID}";\nvar userID = "{userID}";\n\n\nUserGroups.DeleteMemberAssignment(buyerID, groupID, userID);',
 						Disable: false,
 						ListOrder: 3,
@@ -328,8 +354,8 @@ function ClassesService($q, Underscore) {
 			Interactive: true,
 			Assert: [
 				{
-					method: 'Users.Create',
-					count: 3
+					Method: 'Users.Create',
+					AmountNeeded: 3
 				}
 			],
 			ScriptModels: {
@@ -339,6 +365,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a User',
+						Description: 'Use this script to create a new user',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar user = {Users.Create};\n\n\nUsers.Create(buyerID, user);',
 						Disable: false,
 						ListOrder: 1,
@@ -347,6 +375,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a User',
+						Description: 'Use this script to get a user based on a search parameter',
 						Model: '\nvar buyerID = "{buyerID}";\nvar userID = "{userID}";\n\nUsers.Get(buyerID, userID);',
 						Disable: false,
 						ListOrder: 2,
@@ -355,6 +385,8 @@ function ClassesService($q, Underscore) {
 					},
                     {
                         Title: 'list.js',
+						Name: 'Get a List of Users',
+						Description: 'Use this script to get a list of Users with an options query parameter',
                         Model: '\nvar buyerID = "{buyerID}";\n\nUsers.List(buyerID);',
                         Disable: false,
                         ListOrder: 3,
@@ -363,6 +395,8 @@ function ClassesService($q, Underscore) {
                     },
 					{
 						Title: 'update.js',
+						Name: 'Update a User',
+						Description: 'Use this script to update a full user object',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar users = {Users.Update};\n\n\nUsers.Update(buyerID, user.ID, user);',
 						Disable: false,
 						ListOrder: 4,
@@ -371,6 +405,8 @@ function ClassesService($q, Underscore) {
 					},
                     {
                         Title: 'patch.js',
+						Name: 'Partially Update a User',
+						Description: 'Use this script to partially update a user object',
                         Model: '\nvar buyerID = "{buyerID}";\n\n//will only update Username\n\nvar user = {\n\tID: "...",\n\tUsername: "..."\n};\n\n\nUsers.Patch(buyerID, user.ID, user); ',
                         Disable: false,
                         ListOrder: 5,
@@ -379,6 +415,8 @@ function ClassesService($q, Underscore) {
                     },
 					{
 						Title: 'delete.js',
+						Name: 'Delete a User',
+						Description: 'Use this script to delete a user from the system',
 						Model: '\n\n var userID = "{userID}";\n\n Users.Delete(userID);',
 						Disable: false,
 						ListOrder: 6,
@@ -396,6 +434,12 @@ function ClassesService($q, Underscore) {
 			Description: "Create or access a product to be used to create a product and category assignment",
 			TemplateUrl: 'courses/classTemplates/basics.prod-crud.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'Products.Create',
+					AmountNeeded: 3
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -403,6 +447,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Product',
+						Description: 'Use this script to create a new product',
 						Model: '\n\nvar prod = {Products.Create};\n\n\nProducts.Create(prod);',
 						Disable: false,
 						ListOrder: 1,
@@ -411,6 +457,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a Product',
+						Description: 'Use this script to get a single product based on a search parameter',
 						Model: '\nvar productID = "{productID}";\n\nProducts.Get(productID);',
 						Disable: false,
 						ListOrder: 2,
@@ -419,6 +467,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'update.js',
+						Name: 'Update a Product',
+						Description: 'Use this script to update an full product object',
 						Model: '\n//must provide entire object in update\n\nvar prod = {Products.Create};\n\n\nProducts.Update(prod.ID, prod);',
 						Disable: false,
 						ListOrder: 3,
@@ -427,6 +477,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'patch.js',
+						Name: 'Partially Update a Product',
+						Description: 'Use this script to update a piece of an existing product object',
 						Model: '\n//will only update Description\n\nvar prod = {\n\tID: "...",\n\tDescription: "..."\n};\n\n\nProducts.Patch(prod.ID, prod); ',
 						Disable: false,
 						ListOrder: 4,
@@ -435,6 +487,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Product',
+						Description: 'Use this script to delete an existing product from the system',
 						Model: '\n\n var productID = "{productID}";\n\n Products.Delete(productID);',
 						Disable: false,
 						ListOrder: 5,
@@ -452,6 +506,12 @@ function ClassesService($q, Underscore) {
 			Description: "Create a price schedule that will be used to create a product assignment",
 			TemplateUrl: 'courses/classTemplates/basics.price-sched-crud.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'PriceSchedules.Create',
+					AmountNeeded: 1
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -459,6 +519,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Price Schedule',
+						Description: 'Use this script to create a new price schedule',
 						Model: '\n\nvar ps = {PriceSchedules.Create};\n\n\nPriceSchedules.Create(ps);',
 						Disable: false,
 						ListOrder: 1,
@@ -467,6 +529,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a Price Schedule',
+						Description: 'Use this script to get a single price schedule based on a search parameter',
 						Model: '\n\nvar priceScheduleID = "{priceScheduleID}";\n\n\nPriceSchedules.Get(priceScheduleID);',
 						Disable: false,
 						ListOrder: 2,
@@ -475,6 +539,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a List of Price Schedules',
+						Description: 'Use this script to get a list of Price Schedules based on query parameters',
 						Model: '\n\n\nPriceSchedules.List();',
 						Disable: false,
 						ListOrder: 3,
@@ -483,6 +549,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'update.js',
+						Name: 'Update a Price Schedule',
+						Description: 'Use this script to update a full price schedule object',
 						Model: '\n\nvar ps = {PriceSchedules.Update};\n\n\nPriceSchedules.Update(ps.ID, ps);',
 						Disable: false,
 						ListOrder: 4,
@@ -491,6 +559,8 @@ function ClassesService($q, Underscore) {
 					},
                     {
                         Title: 'patch.js',
+						Name: 'Partially Update a Price Schedule',
+						Description: 'Use this script to partially update a price schedule object',
                         Model: '\n//will only update OrderType\n\nvar ps = {\n\tID: "...",\n\tOrderType: "..."\n};\n\n\nPriceSchedules.Patch(ps.ID, ps); ',
                         Disable: false,
                         ListOrder: 5,
@@ -499,6 +569,8 @@ function ClassesService($q, Underscore) {
                     },
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Price Schedule',
+						Description: 'Use this script to delete an existing price schedule from the system',
 						Model: '\n\nvar priceScheduleID = "{priceScheduleID}";\n\n\nPriceSchedules.Delete(priceScheduleID);',
 						Disable: false,
 						ListOrder: 6,
@@ -517,6 +589,12 @@ function ClassesService($q, Underscore) {
 			Description: "Assign your product to a user with your newly created price schedule",
 			TemplateUrl: 'courses/classTemplates/basics.prod-assignments.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'Products.SaveAssignment',
+					AmountNeeded: 3
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -524,6 +602,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Product Assignment',
+						Description: 'Use this script to create a new product assignment',
 						Model: '\nvar assignment = {Products.SaveAssignment};\n\nProducts.SaveAssignment(assignment);',
 						Disable: false,
 						ListOrder: 1,
@@ -532,6 +612,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a List of Product Assignments',
+						Description: 'Use this script to get a list of product assignments',
 						Model: '\nvar productID = "{productID}";\nvar buyerID = null;\nvar userID = "{userID}";\nvar userGroupID = null;\nvar level = null;\nvar priceScheduleID = "{priceScheduleID}";\nvar page = null;\nvar pageSize = null;\n\n\nProducts.ListAssignments(productID, buyerID, userID, userGroupID, level, priceScheduleID, page, pageSize);',
 						Disable: false,
 						ListOrder: 1,
@@ -540,6 +622,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Product Assignment',
+						Description: 'Use this script to delete an existing product assignment',
 						Model: '\nvar buyerID = null;\nvar productID = "{productID}";\nvar userID = "{userID}";\nvar userGroupID = null;\n\nProducts.DeleteAssignment(buyerID, productID, userID, userGroupID);',
 						Disable: false,
 						ListOrder: 1,
@@ -559,8 +643,8 @@ function ClassesService($q, Underscore) {
 			Interactive: true,
 			Assert: [
 				{
-					method: 'Categories.Create',
-					count: 3
+					Method: 'Categories.Create',
+					AmountNeeded: 1
 				}
 			],
 			ScriptModels: {
@@ -570,6 +654,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Category',
+						Description: 'Use this script to create a new category',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar cat = {Categories.Create};\n\nCategories.Create(buyerID, cat);',
 						Disable: false,
 						ListOrder: 1,
@@ -578,6 +664,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'get.js',
+						Name: 'Get a Category',
+						Description: 'Use this script to get a single existing category',
 						Model: '\nvar buyerID = "{buyerID}";\nvar catID = "{categoryID}";\n\nCategories.Get(buyerID, categoryID);',
 						Disable: false,
 						ListOrder: 2,
@@ -586,6 +674,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a List of Categories',
+						Description: 'Use this script to get a list of categories with optional query parameters',
 						Model: '\nvar buyerID = "{buyerID}";\nvar search = null;\nvar depth = null;\nvar page = null;\nvar pageSize = null;\n\n\nCategories.List(buyerID, search, depth, page, pageSize);',
 						Disable: false,
 						ListOrder: 3,
@@ -594,6 +684,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'update.js',
+						Name: 'Update a Category',
+						Description: 'Use this script to update a full category object',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar cat = {Categories.Update};\n\n\nCategories.Update(buyerID, cat);',
 						Disable: false,
 						ListOrder: 4,
@@ -602,6 +694,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'patch.js',
+						Name: 'Partially Update a Category',
+						Description: 'Use this script to partially update an existing category',
 						Model: '\n//will only update Description\n\nvar buyerID = "{buyerID}";\n\nvar cat = {\n\tID: "...",\n\tDescription: "..."\n};\n\n\nCategories.Patch(buyerID, cat); ',
 						Disable: false,
 						ListOrder: 5,
@@ -610,6 +704,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Category',
+						Description: 'Use this script to delete an existing category',
 						Model: '\nvar buyerID = "{buyerID}";\nvar categoryID = "{categoryID}";\n\n Categories.Delete(buyerID, categoryID);',
 						Disable: false,
 						ListOrder: 6,
@@ -627,6 +723,12 @@ function ClassesService($q, Underscore) {
 			Description: "Assign your category to a product",
 			TemplateUrl: 'courses/classTemplates/basics.category-prod-assignment.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'Categories.SaveProductAssignments',
+					AmountNeeded: 3
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -634,6 +736,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Category Product Assignment',
+						Description: 'Use this script to create a category product assignment',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar assignment = {Categories.SaveProductAssignments}\n\nCategories.SaveProductAssignments(buyerID, assignment);',
 						Disable: false,
 						ListOrder: 1,
@@ -642,6 +746,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a List of Category Product Assignments',
+						Description: 'Use this script to get a list of category product assignments',
 						Model: '\nvar buyerID = "{buyerID}";\nvar categoryID = "{categoryID}";\nvar productID = "{productID}";\nvar page = null;\nvar pageSize = null;\n\nCategories.ListProductAssignments(buyerID, categoryID, productID, page, pageSize);',
 						Disable: false,
 						ListOrder: 2,
@@ -650,6 +756,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Category Product Assignment',
+						Description: 'Use this script to delete a category product assignment',
 						Model: '\nvar buyerID = "{buyerID}";\nvar categoryID = "{categoryID}";\nvar productID = "{productID}";\n\nCategories.DeleteProductAssignments(buyerID, categoryID, productID);',
 						Disable: false,
 						ListOrder: 2,
@@ -667,6 +775,12 @@ function ClassesService($q, Underscore) {
 			Description: "Assign your category to a user",
 			TemplateUrl: 'courses/classTemplates/basics.category-assignment.tpl.html',
 			Interactive: true,
+			Assert: [
+				{
+					Method: 'Categories.SaveAssignment',
+					AmountNeeded: 1
+				}
+			],
 			ScriptModels: {
 				Meta: {
 					ExecuteAll: false
@@ -674,6 +788,8 @@ function ClassesService($q, Underscore) {
 				Scripts: [
 					{
 						Title: 'create.js',
+						Name: 'Create a Category Assignment',
+						Description: 'Use this script to assign a group to a category',
 						Model: '\nvar buyerID = "{buyerID}";\n\nvar assignment = {Categories.SaveAssignment}\n\nCategories.SaveAssignment(buyerID, assignment);',
 						Disable: false,
 						ListOrder: 1,
@@ -682,6 +798,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'list.js',
+						Name: 'Get a list of Category Assignments',
+						Description: 'Use this script to get a list of user/group assignments to a category',
 						Model: '\nvar buyerID = "{buyerID}";\nvar categoryID = "{categoryID}";\nvar userID = "{userID}";\nvar userGroupID = null;\nvar level = null;\nvar page = null;\nvar pageSize = null;\n\nCategories.ListAssignments(buyerID, categoryID, userID, userGroupID, level, page, pageSize);',
 						Disable: false,
 						ListOrder: 2,
@@ -690,6 +808,8 @@ function ClassesService($q, Underscore) {
 					},
 					{
 						Title: 'delete.js',
+						Name: 'Delete a Category Assignment',
+						Description: 'Use this script to delete a category assignment',
 						Model: '\nvar buyerID = "{buyerID}";\nvar categoryID = "{categoryID}";\nvar userID = "{userID}";\nvar userGroupID = null;\n\nCategories.DeleteProductAssignments(buyerID, categoryID, userID, userGroupID);',
 						Disable: false,
 						ListOrder: 2,

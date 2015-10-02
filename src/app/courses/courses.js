@@ -88,6 +88,16 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	vm.alert = {};
 	vm.context = {};
 	vm.Responses = [];
+
+	vm.setMaxLines = setMaxLines;
+	vm.activeScriptFn = activeScriptFn;
+	vm.SelectResponse = SelectResponse;
+	vm.nextClass = nextClass;
+	vm.Execute = Execute;
+	vm.context.setContext = setContext;
+	vm.context.clearContext = clearContext;
+
+
 	vm.openRequestCount = 0;
 	vm.docs = {};
 	vm.classIndex = SelectedCourse.Classes.indexOf(vm.current.ID);
@@ -101,84 +111,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		}, function() {
 			vm.context.User = null;
 		});
-
-	$scope.$watch(function() {
-		return vm.openRequestCount;
-	}, function (n, o) {
-		if (vm.current.ScriptModels) {
-			vm.allowNextOnSuccess = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0].NextOnSuccess;
-		}
-		if (n == 0 && vm.turnOnLog) {
-			vm.responseFailure = false;
-			angular.forEach(vm.allResponses, function(data) {
-				if (data.status > 399) {
-					vm.responseFailure = true;
-				}
-			});
-			if (!vm.responseFailure) {
-				vm.responseSuccess = true;
-			}
-		}
-		else {
-			if (vm.turnOnLog) {
-				console.log('not yet');
-			}
-		}
-	});
-
-	vm.setMaxLines = function(editor) {
-		editor.setOptions({
-			maxLines:100
-		});
-	};
-	vm.SelectResponse = function(response) {
-		vm.SelectedResponse = response;
-	};
-
-	/*function checkAssertions() {
-		angular.forEach(vm.current.Assert, function(assertion) {
-			var split = assertion.method.split('.');
-			var doc = vm.docs[split[0]][split[1]];
-			console.log(vm.current.Assert);
-
-			console.log(doc);
-			var assertUrl = doc.UriTemplate;
-			console.log(assertUrl);
-			angular.forEach(vm.responses, function(response) {
-				/!*if (response.method == doc.HttpVerb) {
-					console.log('hello');
-				}*!/
-
-			});
-		})
-	}*/
-
-	function findNextCourseID() {
-		Courses.List().then(function(data) {
-			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
-			if (currentCourseIndex < data.length) {
-				nextCourseID = data[currentCourseIndex + 1].ID;
-			}
-		})
-	}
-
-	vm.activeScriptFn = function(scriptTitle) {
-		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Title;
-	};
-
-	function setActiveScript() {
-		var activeScriptTitle = '';
-		if (vm.current.Interactive) {
-			if (vm.current.ScriptModels.Scripts.length > 1) {
-				activeScriptTitle = Underscore.where(vm.current.ScriptModels.Scripts, {ListOrder: 1})[0].Title;
-			} else {
-				activeScriptTitle = vm.current.ScriptModels.Scripts[0].Title;
-			}
-			vm.activeScriptFn(activeScriptTitle);
-		}
-
-	}
-	setActiveScript();
 
 	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example
 		ClassSvc.getDocs(method)
@@ -228,7 +160,88 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			})
 	});
 
-	vm.nextClass = function() {
+	if (SelectedClass.Interactive) {
+		$scope.$on('event:requestSuccess', function() {
+			if (vm.turnOnLog) {
+				vm.openRequestCount += 1;
+			}
+		});
+
+		$scope.$on('event:responseSuccess', function(event, c) {
+			if (vm.turnOnLog) {
+				if (c.config.url.indexOf('docs/') == -1) {
+					c.data = $filter('json')(c.data);
+					vm.Responses.push(c);
+					console.log(c);
+					vm.SelectedResponse = c;
+					addMethodCount(c);
+				}
+				vm.openRequestCount -= 1;
+
+			}
+		});
+		$scope.$on('event:responseError', function(event, c) {
+			if (vm.turnOnLog) {
+				if (c.config.url.indexOf('docs/') == -1) {
+					c.data = $filter('json')(c.data);
+					vm.Responses.push(c);
+					vm.SelectedResponse = c;
+				}
+				vm.openRequestCount -= 1;
+			}
+		});
+	}
+
+	if (vm.current.Interactive) {
+		if (vm.current.ScriptModels.Scripts.length > 1) {
+			vm.activeScriptFn(Underscore.where(vm.current.ScriptModels.Scripts, {ListOrder: 1})[0].Title);
+			vm.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {ListOrder: 1})[0].Name;
+		} else {
+			vm.activeScriptFn(vm.current.ScriptModels.Scripts[0].Title);
+			vm.ActiveScriptName = vm.current.ScriptModels.Scripts[0].Name;
+		}
+	}
+
+	$scope.$watch(function() {
+		return vm.openRequestCount;
+	}, function (n, o) {
+		if (vm.current.ScriptModels) {
+			vm.allowNextOnSuccess = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0].NextOnSuccess;
+		}
+		if (n == 0 && vm.turnOnLog) {
+			vm.responseFailure = false;
+			angular.forEach(vm.allResponses, function(data) {
+				if (data.status > 399) {
+					vm.responseFailure = true;
+				}
+			});
+			if (!vm.responseFailure) {
+				vm.responseSuccess = true;
+			}
+		}
+		else {
+			if (vm.turnOnLog) {
+				console.log('not yet');
+			}
+		}
+	});
+
+	function setMaxLines(editor) {
+		editor.setOptions({
+			maxLines:100
+		});
+	}
+	function SelectResponse(response) {
+		vm.SelectedResponse = response;
+	}
+
+	function activeScriptFn(scriptTitle) {
+		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Title;
+		vm.showScriptSelector = false;
+		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Name;
+	}
+
+	function nextClass() {
 		if (nextClassID) {
 			console.log(nextClassID);
 			$state.go('.', {classid: nextClassID})
@@ -238,13 +251,78 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		} else {
 			$state.go('base.courses');
 		}
-	};
+	}
 
-	vm.setMaxLines = function(editor) {
-		editor.setOptions({
-			maxLines:100
-		});
-	};
+	function Execute() {
+		vm.turnOnLog = true;
+		var fullScript = '';
+		if (vm.current.ScriptModels.Meta.ExecuteAll) {
+			fullScript = '';
+			var orderedScripts = Underscore.chain(vm.current.ScriptModels.Scripts)
+				.filter(function(script){return !script.Disable;})
+				.sortBy(function(script){return script.ExecuteOrder;})
+				.value();
+			angular.forEach(orderedScripts, function(script) {
+				fullScript += script.Model;
+			})
+		} else {
+			var currentScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0];
+			if (!currentScript.Disable) {
+				fullScript = currentScript.Model;
+			} else {
+				fullScript = null;
+			}
+		}
+
+
+		if (fullScript) {
+			var injectString = "";
+			angular.forEach(vm.current.Dependencies, function(d) {
+				injectString += 'var ' + d + ' = injector.get("' + d + '");'
+			});
+
+			var ex = new Function("injector", injectString + fullScript);
+			ex($injector);
+		} else {
+			vm.consoleMessage = 'script is not executable';
+		}
+
+	}
+
+	function setContext() {
+		Context.setContext(vm.context.clientID, vm.context.username, vm.context.password)
+			.then(function() {
+				vm.contextSet = true;
+				vm.context.username = '';
+				vm.context.password = '';
+				Me.Get()
+					.then(function(data) {
+						if (vm.context.User) {
+							vm.context.User = data;
+						}
+					}, function(reason) {
+						console.log(reason);
+					})
+			}, function(reason) {
+				vm.context.SetError = true;
+				vm.context.SetErrorMsg = reason;
+			});
+	}
+
+	function clearContext() {
+		Context.clearContext();
+		vm.contextSet = false;
+		vm.context.User = null;
+	}
+
+	function findNextCourseID() {
+		Courses.List().then(function(data) {
+			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
+			if (currentCourseIndex < data.length) {
+				nextCourseID = data[currentCourseIndex + 1].ID;
+			}
+		})
+	}
 
 
 	function addMethodCount(response) {
@@ -295,103 +373,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			})
 		})
 
-	}
-
-	if (SelectedClass.Interactive) {
-		$scope.$on('event:requestSuccess', function() {
-			if (vm.turnOnLog) {
-				vm.openRequestCount += 1;
-			}
-		});
-
-		$scope.$on('event:responseSuccess', function(event, c) {
-			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1) {
-					c.data = $filter('json')(c.data);
-					vm.Responses.push(c);
-					console.log(c);
-					vm.SelectedResponse = c;
-					addMethodCount(c);
-				}
-				vm.openRequestCount -= 1;
-
-			}
-		});
-		$scope.$on('event:responseError', function(event, c) {
-			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1) {
-					c.data = $filter('json')(c.data);
-					vm.Responses.push(c);
-					vm.SelectedResponse = c;
-				}
-				vm.openRequestCount -= 1;
-			}
-		});
-	}
-
-
-
-	vm.Execute = function() {
-		vm.turnOnLog = true;
-		var fullScript = '';
-		if (vm.current.ScriptModels.Meta.ExecuteAll) {
-			fullScript = '';
-			var orderedScripts = Underscore.chain(vm.current.ScriptModels.Scripts)
-				.filter(function(script){return !script.Disable;})
-				.sortBy(function(script){return script.ExecuteOrder;})
-				.value();
-			angular.forEach(orderedScripts, function(script) {
-				fullScript += script.Model;
-			})
-		} else {
-			var currentScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0];
-			if (!currentScript.Disable) {
-				fullScript = currentScript.Model;
-			} else {
-				fullScript = null;
-			}
-		}
-
-
-		if (fullScript) {
-			var injectString = "";
-			angular.forEach(vm.current.Dependencies, function(d) {
-				injectString += 'var ' + d + ' = injector.get("' + d + '");'
-			});
-
-			var ex = new Function("injector", injectString + fullScript);
-			ex($injector);
-		} else {
-			vm.consoleMessage = 'script is not executable';
-		}
-
-	};
-
-
-	vm.context.setContext = function() {
-		Context.setContext(vm.context.clientID, vm.context.username, vm.context.password)
-			.then(function() {
-				vm.contextSet = true;
-				vm.context.username = '';
-				vm.context.password = '';
-				Me.Get()
-					.then(function(data) {
-						if (vm.context.User) {
-							vm.context.User = data;
-						}
-					}, function(reason) {
-						console.log(reason);
-					})
-			}, function(reason) {
-				vm.context.SetError = true;
-				vm.context.SetErrorMsg = reason;
-			});
-	};
-
-	vm.context.clearContext = function() {
-		Context.clearContext();
-		vm.contextSet = false;
-		vm.context.User = null;
 	}
 
 }

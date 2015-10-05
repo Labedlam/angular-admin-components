@@ -171,11 +171,11 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1) {
-					c.data = $filter('json')(c.data);
-					vm.Responses.push(c);
-					console.log(c);
-					vm.SelectedResponse = c;
-					addMethodCount(c);
+					var response = angular.copy(c);
+					response.data = $filter('json')(response.data);
+					vm.Responses.push(response);
+					vm.SelectedResponse = response;
+					addMethodCount(response);
 				}
 				vm.openRequestCount -= 1;
 
@@ -184,9 +184,10 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1) {
-					c.data = $filter('json')(c.data);
-					vm.Responses.push(c);
-					vm.SelectedResponse = c;
+					var response = angular.copy(c);
+					response.data = $filter('json')(response.data);
+					vm.Responses.push(response);
+					vm.SelectedResponse = response;
 				}
 				vm.openRequestCount -= 1;
 			}

@@ -72,7 +72,8 @@ module.exports = {
 			'vendor/ace-builds/src/theme-idle_fingers.js',
 			'vendor/ordercloud-angular-sdk/dist/ordercloud-angular-sdk.js',
 			'vendor/ace-builds/src/worker-json.js',
-			'vendor/ace-builds/src/worker-javascript.js'
+			'vendor/ace-builds/src/worker-javascript.js',
+			'vendor/ace-builds/src/worker-html.js'
 		],
 		exclude_js: [
 			'!vendor/ordercloud-angular-sdk/dist/ordercloud-angular-sdk.min.js'

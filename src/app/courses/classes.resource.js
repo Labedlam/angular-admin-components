@@ -3,19 +3,64 @@ angular.module( 'orderCloud' )
 ;
 
 
-function ClassesService($q, Underscore) {
+function ClassesService($q, Underscore, $resource, devapiurl) {
 	var service = {
 		List: _list,
-		Get: _get
+		Get: _get,
+		Update: _update,
+		Create: _create
 	};
 
-	function _list() {
+	/*var url = 'https://devcenterapi.herokuapp.com';*/
+
+	function _list(courseID) {
 		var d = $q.defer();
-		d.resolve(classes);
+		$resource(devapiurl + '/courses/:courseid/classes', {courseid: courseID}).query().$promise
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
 		return d.promise;
 	}
 
-	function _get(value) {
+	function _get(courseID, classID) {
+		var d = $q.defer();
+		$resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}).get().$promise
+			.then(function(data) {
+				d.resolve(data);
+			})
+			.catch(function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+
+	}
+
+	function _update(courseID, classID, currentClass) {
+		var d = $q.defer();
+		$resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}).save(currentClass).$promise
+			.then(function() {
+				d.resolve();
+			}, function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+	}
+
+	function _create(courseID, newClass) {
+		var d= $q.defer();
+		$resource(devapiurl + '/courses/:courseid/class/create', {coursid: courseID}).save(newClass).$promise
+			.then(function() {
+				d.resolve();
+			}, function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+	}
+
+
+	/*function _get(value) {
 		var d= $q.defer();
 		if (angular.isArray(value)) {
 			var queue = [],
@@ -38,9 +83,9 @@ function ClassesService($q, Underscore) {
 			d.resolve(Underscore.where(classes, {ID: value})[0]);
 		}
 		return d.promise;
-	}
+	}*/
 
-	var classes = [
+	/*var classes = [
 		{
 			ID: 'api',
 			Name: 'RESTful API',
@@ -846,7 +891,7 @@ function ClassesService($q, Underscore) {
 			ClassMethods: ["Me.Products"]
 		}
 
-	];
+	];*/
 
 	return service;
 }

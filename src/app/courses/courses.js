@@ -4,6 +4,7 @@ angular.module( 'orderCloud' )
 	.controller( 'CoursesCtrl', CoursesController )
 	.controller( 'CourseCtrl', CourseController )
 	.controller( 'ClassCtrl', ClassController )
+	.controller( 'ClassEditCtrl', ClassEditController)
 	.factory( 'ClassSvc', ClassService )
 
 ;
@@ -52,8 +53,8 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				SelectedCourse: function($stateParams, Courses) {
 					return Courses.Get($stateParams.courseid);
 				},
-				ClassesList: function($q, Classes, SelectedCourse) {
-					return Classes.Get(SelectedCourse.Classes);
+				ClassesList: function($q, $stateParams, Classes) {
+					return Classes.List($stateParams.courseid);
 				}
 			}
 		})
@@ -64,11 +65,121 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controllerAs: 'class',
 			data: {limitAccess:true},
 			resolve: {
-				SelectedClass: function($stateParams, Underscore, ClassesList) {
-					return Underscore.where(ClassesList, {ID:$stateParams.classid})[0];
+				SelectedClass: function(Classes, $stateParams) {
+					return Classes.Get($stateParams.courseid, $stateParams.classid);
 				}
 			}
 		})
+		.state( 'base.course.edit', {
+			url: '/:classid/edit',
+			templateUrl:'courses/templates/class.edit.tpl.html',
+			controller: 'ClassEditCtrl',
+			controllerAs: 'class',
+			data: {limitAccess:true},
+			resolve: {
+				EditClass: function(Classes, $stateParams) {
+					return Classes.Get($stateParams.courseid, $stateParams.classid);
+				}
+			}
+		}
+	)
+}
+function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore, $anchorScroll, $location, $window) {
+	var vm = this;
+	vm.current = EditClass;
+	vm.docs = {};
+
+	vm.updateClass = updateClass;
+	vm.setMaxLines = setMaxLines;
+	vm.selectScript = activeScriptFn;
+	vm.removeAssertion = removeAssertion;
+	vm.removeDependency = removeDependency;
+	vm.removeMethod = removeMethod;
+	vm.removeScript = removeScript;
+	vm.addAssertion = addAssertion;
+	vm.addDependency = addDependency;
+	vm.addMethod = addMethod;
+	vm.addScript = addScript;
+	function setMaxLines(editor) {
+		editor.setOptions({
+			maxLines:100
+		});
+	}
+
+
+	function updateClass() {
+		Classes.Update($stateParams.courseid, $stateParams.classid, vm.current)
+			.then(function(data) {
+				console.log('success');
+			}, function(error) {
+				console.log(error);
+			})
+	}
+
+	function activeScriptFn(scriptName) {
+		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
+		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
+
+		vm.scriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {Name: scriptName});
+	}
+
+	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example
+		ClassSvc.getDocs(method)
+			.then(function(data) {
+
+				var svc = data[0];
+				var mtd = data[1];
+				var doc = data[2];
+				if (!vm.docs[svc]) {
+					vm.docs[svc] = {};
+					vm.docs[svc][mtd] = doc;
+				} else {
+					vm.docs[svc][mtd] = doc;
+				}
+			})
+	});
+
+	function removeAssertion(assertion) {
+		var assIndex = Underscore.indexOf(vm.current.Assert, {Method: assertion.Method});
+		vm.current.Assert.splice(assIndex, 1);
+	}
+	function removeDependency(dep) {
+		vm.current.Dependencies.splice(vm.current.Dependencies.indexOf(dep), 1);
+	}
+	function removeMethod(method) {
+		vm.current.ClassMethods.splice(vm.current.ClassMethods.indexOf(method), 1);
+	}
+	function removeScript(script) {
+		var scriptIndex = Underscore.indexOf(vm.current.ScriptModels.Scripts, {Name: script.Name});
+		vm.current.ScriptModels.Scripts.splice(scriptIndex, 1);
+	}
+	function addAssertion() {
+		vm.current.Assert.push(
+			{
+				Method: "Method_" + Math.floor(10000 * Math.random())
+			}
+		)
+	}
+	function addDependency() {
+		vm.current.Dependencies.push("Dependency_" + Math.floor(10000 * Math.random()))
+	}
+	function addMethod() {
+		vm.current.ClassMethods.push("Method_" + Math.floor(10000 * Math.random()));
+	}
+	function addScript() {
+		vm.current.ScriptModels.Scripts.push(
+			{
+				"Name": "Name_" + Math.floor(10000 * Math.random()),
+				"Description": "Description",
+				"Model": "\n//create new script",
+				"Disable": false,
+				"ListOrder": 0,
+				"ExecuteOrder": null,
+				"NextOnSuccess": true
+			}
+		);
+	}
+
 }
 
 function CoursesController( CoursesList ) {
@@ -76,13 +187,13 @@ function CoursesController( CoursesList ) {
 	vm.list = CoursesList;
 }
 
-function CourseController( SelectedCourse, ClassesList ) {
+function CourseController( SelectedCourse, ClassesList, $location, $anchorScroll, $scope) {
 	var vm = this;
 	vm.current = SelectedCourse;
 	vm.classes = ClassesList;
 }
 
-function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, Context, Me, $filter ) {
+function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, Context, Me, $filter, $sce ) {
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.alert = {};
@@ -97,6 +208,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	vm.Execute = Execute;
 	vm.context.setContext = setContext;
 	vm.context.clearContext = clearContext;
+	vm.renderHtml = renderHtml;
 
 
 	vm.openRequestCount = 0;
@@ -227,6 +339,10 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			}
 		}
 	});*/
+
+	function renderHtml(html) {
+		return $sce.trustAsHtml(html);
+	}
 
 	function setMaxLines(editor) {
 		editor.setOptions({
@@ -408,3 +524,5 @@ function ClassService($resource, apiurl, $q) {
 
 	return service;
 }
+
+

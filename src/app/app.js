@@ -40,6 +40,8 @@ angular.module( 'orderCloud', [
 	//Test Environment
 	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
 	.constant('apiurl', 'https://testapi.ordercloud.io')
+	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	/*.constant('devapiurl', 'http://localhost:55555')*/
 
 ;
 

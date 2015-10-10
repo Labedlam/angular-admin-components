@@ -1,0 +1,203 @@
+<div id="ClassEdit">
+    <button id="SaveClass" class="btn btn-primary" ng-click="class.updateClass()">Save Course</button>
+    <a id="goToGeneral" class="frag-link btn btn-info" ui-sref=".({'#': 'ClassGeneral'})">General</a>
+    <a id="goToHtml" class="frag-link btn btn-info" ui-sref=".({'#': 'ClassHtml'})">HTML</a>
+    <a id="goToScript" class="frag-link btn btn-info" ui-sref=".({'#': 'ClassScript'})">Scripts</a>
+    <div id="ClassGeneral">
+        <div class="container">
+            <h1>Create and Edit Classes</h1>
+            <form>
+                <div class="form-group col-xs-6">
+                    <label for="className">Class Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Class Name" ng-model="class.current.Name">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label for="classID">Class ID</label>
+                    <input type="text" class="form-control" ng-model="class.current.ID" disabled placeholder="Existing Class ID">
+                </div>
+                <div class="form-group col-xs-12">
+                    <label for="classDescription">Class Description (40 Word Max)</label>
+                    <textarea class="form-control" rows="2" ng-model="class.current.Description" placeholder="Enter Class Description"></textarea>
+                </div>
+                <div class="form-group col-xs-12">
+                    <label for="classInteractive">Interactive Class</label>
+                    <select class="form-control" ng-model="class.current.Interactive" ng-options="o for o in [true, false]">
+                    </select>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div id="ClassHtml" ng-class="{static: !class.current.Interactive}">
+        <div id="LivePreview"  compile="class.current.TemplateUrl">
+
+        </div>
+        <div id="HtmlEditor">
+            <div>
+                <h2>Class HTML Editor</h2>
+            </div>
+            <div id="EditorIDE" ui-ace="{
+                useWrapMode : true,
+                theme:'idle_fingers',
+                mode: 'html',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter: false
+                }" ng-model="class.current.TemplateUrl"></div>
+        </div>
+    </div>
+    <div id="ClassScript" ng-show="class.current.Interactive">
+
+        <div id="ClassGoals">
+            <div>
+                <h2>Class Script Settings</h2>
+            </div>
+
+            <div class="goal-section">
+                <h4>Assertions</h4>
+                <div class="script-option dropup" ng-repeat="assertion in class.current.Assert" dropdown auto-close="outsideClick">
+                    <a href class="pull-right" ng-click="class.removeAssertion(assertion)"><i class="fa fa-remove" ></i></a>
+                    <a href class="pull-right"><i class="fa fa-edit" dropdown-toggle id="assertDropdown"></i></a>
+                    <div class="dropdown-menu" aria-labelledby="assertDropdown">
+                        <form class="form-horizontal">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Method</label>
+                                <div class="col-xs-10">
+                                    <input class="form-control" ng-model="assertion.Method" >
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Count</label>
+                                <div class="col-xs-10">
+                                    <input class="form-control" ng-model="assertion.AmountNeeded" >
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <h4>Method: {{assertion.Method}}</h4>
+                    <span>Amount: {{assertion.AmountNeeded}}</span>
+                </div>
+                <div class="col-xs-12 add-script-btn">
+                    <a href ng-click="class.addAssertion()"><i class="fa fa-plus-circle fa-2x"></i></a>
+                </div>
+            </div>
+            <div class="goal-section">
+                <h4>Dependencies</h4>
+                <div class="script-option dropup" ng-repeat="depend in class.current.Dependencies" dropdown auto-close="outsideClick">
+                    <a href class="pull-right" ng-click="class.removeDependency(depend)"><i class="fa fa-remove"></i></a>
+                    <a href class="pull-right"><i class="fa fa-edit" dropdown-toggle id="depDropdown"></i></a>
+                    <div class="dropdown-menu" aria-labelledby="depDropdown">
+                        <form class="form-horizontal">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Dependency</label>
+                                <div class="col-xs-10">
+                                    <input class="form-control" ng-model="depend" >
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <h4>{{depend}}</h4>
+                </div>
+                <div class="col-xs-12 add-script-btn">
+                    <a href ng-click="class.addDependency()"><i class="fa fa-plus-circle fa-2x"></i></a>
+                </div>
+            </div>
+            <div class="goal-section">
+                <h4>Method Utility Service</h4>
+                <div class="script-option dropup" ng-repeat="method in class.current.ClassMethods" dropdown auto-close="outsideClick">
+                    <a href class="pull-right" ng-click="class.removeMethod(method)"><i class="fa fa-remove"></i></a>
+                    <a href class="pull-right"><i class="fa fa-edit" dropdown-toggle id="methodDropdown"></i></a>
+                    <div class="dropdown-menu" aria-labelledby="methodDropdown">
+                        <form class="form-horizontal">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Method</label>
+                                <div class="col-xs-10">
+                                    <input class="form-control" ng-model="method" >
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                    <h4>{{method}}</h4>
+                </div>
+                <div class="col-xs-12 add-script-btn">
+                    <a href ng-click="class.addMethod()"><i class="fa fa-plus-circle fa-2x"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="ScriptIDE">
+            <div>
+                <h2>Script Editor</h2>
+            </div>
+            <div class="script-editor" ng-class="{'hide-scripts': !class.current.ActiveScriptName}" ui-ace="{
+            useWrapMode : true,
+            theme:'idle_fingers',
+            mode: 'javascript',
+            tabSize: '4',
+            useSoftTabs: true,
+            showPrintMargin: false,
+            showGutter: false
+            }" ng-model="class.current.ScriptModels.Scripts[class.scriptIndex].Model"></div>
+            <div class="no-script-msg" ng-show="!class.current.ActiveScriptName">
+                <em>Please Select Script...</em>
+            </div>
+        </div>
+
+        <div id="ScriptList">
+            <h2>Class Scripts</h2>
+            <div class="script-selections">
+                <div class="script-option dropup" ng-repeat="script in class.current.ScriptModels.Scripts" dropdown auto-close="outsideClick" ng-click="class.selectScript(script.Name)" ng-class="{'active-script': script.Name == class.current.ActiveScriptName}">
+                    <a href class="pull-right" ng-click="class.removeScript(script)"><i class="fa fa-remove"></i></a>
+                    <a href class="edit-script pull-right"><i class="fa fa-edit" id="scriptEditDropdown" dropdown-toggle></i></a>
+                    <div class="dropdown-menu" aria-labelledby="scriptEditDropdown">
+                        <form>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" type="text" ng-model="script.Name" >
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" ng-model="script.Description" rows="1"></textarea>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <label>Disable?</label>
+                                <select class="form-control" ng-model="script.Disable" ng-options="o for o in [true, false]">
+                                </select>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label>List Order</label>
+                                <input class="form-control" type="number" ng-model="script.ListOrder">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label>Execute Order</label>
+                                <input class="form-control" type="number" ng-model="script.ExecuteOrder">
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label>Next on Success</label>
+                                <select class="form-control" ng-model="script.NextOnSuccess" ng-options="o for o in [true, false]">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <h4>{{script.Name}}</h4>
+                    <span><em>{{script.Description}}</em></span>
+                </div>
+                <div class="col-xs-12 add-script-btn">
+                    <a href ng-click="class.addScript()"><i class="fa fa-plus-circle fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -42,8 +42,8 @@
 	</nav>
 	<article id="ClassContainer" ng-class="{'interactive':!class.current.Interactive}">
 		<div id="CourseContent">
-			<div ng-show="class.current.Interactive" class="course-title">{{class.current.Name}}</div>
-			<div class="reading-content" ng-include="class.current.TemplateUrl"></div>
+			<div class="course-title">{{class.current.Name}}</div>
+			<div class="reading-content" compile="class.current.TemplateUrl"></div>
 			<div ng-show="class.current.Interactive" id="ClassRequirements">
 				<div ng-init="class.goalsCollapse = true" class="heading">
 					<a href class="pull-right" ng-click="class.goalsCollapse = !class.goalsCollapse"><i class="fa" ng-class="{'fa-chevron-up': class.goalsCollapse, 'fa-chevron-down': !class.goalsCollapse }"></i></a>

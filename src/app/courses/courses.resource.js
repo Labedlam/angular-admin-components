@@ -3,7 +3,7 @@ angular.module( 'orderCloud' )
 ;
 
 
-function CoursesService($q, Underscore) {
+function CoursesService($q, Underscore, $resource, devapiurl) {
 	var service = {
 		List: _list,
 		Get: _get
@@ -11,13 +11,23 @@ function CoursesService($q, Underscore) {
 
 	function _list() {
 		var d = $q.defer();
-		d.resolve(courses);
+		$resource(devapiurl + '/courses').query().$promise
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
 		return d.promise;
 	}
 
 	function _get(courseID) {
 		var d= $q.defer();
-		d.resolve(Underscore.where(courses, {ID: courseID})[0]);
+		$resource(devapiurl + '/courses/:courseid', {courseid: courseID}).get().$promise
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
 		return d.promise;
 	}
 

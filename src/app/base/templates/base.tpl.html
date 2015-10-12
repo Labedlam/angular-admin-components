@@ -14,18 +14,11 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="navbar-collapse" collapse="mainCollapsed" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="dropdown" dropdown>
-					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Learn</a>
-					<ul class="dropdown-menu top-caret bordered" dropdown-menu>
-						<!--<li ui-sref-active="active" ng-if="base.currentUser"><a>Get Started</a></li>-->
-						<li ><a ui-sref="base.docs">API Docs</a></li>
-						<li ><a ui-sref="base.docs">Getting Started</a></li>
-						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
-					</ul>
+				<li>
+					<a ui-sref="base.about" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">About</a>
 				</li>
-				<!--<li><a href="" ui-sref="base.console">Console</a></li>-->
 				<li class="dropdown" dropdown ng-if="base.currentUser">
-					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Explore</a>
+					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Documentation</a>
 					<div class="dropdown-menu top-caret bordered mega" dropdown-menu>
 						<ul>
 							<li role="presentation" ng-repeat="item in base.exploreDropdown" ng-mouseenter="base.exploreDropdown.activeItem = item" ui-sref="{{item.StateRef}}">{{item.Display}}</li>
@@ -33,12 +26,23 @@
 						<div ng-if="base.exploreDropdown.activeItem">
 							{{base.exploreDropdown.activeItem.Description}}
 						</div>
-<!--						<li ui-sref-active="active"><a ui-sref="base.console">Console</a></li>
-						<li ui-sref-active="active"><a >AngularJS SDK</a></li>
-						<li ui-sref-active="active"><a >AngularJS Seed</a></li>-->
+						<!--						<li ui-sref-active="active"><a ui-sref="base.console">Console</a></li>
+                                                <li ui-sref-active="active"><a >AngularJS SDK</a></li>
+                                                <li ui-sref-active="active"><a >AngularJS Seed</a></li>-->
 						<!--<li ui-sref-active="active"><a>Components</a></li>-->
 					</div>
 				</li>
+				<li><a href="" ui-sref="base.console">Console</a></li>
+				<li class="dropdown" dropdown>
+					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Learn</a>
+					<ul class="dropdown-menu top-caret bordered" dropdown-menu>
+						<li ui-sref-active="active" ui-sref="base.gettingstarted" ng-if="base.currentUser"><a>Get Started</a></li>
+						<li ><a ui-sref="base.docs">API Docs</a></li>
+						<li ><a ui-sref="base.docs">Getting Started</a></li>
+						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
+					</ul>
+				</li>
+
 				<!--<li ui-sref-active="active"  ng-if="base.currentUser"><a>My Apps</a></li>-->
 
 			</ul>

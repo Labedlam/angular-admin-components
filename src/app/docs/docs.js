@@ -4,6 +4,7 @@ angular.module( 'orderCloud' )
 	.controller( 'DocsCtrl', DocsController )
 	.controller( 'DocsResourceCtrl', DocsResourceController )
 	.factory( 'DocsService', DocsService )
+	.factory( 'Docs', DocsFactory )
 ;
 
 function DocsConfig( $stateProvider ) {
@@ -87,6 +88,55 @@ function DocsService(  ) {
 
 	function _setActiveSection(value) {
 		section = value;
+	}
+
+	return service;
+}
+
+function DocsFactory($resource, $injector, apiurl, Auth) {
+	var service = {
+		GetAll: _getall,
+		GetResource: _getresource,
+		GetEndpoint: _getendpoint,
+		As: _as
+	};
+
+	var _extendCustom, _extendLocal;
+	try {
+		_extendCustom = $injector.get('Extend');
+		_extendLocal = $injector.get('DocsExtend');
+	}
+	catch(ex) { }
+
+	function docsExtend(data) {
+		if (_extendLocal) {
+			if (_extendCustom && _extendCustom['Docs']) {
+				return _extendCustom['Docs'](_extendLocal.extend(data));
+			}
+			return _extendLocal.extend(data);
+		}
+		else if (_extendCustom && _extendCustom['Docs']) {
+			return _extendCustom['Docs'](data);
+		}
+		return data;
+	}
+
+	function _getall() {
+		return $resource(apiurl + '/v1/docs').get().$promise;
+	}
+
+	function _getresource(resource) {
+		return $resource(apiurl + '/v1/docs/:resource', { 'resource': resource }).get().$promise;
+	}
+
+	function _getendpoint(resource, endpoint) {
+		return $resource(apiurl + '/v1/docs/:resource/:endpoint', { 'resource': resource, 'endpoint': endpoint }).get().$promise;
+	}
+
+	function _as(token) {
+		Auth.Impersonate(token);
+
+		return this;
 	}
 
 	return service;

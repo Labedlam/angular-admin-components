@@ -78,13 +78,13 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			data: {limitAccess:true},
 			resolve: {
 				EditClass: function(Classes, $stateParams) {
-					return Classes.Get($stateParams.courseid, $stateParams.classid);
+					return Classes.Get($stateParams.courseid, $stateParams.classid, {Administrator: true});
 				}
 			}
 		}
 	)
 }
-function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore, $anchorScroll, $location, $window) {
+function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
 	var vm = this;
 	vm.current = EditClass;
 	vm.docs = {};
@@ -110,15 +110,16 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 	function updateClass() {
 		Classes.Update($stateParams.courseid, $stateParams.classid, vm.current)
 			.then(function(data) {
-				console.log('success');
+				vm.confirmSave = false;
+				vm.classUpdated = true;
 			}, function(error) {
 				console.log(error);
 			})
 	}
 
 	function activeScriptFn(scriptName) {
-		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
-		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
+		vm.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
+		vm.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Name: scriptName})[0].Name;
 
 		vm.scriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {Name: scriptName});
 	}

@@ -157,7 +157,8 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 	function addAssertion() {
 		vm.current.Assert.push(
 			{
-				Method: "Method_" + Math.floor(10000 * Math.random())
+				Method: "Method_" + Math.floor(10000 * Math.random()),
+				Amount: 0
 			}
 		)
 	}
@@ -174,7 +175,7 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 				"Description": "Description",
 				"Model": "\n//create new script",
 				"Disable": false,
-				"ListOrder": 0,
+				"ListOrder": vm.current.ScriptModels.Scripts.length + 1,
 				"ExecuteOrder": null,
 				"NextOnSuccess": true
 			}

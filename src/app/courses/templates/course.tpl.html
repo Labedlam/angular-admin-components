@@ -7,7 +7,7 @@
 	<article class="container">
 		<div class="jumbotron" compile="course.current.LongDescription"></div>
 		<div class="list-group">
-			<a class="list-group-item" ng-repeat="class in course.classes" ui-sref=".class({classid:class.ID})">
+			<a class="list-group-item" ng-repeat="class in course.classes | orderBy: 'CourseOrder'" ui-sref=".class({classid:class.ID})">
 				<h4 class="list-group-item-heading">{{class.Name}}</h4>
 				<p class="list-group-item-text">{{class.Description}}</p>
 			</a>

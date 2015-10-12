@@ -9,9 +9,9 @@ function CoursesService($q, Underscore, $resource, devapiurl) {
 		Get: _get
 	};
 
-	function _list() {
+	function _list(headers) {
 		var d = $q.defer();
-		$resource(devapiurl + '/courses').query().$promise
+		$resource(devapiurl + '/courses', {}, {dcList: {method: 'GET', headers: headers, isArray: true}}).dcList().$promise
 			.then(function(data) {
 				d.resolve(data);
 			}, function(err) {
@@ -20,9 +20,9 @@ function CoursesService($q, Underscore, $resource, devapiurl) {
 		return d.promise;
 	}
 
-	function _get(courseID) {
+	function _get(courseID, headers) {
 		var d= $q.defer();
-		$resource(devapiurl + '/courses/:courseid', {courseid: courseID}).get().$promise
+		$resource(devapiurl + '/courses/:courseid', {courseid: courseID}, {dcGet: {method: 'GET', headers: headers}}).dcGet().$promise
 			.then(function(data) {
 				d.resolve(data);
 			}, function(err) {

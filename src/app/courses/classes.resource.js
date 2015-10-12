@@ -11,11 +11,9 @@ function ClassesService($q, Underscore, $resource, devapiurl) {
 		Create: _create
 	};
 
-	/*var url = 'https://devcenterapi.herokuapp.com';*/
-
-	function _list(courseID) {
+	function _list(courseID, headers) {
 		var d = $q.defer();
-		$resource(devapiurl + '/courses/:courseid/classes', {courseid: courseID}).query().$promise
+		$resource(devapiurl + '/courses/:courseid/classes', {courseid: courseID}, {dcList: {method: 'GET', headers: headers, isArray: true}}).dcList().$promise
 			.then(function(data) {
 				d.resolve(data);
 			}, function(err) {
@@ -24,9 +22,9 @@ function ClassesService($q, Underscore, $resource, devapiurl) {
 		return d.promise;
 	}
 
-	function _get(courseID, classID) {
+	function _get(courseID, classID, headers) {
 		var d = $q.defer();
-		$resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}).get().$promise
+		$resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}, {dcGet: {method: 'GET', headers: headers}}).dcGet().$promise
 			.then(function(data) {
 				d.resolve(data);
 			})
@@ -37,7 +35,7 @@ function ClassesService($q, Underscore, $resource, devapiurl) {
 
 	}
 
-	function _update(courseID, classID, currentClass) {
+	function _update(courseID, classID, currentClass, admin) {
 		var d = $q.defer();
 		$resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}).save(currentClass).$promise
 			.then(function() {

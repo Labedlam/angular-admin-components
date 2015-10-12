@@ -413,6 +413,22 @@
   flex-direction: column;
   align-items: stretch;
 
+  .confirm-popup {
+	position: fixed;
+	text-align: center;
+	z-index: 2000000;
+	right: 5px;
+	top: 105px;
+	height: 150px;
+	width: 200px;
+	background-color: @gray-darker;
+	h3 {
+	  color: white;
+	  margin-bottom: 30px;
+	  margin-top: 10px;
+	}
+  }
+
   #SaveClass {
 	background-color: lighten(red, 25);
 	border-color: lighten(red, 25);

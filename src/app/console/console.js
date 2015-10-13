@@ -126,14 +126,14 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 	});
 
 	$scope.$on('event:responseSuccess', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);

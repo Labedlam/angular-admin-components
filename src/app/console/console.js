@@ -76,6 +76,10 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 		});
 	};
 
+	vm.addNewFilter = function() {
+		vm.SelectedMethod.ResolvedParameters.Filters.push({Key: null, Value: null})
+	};
+
 	vm.Execute = function() {
 		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod)
 			.then( function(data) {
@@ -120,7 +124,7 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 				.then(function(data) {
 					console.log('trigger 2');
 					vm.SelectedEndpoint = data.SelectedEndpoint;
-					vm.SelectedMethod.resolvedParameters = data.ResolvedParameters;
+					vm.SelectedMethod.ResolvedParameters = data.ResolvedParameters;
 				});
 		}
 	});
@@ -150,7 +154,7 @@ function ResponseModalController($modalInstance, Response) {
 
 }
 
-function ApiConsoleService($injector, $resource, apiurl, LockableParams) {
+function ApiConsoleService($injector, $resource, Underscore, apiurl, LockableParams) {
 	var service = {
 		ExecuteApi: _executeApi,
 		CreateParameters: _createParameters
@@ -161,17 +165,29 @@ function ApiConsoleService($injector, $resource, apiurl, LockableParams) {
 	/////
 	function _executeApi(SelectedResource, SelectedMethod) {
 		var params = [];
-		angular.forEach(SelectedMethod.resolvedParameters, function(p) {
+		angular.forEach(SelectedMethod.ResolvedParameters.Fields, function(p) {
 			if (p.Value == "") return; //Avoid registering blank strings
-			params.push(p.Type == 'object' ? JSON.parse(p.Value) : p.Value);
+			params.push(p.Value);
 		});
+		if (SelectedMethod.ResolvedParameters.Objects.length && SelectedMethod.ResolvedParameters.Objects[0].Value) params.push(JSON.parse(SelectedMethod.ResolvedParameters.Objects[0].Value));
+		if (SelectedMethod.ResolvedParameters.Filters.length) {
+			var filters = {};
+			angular.forEach(SelectedMethod.ResolvedParameters.Filters, function(filter) {
+				if (filter.Key && filter.Value) filters[filter.Key] = filter.Value;
+			});
+			params.push(filters);
+		}
 		return $injector.get(SelectedResource.name)[SelectedMethod.name].apply(this, params);
 	}
 
 	function _createParameters(SelectedResource, SelectedMethod) {
 		var result = {
 			SelectedEndpoint: null,
-			ResolvedParameters: []
+			ResolvedParameters: {
+				Fields: [],
+				Objects: [],
+				Filters: []
+			}
 		};
 		return $resource( apiurl + '/v1/docs/' + SelectedResource.name + '/' + SelectedMethod.name).get().$promise
 			.then( function(data) {
@@ -181,7 +197,21 @@ function ApiConsoleService($injector, $resource, apiurl, LockableParams) {
 			});
 
 		function analyzeParamters(endpoint) {
+			var lockableParams = LockableParams.Get();
 			angular.forEach(SelectedMethod.params, function(methodParameter) {
+				var match = Underscore.where(endpoint.Parameters, {Name: methodParameter});
+				var param = match.length ? match[0] : {Value: endpoint.RequestBody.Sample, Name: methodParameter, Required: true, Lockable: false, Type: 'object'};
+				if (param.Value) {
+					result.ResolvedParameters.Objects.push(param);
+				} else {
+					param.Lockable = angular.isDefined(lockableParams[param.Name]);
+					param.Value = param.Lockable ? lockableParams[param.Name] : null;
+					param.Name == 'filters' ? result.ResolvedParameters.CanFilter = true : result.ResolvedParameters.Fields.push(param);
+				}
+			});
+
+
+			/*angular.forEach(SelectedMethod.params, function(methodParameter) {
 				var isText = false;
 				var isRequired = true;
 				var isLockable = false;
@@ -215,7 +245,7 @@ function ApiConsoleService($injector, $resource, apiurl, LockableParams) {
 					Lockable: isLockable
 				};
 				result.ResolvedParameters.push(resolvedParameter);
-			});
+			});*/
 		}
 	}
 }

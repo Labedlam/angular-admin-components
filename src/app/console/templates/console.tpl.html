@@ -48,34 +48,42 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="param in console.SelectedEndpoint.Parameters"> <!--ng-class="{'danger':(param.Required && !console.SelectedMethod.resolvedParameters[$index].Value)}"-->
-							<td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
+						<tr ng-repeat="field in console.SelectedMethod.ResolvedParameters.Fields">
+							<td>{{field.Name}} <small class="text-muted" ng-if="!field.Required">(optional)</small></td>
 							<td><div class="label" ng-class="{
-									'label-primary': param.Type == 'string',
-									'label-warning': param.Type == 'boolean',
-									'label-info': param.Type == 'integer'
-								}">{{param.Type}}</div></td>
+									'label-primary': field.Type == 'string',
+									'label-warning': field.Type == 'boolean',
+									'label-info': field.Type == 'integer'
+								}">{{field.Type}}</div></td>
 							<td>
-								<div ng-class="{'input-group': console.SelectedMethod.resolvedParameters[$index].Lockable}">
-									<input type="{{param.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
-										   tooltip="{{param.Description}}"
+								<div ng-class="{'input-group': field.Lockable}">
+									<input type="{{field.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
+										   tooltip="{{field.Description}}"
 										   tooltip-trigger="focus"
-										   ng-model="console.SelectedMethod.resolvedParameters[$index].Value" ng-required="param.Required" ng-disabled="console.isLocked(param.Name)"/>
-									<span class="input-group-btn" ng-if="console.SelectedMethod.resolvedParameters[$index].Lockable">
-										<button class="btn btn-default" ng-click="console.isLocked(param.Name) ? console.unlockParam(param.Name) : console.lockParam(param.Name, console.SelectedMethod.resolvedParameters[$index].Value)" ng-disabled="!console.SelectedMethod.resolvedParameters[$index].Value" tooltip="{{console.isLocked(param.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
-											<i class="fa" ng-class="{'fa-lock': console.isLocked(param.Name), 'fa-unlock-alt': !console.isLocked(param.Name)}"></i>
+										   ng-model="field.Value" ng-required="field.Required" ng-disabled="console.isLocked(field.Name)"/>
+									<span class="input-group-btn" ng-if="field.Lockable">
+										<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
+											<i class="fa" ng-class="{'fa-lock': console.isLocked(field.Name), 'fa-unlock-alt': !console.isLocked(field.Name)}"></i>
 										</button>
 									</span>
 								</div>
-
 							</td>
 						</tr>
 						</tbody>
+						<tbody ng-if="console.SelectedMethod.ResolvedParameters.CanFilter">
+							<tr>
+								<td colspan="3" ng-click="console.addNewFilter()"><i class="fa fa-plus"></i> Add New Filter</td>
+							</tr>
+							<tr ng-repeat="filter in console.SelectedMethod.ResolvedParameters.Filters">
+								<td colspan="2"><input class="form-control" type="text" ng-model="filter.Key" /></td>
+								<td colspan="1"><input class="form-control" type="text" ng-model="filter.Value" /></td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
-				<div ng-repeat="parameter in console.SelectedMethod.resolvedParameters | objectParams">
+				<div ng-repeat="field in console.SelectedMethod.ResolvedParameters.Objects">
 					<p class="" class="page-header">
-						{{'Request Body: ' + parameter.Name + ' object'}}
+						{{'Request Body: ' + field.Name + ' object'}}
 					</p>
 					<div ui-ace="{
 						onLoad: console.setMaxLines,
@@ -85,7 +93,7 @@
 						tabSize: '4',
 						useSoftTabs: true,
 						showPrintMargin: false
-					}" ng-model="parameter.Value">
+					}" ng-model="field.Value">
 					</div>
 				</div>
 											<!--<pre>{{console.SelectedResource.name + '.' + console.SelectedMethod.name + '('}}<span ng-repeat="p in console.SelectedMethod.resolvedParameters">{{((p.Value != null && p.Value != '') ? (p.Type == 'text' ? ('\'' + p.Value + '\'') : p.Value) : p.Name) + (!$last ? ', ' : ')') }}</span></pre>-->

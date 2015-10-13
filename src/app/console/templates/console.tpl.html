@@ -38,49 +38,61 @@
 				<button class="btn btn-primary" ng-click="console.Execute()" ng-disabled="!console.SelectedMethod">Send <i class="fa fa-send-o"></i></button>
 			</section>
 			<section id="Configuration" ng-show="console.SelectedEndpoint">
-				<div ng-if="console.SelectedEndpoint.Parameters.length">
-					<table class="table">
-						<thead>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Value</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr ng-repeat="field in console.SelectedMethod.ResolvedParameters.Fields">
-							<td>{{field.Name}} <small class="text-muted" ng-if="!field.Required">(optional)</small></td>
-							<td><div class="label" ng-class="{
-									'label-primary': field.Type == 'string',
-									'label-warning': field.Type == 'boolean',
-									'label-info': field.Type == 'integer'
-								}">{{field.Type}}</div></td>
-							<td>
-								<div ng-class="{'input-group': field.Lockable}">
-									<input type="{{field.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
-										   tooltip="{{field.Description}}"
-										   tooltip-trigger="focus"
-										   ng-model="field.Value" ng-required="field.Required" ng-disabled="console.isLocked(field.Name)"/>
-									<span class="input-group-btn" ng-if="field.Lockable">
-										<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
-											<i class="fa" ng-class="{'fa-lock': console.isLocked(field.Name), 'fa-unlock-alt': !console.isLocked(field.Name)}"></i>
-										</button>
-									</span>
-								</div>
-							</td>
-						</tr>
-						</tbody>
-						<tbody ng-if="console.SelectedMethod.ResolvedParameters.CanFilter">
-							<tr>
-								<td colspan="3" ng-click="console.addNewFilter()"><i class="fa fa-plus"></i> Add New Filter</td>
-							</tr>
-							<tr ng-repeat="filter in console.SelectedMethod.ResolvedParameters.Filters">
-								<td colspan="2"><input class="form-control" type="text" ng-model="filter.Key" /></td>
-								<td colspan="1"><input class="form-control" type="text" ng-model="filter.Value" /></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<table class="table" ng-if="console.SelectedMethod.ResolvedParameters.Fields.length">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Value</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="field in console.SelectedMethod.ResolvedParameters.Fields">
+						<td>{{field.Name}} <small class="text-muted" ng-if="!field.Required">(optional)</small></td>
+						<td><div class="label" ng-class="{
+								'label-primary': field.Type == 'string',
+								'label-warning': field.Type == 'boolean',
+								'label-info': field.Type == 'integer'
+							}">{{field.Type}}</div></td>
+						<td>
+							<div ng-class="{'input-group': field.Lockable}">
+								<input type="{{field.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
+									   tooltip="{{field.Description}}"
+									   tooltip-trigger="focus"
+									   ng-model="field.Value" ng-required="field.Required" ng-disabled="console.isLocked(field.Name)"/>
+								<span class="input-group-btn" ng-if="field.Lockable">
+									<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
+										<i class="fa" ng-class="{'fa-lock': console.isLocked(field.Name), 'fa-unlock-alt': !console.isLocked(field.Name)}"></i>
+									</button>
+								</span>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table" ng-if="console.SelectedMethod.ResolvedParameters.CanFilter">
+					<colgroup>
+						<col/>
+						<col/>
+						<col style="width:50px;"/>
+					</colgroup>
+					<thead ng-if="console.SelectedMethod.ResolvedParameters.Filters.length">
+					<tr>
+						<th>Key</th>
+						<th colspan="2">Value</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr ng-repeat="filter in console.SelectedMethod.ResolvedParameters.Filters">
+						<td><input class="form-control" type="text" ng-model="filter.Key" /></td>
+						<td><input class="form-control" type="text" ng-model="filter.Value" /></td>
+						<td><button class="btn btn-danger btn-block"><i class="fa fa-minus-circle" ng-click="console.removeFilter($index)"></i></button></td>
+					</tr>
+					<tr>
+						<td colspan="3" ng-click="console.addNewFilter()"><button class="btn btn-default btn-block"><i class="fa fa-plus"></i> Add New Filter</button></td>
+					</tr>
+					</tbody>
+				</table>
 				<div ng-repeat="field in console.SelectedMethod.ResolvedParameters.Objects">
 					<p class="" class="page-header">
 						{{'Request Body: ' + field.Name + ' object'}}

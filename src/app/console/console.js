@@ -80,6 +80,10 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 		vm.SelectedMethod.ResolvedParameters.Filters.push({Key: null, Value: null})
 	};
 
+	vm.removeFilter = function(filterIndex) {
+		vm.SelectedMethod.ResolvedParameters.Filters.splice(filterIndex, 1);
+	};
+
 	vm.Execute = function() {
 		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod)
 			.then( function(data) {

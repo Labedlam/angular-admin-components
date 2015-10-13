@@ -180,20 +180,22 @@
         <div id="ScriptList">
             <h2>Class Scripts</h2>
             <div class="script-selections">
-                <div class="script-option dropup" ng-repeat="script in class.current.ScriptModels.Scripts" dropdown auto-close="outsideClick" ng-click="class.selectScript(script.Name)" ng-class="{'active-script': script.Name == class.ActiveScriptName}">
+                <div class="script-option dropup" ng-repeat="script in class.current.ScriptModels.Scripts | orderBy: 'ListOrder'" dropdown auto-close="outsideClick" ng-click="class.selectScript(script.Name)" ng-class="{'active-script': script.Name == class.ActiveScriptName}">
                     <a href class="pull-right" ng-click="class.removeScript(script)"><i class="fa fa-remove"></i></a>
                     <a href class="edit-script pull-right"><i class="fa fa-edit" id="scriptEditDropdown" dropdown-toggle></i></a>
+                    <a style="width: 15px; padding-right: 25px; color: darkslategray;" href class="pull-right" ng-click="class.moveScript('down', script.ListOrder)"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
+                    <a style="color: darkslategrey" href class="pull-right" ng-click="class.moveScript('up', script.ListOrder)"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
                     <div class="dropdown-menu" aria-labelledby="scriptEditDropdown">
                         <form>
-                            <div class="form-group">
-                                <label>Name</label>
+                            <div class="form-group col-xs-12">
+                                <label>Title</label>
                                 <input class="form-control" type="text" ng-model="script.Title" >
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-xs-12">
                                 <label>Name</label>
                                 <input class="form-control" type="text" ng-model="script.Name" >
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-xs-12">
                                 <label>Description</label>
                                 <textarea class="form-control" ng-model="script.Description" rows="1"></textarea>
                             </div>
@@ -203,14 +205,10 @@
                                 </select>
                             </div>
                             <div class="form-group col-sm-6">
-                                <label>List Order</label>
-                                <input class="form-control" type="number" ng-model="script.ListOrder">
-                            </div>
-                            <div class="form-group col-sm-6">
                                 <label>Execute Order</label>
                                 <input class="form-control" type="number" ng-model="script.ExecuteOrder">
                             </div>
-                            <div class="form-group col-sm-6">
+                            <div class="form-group col-xs-12">
                                 <label>Next on Success</label>
                                 <select class="form-control" ng-model="script.NextOnSuccess" ng-options="o for o in [true, false]">
                                 </select>

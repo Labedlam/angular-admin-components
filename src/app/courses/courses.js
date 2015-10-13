@@ -100,6 +100,7 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 	vm.addDependency = addDependency;
 	vm.addMethod = addMethod;
 	vm.addScript = addScript;
+	vm.moveScript = moveScript;
 	function setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:100
@@ -115,6 +116,23 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 			}, function(error) {
 				console.log(error);
 			})
+	}
+
+	function moveScript(direction, listOrder) {
+		console.log(listOrder);
+		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
+		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
+		var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+
+		console.log(curScriptIndex);
+
+		if (direction == 'up') {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
+			vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+		} else {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
+			vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+		}
 	}
 
 	function activeScriptFn(scriptName) {
@@ -157,7 +175,8 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 	function addAssertion() {
 		vm.current.Assert.push(
 			{
-				Method: "Method_" + Math.floor(10000 * Math.random())
+				Method: "Method_" + Math.floor(10000 * Math.random()),
+				Amount: 0
 			}
 		)
 	}
@@ -174,7 +193,7 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 				"Description": "Description",
 				"Model": "\n//create new script",
 				"Disable": false,
-				"ListOrder": 0,
+				"ListOrder": vm.current.ScriptModels.Scripts.length + 1,
 				"ExecuteOrder": null,
 				"NextOnSuccess": true
 			}

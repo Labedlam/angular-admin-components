@@ -39,8 +39,8 @@ angular.module( 'orderCloud', [
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))
 	//Test Environment
-	.constant('authurl', 'http://core.four51.com:9002/oauth/token')
-	.constant('apiurl', 'http://core.four51.com:9002')
+	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
+	.constant('apiurl', 'https://testapi.ordercloud.io')
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	/*.constant('devapiurl', 'http://localhost:55555')*/
 

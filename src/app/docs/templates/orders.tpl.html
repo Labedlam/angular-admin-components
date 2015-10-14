@@ -1,0 +1,12 @@
+<h3 class="page-title">Orders</h3>
+<p>
+    The Orders API contains resources related to creating, submitting, and processing orders.
+</p>
+<p>
+    The Orders API generally follows these conventions:
+</p>
+<ul>
+    <li>Updates are generally performed via <code>PATCH</code> and are partial; full (<code>PUT</code>) updates are not supported.</li>
+    <li>Recodesentations returned in the response body of GET operations are fairly detailed, containing read-only fields and hierarchical structures.</li>
+    <li>For convenience, the same detailed recodesentations returned by <code>GET</code> operations are also returned in the response body of <code>PATCH</code> operations.</li>
+</ul>

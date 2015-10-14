@@ -6,13 +6,24 @@
 					ng-repeat="resource in console.Resources" ng-click="console.SelectResource(this)">{{resource.name}} <!--<span class="badge">{{resource.methods.length}}</span>--></button>
 		</div>
 	</aside>
-	<article class="container-fluid" ng-hide="console.SelectedResource">
+	<div id="ContextSelector">
+		<form name="ContextSettings">
+			<div class="input-group">
+				<select class="form-control" ng-model="selectedContext" ng-options="context as context.AppName for context in console.AvailableContexts"></select>
+				<span class="input-group-btn">
+					<button class="btn btn-primary" ng-click="console.setContext(selectedContext)">Set Context</button>
+				</span>
+			</div>
+		</form>
+	</div>
+	<article class="container-fluid" ng-if="!console.SelectedResource">
 		<h3 class="page-header"><i class="fa fa-tools"></i>API Console</h3>
+		<hr/>
 		<p>Welcome to the OrderCloud API Console!  The purpose of this tool is to give developers an idea of how the OrderCloud RESTful API is structured through an interactive UI.</p>
 		<p>Begin by choosing a resource from the left and then specify an endpoint in the drop-down.  If the selected endpoint has parameters available, fill these out by clicking "params" to the right of the endpoint.  When creating and updating you will often need to provide a request body as well.  These request bodies will always be in <code>JSON</code> format and is editable below the endpoint selector.</p>
 		<p class="alert alert-danger">Keep in mind that <b>this <em>will</em> alter your database</b>, and changes will be immediately reflected in any application using your distributor companies' client id.</p>
 	</article>
-	<div id="Console" ng-show="console.SelectedResource">
+	<div id="Console" ng-if="console.SelectedResource">
 		<article id="Request">
 			<h3 class="page-title">
 				{{console.SelectedResource.name}}

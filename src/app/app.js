@@ -40,19 +40,22 @@ angular.module( 'orderCloud', [
 	//Test Environment
 	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
 	.constant('apiurl', 'https://testapi.ordercloud.io')
+	.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858')
+	//.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
+	//.constant('apiurl', 'http://core.four51.com:9002')
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	/*.constant('devapiurl', 'http://localhost:55555')*/
 
 ;
 
-function Security( $rootScope, $state, Auth, Me ) {
+function Security( $rootScope, $state, DevAuth, Me ) {
 	$rootScope.$on('$stateChangeStart', function(e, to) {
 		/*TODO: make the '$stateChangeStart event' accept a function so users can control the redirect from each state's declaration.*/
 		if (!to.data || !to.data.limitAccess) return;
-		Auth.IsAuthenticated()
+		DevAuth.IsAuthenticated()
 			.catch(sendToLogin);
-		Me.Get()
-			.catch(sendToLogin);
+		//Me.Get()
+		//	.catch(sendToLogin);
 		function sendToLogin() {
 			$state.go('login');
 		}

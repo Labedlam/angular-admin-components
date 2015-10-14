@@ -18,10 +18,11 @@ function BaseConfig( $stateProvider ) {
 					var deferred = $q.defer();
 					Auth.IsAuthenticated()
 						.then(function() {
-							Me.Get()
+							deferred.resolve(null);
+/*							Me.Get()
 								.then(function(currentUser) {
 									deferred.resolve(currentUser);
-								})
+								})*/
 						})
 						.catch(function() {
 							deferred.resolve(null);

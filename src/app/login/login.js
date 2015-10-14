@@ -17,16 +17,19 @@ function LoginConfig( $stateProvider ) {
 	});
 }
 
-function LoginController( $rootScope, $state, Credentials ) {
+function LoginController( $rootScope, $state, DevCenter, DevAuth ) {
 	var vm = this;
 
-	vm.submit = function( ) {
-		console.log('hit');
-		Credentials.Get( vm.credentials )
-			.then(function() {
-				console.log('hit 2');
-				$rootScope.isAuthenticated = true;
-				$state.go( 'base.dashboard' );
+	vm.submit = function() {
+		DevCenter.Login( vm.credentials )
+			.then(function(data) {
+				if (data['access_token']) {
+					DevAuth.SetToken(data['access_token']);
+					$rootScope.isAuthenticated = true;
+					$state.go( 'base.dashboard' );
+				} else {
+					$state.reload();
+				}
 			}).catch(function( ex ) {
 				console.dir( ex );
 			});

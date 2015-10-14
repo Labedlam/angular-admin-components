@@ -29,6 +29,9 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controller': 'ApiConsoleCtrl',
         'controllerAs': 'console',
         'resolve': {
+			DevAccess: function(DevCenter) {
+				return DevCenter.GetDevCenterAccess();
+			},
 			OrderCloudSections:  function($q, Docs) {
 				var defer = $q.defer();
 				Docs.GetAll().then(function(data) {
@@ -47,8 +50,9 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudResources, ApiConsoleService, LockableParams) {
+function ApiConsoleController($scope, $resource, $filter, apiurl, Auth, DevCenter, DevAccess, OrderCloudResources, ApiConsoleService, LockableParams) {
 	var vm = this;
+	vm.AvailableContexts = DevAccess.Items;
 	vm.Resources = OrderCloudResources;
 	vm.SelectedResource = null;
 
@@ -57,6 +61,22 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 	vm.Response = null;
 	vm.Responses = [];
 	vm.SelectedResponse = null;
+
+	vm.setContext = function(context) {
+		DevCenter.GetAccessToken(context.ClientID, context.UserID)
+			.then(function(token) {
+				if (typeof token == 'object') {
+					var newToken = '';
+					angular.forEach(token, function(value, key) {
+						if (value != '"' && value.length == 1) {
+							newToken = newToken + value;
+						}
+					});
+					token = newToken;
+				}
+				Auth.SetToken(token);
+			})
+	};
 
 	vm.isLocked = function(paramName) {
 		return LockableParams.IsLocked(paramName);
@@ -134,14 +154,14 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 	});
 
 	$scope.$on('event:responseSuccess', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);

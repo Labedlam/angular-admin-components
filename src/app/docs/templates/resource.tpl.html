@@ -1,4 +1,5 @@
 <h3 class="page-title">{{docsResource.current.Name}}</h3>
+<p ng-repeat="line in docsResource.current.Comments" ng-bind-html="line | markdown"></p>
 <accordion>
 	<accordion-group heading="{{endpoint.Name}}" ng-repeat="endpoint in docsResource.current.Endpoints">
 		<pre><b ng-bind="endpoint.HttpVerb"></b> {{endpoint.UriTemplate}}</pre>

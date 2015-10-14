@@ -33,7 +33,9 @@ angular.module( 'orderCloud', [
 			'echidna': '018DDFBD-AFF8-413A-8518-F45FC774619B',
 			'devcenter': '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f',
 			'ost': '13b39209-b02b-4d19-92fb-00ea490c2863',
-			'taylor': '73ad7724-dea4-463d-aa6c-160caa98e2e5'
+			'taylor': '73ad7724-dea4-463d-aa6c-160caa98e2e5',
+			'jitterbit': 'dc23aae2-b120-429f-8432-323ce1a3b69f',
+			'ian': '36070750-ebb2-451e-a831-fa11bb0e8a09'
 		};
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))

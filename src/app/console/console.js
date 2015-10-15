@@ -2,10 +2,10 @@ angular.module('orderCloud')
 
     .config( ApiConsoleConfig )
     .controller('ApiConsoleCtrl', ApiConsoleController)
-    .controller('ResponseModalCtrl', ResponseModalController)
 	.factory('ApiLoader', ApiLoaderService)
 	.factory('LockableParams', LockableParamsService)
 	.factory('ApiConsoleService', ApiConsoleService)
+	.factory('ConsoleContext', ConsoleContextService)
 	.directive('parameterObject', ParameterObjectDirective)
 	.directive('emptyToNull', EmptyToNullDirective)
 	.filter('objectParams', objectParams)
@@ -32,6 +32,9 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			DevAccess: function(DevCenter) {
 				return DevCenter.GetDevCenterAccess();
 			},
+			ActiveContext: function(ConsoleContext) {
+				return ConsoleContext.Get();
+			},
 			OrderCloudSections:  function($q, Docs) {
 				var defer = $q.defer();
 				Docs.GetAll().then(function(data) {
@@ -50,32 +53,23 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $resource, $filter, apiurl, Auth, DevCenter, DevAccess, OrderCloudResources, ApiConsoleService, LockableParams) {
+function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, ActiveContext, DevAccess, OrderCloudResources, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
 	vm.AvailableContexts = DevAccess.Items;
+	vm.ResolvedActiveContext = ActiveContext;
+	vm.ActiveContext = ActiveContext ? Underscore.where(vm.AvailableContexts, {ClientID: ActiveContext.ClientID})[0] : null;
+
 	vm.Resources = OrderCloudResources;
 	vm.SelectedResource = null;
-
 	vm.SelectedMethod = "";
 	vm.SelectedEndpoint = null;
+
 	vm.Response = null;
 	vm.Responses = [];
 	vm.SelectedResponse = null;
 
 	vm.setContext = function(context) {
-		DevCenter.GetAccessToken(context.ClientID, context.UserID)
-			.then(function(token) {
-				if (typeof token == 'object') {
-					var newToken = '';
-					angular.forEach(token, function(value, key) {
-						if (value != '"' && value.length == 1) {
-							newToken = newToken + value;
-						}
-					});
-					token = newToken;
-				}
-				Auth.SetToken(token);
-			})
+		ConsoleContext.Update(context);
 	};
 
 	vm.isLocked = function(paramName) {
@@ -172,12 +166,6 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Auth, DevCente
 	}
 }
 
-function ResponseModalController($modalInstance, Response) {
-	var vm = this;
-	vm.response = Response;
-
-}
-
 function ApiConsoleService($injector, $resource, Underscore, apiurl, LockableParams) {
 	var service = {
 		ExecuteApi: _executeApi,
@@ -233,43 +221,6 @@ function ApiConsoleService($injector, $resource, Underscore, apiurl, LockablePar
 					param.Name == 'filters' ? result.ResolvedParameters.CanFilter = true : result.ResolvedParameters.Fields.push(param);
 				}
 			});
-
-
-			/*angular.forEach(SelectedMethod.params, function(methodParameter) {
-				var isText = false;
-				var isRequired = true;
-				var isLockable = false;
-				var lockedValue = null;
-				angular.forEach(LockableParams.Get(), function(value, key) {
-					if (methodParameter == key) {
-						isLockable = true;
-						lockedValue = value
-					}
-				});
-				angular.forEach(endpoint.Parameters, function(parameter) {
-					if (parameter.Name == methodParameter) {
-						isText = true;
-						isRequired = parameter.Required;
-					}
-				});
-
-				function setValue() {
-					if (isText) {
-						return lockedValue;
-					} else {
-						return endpoint.RequestBody ? endpoint.RequestBody.Sample : null;
-					}
-				}
-
-				var resolvedParameter = {
-					Name: methodParameter,
-					Type: isText ? 'text' : 'object',
-					Value: setValue(),
-					Required: isRequired,
-					Lockable: isLockable
-				};
-				result.ResolvedParameters.push(resolvedParameter);
-			});*/
 		}
 	}
 }
@@ -420,6 +371,54 @@ function ParameterObjectDirective() {
 		}
 	};
 	return obj;
+}
+
+function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
+	var service = {
+		Get: _getContext,
+		Update: _updateContext,
+		Remove: _removeContext
+	};
+
+	function _getContext() {
+		var deferred = $q.defer();
+		var token = Auth.GetToken();
+		if (!angular.isDefined(token)) {
+			deferred.resolve('No Context');
+		} else {
+			var tokenPayload = jwtHelper.decodeToken(token);
+			deferred.resolve({
+				ClientID: tokenPayload.cid.toUpperCase(),
+				User: tokenPayload.usr
+			});
+		}
+		return deferred.promise;
+	}
+
+	function _updateContext(context) {
+		var deferred = $q.defer();
+		DevCenter.GetAccessToken(context.ClientID, context.UserID)
+			.then(function(token) {
+				if (typeof token == 'object') {
+					var newToken = '';
+					angular.forEach(token, function(value, key) {
+						if (value != '"' && value.length == 1) {
+							newToken = newToken + value;
+						}
+					});
+					token = newToken;
+				}
+				Auth.SetToken(token);
+				deferred.resolve();
+			});
+		return deferred.promise;
+	}
+
+	function _removeContext() {
+		Auth.RemoveToken();
+	}
+
+	return service;
 }
 
 function EmptyToNullDirective() {

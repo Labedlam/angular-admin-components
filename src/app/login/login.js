@@ -17,13 +17,14 @@ function LoginConfig( $stateProvider ) {
 	});
 }
 
-function LoginController( $rootScope, $state, DevCenter, DevAuth ) {
+function LoginController( $rootScope, $state, DevCenter, DevAuth, Auth ) {
 	var vm = this;
 
 	vm.submit = function() {
 		DevCenter.Login( vm.credentials )
 			.then(function(data) {
 				if (data['access_token']) {
+					Auth.RemoveToken();
 					DevAuth.SetToken(data['access_token']);
 					$rootScope.isAuthenticated = true;
 					$state.go( 'base.dashboard' );

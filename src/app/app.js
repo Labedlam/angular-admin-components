@@ -8,7 +8,8 @@ angular.module( 'orderCloud', [
 	'ui.bootstrap',
 	'orderCloud.sdk',
 	'markdown',
-	'ui.ace'
+	'ui.ace',
+	'angular-jwt'
 ])
 
 	.run( Security )

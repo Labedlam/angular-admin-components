@@ -9,9 +9,9 @@
 	<div id="ContextSelector">
 		<form name="ContextSettings">
 			<div class="input-group">
-				<select class="form-control" ng-model="selectedContext" ng-options="context as context.AppName for context in console.AvailableContexts"></select>
+				<select class="form-control" ng-model="console.ActiveContext" ng-options="context as context.AppName for context in console.AvailableContexts"></select>
 				<span class="input-group-btn">
-					<button class="btn btn-primary" ng-click="console.setContext(selectedContext)">Set Context</button>
+					<button class="btn btn-primary" ng-click="console.setContext(console.ActiveContext)">Set Context</button>
 				</span>
 			</div>
 		</form>

@@ -1,0 +1,16 @@
+<h3 class="page-title">
+    Organizations
+</h3>
+
+<p>The Organizations API is concerned with people, groups, and the various ancillary "things" that can be assigned to them.</p>
+
+<p>The Organizations API generally follows these conventions:</p>
+
+<ul>
+    <li>Request and response bodies are uniform across methods. In other words, the shape of the JSON response body returned from a <code><code>GET</code></code> is an exact match with request body that you <code><code>POST</code></code> (to create) or <code><code>PUT</code></code> (to update). This allows for a very simple <code>GET</code>/modify/<code>PUT</code> editing pattern.</li>
+    <li>For convenience, this same uniform representation is included in the response body of <code>POST</code> and <code>PUT</code>. This eliminates the need to do a <code>GET</code> immediately after a <code>POST</code> (create), for example.</li>
+    <li>The trade-off of this uniformity is that representations are fairly shallow; getting a deep object graph will generally require several <code>GET</code> requests.</li>
+    <li>Updates to existing objects are performed by fully replacing them via <code>PUT</code>. Partial (<code>PATCH</code>) updates are not supported.</li>
+    <li>Most IDs are writable. Uniqueness is enforced only within the context of a Buyer organization. By default, this organization is assumed to be the one to which the current authenticated user is a member. If the current user is administering objects on behalf of another Buyer, URIs should be prefixed with /buyers/:buyerid.</li>
+    <li>Assignments are prevalent concept. Most objects can be assigned to a User, a Group, or an entire Company. Plan carefully. If you assign 100 Addresses to 50 Users, are you going to need to create 100 additional assignments every time you add a new User? How about when you add a new Address? Groups are a powerful tool in terms of ongoing managability of Buyer organizations.</li>
+</ul>

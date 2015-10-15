@@ -22,7 +22,7 @@
 			</div>-->
 			<ul class="section-list">
 				<li ng-class="{active: docs.activeSection == section}" ng-repeat-start="section in docs.content.Sections">
-					<a href="" ng-click="docs.activeSection = section">{{section}}</a>
+					<a ui-sref="base.docs.section({sectionID:section})" ng-click="docs.activeSection = section">{{section}}</a>
 				</li>
 				<div ng-repeat-end>
 					<ul class="resource-list">

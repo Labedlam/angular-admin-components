@@ -3,6 +3,7 @@ angular.module( 'orderCloud' )
 	.config( DocsConfig )
 	.controller( 'DocsCtrl', DocsController )
 	.controller( 'DocsResourceCtrl', DocsResourceController )
+	.controller( 'DocsSectionCtrl', DocsSectionController )
 	.factory( 'DocsService', DocsService )
 	.factory( 'Docs', DocsFactory )
 ;
@@ -19,6 +20,12 @@ function DocsConfig( $stateProvider ) {
 					return Docs.GetAll();
 				}
 			}
+		})
+		.state( 'base.docs.section', {
+			url: '/:sectionID',
+			templateUrl: 'docs/templates/section.tpl.html',
+			controller: 'DocsSectionCtrl',
+			controllerAs: 'docsSection'
 		})
 		.state( 'base.docs.resource', {
 			url: '/:resourceID',
@@ -37,6 +44,11 @@ function DocsConfig( $stateProvider ) {
 				}
 			}
 		})
+}
+
+function DocsSectionController( $stateParams  ) {
+	var vm = this;
+	vm.view = 'docs/templates/' + $stateParams.sectionID.toLowerCase() + '.tpl.html';
 }
 
 function DocsController( $scope, DocsService, Documentation ) {

@@ -1,4 +1,7 @@
 angular.module( 'orderCloud', [
+
+	"com.2fdevs.videogular",
+	"com.2fdevs.videogular.plugins.controls",
 	'templates-app',
 	'ngSanitize',
 	'ngAnimate',
@@ -67,7 +70,7 @@ function Security( $rootScope, $state, DevAuth, Me ) {
 
 function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	$urlMatcherFactoryProvider.strictMode(false);
-	$urlRouterProvider.otherwise( '/dashboard' );
+	$urlRouterProvider.otherwise( '/home' );
 	//$locationProvider.html5Mode(true);
 	//TODO: For HTML5 mode to work we need to always return index.html as the entry point on the serverside
 }

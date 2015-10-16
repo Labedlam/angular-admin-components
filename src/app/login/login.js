@@ -27,7 +27,7 @@ function LoginController( $rootScope, $state, DevCenter, DevAuth, Auth ) {
 					Auth.RemoveToken();
 					DevAuth.SetToken(data['access_token']);
 					$rootScope.isAuthenticated = true;
-					$state.go( 'base.dashboard' );
+					$state.go( 'base.home' );
 				} else {
 					$state.reload();
 				}

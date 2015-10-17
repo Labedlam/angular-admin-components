@@ -98,6 +98,7 @@ function UsersService ($q, $resource, devapiurl) {
         Get: _get,
         SaveOcVar: _saveOcVar,
         GetOcVar: _getOcVar,
+        PatchOcVar: _patchOcVar,
         DeleteOcVar: _deleteOcVar,
         SaveContext: _saveContext,
         GetContext: _getContext,
@@ -121,8 +122,8 @@ function UsersService ($q, $resource, devapiurl) {
     function _saveOcVar(object) {
         var d = $q.defer();
         $resource(devapiurl + '/users/oc-vars', {}, {call: {method: 'POST', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call(object).$promise
-            .then(function(data) {
-                d.resolve(data);
+            .then(function() {
+                d.resolve();
             }, function(error) {
                 d.reject(error);
             });
@@ -142,84 +143,30 @@ function UsersService ($q, $resource, devapiurl) {
 
     function _deleteOcVar(params) {
         var d = $q.defer();
-        $resource(devapiurl + '/users/oc-vars', params, {call: {method: 'DELETE', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
-            .then(function(data) {
-                d.resolve(data);
+        $resource(devapiurl + '/users/oc-vars/:hash', params, {call: {method: 'DELETE', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
+            .then(function() {
+                d.resolve();
             }, function(error) {
                 d.reject(error);
             });
         return d.promise;
     }
 
-    function _saveContext(context) {
+    function _patchOcVar(params) {
         var d = $q.defer();
-        $resource(devapiurl + '/users/context', {}, {call: {method: 'POST', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call(context).$promise
-            .then(function(data) {
-                d.resolve(data);
+        $resource(devapiurl + '/users/oc-vars/:hash', params, {call: {method: 'PATCH', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
+            .then(function() {
+                d.resolve();
             }, function(error) {
                 d.reject(error);
             });
         return d.promise;
     }
 
-    function _getContext() {
-        var d = $q.defer();
-        $resource(devapiurl + '/users/context', {}, {call: {method: 'GET', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
-            .then(function(data) {
-                d.resolve(data);
-            }, function(error) {
-                d.reject(error);
-            });
-        return d.promise;
-    }
-
-    function _verifyContext() {
-        var d = $q.defer();
-        $resource(devapiurl + '/users/context/verify/:clientid', {}, {call: {method: 'GET', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
-            .then(function(data) {
-                d.resolve(data);
-            }, function(error) {
-                d.reject(error);
-            });
-        return d.promise;
-    }
-
-    function _deleteContext(clientid) {
-        var d = $q.defer();
-        $resource(devapiurl + '/users/courses/progress/:clientid', {clientid: clientid}, {call: {method: 'DELETE', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call(object).$promise
-            .then(function(data) {
-                d.resolve(data);
-            }, function(error) {
-                d.reject(error);
-            });
-        return d.promise;
-    }
-
-    function _saveCourseProgress(object) {
-        var d = $q.defer();
-        $resource(devapiurl + '/users/progress/courses/:courseid', {courseid: courseid}, {call: {method: 'POST', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call(object).$promise
-            .then(function(data) {
-                d.resolve(data);
-            }, function(error) {
-                d.reject(error);
-            });
-        return d.promise;
-    }
 
     function _getCourseProgress() {
         var d = $q.defer();
         $resource(devapiurl + '/users/progress/courses/:courseid', {courseid: courseid}, {call: {method: 'GET', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
-            .then(function(data) {
-                d.resolve(data);
-            }, function(error) {
-                d.reject(error);
-            });
-        return d.promise;
-    }
-
-    function _deleteCourseProgress() {
-        var d = $q.defer();
-        $resource(devapiurl + '/users/courses/progress/:courseid', {courseid: courseid}, {call: {method: 'DELETE', headers: {'dc-token': $cookieStore.get('dc-token')}}}).call().$promise
             .then(function(data) {
                 d.resolve(data);
             }, function(error) {

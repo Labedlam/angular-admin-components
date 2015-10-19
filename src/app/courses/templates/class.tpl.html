@@ -4,31 +4,86 @@
 			<div class="navbar-header">
 				<a class="navbar-brand">{{course.current.Name + ' / ' + class.current.Name}}</a>
 			</div>
-			<div ng-hide="true" class="nav navbar-nav navbar-right dropup" id="ContextMenu" dropdown auto-close="outsideClick">
+			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" id="SavedIds" dropdown auto-close="outsideClick">
+				<a href dropdown-toggle><i class="fa fa-bookmark-o"></i></a>
+				<div class="dropdown-menu dropup dropup-content oc-vars" aria-labelledby="SavedIds">
+					<div class="icon-container">
+						<i class="fa fa-cubes"></i>
+					</div>
+					<div class="dropup-title">
+						OrderCloud Variables
+					</div>
+					<div class="oc-vars col-xs-12">
+						<div class="oc-var col-xs-12" ng-init="editVar = false" ng-repeat="var in class.user.savedVars">
+							<div class="col-xs-1 left-icon">
+								<a href ng-click="class.removeExistingVar(var.hash)"><i class="fa fa-remove"></i></a>
+							</div>
+							<div class="oc-var oc-var-key col-xs-4" ng-hide="editVar">
+								{{var.key}}
+							</div>
+							<div class="oc-var oc-var-val col-xs-6" ng-hide="editVar">
+								{{var.val}}
+							</div>
+							<input placeholder="variable" class="oc-var oc-var-key oc-var-input-key col-xs-4" ng-model="var.key" ng-show="editVar">
+							<input placeholder="value" class="oc-var oc-var-val oc-var-input-val col-xs-6" ng-model="var.val" ng-show="editVar">
+							<div class="col-xs-1 right-icon" ng-hide="editVar">
+								<a href ng-click="editVar = !editVar"><i class="fa fa-edit"></i></a>
+							</div>
+							<!--TODO: add ng-click for update variable-->
+							<div class="col-xs-1 right-icon" ng-click="class.editExistingVar(var.hash, var)" ng-show="editVar">
+								<a href><i class="fa fa-check"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="divider"></div>
+					<div ng-init="class.viewVarAdd = false" ng-click="class.viewVarAdd = !class.viewVarAdd" ng-hide="class.viewVarAdd" class="add-var">
+						<a href><i class="fa fa-plus-circle"></i></a>
+					</div>
+					<div ng-show="class.viewVarAdd" class="var-inputs">
+						<div>
+							<div class="var-input-icons col-xs-1">
+								<a href ng-click="class.viewVarAdd = false; class.user.newVar = {};"><i class="fa fa-remove"></i></a>
+							</div>
+							<input class="var-input col-xs-4" ng-model="class.user.newVar.key" placeholder="object">
+							<input class="var-input col-xs-6" ng-model="class.user.newVar.val" placeholder="value">
+							<div class="var-input-icons col-xs-1">
+								<!--TODO: add ng-click for save new var-->
+								<a ng-click="class.saveNewVar(class.user.newVar)" href class="pull-right"><i class="fa fa-check"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="dropup-knob"></div>
+				</div>
+			</div>
+			<div class="icon-divider pull-right"></div>
+			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" dropdown auto-close="outsideClick">
 				<a href dropdown-toggle><i class="fa fa-user"></i></a>
-				<div class="dropdown-menu dropup context-content" aria-labelledby="context-btn">
-					<i class="fa fa-group"></i>
-					<div class="context-title">
+				<div class="dropdown-menu dropup dropup-content" aria-labelledby="context-btn">
+					<div class="icon-container">
+						<i class="fa fa-group"></i>
+					</div>
+					<div class="dropup-title">
 						App Context Definition
 					</div>
 					<form>
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="clientID" ng-model="class.context.clientID">
 						</div>
-						<div class="form-divider"></div>
+						<div class="divider"></div>
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Username" ng-model="class.context.username">
 						</div>
 						<div class="form-group">
 							<input type="password" class="form-control" placeholder="Password" ng-model="class.context.password">
 						</div>
-						<button type="submit" class="btn btn-info pull-right" ng-click="class.context.setContext()">Set Context</button>
-						<button class="btn btn-danger pull-left" ng-click="class.context.clearContext()">Clear Context</button>
+						<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.context.setContext()">Set Context</button>
+						<button class="btn btn-danger btn-block pull-left" ng-click="class.context.clearContext()">Clear Context</button>
 					</form>
-					<div class="context-knob"></div>
+					<div class="dropup-knob"></div>
 				</div>
 			</div>
-			<ul ng-hide="true" class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a dropdown-toggle class="context-user" ng-class="{contextSet: class.context.User}">{{class.context.User ? 'Context User: ' + class.context.User.FirstName + ' ' + class.context.User.LastName : 'No Context User Set'}}</a>
 				</li>

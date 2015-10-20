@@ -434,17 +434,8 @@ function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
 	function _updateContext(context) {
 		var deferred = $q.defer();
 		DevCenter.AccessToken(context.ClientID, context.UserID)
-			.then(function(token) {
-				if (typeof token == 'object') {
-					var newToken = '';
-					angular.forEach(token, function(value, key) {
-						if (value != '"' && value.length == 1) {
-							newToken = newToken + value;
-						}
-					});
-					token = newToken;
-				}
-				Auth.SetToken(token);
+			.then(function(data) {
+				Auth.SetToken(data['access_token']);
 				deferred.resolve();
 			});
 		return deferred.promise;

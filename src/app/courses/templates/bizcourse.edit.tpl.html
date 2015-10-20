@@ -1,0 +1,57 @@
+<article class="container-fluid" id="BizCourseEditor">
+    <div class="course-general container">
+        <div class="col-xs-6">
+            <h4>Course Admin</h4>
+            <form>
+                <div class="form-group col-xs-6">
+                    <label for="CourseName">Name</label>
+                    <input type="text" class="form-control" ng-model="course.course.Name">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label for="CourseID">ID</label>
+                    <input disabled type="text" class="form-control" ng-model="course.course.ID">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label for="CourseDescription">Description</label>
+                    <textarea class="form-control" rows="2" ng-model="course.course.Description"></textarea>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label for="classActive">Active</label>
+                    <select class="form-control" ng-model="course.course.Active" ng-options="o for o in [true, false]">
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-6">
+            <h4>Class Admin</h4>
+            <form name="classInfo">
+                <div class="form-group col-xs-6">
+                    <label for="classID">Class</label>
+                    <select class="form-control" ng-model="course.pickClass">
+                        <option ng-repeat="o in course.classList" ng-model="o">{{o.Name}}</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="class-editor-container col-xs-6">
+        <div class="class-editor" ui-ace="{
+        useWrapMode : true,
+        theme:'idle_fingers',
+        mode: 'html',
+        tabSize: '4',
+        useSoftTabs: true,
+        showPrintMargin: false,
+        showGutter: false
+        }" ng-model="course.classList[course.indexSelected].TemplateUrl"></div>
+    </div>
+
+    <div class="class-content-container col-xs-6">
+        <div class="class-content" compile="course.selectedClass.TemplateUrl"></div>
+    </div>
+
+
+</article>

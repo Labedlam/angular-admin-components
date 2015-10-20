@@ -12,6 +12,7 @@ function CoursesService($q, Underscore, $resource, devapiurl, $cookies) {
 
     function _list(courseType) {
         var d = $q.defer();
+       // $cookies.put('dc-token', "eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E");
         $resource(devapiurl + '/courses', {courseType: courseType}, {call: {method: 'GET', isArray: true, headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
             .then(function(data) {
                 d.resolve(data);
@@ -21,9 +22,9 @@ function CoursesService($q, Underscore, $resource, devapiurl, $cookies) {
         return d.promise;
     }
 
-    function _get(courseID) {
+    function _get(courseID, courseType) {
         var d= $q.defer();
-        $resource(devapiurl + '/courses/:courseid', {courseid: courseID}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
+        $resource(devapiurl + '/courses/:courseid', {courseid: courseID, courseType: courseType}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
             .then(function(data) {
                 d.resolve(data);
             }, function(err) {
@@ -44,9 +45,11 @@ function ClassesService($q, Underscore, $resource, devapiurl, $cookies) {
         Create: _create
     };
 
-    function _list(courseID) {
+    function _list(courseID, showFields) {
         var d = $q.defer();
-        $resource(devapiurl + '/courses/:courseid/classes', {courseid: courseID}, {call: {method: 'GET', isArray: true, headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
+        var allParams = showFields || {};
+        allParams.courseid = courseID;
+        $resource(devapiurl + '/courses/:courseid/classes', allParams, {call: {method: 'GET', isArray: true, headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
             .then(function(data) {
                 d.resolve(data);
             }, function(err) {
@@ -56,7 +59,7 @@ function ClassesService($q, Underscore, $resource, devapiurl, $cookies) {
     }
 
     function _get(courseID, classID) {
-        //$cookies.put('dc-token', "eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E");
+
         var d = $q.defer();
         $resource(devapiurl + '/courses/:courseid/classes/:classid', {courseid: courseID, classid: classID}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
             .then(function(data) {

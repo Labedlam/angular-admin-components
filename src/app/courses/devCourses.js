@@ -1,10 +1,10 @@
 angular.module( 'orderCloud' )
 
 	.config( CoursesConfig )
-	.controller( 'CoursesCtrl', CoursesController )
-	.controller( 'CourseCtrl', CourseController )
-	.controller( 'ClassCtrl', ClassController )
-	.controller( 'ClassEditCtrl', ClassEditController)
+	.controller( 'DevCoursesCtrl', DevCoursesController )
+	.controller( 'DevCourseCtrl', DevCourseController )
+	.controller( 'DevClassCtrl', DevClassController )
+	.controller( 'DevClassEditCtrl', DevClassEditController)
 	.controller( 'LearningCtrl', LearningController)
 	.factory( 'ClassSvc', ClassService )
 
@@ -39,37 +39,37 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controllerAs: 'learning',
 			data: {limitAccess:true}
 		})
-		.state( 'base.courses', {
-			url: '/courses/:coursetype',
-			templateUrl:'courses/templates/courses.tpl.html',
-			controller:'CoursesCtrl',
+		.state( 'base.devcourses', {
+			url: '/courses/developer',
+			templateUrl:'courses/templates/devcourses.tpl.html',
+			controller:'DevCoursesCtrl',
 			controllerAs: 'courses',
 			data: {limitAccess:true},
 			resolve: {
-				CoursesList: function(Courses, $stateParams) {
-					return Courses.List($stateParams.coursetype);
+				CoursesList: function(Courses) {
+					return Courses.List('developer');
 				}
 			}
 		})
-		.state( 'base.course', {
-			url: '/courses/:courseid',
-			templateUrl:'courses/templates/course.tpl.html',
-			controller:'CourseCtrl',
+		.state( 'base.devcourses.course', {
+			url: '/:courseid',
+			templateUrl:'courses/templates/devcourse.tpl.html',
+			controller:'DevCourseCtrl',
 			controllerAs: 'course',
 			data: {limitAccess:true},
 			resolve: {
 				SelectedCourse: function($stateParams, Courses) {
-					return Courses.Get($stateParams.courseid);
+					return Courses.Get($stateParams.courseid, 'developer');
 				},
 				ClassesList: function($q, $stateParams, Classes) {
-					return Classes.List($stateParams.courseid);
+					return Classes.List($stateParams.courseid, {Name: 1, Description: 1, ID: 1, Active: 1});
 				}
 			}
 		})
-		.state( 'base.course.class', {
+		.state( 'base.devcourses.course.class', {
 			url: '/:classid',
-			templateUrl:'courses/templates/class.tpl.html',
-			controller:'ClassCtrl',
+			templateUrl:'courses/templates/devclass.tpl.html',
+			controller:'DevClassCtrl',
 			controllerAs: 'class',
 			data: {limitAccess:true},
 			resolve: {
@@ -81,10 +81,10 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				}
 			}
 		})
-		.state( 'base.course.edit', {
+		.state( 'base.devcourses.course.edit', {
 			url: '/:classid/edit',
-			templateUrl:'courses/templates/class.edit.tpl.html',
-			controller: 'ClassEditCtrl',
+			templateUrl:'courses/templates/devclass.edit.tpl.html',
+			controller: 'DevClassEditCtrl',
 			controllerAs: 'class',
 			data: {limitAccess:true},
 			resolve: {
@@ -92,15 +92,15 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 					return Classes.Get($stateParams.courseid, $stateParams.classid, {Administrator: true});
 				}
 			}
-		}
-	)
+		})
+
 }
 
 function LearningController () {
 
 }
 
-function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
+function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
 	var vm = this;
 	vm.current = EditClass;
 	vm.docs = {};
@@ -218,18 +218,18 @@ function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Unders
 
 }
 
-function CoursesController( CoursesList ) {
+function DevCoursesController( CoursesList ) {
 	var vm = this;
 	vm.list = CoursesList;
 }
 
-function CourseController( SelectedCourse, ClassesList) {
+function DevCourseController( SelectedCourse, ClassesList) {
 	var vm = this;
 	vm.current = SelectedCourse;
 	vm.classes = ClassesList;
 }
 
-function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, Users, Context, Me, $filter, $sce ) {
+function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, Users, Context, Me, $filter, $sce ) {
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.user = {};
@@ -572,6 +572,9 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	}
 
 }
+
+
+
 
 function ClassService($resource, apiurl, $q) {
 	var service = {

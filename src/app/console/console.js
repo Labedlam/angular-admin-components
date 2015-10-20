@@ -35,13 +35,6 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
 			},
-			OrderCloudSections:  function($q, Docs) {
-				var defer = $q.defer();
-				Docs.GetAll().then(function(data) {
-					defer.resolve(data.Sections);
-				});
-				return defer.promise;
-			},
 			OrderCloudResources: function (ApiLoader) {
                 return ApiLoader.getResources('orderCloud.sdk');
             }
@@ -174,14 +167,14 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 	});
 
 	$scope.$on('event:responseSuccess', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);

@@ -26,13 +26,13 @@
 <h4 class="page-title">Password Grant Type</h4>
 <p>This workflow is most appropriate for client apps where the user is a human being, i.e., a registered OrderCloud Buyer or Admin user. You should have received a Client ID when you registered your application; you'll need it for this workflow, along the username/password of a user created via the API. Begin by requesting a token from the authorization server using the following as a template for your request body:</p>
 
-<pre>client_id=a<span tooltip="The desired client ID">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>&amp;grant_type=password&amp;<span tooltip="The desired users' credentials">username=xxxxxxxx&amp;password=xxxxxxxx</span>&amp;scope=FullAccess</pre>
+<pre>client_id=a<span uib-tooltip="The desired client ID">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>&amp;grant_type=password&amp;<span uib-tooltip="The desired users' credentials">username=xxxxxxxx&amp;password=xxxxxxxx</span>&amp;scope=FullAccess</pre>
 <br/>
 
 <h4 class="page-title">Client Credentials Grant Type</h4>
 <p>This workflow is most appropriate for back-end integrations where the "user" is a non-human. It is also appropriate when you are just getting started and need to "seed" your application with users who can subsequently authenticate using the Password Grant type. You should have recieved a Client ID and Client Secret when you registered your application; you'll need both for this workflow. Begin by requesting a token from the authorization server using the following template for your request body:</p>
 
-<pre>client_id=<span tooltip="The desired client ID">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>&amp;grant_type=client_credentials&amp;client_secret=xxxxxxxxxxxxx&amp;scope=FullAccess</pre>
+<pre>client_id=<span uib-tooltip="The desired client ID">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>&amp;grant_type=client_credentials&amp;client_secret=xxxxxxxxxxxxx&amp;scope=FullAccess</pre>
 <br/>
 
 <h4>Response</h4>

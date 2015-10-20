@@ -16,11 +16,9 @@ angular.module( 'orderCloud', [
 ])
 
 	.run( Security )
-	/*.run(function($rootScope) {
-		$rootScope.clientid = '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f';
-	})*/
+	.run( ErrorHandling )
 	.config( Routing )
-	.config( ErrorHandling )
+	//.config( ErrorHandling )
 	.controller( 'AppCtrl', AppCtrl )
 
 	//Constants needed for the OrderCloud AngularJS SDK
@@ -44,11 +42,14 @@ angular.module( 'orderCloud', [
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))
 	//Test Environment
-	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
-	.constant('apiurl', 'https://testapi.ordercloud.io')
-	.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858')
-	//.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
-	//.constant('apiurl', 'http://core.four51.com:9002')
+	//.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
+	//.constant('apiurl', 'https://testapi.ordercloud.io')
+	//.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
+
+	.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
+	.constant('apiurl', 'http://core.four51.com:9002')
+	.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
+
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	/*.constant('devapiurl', 'http://localhost:55555')*/
 
@@ -68,6 +69,17 @@ function Security( $rootScope, $state, DevAuth, Me ) {
 	})
 }
 
+function ErrorHandling($rootScope, DevAuth, Auth) {
+/*	$rootScope.$on('event:auth-loginRequired', function() {
+		DevAuth.RemoveToken();
+		Auth.RemoveToken();
+	});*/
+	$rootScope.$on('event:error', function(response) {
+		console.log('Unhandled Error Caught');
+		console.dir(response);
+	})
+}
+
 function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	$urlMatcherFactoryProvider.strictMode(false);
 	$urlRouterProvider.otherwise( '/home' );
@@ -75,7 +87,7 @@ function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	//TODO: For HTML5 mode to work we need to always return index.html as the entry point on the serverside
 }
 
-function ErrorHandling( $provide ) {
+/*function ErrorHandling( $provide ) {
 	$provide.decorator('$exceptionHandler', handler );
 
 	function handler( $delegate, $injector ) {
@@ -95,7 +107,7 @@ function ErrorHandling( $provide ) {
 			$injector.get( '$rootScope' ).$broadcast( 'exception', ex, cause );
 		}
 	}
-}
+}*/
 
 function AppCtrl( $state, Credentials ) {
 	var vm = this;

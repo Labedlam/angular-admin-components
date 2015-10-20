@@ -1,0 +1,18 @@
+<header class="jumbotron">
+	<div class="container">
+		<h2>New Development Group</h2>
+	</div>
+</header>
+<div class="container">
+	<form name="ordercloud_newDevGroup" ng-submit="adminGroups.submit()">
+		<div class="form-group">
+			<label>Group ID</label>
+			<input type="text" class="form-control" ng-model="adminGroups.newGroup.ID" required/>
+		</div>
+		<div class="form-group">
+			<label>Group Name</label>
+			<input type="text" class="form-control" ng-model="adminGroups.newGroup.Name" required/>
+		</div>
+		<button type="submit" class="btn btn-primary" ng-disabled="ordercloud_newDevGroup.$invalid">Submit</button>
+	</form>
+</div>

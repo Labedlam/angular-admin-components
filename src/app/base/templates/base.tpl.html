@@ -36,12 +36,14 @@
 				<li uib-dropdown>
 					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Learn</a>
 					<ul class="uib-dropdown-menu top-caret bordered">
-						<li ui-sref-active="active" ui-sref="base.gettingstarted" ng-if="base.currentUser"><a>Get Started</a></li>
-						<li ><a ui-sref="base.docs">API Docs</a></li>
-						<li ><a ui-sref="base.docs">Getting Started</a></li>
+						<li ui-sref-active="active" ui-sref="base.gettingstarted" ng-if="base.currentUser"><a>Getting Started</a></li>
 						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
 					</ul>
 				</li>
+				<li><a href="" ui-sref="base.register">Register</a></li>
+				<li><a href="" ui-sref="base.adminCompany" ng-if="base.currentUser.CreateCompanies">New Company</a></li>
+				<li><a href="" ui-sref="base.adminGroups" ng-if="base.currentUser.CreateGroups">Groups</a></li>
+
 
 				<!--<li ui-sref-active="active"  ng-if="base.currentUser"><a>My Apps</a></li>-->
 

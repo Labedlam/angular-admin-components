@@ -1,0 +1,36 @@
+<header class="jumbotron">
+	<div class="container">
+		<h2>OrderCloud Registration</h2>
+	</div>
+</header>
+<div class="container">
+	<div class="alert alert-success" ng-if="register.newUserInfo">
+		<h5>Successfully registered {{register.newUserInfo.FirstName + ' ' + register.newUserInfo.LastName}}</h5>
+		<p><b>Username: </b> {{register.newUserInfo.Username}}</p>
+		<p><b>Email: </b> {{register.newUserInfo.Email}}</p>
+		<button type="button" ng-click="register.new()"></button>
+	</div>
+	<form name="ordercloud_registration" ng-submit="register.submit()" ng-if="!register.newUserInfo">
+		<div class="form-group">
+			<label>Email</label>
+			<input type="text" class="form-control" ng-model="register.information.Email" required/>
+		</div>
+		<div class="form-group">
+			<label>Username</label>
+			<input type="text" class="form-control" ng-model="register.information.Username" required/>
+		</div>
+		<div class="form-group">
+			<label>First Name</label>
+			<input type="text" class="form-control" ng-model="register.information.FirstName" required/>
+		</div>
+		<div class="form-group">
+			<label>Last Name</label>
+			<input type="text" class="form-control" ng-model="register.information.LastName" required/>
+		</div>
+		<div class="form-group">
+			<label>Password</label>
+			<input type="password" class="form-control" ng-model="register.information.Password" required/>
+		</div>
+		<button type="submit" class="btn btn-primary" ng-disabled="ordercloud_registration.$invalid">Register</button>
+	</form>
+</div>

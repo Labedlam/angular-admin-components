@@ -1,7 +1,15 @@
 body {
   padding-top:60px; // Source - http://getbootstrap.com/components/#callout-navbar-fixed-top-padding
+  overflow:hidden;
 }
 
+main {
+  max-height:~'calc(100vh - 60px)';
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+[ng-click],
 [ui-sref] {
   cursor: pointer;
 }

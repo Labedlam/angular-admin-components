@@ -1,30 +1,56 @@
 <div id="ConsoleContainer">
-	<aside id="ConsoleMenu">
+	<aside id="ConsoleMenu" ng-if="console.ActiveContext">
 		<div class="list-group console-menu">
 			<button type="button" class="list-group-item"
 					ng-class="{active:console.SelectedResource == resource}"
 					ng-repeat="resource in console.Resources" ng-click="console.SelectResource(this)">{{resource.name}} <!--<span class="badge">{{resource.methods.length}}</span>--></button>
 		</div>
 	</aside>
-	<div id="ContextSelector">
-		<form name="ContextSettings">
+
+	<article class="container" ng-if="!console.SelectedResource">
+		<h3 class="page-header"><i class="fa fa-tools"></i>API Console</h3>
+		<div id="ContextSettings" class="well" ng-init="ContextMenuOpen = false">
+			<h4 ng-click="ContextMenuOpen = !ContextMenuOpen">Select a Context <i class="fa fa-chevron-right" ng-class="{'fa-rotate-90':ContextMenuOpen}"></i></h4>
+			<div uib-collapse="!ContextMenuOpen">
+				<div ng-click="console.SelectedContext = context" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}" ng-repeat="context in console.AvailableContexts">
+					<b>Company: </b>{{context.AppName}}<br/>
+					<b>User: </b>{{context.UserName}}<br/>
+					<small class="text-muted">{{context.ClientID}}</small>
+				</div>
+			</div>
+		</div>
+		<form name="ContextSettings" ng-submit="console.setContext(console.SelectedContext)" novalidate>
 			<div class="input-group">
-				<select class="form-control" ng-model="console.ActiveContext" ng-options="context as context.AppName for context in console.AvailableContexts"></select>
+				<select class="form-control" ng-model="console.SelectedContext" ng-options="context as context.AppName for context in console.AvailableContexts" required></select>
 				<span class="input-group-btn">
-					<button class="btn btn-primary" ng-click="console.setContext(console.ActiveContext)">Set Context</button>
+					<button type="submit" class="btn btn-primary" ng-disabled="ContextSettings.$invalid">Set Context</button>
 				</span>
 			</div>
 		</form>
-	</div>
-	<article class="container-fluid" ng-if="!console.SelectedResource">
-		<h3 class="page-header"><i class="fa fa-tools"></i>API Console</h3>
 		<hr/>
+
 		<p>Welcome to the OrderCloud API Console!  The purpose of this tool is to give developers an idea of how the OrderCloud RESTful API is structured through an interactive UI.</p>
 		<p>Begin by choosing a resource from the left and then specify an endpoint in the drop-down.  If the selected endpoint has parameters available, fill these out by clicking "params" to the right of the endpoint.  When creating and updating you will often need to provide a request body as well.  These request bodies will always be in <code>JSON</code> format and is editable below the endpoint selector.</p>
 		<p class="alert alert-danger">Keep in mind that <b>this <em>will</em> alter your database</b>, and changes will be immediately reflected in any application using your distributor companies' client id.</p>
 	</article>
 	<div id="Console" ng-if="console.SelectedResource">
 		<article id="Request">
+			<div id="ContextSettings" class="well" ng-init="ContextMenuOpen = false">
+				<div ng-show="!ContextMenuOpen" ng-click="ContextMenuOpen = true">
+					<b>Company: </b>{{console.ActiveContext.AppName}}<br/>
+					<b>User: </b>{{console.ActiveContext.UserName}}<br/>
+					<small class="text-muted">{{console.ActiveContext.ClientID}}</small>
+				</div>
+				<h4 ng-show="ContextMenuOpen" ng-click="ContextMenuOpen = false">Select a Context <i class="fa fa-chevron-right" ng-class="{'fa-rotate-90':ContextMenuOpen}"></i></h4>
+				<div uib-collapse="!ContextMenuOpen">
+					<div ng-click="console.setContext(context)" ng-class="{active:console.ActiveContext == context}" ng-repeat="context in console.AvailableContexts">
+						<b>Company: </b>{{context.AppName}}<br/>
+						<b>User: </b>{{context.UserName}}<br/>
+						<small class="text-muted">{{context.ClientID}}</small>
+
+					</div>
+				</div>
+			</div>
 			<h3 class="page-title">
 				{{console.SelectedResource.name}}
 				<small ng-bind="console.SelectedEndpoint.Name"></small>
@@ -32,11 +58,11 @@
 			<!--		<p ng-bind-html="comment | markdown" ng-repeat="comment in console.SelectedResource.Documentation.Comments"></p>
 					<p ng-bind-html="comment | markdown" ng-repeat="comment in console.SelectedEndpoint.Comments"></p>-->
 			<section class="console-selector">
-				<span dropdown>
-				  <a href dropdown-toggle>
+				<span uib-dropdown>
+				  <a href uib-dropdown-toggle>
 					  {{console.SelectedMethod.name || 'Method'}} <span class="caret"></span>
 				  </a>
-				  <ul class="dropdown-menu">
+				  <ul uib-dropdown-menu>
 					  <li ng-repeat="method in console.SelectedResource.methods" ng-class="{active:console.SelectedMethod.name == method.name}">
 						  <a href ng-click="console.SelectMethod(this)">{{method.name}}</a>
 					  </li>
@@ -68,11 +94,11 @@
 						<td>
 							<div ng-class="{'input-group': field.Lockable}">
 								<input type="{{field.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
-									   tooltip="{{field.Description}}"
+									   uib-tooltip="{{field.Description}}"
 									   tooltip-trigger="focus"
 									   ng-model="field.Value" ng-required="field.Required" ng-disabled="console.isLocked(field.Name)"/>
 								<span class="input-group-btn" ng-if="field.Lockable">
-									<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
+									<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" uib-tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true" tooltip-placement="left">
 										<i class="fa" ng-class="{'fa-lock': console.isLocked(field.Name), 'fa-unlock-alt': !console.isLocked(field.Name)}"></i>
 									</button>
 								</span>

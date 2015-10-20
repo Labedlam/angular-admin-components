@@ -30,7 +30,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controllerAs': 'console',
         'resolve': {
 			DevAccess: function(DevCenter) {
-				return DevCenter.GetDevCenterAccess();
+				return DevCenter.Me.Access();
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
@@ -55,21 +55,45 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 
 function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, ActiveContext, DevAccess, OrderCloudResources, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
+	//Context variables
 	vm.AvailableContexts = DevAccess.Items;
-	vm.ResolvedActiveContext = ActiveContext;
 	vm.ActiveContext = ActiveContext ? Underscore.where(vm.AvailableContexts, {ClientID: ActiveContext.ClientID})[0] : null;
+	vm.SelectedContext = vm.ActiveContext;
 
+	//Console variables
 	vm.Resources = OrderCloudResources;
 	vm.SelectedResource = null;
-	vm.SelectedMethod = "";
+	vm.SelectedMethod = '';
 	vm.SelectedEndpoint = null;
 
-	vm.Response = null;
+	//Response variables
 	vm.Responses = [];
 	vm.SelectedResponse = null;
 
 	vm.setContext = function(context) {
-		ConsoleContext.Update(context);
+		ConsoleContext.Update(context)
+			.then(function() {
+				if (!vm.ActiveContext) {
+					vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
+				} else {
+					LockableParams.Clear();
+					vm.SelectedMethod = null;
+					vm.Responses = [];
+					vm.SelectedResponse = null;
+				}
+				vm.ActiveContext = context;
+			});
+	};
+
+	vm.removeContext = function() {
+		LockableParams.Clear();
+		vm.SelectedContext = null;
+		vm.ActiveContext = null;
+		vm.SelectedResource = null;
+		vm.Responses = [];
+		vm.SelectedResponse = null;
+		LockableParams.Clear();
+		ConsoleContext.Remove();
 	};
 
 	vm.isLocked = function(paramName) {
@@ -99,8 +123,8 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 	};
 
 	vm.Execute = function() {
-		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod)
-			.then( function(data) {
+		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod);
+/*			.then( function(data) {
 				console.log(data);
 				if (!(data.ID || data.Meta)) return;
 				vm.Response = $filter('json')(data);
@@ -108,7 +132,7 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 			.catch( function(ex) {
 				if (!ex) return;
 				vm.Response = $filter('json')(ex);
-			});
+			});*/
 	};
 
 	vm.SelectResource = function(scope) {
@@ -116,6 +140,10 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 		vm.SelectedResource.Documentation = $resource( apiurl + '/v1/docs/' + vm.SelectedResource.name ).get();
 		vm.SelectedMethod = null;
 	};
+
+	if (vm.ActiveContext) {
+		vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
+	}
 
 	vm.SelectMethod = function(scope) {
 		vm.SelectedMethod = scope.method;
@@ -137,10 +165,8 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 		vm.Response = null;
 		vm.SelectedEndpoint = null;
 		if (angular.isDefined(n.params)) {
-			console.log('trigger');
 			ApiConsoleService.CreateParameters(vm.SelectedResource, n)
 				.then(function(data) {
-					console.log('trigger 2');
 					vm.SelectedEndpoint = data.SelectedEndpoint;
 					vm.SelectedMethod.ResolvedParameters = data.ResolvedParameters;
 				});
@@ -296,7 +322,8 @@ function LockableParamsService($q) {
 		Get: _get,
 		IsLocked: _isLocked,
 		SetLock: _setLock,
-		RemoveLock: _removeLock
+		RemoveLock: _removeLock,
+		Clear: _clearAll
 	};
 
 	var lockableParams = {
@@ -325,6 +352,15 @@ function LockableParamsService($q) {
 	function _removeLock(key) {
 		var defer = $q.defer();
 		lockableParams[key] = null;
+		defer.resolve();
+		return defer.promise;
+	}
+
+	function _clearAll() {
+		var defer = $q.defer();
+		angular.forEach(lockableParams, function(value, key) {
+			lockableParams[key] = null;
+		});
 		defer.resolve();
 		return defer.promise;
 	}
@@ -397,7 +433,7 @@ function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
 
 	function _updateContext(context) {
 		var deferred = $q.defer();
-		DevCenter.GetAccessToken(context.ClientID, context.UserID)
+		DevCenter.AccessToken(context.ClientID, context.UserID)
 			.then(function(token) {
 				if (typeof token == 'object') {
 					var newToken = '';

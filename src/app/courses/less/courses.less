@@ -1,11 +1,17 @@
-article {
+.learning-container {
   background-color: @gray-lighter;
+  .container {
+	@media (max-width: @screen-xs-max) { max-width: 450px; min-width: 380px; }
+	@media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) { max-width: 1050px; }
+	@media (min-width: @screen-md-min) and (max-width: @screen-md-max) { max-width: 1290px; }
+  }
 }
 .learning-resources {
   display: flex;
   flex-flow: row wrap;
   margin: 25px 0;
   .learning-card {
+	position: relative;
 	width: 31%;
 	margin: 1%;
 	margin-bottom: 20px;
@@ -15,19 +21,48 @@ article {
 	border: 3px solid @four51-blue;
 	background-color: white;
 	border-radius: 8px;
-	@media(max-width: 1000px) {
+	@media(max-width: 990px) {
 	  width: 48%;
 	  margin: 1%;
 	  margin-bottom: 20px;
 	}
-	@media(max-width: 550px) {
+	@media(max-width: 770px) {
 	  width: 98%;
 	  margin: 1%;
 	  margin-bottom: 20px;
 	}
 	.img-container {
-	  background-image: url("assets/images/programmer.jpg");
+	  position: relative;
+	  background-size: 100%;
+	  background-repeat: no-repeat;
 	  width: 100%;
+	  height: 215px;
+
+
+	  @media (max-width: 1200px) {
+		height: 175px;
+	  }
+	  @media (max-width: 945px) {
+		height: 185px;
+	  }
+	}
+	.container-background-color {
+	  width: 100%;
+	  height: calc(100%);
+	  background-color: @four51-blue;
+	  opacity: .5;
+	}
+	.container-text {
+	  top: 0;
+	  width: 100%;
+	  position: absolute;
+	  color: white;
+	  font-size: 3em;
+	  text-align: center;
+	  padding: 68px 0;
+	  @media (max-width: 1190px) {
+		font-size: 2.3em;
+	  }
 	}
 	.course-caption {
 	  margin: 3px;
@@ -38,18 +73,22 @@ article {
 		height: 70px;
 	  }
 	  .divider {
-		margin: 15px 15px;
+		margin: 25px 15px;
 		border-bottom: 1px solid @gray-light;
 		border-top: 1px solid @gray-light;
 		border-radius: 20px;
 	  }
 	}
-	.btn.btn-primary.btn-block {
+	.btn.btn-primary {
+	  position: absolute;
+	  bottom: 10px;
+	  left: 10px;
+	  right: 10px;
 	  box-shadow: 0 0 2px rgb(152, 152, 152);
 	  background-color: @four51-blue;
 	  border: transparent;
 	  border-radius: 30px;
-	  color: @four51-navy;
+	  color: white;
 	  font-weight: 400;
 	}
   }

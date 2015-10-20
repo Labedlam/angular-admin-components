@@ -109,11 +109,12 @@ function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	}
 }*/
 
-function AppCtrl( $state, Credentials ) {
+function AppCtrl( $state, DevAuth, Auth ) {
 	var vm = this;
 	vm.logout = function() {
-		Credentials.Delete();
-		$state.go('base.dashboard',{}, {reload:true});
+		DevAuth.RemoveToken();
+		Auth.RemoveToken();
+		$state.go('base.home',{}, {reload:true});
 	};
 	vm.$state = $state;
 }

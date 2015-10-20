@@ -40,7 +40,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 			grant_type: 'password',
 			scope: ocscope,
 			client_id: devcenterClientID,
-			username: credentials.Username,
+			username: credentials.Username || credentials.Email,
 			password: credentials.Password
 		});
 		return $resource(authurl, {}, { login: { method: 'POST'}}).login(data).$promise;

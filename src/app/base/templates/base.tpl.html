@@ -8,7 +8,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="" ui-sref="base.home"><ordercloud-logo data-width="200px" data-color="#FFFFFF"></ordercloud-logo></a>
+			<a class="" ui-sref="base.home"><ordercloud-logo data-width="200px" data-height="60px" data-color="#FFFFFF"></ordercloud-logo></a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -32,15 +32,11 @@
 						<!--<li ui-sref-active="active"><a>Components</a></li>-->
 					</div>
 				</li>
-				<li><a href="" ui-sref="base.console">Console</a></li>
-				<li uib-dropdown>
-					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Learn</a>
-					<ul class="uib-dropdown-menu top-caret bordered">
-						<li ui-sref-active="active" ui-sref="base.gettingstarted" ng-if="base.currentUser"><a>Getting Started</a></li>
-						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
-					</ul>
-				</li>
-				<li><a href="" ui-sref="base.register">Register</a></li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Docs</a></li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Developers</a></li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Businesses</a></li>
+				<li><a href="" ui-sref="base.learning" ng-if="base.currentUser">Learn</a></li>
+				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
 				<li><a href="" ui-sref="base.adminCompany" ng-if="base.currentUser.CreateCompanies">New Company</a></li>
 				<li><a href="" ui-sref="base.adminGroups" ng-if="base.currentUser.CreateGroups">Groups</a></li>
 
@@ -49,7 +45,9 @@
 
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-if="!base.currentUser"><a ui-sref="login">Sign In</a></li>
+				<li ng-if="!base.currentUser"><a ui-sref="login">Log in</a></li>
+				<li ng-if="!base.currentUser"><span>or</span></li>
+				<li ng-if="!base.currentUser"><button class="btn btn-dark-blue navbar-btn" ui-sref="register">Sign up</button></li>
 				<li uib-dropdown ng-if="base.currentUser">
 					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Account</a>
 					<ul class="uib-dropdown-menu top-caret">

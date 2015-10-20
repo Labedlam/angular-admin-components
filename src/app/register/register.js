@@ -5,7 +5,7 @@ angular.module('orderCloud')
 
 function RegisterConfig( $stateProvider ) {
 	$stateProvider
-		.state( 'base.register', {
+		.state( 'register', {
 			url: '/register',
 			templateUrl:'register/templates/register.tpl.html',
 			controller:'RegisterCtrl',
@@ -13,7 +13,7 @@ function RegisterConfig( $stateProvider ) {
 		})
 }
 
-function RegisterController(DevCenter) {
+function RegisterController( $state, DevAuth, Auth, DevCenter) {
 	var vm = this;
 
 	vm.newUserInfo = null;
@@ -28,7 +28,12 @@ function RegisterController(DevCenter) {
 
 	vm.submit = function() {
 		DevCenter.Register(vm.information).then(function(userInfo) {
-			vm.newUserInfo = userInfo;
+			DevCenter.Login({Email:userInfo.Email, Password:userInfo.Password})
+				.then(function(data) {
+					Auth.RemoveToken();
+					DevAuth.SetToken(data['access_token']);
+					$state.go('base.home');
+				})
 		})
 	};
 

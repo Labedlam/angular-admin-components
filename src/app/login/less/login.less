@@ -1,4 +1,31 @@
 #Login {
-  max-width:  @login-form-width;
-  margin:     0 auto;
+  background: radial-gradient(at center bottom, @four51-blue 0%, darken(@four51-blue, 15) 100%); /* W3C */
+  height:~'calc(100vh)';
+  width: ~'calc(100vw)';
+  overflow-x:hidden;
+  overflow-y:auto;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  h3 {
+    margin-bottom:@panel-body-padding*2;
+    color:@four51-blue;
+  }
+  .panel-body{
+    padding:@panel-body-padding*2;
+  }
+  form {
+    min-width:400px;
+  }
+  .btn-link.text-white {
+    color:white;
+  }
+}
+
+.form-group.placeholder-label {
+  position:relative;
+  label {
+    position:absolute;
+    .hide-text()
+  }
 }

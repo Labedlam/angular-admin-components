@@ -6,7 +6,12 @@ angular.module( 'orderCloud' )
 
 function OCRoutingUrl() {
 	return function(value) {
-		return value.split('.io/')[1];
+		if (value.split('.io/')[1]) {
+			return value.split('.io/')[1];
+		} else {
+			return value.split(':9002/')[1];
+		}
+
 	}
 }
 

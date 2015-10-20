@@ -5,6 +5,7 @@ angular.module( 'orderCloud' )
 	.controller( 'CourseCtrl', CourseController )
 	.controller( 'ClassCtrl', ClassController )
 	.controller( 'ClassEditCtrl', ClassEditController)
+	.controller( 'LearningCtrl', LearningController)
 	.factory( 'ClassSvc', ClassService )
 
 ;
@@ -31,15 +32,22 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 		};
 	});
 	$stateProvider
+		.state( 'base.learning', {
+			url: '/learning',
+			templateUrl:'courses/templates/learning.tpl.html',
+			controller:'LearningCtrl',
+			controllerAs: 'learning',
+			data: {limitAccess:true}
+		})
 		.state( 'base.courses', {
-			url: '/courses',
+			url: '/courses/:coursetype',
 			templateUrl:'courses/templates/courses.tpl.html',
 			controller:'CoursesCtrl',
 			controllerAs: 'courses',
 			data: {limitAccess:true},
 			resolve: {
-				CoursesList: function(Courses) {
-					return Courses.List();
+				CoursesList: function(Courses, $stateParams) {
+					return Courses.List($stateParams.coursetype);
 				}
 			}
 		})
@@ -67,6 +75,9 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			resolve: {
 				SelectedClass: function(Classes, $stateParams) {
 					return Classes.Get($stateParams.courseid, $stateParams.classid);
+				},
+				OcVars: function (Users) {
+					return Users.GetOcVars();
 				}
 			}
 		})
@@ -84,6 +95,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 		}
 	)
 }
+
+function LearningController () {
+
+}
+
 function ClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
 	var vm = this;
 	vm.current = EditClass;
@@ -207,15 +223,17 @@ function CoursesController( CoursesList ) {
 	vm.list = CoursesList;
 }
 
-function CourseController( SelectedCourse, ClassesList, $location, $anchorScroll, $scope) {
+function CourseController( SelectedCourse, ClassesList) {
 	var vm = this;
 	vm.current = SelectedCourse;
 	vm.classes = ClassesList;
 }
 
-function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, Context, Me, $filter, $sce ) {
+function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, Users, Context, Me, $filter, $sce ) {
 	var vm = this;
 	vm.current = SelectedClass;
+	vm.user = {};
+	vm.user.savedVars = OcVars;
 	vm.alert = {};
 	vm.context = {};
 	vm.Responses = [];
@@ -229,6 +247,9 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 	vm.context.setContext = setContext;
 	vm.context.clearContext = clearContext;
 	vm.renderHtml = renderHtml;
+	vm.removeExistingVar = removeExistingVar;
+	vm.editExistingVar = editExistingVar;
+	vm.saveNewVar = saveNewVar;
 
 
 	vm.openRequestCount = 0;
@@ -245,6 +266,43 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			vm.context.User = null;
 		});
 
+	function stringReplace() {
+		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
+			angular.forEach(vm.current.ClassMethods, function(method) {
+				var split = method.split('.');
+				var svc = split[0];
+				var mtd = split[1];
+				if (vm.docs[svc][mtd] && vm.docs[svc][mtd].RequestBody) {
+					var stringReplace = vm.docs[svc][mtd].RequestBody.Sample;
+					var newString = "";
+					var on = true;
+					for (var i = 0; i < stringReplace.length; i++) {
+						var e = stringReplace[i];
+						if (on) {
+							if (e != '"') {
+								newString += e;
+							}
+						} else {
+							newString += e;
+						}
+						if (e == ':') {
+							on = false;
+						}
+						if (e == ",") {
+							on = true;
+						}
+						if (e == "[") {
+							on = true;
+						}
+					}
+					script.Model = script.Model.replace('{' + method + '}', newString)
+				}
+			});
+			angular.forEach(vm.user.savedVars, function(ocVar) {
+				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val)
+			})
+		});
+	}
 	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example
 		ClassSvc.getDocs(method)
 			.then(function(data) {
@@ -258,43 +316,12 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 				} else {
 					vm.docs[svc][mtd] = doc;
 				}
-				angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
-					angular.forEach(vm.current.ClassMethods, function(method) {
-						var split = method.split('.');
-						var svc = split[0];
-						var mtd = split[1];
-						if (vm.docs[svc][mtd] && vm.docs[svc][mtd].RequestBody) {
-							var stringReplace = vm.docs[svc][mtd].RequestBody.Sample;
-							var newString = "";
-							var on = true;
-							for (var i = 0; i < stringReplace.length; i++) {
-								var e = stringReplace[i];
-								if (on) {
-									if (e != '"') {
-										newString += e;
-									}
-								} else {
-									newString += e;
-								}
-								if (e == ':') {
-									on = false;
-								}
-								if (e == ",") {
-									on = true;
-								}
-								if (e == "[") {
-									on = true;
-								}
-							}
-							script.Model = script.Model.replace('{' + method + '}', newString)
-						}
-					});
-				});
+				stringReplace();
 			})
 	});
 
 	if (SelectedClass.Interactive) {
-		$scope.$on('event:requestSuccess', function() {
+		$scope.$on('event:requestSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				vm.openRequestCount += 1;
 			}
@@ -302,7 +329,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1) {
+				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('55555') == -1) {
 					var response = angular.copy(c);
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
@@ -315,7 +342,7 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		});
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1) {
+				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('55555') == -1) {
 					var response = angular.copy(c);
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
@@ -336,29 +363,6 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 		}
 	}
 
-	/*$scope.$watch(function() {
-		return vm.openRequestCount;
-	}, function (n, o) {
-		if (vm.current.ScriptModels) {
-			vm.allowNextOnSuccess = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0].NextOnSuccess;
-		}
-		if (n == 0 && vm.turnOnLog) {
-			vm.responseFailure = false;
-			angular.forEach(vm.allResponses, function(data) {
-				if (data.status > 399) {
-					vm.responseFailure = true;
-				}
-			});
-			if (!vm.responseFailure) {
-				vm.responseSuccess = true;
-			}
-		}
-		else {
-			if (vm.turnOnLog) {
-				console.log('not yet');
-			}
-		}
-	});*/
 
 	function renderHtml(html) {
 		return $sce.trustAsHtml(html);
@@ -470,10 +474,13 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 				pass = false;
 			}
 		});
+		if (pass) {
+			Users.SaveClassProgress(vm.current.ID);
+		}
 		vm.classComplete = pass;
 	}
 
-	function addMethodCount(response) {
+	function addMethodCount(response) { //Saves count of method calls based on endpoint
 		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
 		var method = response.config.method;
 		var epSplit = endpoint.split('/');
@@ -516,6 +523,52 @@ function ClassController( $scope, $state, $injector, Underscore, ClassSvc, Cours
 			})
 		})
 
+	}
+
+	function saveNewVar(newVar) {
+		Users.SaveOcVar(newVar)
+			.then(function(data) {
+				Users.GetOcVars()
+					.then(function(vars) {
+						vm.user.savedVars = vars;
+						vm.user.newVar = {};
+						vm.viewVarAdd = false;
+						stringReplace();
+					}, function(err) {
+						console.log(err);
+					})
+			}, function(err) {
+				console.log(err);
+			})
+	}
+
+	function removeExistingVar(varHash) {
+		Users.DeleteOcVar({hash: varHash})
+			.then(function() {
+				Users.GetOcVars()
+					.then(function(vars) {
+						vm.user.savedVars = vars;
+						stringReplace();
+					}, function(err) {
+						console.log(err);
+					})
+			}, function(err) {
+				console.log(err);
+			})
+	}
+	function editExistingVar(varHash, existingVar) {
+		Users.PatchOcVar({hash: varHash}, existingVar)
+			.then(function() {
+				Users.GetOcVars()
+					.then(function(vars) {
+						vm.user.savedVars = vars;
+						stringReplace();
+					}, function(err) {
+						console.log(err);
+					})
+			}, function(err) {
+				console.log(err);
+			})
 	}
 
 }

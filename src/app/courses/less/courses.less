@@ -1,4 +1,97 @@
+article {
+  background-color: @gray-lighter;
+}
+.learning-resources {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 25px 0;
+  .learning-card {
+	width: 31%;
+	margin: 1%;
+	margin-bottom: 20px;
+	padding: 10px;
+	height: 450px;
+	box-shadow: 2px 2px 2px 2px rgb(152, 152, 152);
+	border: 3px solid @four51-blue;
+	background-color: white;
+	border-radius: 8px;
+	@media(max-width: 1000px) {
+	  width: 48%;
+	  margin: 1%;
+	  margin-bottom: 20px;
+	}
+	@media(max-width: 550px) {
+	  width: 98%;
+	  margin: 1%;
+	  margin-bottom: 20px;
+	}
+	.img-container {
+	  background-image: url("assets/images/programmer.jpg");
+	  width: 100%;
+	}
+	.course-caption {
+	  margin: 3px;
+	  text-align: center;
+	  p {
+		margin-top: 20px;
+		padding: 0 20px;
+		height: 70px;
+	  }
+	  .divider {
+		margin: 15px 15px;
+		border-bottom: 1px solid @gray-light;
+		border-top: 1px solid @gray-light;
+		border-radius: 20px;
+	  }
+	}
+	.btn.btn-primary.btn-block {
+	  box-shadow: 0 0 2px rgb(152, 152, 152);
+	  background-color: @four51-blue;
+	  border: transparent;
+	  border-radius: 30px;
+	  color: @four51-navy;
+	  font-weight: 400;
+	}
+  }
+
+}
+
+.course-summary-header.jumbotron {
+  position: relative;
+  padding: 0;
+  .container-fluid {
+	padding: 0;
+  }
+  .well {
+	position: absolute;
+	right: 350px;
+	left: 350px;
+	top: 0;
+	padding: 10px;
+	background-color: transparent;
+	border: transparent;
+	text-align: center;
+	box-shadow: none;
+	color: @gray-lighter;
+	font-weight: 600;
+	font-size: 3em;
+	font-family: Lato;
+	@media(max-width: 1750px) {
+	  padding: 5px;
+	  font-size: 2em;
+	  right: 250px;
+	  left: 250px;
+	}
+	@media(max-width: 1250px) {
+	  padding: 0;
+	  font-size: 1.5em;
+	  right: 50px;
+	  left: 50px;
+	}
+  }
+}
 .courses-container {
+
   .course-summary {
 	padding:15px;
 	border:1px solid @list-group-border;
@@ -30,6 +123,7 @@
 #CourseHome {
   header.jumbotron {
 	background-color: darken(@gray-lighter, 0);
+
   }
   .container .jumbotron {
 	h3 {
@@ -42,8 +136,14 @@
   nav {
 	background-color: darken(@gray-darker, 5);
   }
+  .navbar-brand {
+	padding: 15px 15px;
+  }
+  .navbar-fixed-bottom {
+	height: 51px;
+  }
   &:not(.interactive) {
-	max-height:~'calc(100vh - 102px)';
+	max-height:~'calc(100vh - 111px)';
 	overflow-y:auto;
   }
   &.interactive {
@@ -52,29 +152,142 @@
 	}
   }
   .context-user {
+	padding: 15px;
+	cursor: default;
 	font-size: 1.1em;
 	color: @alert-danger-text;
   }
   .context-user.contextSet {
 	color: @alert-info-text;
   }
-  #ContextMenu {
-	padding: 6px 30px 6px 6px;
+  .container-fluid {
+	margin-right: 12px;
+  }
+  .icon-divider {
+	margin: 17px 15px 0 0;
+	padding: 10px 10px 10px 0;
+	border-right: 1px solid @gray-light;
+  }
+  .btm-nav-icon {
+	padding: 6px 10px 6px 6px;
 	>a {
 	  color: @gray-lighter;
 	  font-size: 2em;
 	}
-	.context-content {
+	.dropup-content {
 	  background-color: @gray-lighter;
-	  margin: 0 15px 12px 0;
+	  margin: 0 2px 12px 0;
 	  width: 290px;
 	  padding: 10px;
-	  i {
-		color: #FF5F32;
-		font-size: 5em;
-		padding: 10px 100px 5px 100px;
+	  cursor: default;
+	  .col-xs-12 {
+		padding: 0;
 	  }
-	  .context-title {
+	  .divider {
+		background-color: lighten(@gray-light, 30);
+		border-radius: 6px;
+		margin: 10px 5px;
+		height: 2px;
+	  }
+	  .oc-vars {
+		max-height: 250px;
+		overflow: auto;
+		margin-bottom: 5px;
+		.col-xs-1 {
+		  padding: 6px 0 0 0;
+		}
+		a i {
+		  font-size: 17px;
+		}
+		i.fa-remove {
+		  color: lighten(red, 10);
+		}
+		i.fa-check {
+		  color: lighten(green, 10);
+		}
+	  }
+	  .oc-var {
+		padding: 4px 0;
+		text-align: center;
+	  }
+	  .left-icon {
+		text-align: left;
+	  }
+	  .right-icon {
+		text-align: right;
+	  }
+	  .oc-var-key {
+		color: white;
+		border: 1px solid @four51-blue;
+		background-color: @four51-blue;
+		font-size: 14px;
+	  }
+	  .oc-var-val {
+		color: white;
+		border: 1px solid darken(@four51-blue, 10);
+		background-color: darken(@four51-blue, 10);
+		font-size: 14px;
+	  }
+	  .oc-var-input-key {
+		background-color: lighten(@four51-blue, 20);
+		border-right: transparent;
+		color: @gray-darker;
+	  }
+	  .oc-var-input-val {
+		background-color: lighten(@four51-blue, 10);
+		color: @gray-darker;
+	  }
+	  .add-var {
+		text-align: center;
+		font-size: 5px;
+		cursor: default;
+		i {
+		  cursor: pointer;
+		  color: lighten(green, 10);
+		}
+	  }
+	  .var-inputs {
+		padding: 5px 0;
+		.var-input {
+		  padding: 4px 12px;
+		  border-radius: 0;
+		  border: 1px solid #cccccc;
+		}
+		.var-input:first-of-type {
+		  background-color: lighten(@four51-blue, 20);
+		  border: 1px solid @four51-blue;
+		  color: @gray-darker;
+		}
+		.var-input:last-of-type {
+		  background-color: lighten(@four51-blue, 10);
+		  color: @gray-darker;
+		  border: 1px solid @four51-blue;
+		  border-left: transparent;
+		}
+		.col-xs-1 {
+		  padding: 6px 0 0 0;
+		}
+		.var-input-icons {
+		  a i {
+			font-size: 17px;
+			color: lighten(red, 10);
+		  }
+		  a .fa-check {
+			color: lighten(green, 10);
+		  }
+		}
+
+	  }
+
+	  .icon-container {
+		width: 100%;
+		text-align: center;
+	  }
+	  i {
+		color: @four51-orange;
+		font-size: 5em;
+	  }
+	  .dropup-title {
 		text-align: center;
 		font-weight: 700;
 		font-size: 1.2em;
@@ -85,12 +298,6 @@
 	  .form-group {
 		margin-bottom: 5px;
 	  }
-	  .form-divider {
-		background-color: lighten(@gray-light, 30);
-		border-radius: 6px;
-		margin: 10px 5px;
-		height: 2px;
-	  }
 	  .form-group:last-of-type {
 		margin-bottom: 20px;
 	  }
@@ -98,11 +305,11 @@
 		font-size: .9em;
 		text-align: center;
 	  }
-	  .context-knob {
+	  .dropup-knob {
 		position: absolute;
 		z-index: 500;
 		bottom: -16px;
-		right: 9px;
+		right: 2px;
 		width: 0;
 		height: 0;
 		border-left: 16px solid transparent;
@@ -110,8 +317,9 @@
 		border-top: 16px solid @gray-lighter;
 		background-color: transparent;
 	  }
-	  .btn {
+	  .btn-block {
 		width: 49%;
+		margin-top: 5px;
 	  }
 	  .btn-danger {
 		background-color: @gray-light;
@@ -120,6 +328,11 @@
 	  .btn-info {
 		background-color: @four51-orange;
 		border-color: @four51-orange;
+	  }
+	}
+	.oc-vars {
+	  i {
+		color: @four51-blue;
 	  }
 	}
 
@@ -187,7 +400,7 @@
 	}
 	#CourseContent,
 	#InteractiveUI {
-	  height:~'calc(100vh - 102px)';
+	  height:~'calc(100vh - 111px)';
 	}
 	#CourseContent {
 	  max-width:400px;

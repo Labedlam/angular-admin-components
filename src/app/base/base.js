@@ -45,12 +45,12 @@ function BaseController( CurrentUser ) {
 		{
 			Display: 'SDKs',
 			Description: 'SDKs Description',
-			StateRef: ''
+			StateRef: 'base.docs'
 		},
 		{
 			Display: 'Seeds',
 			Description: 'Seeds Description',
-			StateRef: ''
+			StateRef: 'base.docs'
 		}
 	]
 }

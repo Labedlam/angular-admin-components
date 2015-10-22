@@ -7,6 +7,8 @@ angular.module( 'orderCloud' )
 	.controller( 'DevClassEditCtrl', DevClassEditController)
 	.controller( 'LearningCtrl', LearningController)
 	.factory( 'ClassSvc', ClassService )
+	.factory( 'CourseSvc', CourseService )
+	.factory( 'UserSvc', UserService )
 
 ;
 
@@ -36,18 +38,16 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			url: '/learning',
 			templateUrl:'courses/templates/learning.tpl.html',
 			controller:'LearningCtrl',
-			controllerAs: 'learning',
-			data: {limitAccess:true}
+			controllerAs: 'learning'
 		})
 		.state( 'base.devcourses', {
 			url: '/courses/developer',
 			templateUrl:'courses/templates/devcourses.tpl.html',
 			controller:'DevCoursesCtrl',
 			controllerAs: 'courses',
-			data: {limitAccess:true},
 			resolve: {
-				CoursesList: function(Courses) {
-					return Courses.List('developer');
+				CoursesList: function(CourseSvc) {
+					return CourseSvc.listCourses('developer');
 				}
 			}
 		})
@@ -56,13 +56,13 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			templateUrl:'courses/templates/devcourse.tpl.html',
 			controller:'DevCourseCtrl',
 			controllerAs: 'course',
-			data: {limitAccess:true},
+			//data: {limitAccess:true},
 			resolve: {
-				SelectedCourse: function($stateParams, Courses) {
-					return Courses.Get($stateParams.courseid, 'developer');
+				SelectedCourse: function($stateParams, CourseSvc) {
+					return CourseSvc.getCourse($stateParams.courseid, 'developer');
 				},
-				ClassesList: function($q, $stateParams, Classes) {
-					return Classes.List($stateParams.courseid, {Name: 1, Description: 1, ID: 1, Active: 1});
+				ClassesList: function($q, $stateParams, ClassSvc) {
+					return ClassSvc.listClasses($stateParams.courseid, {Name: 1, Description: 1, ID: 1, Active: 1});
 				}
 			}
 		})
@@ -71,13 +71,14 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			templateUrl:'courses/templates/devclass.tpl.html',
 			controller:'DevClassCtrl',
 			controllerAs: 'class',
-			data: {limitAccess:true},
+			//data: {limitAccess:true},
 			resolve: {
-				SelectedClass: function(Classes, $stateParams) {
-					return Classes.Get($stateParams.courseid, $stateParams.classid);
+				SelectedClass: function(ClassSvc, $stateParams) {
+					console.log($stateParams);
+					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid);
 				},
-				OcVars: function (Users) {
-					return Users.GetOcVars();
+				OcVars: function (UserSvc) {
+					return UserSvc.getOcVars();
 				}
 			}
 		})
@@ -88,8 +89,8 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controllerAs: 'class',
 			data: {limitAccess:true},
 			resolve: {
-				EditClass: function(Classes, $stateParams) {
-					return Classes.Get($stateParams.courseid, $stateParams.classid, {Administrator: true});
+				EditClass: function(ClassSvc, $stateParams) {
+					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid, {Administrator: true});
 				}
 			}
 		})
@@ -576,9 +577,11 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 
 
-function ClassService($resource, apiurl, $q) {
+function ClassService($resource, apiurl, $q, Classes) {
 	var service = {
-		getDocs: _getDocs
+		getDocs: _getDocs,
+		getClass: _getClass,
+		listClasses: _listClasses
 	};
 	function _getDocs(target) {
 		var dfd = $q.defer();
@@ -596,9 +599,84 @@ function ClassService($resource, apiurl, $q) {
 		return dfd.promise;
 	}
 
+	function _getClass(courseid, classid) {
+		var d = $q.defer();
+		Classes.Get(courseid, classid)
+			.then(function(data) {
+				d.resolve(data);
+			})
+			.catch(function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+	}
+
+	function _listClasses(courseid, showFields) {
+		var d = $q.defer();
+		Classes.List(courseid, showFields)
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
+		return d.promise;
+	}
+
 
 
 	return service;
+}
+
+function CourseService(Courses, $q) {
+	var service = {
+		getCourse: _getCourse,
+		listCourses: _listCourses
+	};
+	function _getCourse(courseID, courseType) {
+		var d= $q.defer();
+		Courses.Get(courseID, courseType)
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
+		return d.promise;
+	}
+
+	function _listCourses(courseType) {
+		var d = $q.defer();
+		//
+		Courses.List(courseType)
+			.then(function(data) {
+				d.resolve(data);
+			}, function(err) {
+				d.reject(err);
+			});
+		return d.promise;
+	}
+
+
+	return service;
+}
+
+function UserService(Users, $q) {
+	var service = {
+		getOcVars: _getOcVars
+	};
+
+	function _getOcVars() {
+		var d = $q.defer();
+		Users.GetOcVars()
+			.then(function(data) {
+				d.resolve(data);
+			}, function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+	}
+
+
+	return service
 }
 
 

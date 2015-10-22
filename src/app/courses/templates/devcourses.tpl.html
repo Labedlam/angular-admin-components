@@ -7,7 +7,7 @@
 	<div class="container">
 		<p class="lead">Whether you're completely new to using RESTful APIs or it's second nature, this is the place to learn everything there is to know about creating custom OrderCloud applications.</p>
 		<div class="courses-container" ng-repeat="course in courses.list | orderBy: 'ListOrder'">
-			<div class="course-summary" ui-sref="^.course({courseid:course.ID})">
+			<div class="course-summary" ui-sref="base.devcourses.course({courseid:course.ID})">
 				<figure>
 					<img class="img-responsive" ng-src="{{course.ImgUrl}}" alt=""/>
 				</figure>

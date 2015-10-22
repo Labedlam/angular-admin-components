@@ -16,10 +16,10 @@ function BizCoursesConfig( $stateProvider ) {
             templateUrl:'courses/templates/bizcourses.tpl.html',
             controller:'BizCoursesCtrl',
             controllerAs: 'courses',
-            data: {limitAccess:true},
+            //data: {limitAccess:true},
             resolve: {
-                CoursesList: function(Courses) {
-                    return Courses.List('business');
+                CoursesList: function(CourseSvc) {
+                    return CourseSvc.listCourses('business');
                 }
             }
         })
@@ -28,13 +28,13 @@ function BizCoursesConfig( $stateProvider ) {
             templateUrl:'courses/templates/bizcourse.tpl.html',
             controller:'BizCourseCtrl',
             controllerAs: 'course',
-            data: {limitAccess:true},
+            //data: {limitAccess:true},
             resolve: {
-                SelectedCourse: function($stateParams, Courses) {
-                    return Courses.Get($stateParams.courseid, 'business');
+                SelectedCourse: function($stateParams, CourseSvc) {
+                    return CourseSvc.getCourse($stateParams.courseid, 'business');
                 },
-                ClassList: function($stateParams, Classes) {
-                    return Classes.List($stateParams.courseid);
+                ClassList: function($stateParams, ClassSvc) {
+                    return ClassSvc.listClasses($stateParams.courseid);
                 }
             }
         })
@@ -43,13 +43,13 @@ function BizCoursesConfig( $stateProvider ) {
             templateUrl:'courses/templates/bizcourse.edit.tpl.html',
             controller: 'BizCourseEditCtrl',
             controllerAs: 'course',
-            data: {limitAccess:true},
+            //data: {limitAccess:true},
             resolve: {
-                SelectedCourse: function($stateParams, Courses) {
-                    return Courses.Get($stateParams.courseid, 'business');
+                SelectedCourse: function($stateParams, CourseSvc) {
+                    return CourseSvc.getCourse($stateParams.courseid, 'business');
                 },
-                ClassList: function($stateParams, Classes) {
-                    return Classes.List($stateParams.courseid);
+                ClassList: function($stateParams, ClassSvc) {
+                    return ClassSvc.listClasses($stateParams.courseid);
                 }
             }
         })
@@ -74,19 +74,26 @@ function BizCourseController(SelectedCourse, ClassList) {
     }
 }
 
-function BizCourseEditController($scope, SelectedCourse, ClassList, Underscore) {
+function BizCourseEditController($scope, $stateParams, SelectedCourse, ClassList, Classes, Courses, ClassSvc, CourseSvc, Underscore) {
     var vm = this;
     vm.classList = ClassList;
     vm.course = SelectedCourse;
-    vm.selectClass = selectClass;
+
+    vm.changeClassOrder = changeClassOrder;
+    vm.addNewClass = addNewClass;
+    vm.saveCourse = saveCourse;
+    vm.saveAllClasses = saveAllClasses;
+    vm.saveClass = saveClass;
 
     vm.selectedClass = vm.classList[0];
     vm.pickClass = vm.selectedClass.Name;
+    vm.newClass = {};
 
     $scope.$watch(function() {
         return vm.pickClass;
     }, function(newVal, oldVal) {
-        console.log(newVal);
+        vm.selectedClass = Underscore.where(vm.classList, {Name: newVal})[0];
+        indexSelected();
     });
 
     function indexSelected () {
@@ -94,8 +101,66 @@ function BizCourseEditController($scope, SelectedCourse, ClassList, Underscore) 
     }
     indexSelected();
 
-    function selectClass(_class) {
-        vm.selectedClass = _class;
-        indexSelected();
+    function _changeArrayOrder(array, index, move) {
+        if (move == 'up') {
+            var val = array[index];
+            var otherVal = array[index - 1];
+            var left = array.slice(0, index-1);
+            var right = array.slice(index+1, array.length - 1);
+            return left.concat(val).concat(otherVal).concat(right);
+        } else {
+            var val = array[index];
+            var otherVal = array[index + 1];
+            var left = array.slice(0, index);
+            var right = array.slice(index+2, array.length);
+            return left.concat(otherVal).concat(val).concat(right);
+        }
     }
+
+    function changeClassOrder(_class, move) {
+        var curListOrder = _class.CourseOrder;
+        var otherClassIndex = -1;
+        if (move == 'down') {
+            otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder + 1});
+            vm.classList[otherClassIndex].CourseOrder -= 1;
+            _class.CourseOrder += 1;
+            vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder-2, 'down');
+        } else if (move == 'up') {
+            otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder - 1});
+            vm.classList[otherClassIndex].CourseOrder += 1;
+            _class.CourseOrder -= 1;
+            vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder, 'up');
+        }
+        Courses.Patch($stateParams.courseid, {Classes: vm.course.Classes});
+    }
+
+    function addNewClass() {
+        Classes.Create($stateParams.courseid, vm.newClass)
+            .then(function() {
+                CourseSvc.getCourse($stateParams.courseid, 'business')
+                    .then(function(data) {
+                        vm.course = data;
+                        ClassSvc.getClass($stateParams.courseid, vm.course.Classes[vm.course.Classes.length -1])
+                            .then(function(data) {
+                                vm.classList.push(data);
+                            });
+                    });
+                vm.showAddClass = false;
+            })
+    }
+
+    function saveClass() {
+        Classes.Update($stateParams.courseid, vm.classList[vm.indexSelected].ID, vm.classList[vm.indexSelected]);
+    }
+
+    function saveAllClasses() {
+        vm.classList.forEach(function(each) {
+            Classes.Update($stateParams.courseid, each.ID, each);
+        })
+    }
+
+    function saveCourse() {
+        Courses.Update($stateParams.courseid, vm.course)
+    }
+
 }

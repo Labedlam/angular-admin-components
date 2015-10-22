@@ -4,6 +4,7 @@ angular.module( 'orderCloud' )
     .controller( 'BizCourseEditCtrl', BizCourseEditController)
     .controller( 'BizCoursesCtrl', BizCoursesController)
     .controller( 'BizCourseCtrl', BizCourseController)
+    .controller( 'BizCourseAdminCtrl', BizCourseAdminController )
 
 ;
 
@@ -23,8 +24,15 @@ function BizCoursesConfig( $stateProvider ) {
                 }
             }
         })
+        .state( 'base.bizcourses.admin', {
+            url: '/admin',
+            templateUrl:'courses/templates/bizcourse.admin.tpl.html',
+            controller:'BizCourseAdminCtrl',
+            controllerAs: 'course'
+            //data: {limitAccess:true},
+        })
         .state( 'base.bizcourses.course', {
-            url: '/:courseid',
+            url: '/course/:courseid',
             templateUrl:'courses/templates/bizcourse.tpl.html',
             controller:'BizCourseCtrl',
             controllerAs: 'course',
@@ -60,6 +68,23 @@ function BizCoursesController(CoursesList) {
     var vm = this;
     vm.list = CoursesList;
 }
+
+function BizCourseAdminController(CoursesList) {
+    var vm = this;
+    vm.coursesList = CoursesList;
+
+    vm.filterCourseList = function(obj) {
+        if (vm.courseFilter == 'all') {
+            return true;
+        } else if (vm.courseFilter == 'hidden') {
+            return obj.Hide == true;
+        } else {
+            return obj.Hide == false;
+        }
+
+    }
+}
+
 
 function BizCourseController(SelectedCourse, ClassList) {
     var vm = this;

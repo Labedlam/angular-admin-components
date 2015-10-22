@@ -1101,3 +1101,34 @@
   right: 45px;
   bottom: 15px;
 }
+
+#BizCourseAdmin {
+  .course-filter {
+	margin: 5px 0;
+
+  }
+  .manage-courses, .create-course {
+	height: ~'calc(100vh - 60px)';
+  }
+
+  .manage-courses {
+	background-color: @gray-light;
+	span {
+	  display: inline-block;
+	  padding-top: 10px;
+	}
+	.course-list {
+	  .pull-right {
+		width: 20px;
+	  }
+	  .course-list-item {
+		background-color: @gray-lighter;
+		padding: 10px 0;
+		border: 1px solid @gray-dark;
+	  }
+	}
+  }
+  .create-course {
+	background-color: @gray-lighter;
+  }
+}

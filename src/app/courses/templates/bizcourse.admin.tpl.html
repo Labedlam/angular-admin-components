@@ -1,0 +1,35 @@
+<article class="container" id="BizCourseAdmin">
+    <div class="manage-courses col-xs-6">
+        <h3>Courses Admin</h3>
+        <div class="col-xs-12">
+            <h4>Course Order</h4>
+            <div class="form-group col-xs-6">
+                <label>Hidden/Visible</label>
+                <select class="form-control course-filter" ng-options="o for o in ['all', 'visible', 'hidden']" ng-model="course.courseFilter" ng-init="course.courseFilter = 'all'"></select>
+            </div>
+            <div class="form-group col-xs-6">
+                <label>Active/Inactive</label>
+                <select class="form-control course-filter" ng-options="o for o in [true, false]" ng-model="course.courseActiveFilter" ng-init="course.courseActiveFilter = true"></select>
+            </div>
+        </div>
+        <div class="course-list col-xs-12">
+            <span>Course List</span>
+            <div class="course-list-item col-xs-12" ng-repeat="_course in course.coursesList | filter: course.filterCourseList | filter:{Active: course.courseActiveFilter}" ng-class="{inactive: _course.Active}">
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                <div class="col-xs-2">
+                    {{_course.ListOrder}}
+                </div>
+                <div class="col-xs-6">
+                    {{_course.Name}}
+                </div>
+                <div class="col-xs-2">
+                    {{_course.Active}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="create-course col-xs-6">
+        <h3>Create New Course</h3>
+    </div>
+</article>

@@ -14,9 +14,9 @@
 		<div class="col-sm-6" ng-repeat="group in devGroups.list | filter:devGroups.searchTerm">
 			<div class="panel panel-default group-panel">
 				<div class="panel-body">
-					<button class="btn btn-default text-danger pull-right">Leave</button>
+					<button class="btn btn-default pull-right">Leave</button>
 					<h4><b><a href="" ui-sref="base.groupDetail({groupID:group.ID})">{{group.Name}}</a></b></h4>
-					<p>{{group.Members.length + ' member' + (group.Members.length == 1 ? ', ' : 's, ') + group.Instances.length + ' instance' + (group.Instances.length == 1 ? '' : 's') }}</p>
+					<p class="text-muted">{{group.Members.length + ' member' + (group.Members.length == 1 ? ' | ' : 's | ') + group.Instances.length + ' instance' + (group.Instances.length == 1 ? '' : 's') }}</p>
 				</div>
 				<div class="panel-footer">
 					<div class="group-member-bite" ng-repeat="member in group.Members" uib-tooltip="{{member.Username}}" tooltip-placement="bottom">

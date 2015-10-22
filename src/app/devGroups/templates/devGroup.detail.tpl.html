@@ -35,8 +35,8 @@
 							<input id="DevUserSearch" class="form-control" type="search" placeholder="Invite a new member..."
 								   autocomplete="off"
 								   ng-model="devGroupDetail.userSearchTerm"
-								   typeahead-append-to-body="true"
-								   uib-typeahead="user as user.Username for user in devGroupDetail.searchDevUsers($viewValue)"
+								   typeahead-template-url="common/user.result.tpl.html"
+								   uib-typeahead="user as user for user in devGroupDetail.searchDevUsers($viewValue)"
 								   typeahead-on-select="devGroupDetail.selectDevUser($item)"/>
 							<span class="input-group-btn">
 								<button class="btn btn-primary" ng-click="devGroupDetail.inviteDevUser()"><i class="fa fa-send"></i> Send Invite</button>
@@ -48,7 +48,7 @@
 							<input id="DevAccessSearch" class="form-control" type="search" placeholder="Find an instance..."
 								   autocomplete="off"
 								   ng-model="devGroupDetail.accessSearchTerm"
-								   typeahead-append-to-body="true"
+								   typeahead-template-url="common/access.result.tpl.html"
 								   uib-typeahead="access as access.AppName for access in devGroupDetail.searchAccess($viewValue)"
 								   typeahead-on-select="devGroupDetail.selectAccess($item)"/>
 							<span class="input-group-btn">
@@ -75,14 +75,17 @@
 				</ul>
 			</div>
 			<div id="GroupInstances" ng-show="devGroupDetail.activeTab == 'Instances'">
-				<ul class="list-group">
-					<li class="list-group-item" ng-repeat="instance in devGroupDetail.instances">
-						{{instance | json}}
-					</li>
-					<li class="list-group-item list-group-item-info text-center" ng-if="devGroupDetail.instances.length == 0">
-						This group does not have access to any OrderCloud instances.
+				<ul class="list-group" ng-if="devGroupDetail.instances.length">
+					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.instances">
+						<div><b>{{instance.CompanyName || instance.AppName.split('for ')[1]}}</b><br/>
+							<span class="text-muted"><b>Client ID: </b>{{instance.ClientID}}</span>
+						</div>
+						<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
 					</li>
 				</ul>
+				<div class="well well-lg text-center" ng-if="!devGroupDetail.instances.length">
+					This group does not have access to an OrderCloud instance.
+				</div>
 			</div>
 		</div>
 	</div>

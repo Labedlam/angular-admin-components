@@ -56,4 +56,48 @@
 	  }
 	}
   }
+  .dev-access-list-item {
+	display:flex;
+	flex-flow:row nowrap;
+	align-items:center;
+	div {
+	  flex: 1 0 auto;
+	}
+	p {
+	  margin:0;
+	  flex: 0 1 auto;
+	}
+  }
+}
+
+#DevUserSearch {
+  & + .dropdown-menu {
+	width:100%;
+	.user-search-result {
+	  padding:10px;
+	}
+  }
+}
+
+#DevAccessSearch {
+  + .dropdown-menu {
+	width:100%;
+	.access-search-result {
+	  padding:10px;
+	  display:flex;
+	}
+  }
+}
+.access-search-result {
+  display:flex;
+  flex-flow:row nowrap;
+  align-items:center;
+  > div {
+	&:first-child {
+	  flex:1 0 auto;
+	}
+	&:last-child {
+	  flex:0 1 auto;
+	}
+  }
 }

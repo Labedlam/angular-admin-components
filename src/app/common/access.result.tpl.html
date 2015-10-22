@@ -1,0 +1,10 @@
+<a class="access-search-result" href="">
+	<div>
+		<span ng-bind-html="match.model.CompanyName || match.model.AppName.split('for ')[1] | uibTypeaheadHighlight:query"></span>
+		<br/>
+		<span ng-bind-html="match.model.ClientID | uibTypeaheadHighlight:query"></span>
+	</div>
+	<div>
+		<span ng-bind-html="match.model.Claims | uibTypeaheadHighlight:query"></span>
+	</div>
+</a>

@@ -584,13 +584,20 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 }
 
-function DevCoursesAdminController(CoursesList, Underscore, $scope) {
+function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies) {
 	var vm = this;
 	vm.coursesList = CoursesList;
 
-	vm.moveScript = moveScript;
+	vm.changeCourseOrder = changeCourseOrder;
 	vm.filterCourseList = filterCourseList;
-	vm.editSelected = null;
+	vm.changeClassOrder = changeClassOrder;
+	vm.deleteClass = deleteClass;
+	vm.saveCourse = saveCourse;
+	vm.createClass=  createClass;
+	vm.createCourse = createCourse;
+	vm.deleteCourse = deleteCourse;
+
+	vm.editSelected = $cookies.get('course_focus') || null;
 
 	$scope.$watch(function() {
 		return vm.editSelected;
@@ -598,7 +605,7 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope) {
 		if (!newVal) {
 			return
 		} else {
-			console.log(newVal);
+			$cookies.put('course_focus', newVal);
 			vm.selectedCourseIndex = Underscore.findIndex(vm.coursesList, {Name: newVal});
 		}
 	});
@@ -614,7 +621,7 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope) {
 
 	}
 
-	function moveScript(direction, listOrder) {
+	function changeCourseOrder(direction, listOrder) {
 		console.log(listOrder);
 		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
 		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
@@ -629,6 +636,64 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope) {
 			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
 			vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
 		}
+	}
+
+	function _changeArrayOrder(array, index, move) {
+		if (move == 'up') {
+			var val = array[index];
+			var otherVal = array[index - 1];
+			var left = array.slice(0, index-1);
+			var right = array.slice(index+1, array.length - 1);
+			return left.concat(val).concat(otherVal).concat(right);
+		} else {
+			var val = array[index];
+			var otherVal = array[index + 1];
+			var left = array.slice(0, index);
+			var right = array.slice(index+2, array.length);
+			return left.concat(otherVal).concat(val).concat(right);
+		}
+	}
+
+	function changeClassOrder(_class, move) {
+		var curListOrder = _class.CourseOrder;
+		var otherClassIndex = -1;
+		if (move == 'down') {
+			otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder + 1});
+			vm.classList[otherClassIndex].CourseOrder -= 1;
+			_class.CourseOrder += 1;
+			vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder-2, 'down');
+		} else if (move == 'up') {
+			otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder - 1});
+			vm.classList[otherClassIndex].CourseOrder += 1;
+			_class.CourseOrder -= 1;
+			vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder, 'up');
+		}
+		Courses.Patch($stateParams.courseid, {Classes: vm.course.Classes});
+	}
+
+	function deleteClass(classid) {
+		//delete class
+		//reload state
+	}
+
+	function saveCourse() {
+		//save course
+		//reload state
+	}
+
+	function createClass() {
+		//createClass
+		//reload state
+	}
+
+	function createCourse() {
+		//create Course
+		//reload state
+	}
+
+	function deleteCourse() {
+		//delete course
+		//reload state
 	}
 }
 

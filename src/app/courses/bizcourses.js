@@ -47,7 +47,7 @@ function BizCoursesConfig( $stateProvider ) {
             }
         })
         .state( 'base.bizcourses.edit', {
-            url: '/:courseid/edit',
+            url: '/course/:courseid/edit',
             templateUrl:'courses/templates/bizcourse.edit.tpl.html',
             controller: 'BizCourseEditCtrl',
             controllerAs: 'course',

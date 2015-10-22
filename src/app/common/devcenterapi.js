@@ -20,11 +20,11 @@ function Courses($resource, devapiurl, $cookies) {
     }
 
     function _update(courseID, course) {
-        return $resource(devapiurl + '/courses/:courseid/update', {courseid: courseID}, {call: {method: 'POST', headers: {'dc-token': $cookies.get('dc-token')}}}).call(course).$promise
+        return $resource(devapiurl + '/courses/course/:courseid/update', {courseid: courseID}, {call: {method: 'POST', headers: {'dc-token': $cookies.get('dc-token')}}}).call(course).$promise
     }
 
     function _patch(courseID, update) {
-        return $resource(devapiurl + '/courses/:courseid', {courseid: courseID}, {call: {method: 'PATCH', headers: {'dc-token': $cookies.get('dc-token')}}}).call(update).$promise
+        return $resource(devapiurl + '/courses/course/:courseid', {courseid: courseID}, {call: {method: 'PATCH', headers: {'dc-token': $cookies.get('dc-token')}}}).call(update).$promise
     }
 
 
@@ -36,7 +36,8 @@ function Classes($resource, devapiurl, $cookies) {
         List: _list,
         Get: _get,
         Update: _update,
-        Create: _create
+        Create: _create,
+        Delete: _delete
     };
 
     function _list(courseID, showFields) {
@@ -56,6 +57,10 @@ function Classes($resource, devapiurl, $cookies) {
 
     function _create(courseID, newClass) {
         return $resource(devapiurl + '/courses/:courseid/create-class', {courseid: courseID}, {call: {method: 'POST', headers: {'dc-token': $cookies.get('dc-token')}}}).call(newClass).$promise
+    }
+
+    function _delete(classid) {
+        return $resource(devapiurl + '/class/:classid/delete', {classid: classID}, {call: {method: 'DELETE', headers: {'dc-token': $cookies.get('dc-token')}}}).call().$promise
     }
 
     return service;

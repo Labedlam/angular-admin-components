@@ -62,18 +62,60 @@
                     <label>Image Link</label>
                     <input class="form-control" placeholder="Image URL" ng-model="courses.coursesList[courses.selectedCourseIndex].ImgUrl">
                 </div>
-                <div class="col-xs-8 col-xs-offset-2 course-list-titles">
+            </form>
+            <div class="col-xs-12">
+                <div class="col-xs-8 col-xs-offset-2 course-list-titles" ng-show="courses.editSelected">
                     <div class="col-xs-12">ClassID</div>
 
                 </div>
-                <div class="course-list-item col-xs-8 col-xs-offset-2" ng-repeat="_course in courses.coursesList[courses.selectedCourseIndex].Classes">
+                <div class="course-list-item col-xs-8 col-xs-offset-2" ng-repeat="class in courses.coursesList[courses.selectedCourseIndex].Classes">
+                    <a href ng-click="confirmClassDelete = !confirmClassDelete" ng-init="confirmClassDelete = false" class="pull-right"><i class="fa fa-remove" style="color: red;"></i></a>
+                    <a href ui-sref="base.devcourses.course.edit({courseid: courses.coursesList[courses.selectedCourseIndex].ID, classid: class})" class="pull-right"><i class="fa fa-edit" style="color: black"></i></a>
+                    <a href ui-sref="base.devcourses.course.class({courseid: courses.coursesList[courses.selectedCourseIndex].ID, classid: class})" class="pull-right"><i class="fa fa-eye" style="color: black"></i></a>
                     <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
                     <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
                     <div class="col-xs-9">
-                        {{_course}}
+                        {{class}}
                     </div>
+                    <div class="confirm-btn">
+                        <button href class="btn btn-danger btn-block pull-right" ng-show="confirmClassDelete" ng-click="courses.deleteClass(class)">Confirm</button>
+                    </div>
+
                 </div>
-            </form>
+            </div>
+            <div class="col-xs-12">
+                <button class="btn btn-primary pull-right" ng-click="courses.saveCourse()" ng-show="courses.editSelected">Save Course</button>
+            </div>
+
+            <div class="col-xs-12">
+                <h5>Create New Class</h5>
+                <form>
+                    <div class="form-group col-xs-6">
+                        <label>Name</label>
+                        <input class="form-control" placeholder="Name" ng-model="courses.newClass.Name">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label>ID</label>
+                        <input class="form-control" placeholder="ID" ng-model="courses.newClass.ID">
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label>Description</label>
+                        <textarea rows="2" class="form-control" placeholder="Description" ng-model="courses.newClass.Description"></textarea>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label>Active</label>
+                        <input class="form-control" placeholder="Active" ng-model="courses.newClass.Active">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label>Image Link</label>
+                        <input class="form-control" placeholder="Image URL" ng-model="courses.newClass.Img">
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-12">
+                <button class="btn btn-primary pull-right" ng-click="courses.createClass()" ng-if="courses.newClass.ID && courses.newClass.Name">Create Class</button>
+            </div>
+
         </div>
 
         <div class="add-course admin-sec col-xs-12">
@@ -81,36 +123,37 @@
             <form>
                 <div class="form-group col-xs-6">
                     <label>Name</label>
-                    <input class="form-control" placeholder="Name" ng-model="course.newCourse.Name">
+                    <input class="form-control" placeholder="Name" ng-model="courses.newCourse.Name">
                 </div>
                 <div class="form-group col-xs-6">
                     <label>ID</label>
-                    <input class="form-control" placeholder="ID" ng-model="course.newCourse.ID">
+                    <input class="form-control" placeholder="ID" ng-model="courses.newCourse.ID">
                 </div>
                 <div class="form-group col-xs-12">
                     <label>Description</label>
-                    <textarea rows="2" class="form-control" placeholder="Description" ng-model="course.newCourse.Description"></textarea>
+                    <textarea rows="2" class="form-control" placeholder="Description" ng-model="courses.newCourse.Description"></textarea>
                 </div>
                 <div class="form-group col-xs-6">
                     <label>Active</label>
-                    <input class="form-control" placeholder="Active" ng-model="course.newCourse.Active">
+                    <input class="form-control" placeholder="Active" ng-model="courses.newCourse.Active">
                 </div>
                 <div class="form-group col-xs-6">
                     <label>Image Link</label>
-                    <input class="form-control" placeholder="Image URL" ng-model="course.newCourse.Img">
+                    <input class="form-control" placeholder="Image URL" ng-model="courses.newCourse.Img">
                 </div>
             </form>
             <div class="col-xs-12">
-                <button class="btn btn-primary">Create Course</button>
+                <button class="btn btn-primary pull-right" ng-click="courses.createCourse()" ng-show="courses.newCourse.Name && courses.newCourse.ID">Create Course</button>
             </div>
         </div>
 
         <div class="delete-course admin-sec col-xs-12">
             <h4>Delete Course</h4>
-            <select class="form-control" ng-model="course.deleteSelected">
+            <select class="form-control" ng-model="courses.deleteSelected">
                 <option ng-repeat="o in courses.coursesList">{{o.Name}}</option>
             </select>
-            <button class="btn btn-danger pull-right">DELETE COURSE</button>
+            <button class="btn btn-danger btn-block pull-right" ng-show="courses.deleteSelected" ng-init="courses.confirmDelete = false" ng-click="courses.confirmDelete = !courses.confirmDelete; courses.deleteSelected = false">I HOPE YOU KNOW WHAT YOU ARE DOING</button>
+            <button class="btn btn-danger btn-block pull-right" ng-click="courses.deleteCourse()" ng-show="courses.confirmDelete">DELETE COURSE</button>
         </div>
     </div>
 </article>

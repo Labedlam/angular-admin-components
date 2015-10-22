@@ -113,6 +113,9 @@ function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 
 function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	var vm = this;
+	//regular
+	//$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4Y2I4YTIxOWU0OGVkNjUwMGRkZGU2YTc4MzYyYzQ1MzYxZjA5MmYwNTE3OTQ1MDZhZmZiZWU5OWVlZmVlY2E0ZWE5ZGVhNjEyNDdlMmUzODRlZTg0YjU5NzZjODk2NTQ0ZmYzOTM3YWM3NGQ0ZWY3Mjk3NzIzYWQ5ZTY3NTM4OThjZWU4ODQ5.M_0hJrULQSLukqd1HT5lgo2782Fqb22bTbTAkhKa4XM');
+	//admin
 	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E');
 	vm.logout = function() {
 		DevAuth.RemoveToken();

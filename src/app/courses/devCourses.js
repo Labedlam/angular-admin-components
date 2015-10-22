@@ -3,6 +3,7 @@ angular.module( 'orderCloud' )
 	.config( CoursesConfig )
 	.controller( 'DevCoursesCtrl', DevCoursesController )
 	.controller( 'DevCourseCtrl', DevCourseController )
+	.controller( 'DevCoursesAdminCtrl', DevCoursesAdminController )
 	.controller( 'DevClassCtrl', DevClassController )
 	.controller( 'DevClassEditCtrl', DevClassEditController)
 	.controller( 'LearningCtrl', LearningController)
@@ -51,8 +52,14 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				}
 			}
 		})
+		.state( 'base.devcourses.admin', {
+			url: '/admin',
+			templateUrl:'courses/templates/devcourses.admin.tpl.html',
+			controller:'DevCoursesAdminCtrl',
+			controllerAs: 'courses'
+		})
 		.state( 'base.devcourses.course', {
-			url: '/:courseid',
+			url: '/course/:courseid',
 			templateUrl:'courses/templates/devcourse.tpl.html',
 			controller:'DevCourseCtrl',
 			controllerAs: 'course',
@@ -330,7 +337,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('55555') == -1) {
+				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
 					var response = angular.copy(c);
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
@@ -343,7 +350,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		});
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('55555') == -1) {
+				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
 					var response = angular.copy(c);
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
@@ -460,7 +467,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	}
 
 	function findNextCourseID() {
-		Courses.List().then(function(data) {
+		Courses.List('developer').then(function(data) {
 			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
 			if (currentCourseIndex < data.length) {
 				nextCourseID = data[currentCourseIndex + 1].ID;
@@ -482,9 +489,11 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	}
 
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
-		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
+		//var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
+		var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
 		var method = response.config.method;
 		var epSplit = endpoint.split('/');
+		console.log(response);
 		angular.forEach(vm.docs, function(svc, svcKey) {
 			angular.forEach(svc, function(mtd, mtdKey) {
 				var newEpSplit = [];
@@ -503,6 +512,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 							}
 
 						});
+						console.log(docEpSplit, newEpSplit);
 						if (Underscore.difference(docEpSplit, newEpSplit).length == 0 && Underscore.difference(newEpSplit, docEpSplit).length == 0) {
 							console.log('hello');
 							angular.forEach(vm.current.Assert, function(assertion) {
@@ -574,7 +584,53 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 }
 
+function DevCoursesAdminController(CoursesList, Underscore, $scope) {
+	var vm = this;
+	vm.coursesList = CoursesList;
 
+	vm.moveScript = moveScript;
+	vm.filterCourseList = filterCourseList;
+	vm.editSelected = null;
+
+	$scope.$watch(function() {
+		return vm.editSelected;
+	}, function(newVal, oldVal) {
+		if (!newVal) {
+			return
+		} else {
+			console.log(newVal);
+			vm.selectedCourseIndex = Underscore.findIndex(vm.coursesList, {Name: newVal});
+		}
+	});
+
+	function filterCourseList(obj) {
+		if (vm.courseFilter == 'all') {
+			return true;
+		} else if (vm.courseFilter == 'hidden') {
+			return obj.AdminHide == true;
+		} else {
+			return obj.AdminHide == false;
+		}
+
+	}
+
+	function moveScript(direction, listOrder) {
+		console.log(listOrder);
+		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
+		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
+		var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+
+		console.log(curScriptIndex);
+
+		if (direction == 'up') {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
+			vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+		} else {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
+			vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+		}
+	}
+}
 
 
 function ClassService($resource, apiurl, $q, Classes) {

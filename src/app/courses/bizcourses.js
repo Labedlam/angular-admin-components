@@ -4,6 +4,7 @@ angular.module( 'orderCloud' )
     .controller( 'BizCourseEditCtrl', BizCourseEditController)
     .controller( 'BizCoursesCtrl', BizCoursesController)
     .controller( 'BizCourseCtrl', BizCourseController)
+    .controller( 'BizCourseAdminCtrl', BizCourseAdminController )
 
 ;
 
@@ -23,8 +24,15 @@ function BizCoursesConfig( $stateProvider ) {
                 }
             }
         })
+        .state( 'base.bizcourses.admin', {
+            url: '/admin',
+            templateUrl:'courses/templates/bizcourse.admin.tpl.html',
+            controller:'BizCourseAdminCtrl',
+            controllerAs: 'course'
+            //data: {limitAccess:true},
+        })
         .state( 'base.bizcourses.course', {
-            url: '/:courseid',
+            url: '/course/:courseid',
             templateUrl:'courses/templates/bizcourse.tpl.html',
             controller:'BizCourseCtrl',
             controllerAs: 'course',
@@ -60,6 +68,43 @@ function BizCoursesController(CoursesList) {
     var vm = this;
     vm.list = CoursesList;
 }
+
+function BizCourseAdminController(CoursesList) {
+    var vm = this;
+    vm.coursesList = CoursesList;
+
+    vm.moveScript = moveScript;
+    vm.filterCourseList = filterCourseList;
+
+    function filterCourseList(obj) {
+        if (vm.courseFilter == 'all') {
+            return true;
+        } else if (vm.courseFilter == 'hidden') {
+            return obj.AdminHide == true;
+        } else {
+            return obj.AdminHide == false;
+        }
+
+    }
+
+    function moveScript(direction, listOrder) {
+        console.log(listOrder);
+        var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
+        var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
+        var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+
+        console.log(curScriptIndex);
+
+        if (direction == 'up') {
+            vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
+            vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+        } else {
+            vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
+            vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+        }
+    }
+}
+
 
 function BizCourseController(SelectedCourse, ClassList) {
     var vm = this;

@@ -180,6 +180,7 @@
   }
   .navbar-fixed-bottom {
 	height: 51px;
+	min-height: 51px;
   }
   &:not(.interactive) {
 	max-height:~'calc(100vh - 111px)';
@@ -1100,4 +1101,57 @@
   position: fixed;
   right: 45px;
   bottom: 15px;
+}
+
+
+#CourseAdmin {
+  background-color: @gray-dark;
+  .admin-sec {
+	padding-bottom: 20px;
+	margin-bottom: 30px;
+	border-bottom: 1px solid @gray-dark;
+  }
+  .course-filter {
+	margin: 5px 0;
+
+  }
+  .manage-courses, .create-course {
+	height: ~'calc(100vh - 60px)';
+	overflow: auto;
+  }
+
+  .manage-courses {
+	background-color: lighten(@gray-dark, 15);
+	color: white;
+	span {
+	  display: inline-block;
+	  padding-top: 10px;
+	}
+	.course-list-titles {
+	  padding: 10px 0;
+	  background-color: @gray-dark;
+	  color: @gray-lighter;
+	}
+	.course-list-item {
+	  .pull-right {
+		width: 20px;
+	  }
+	  color: @gray-dark;
+	  background-color: @gray-lighter;
+	  padding: 10px 0;
+	  border: 1px solid @gray-dark;
+	  border-top: transparent;
+	}
+	.course-list-item.inactive {
+	  background-color: lighten(red, 30);
+	}
+	.course-list {
+	  max-height: 500px;
+
+
+	}
+  }
+  .create-course {
+	background-color: @gray-lighter;
+  }
 }

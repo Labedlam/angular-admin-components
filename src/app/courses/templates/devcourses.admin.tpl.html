@@ -1,0 +1,116 @@
+<article class="container-fluid" id="CourseAdmin">
+    <div class="manage-courses col-xs-6 col-xs-offset-3">
+        <h3>Courses Admin</h3>
+        <div class="col-xs-12">
+            <h4>Course Order</h4>
+            <!--<div class="form-group col-xs-6">
+                <label>Hidden/Visible</label>
+                <select class="form-control course-filter" ng-options="o for o in ['all', 'visible', 'hidden']" ng-model="course.courseFilter" ng-init="course.courseFilter = 'all'"></select>
+            </div>-->
+            <!--<div class="form-group col-xs-6">
+                <label>Active/Inactive</label>
+                <select class="form-control course-filter" ng-options="o for o in [true, false]" ng-model="course.courseActiveFilter" ng-init="course.courseActiveFilter = true"></select>
+            </div>-->
+        </div>
+        <div class="course-list admin-sec col-xs-12">
+            <div class="col-xs-12 course-list-titles">
+                <div class="col-xs-2">Order</div>
+                <div class="col-xs-6">Name</div>
+                <div class="col-xs-2">Active</div>
+            </div>
+            <div class="course-list-item col-xs-12" ng-repeat="_course in courses.coursesList | filter: courses.filterCourseList | filter:{Active: courses.courseActiveFilter} | orderBy: 'ListOrder'" ng-class="{inactive: !_course.Active}">
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                <div class="col-xs-2">
+                    {{_course.ListOrder}}
+                </div>
+                <div class="col-xs-6">
+                    {{_course.Name}}
+                </div>
+                <div class="col-xs-2">
+                    {{_course.Active}}
+                </div>
+            </div>
+        </div>
+        <div class="course-edit admin-sec col-xs-12">
+            <h4>Edit Course</h4>
+
+            <form>
+                <div class="form-group col-xs-12">
+                    <label>Select Course</label>
+                    <select class="form-control" ng-model="courses.editSelected">
+                        <option ng-repeat="o in courses.coursesList">{{o.Name}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Name</label>
+                    <input class="form-control" placeholder="Name" ng-model="courses.coursesList[courses.selectedCourseIndex].Name">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>ID</label>
+                    <input class="form-control" placeholder="ID" ng-model="courses.coursesList[courses.selectedCourseIndex].ID">
+                </div>
+                <div class="form-group col-xs-12">
+                    <label>Description</label>
+                    <textarea rows="2" class="form-control" placeholder="Description" ng-model="courses.coursesList[courses.selectedCourseIndex].Description"></textarea>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Active</label>
+                    <input class="form-control" placeholder="Active" ng-model="courses.coursesList[courses.selectedCourseIndex].Active">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Image Link</label>
+                    <input class="form-control" placeholder="Image URL" ng-model="courses.coursesList[courses.selectedCourseIndex].ImgUrl">
+                </div>
+                <div class="col-xs-8 col-xs-offset-2 course-list-titles">
+                    <div class="col-xs-12">ClassID</div>
+
+                </div>
+                <div class="course-list-item col-xs-8 col-xs-offset-2" ng-repeat="_course in courses.coursesList[courses.selectedCourseIndex].Classes">
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                    <div class="col-xs-9">
+                        {{_course}}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="add-course admin-sec col-xs-12">
+            <h4>Add Course</h4>
+            <form>
+                <div class="form-group col-xs-6">
+                    <label>Name</label>
+                    <input class="form-control" placeholder="Name" ng-model="course.newCourse.Name">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>ID</label>
+                    <input class="form-control" placeholder="ID" ng-model="course.newCourse.ID">
+                </div>
+                <div class="form-group col-xs-12">
+                    <label>Description</label>
+                    <textarea rows="2" class="form-control" placeholder="Description" ng-model="course.newCourse.Description"></textarea>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Active</label>
+                    <input class="form-control" placeholder="Active" ng-model="course.newCourse.Active">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Image Link</label>
+                    <input class="form-control" placeholder="Image URL" ng-model="course.newCourse.Img">
+                </div>
+            </form>
+            <div class="col-xs-12">
+                <button class="btn btn-primary">Create Course</button>
+            </div>
+        </div>
+
+        <div class="delete-course admin-sec col-xs-12">
+            <h4>Delete Course</h4>
+            <select class="form-control" ng-model="course.deleteSelected">
+                <option ng-repeat="o in courses.coursesList">{{o.Name}}</option>
+            </select>
+            <button class="btn btn-danger pull-right">DELETE COURSE</button>
+        </div>
+    </div>
+</article>

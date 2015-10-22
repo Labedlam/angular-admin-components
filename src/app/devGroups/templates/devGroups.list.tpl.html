@@ -30,14 +30,14 @@
 				<h4>You currently do not belong to any groups, <a href="" ui-sref="base.newGroup">create one now</a></h4>
 			</div>
 		</div>
-		<div class="col-xs-12" ng-if="!(devGroups.list | filter:devGroups.searchTerm).length">
+		<div class="col-xs-12" ng-if="devGroups.list.length && !(devGroups.list | filter:devGroups.searchTerm).length">
 			<div class="well well-lg text-center">
 				<h4><i class="fa fa-search"></i> We couldn't find any groups that match your search</h4>
 			</div>
 		</div>
 	</div>
 </div>
-<div id="DevGroupList" class="container" ng-if="!(base.currentUser.CreateGroups && devGroups.list.length)">
+<div id="DevGroupList" class="container" ng-if="!base.currentUser.CreateGroups && !devGroups.list.length">
 	<div class="well well-lg text-center">
 		<h4>You do not belong to a development group and do not have permission to create one
 			<br/> Contact Four51 for group admin capabilities.</h4>

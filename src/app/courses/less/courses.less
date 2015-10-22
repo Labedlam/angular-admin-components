@@ -952,3 +952,152 @@
   };
   background-color: darken(@gray-lighter, 10);
 }
+
+
+#BizCourse {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  height: ~'calc(100vh - 60px)';
+  .active-class {
+	color: @four51-orange;
+	font-weight: 700;
+  }
+  .course-name {
+	height: 150px;
+	width: 100%;
+	h2 {
+	  padding-top: 40px;
+	  font-size: 3em;
+	}
+	p {
+	  padding-left: 5px;
+	  color: @gray-light;
+	}
+	vertical-align: middle;
+	padding-left: 50px;
+	font-weight: 100;
+	color: @four51-blue;
+  }
+  .course-general {
+	height: 150px;
+	width: 100%;
+	padding-left: 50px;
+  }
+  .class-names {
+	height: ~'calc(100vh - 210px)';
+	flex: 1;
+	border-top: 1px solid darken(@gray-lighter, 5);
+	.class-name {
+	  padding: 15px 5px;
+	  border-bottom: 1px solid darken(@gray-lighter, 5);
+	}
+  }
+
+  .class-editor {
+	flex: 3;
+	height: ~'calc(100vh - 210px)';
+	z-index: 100000;
+  }
+  .class-content {
+	padding: 8px;
+	flex: 3;
+	max-width: 70%;
+	/*border-right: 1px solid darken(@gray-lighter, 5);
+	border-left: 1px solid darken(@gray-lighter, 5);
+	border-top: 1px solid darken(@gray-lighter, 5);*/
+	background-color: @gray-lighter;
+	.container {
+	  width: auto;
+	}
+  }
+}
+
+#BizCourseEditor.container-fluid {
+  padding: 0;
+}
+#BizCourseEditor {
+  height: ~'calc(100vh - 60px)';
+  .save-button {
+	margin: 5px;
+  }
+  .active-class {
+	color: @four51-orange;
+	font-weight: 700;
+  }
+  .order-container {
+	height: 300px;
+	overflow: auto;
+  }
+  .course-class-order.inactive {
+	background-color: lighten(red, 30);
+  }
+  .course-class-order.even-class {
+	background-color: darken(@gray-lighter, 15);
+  }
+  .course-class-order {
+	color: @gray-dark;
+	margin: 2px;
+	padding: 4px 0;
+	background-color: @gray-lighter;
+	.pull-right {
+	  min-width: 20px;
+	}
+  }
+  .create-class .btn {
+	margin-left: 5px;
+  }
+
+  .course-name {
+	height: 350px;
+	width: 100%;
+	line-height: 150px;
+	vertical-align: middle;
+	padding-left: 50px;
+	font-size: 3em;
+	color: @four51-blue;
+  }
+  .course-general {
+	background-color: @four51-navy;
+	color: white;
+	height: ~'calc(100vh - 360px)';
+	width: 100%;
+  }
+  .class-names {
+	height: ~'calc(100vh - 61px)';
+	border-top: 1px solid darken(@gray-lighter, 5);
+	.class-name {
+	  padding: 15px 5px;
+	  border-bottom: 1px solid darken(@gray-lighter, 5);
+	}
+  }
+  .class-editor-container {
+	height: ~'calc(100vh - 61px)';
+	padding: 14px;
+	padding-right: 7px;
+	background-color: darken(@gray-lighter, 20);
+  }
+  .class-editor {
+	height: 100%;
+  }
+  .class-content-container {
+	height: ~'calc(100vh - 61px)';
+	padding: 14px;
+	padding-left: 7px;
+	background-color: darken(@gray-lighter, 20);
+  }
+  .class-content {
+	height: 100%;
+	overflow: auto;
+	background-color: @gray-lighter;
+	.container {
+	  width: auto;
+	}
+  }
+}
+
+.biz-button {
+  position: fixed;
+  right: 45px;
+  bottom: 15px;
+}

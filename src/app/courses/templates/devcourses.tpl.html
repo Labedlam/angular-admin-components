@@ -1,16 +1,13 @@
-<article>
-	<header class="jumbotron course-summary-header">
-		<div class="container-fluid">
-			<img class="img-responsive" src="assets/images/how-to-back.jpg">
-			<div class="well well-lg">
-				ORDERCLOUD TRAINING AND REFERENCE GUIDES
-			</div>
+<article ng-if="application.$state.is('base.devcourses')">
+	<header class="jumbotron">
+		<div class="container">
+				<h3>ORDERCLOUD TRAINING AND REFERENCE GUIDES</h3>
 		</div>
 	</header>
 	<div class="container">
 		<p class="lead">Whether you're completely new to using RESTful APIs or it's second nature, this is the place to learn everything there is to know about creating custom OrderCloud applications.</p>
 		<div class="courses-container" ng-repeat="course in courses.list | orderBy: 'ListOrder'">
-			<div class="course-summary" ui-sref="^.course({courseid:course.ID})">
+			<div class="course-summary" ui-sref="base.devcourses.course({courseid:course.ID})">
 				<figure>
 					<img class="img-responsive" ng-src="{{course.ImgUrl}}" alt=""/>
 				</figure>
@@ -22,3 +19,4 @@
 		</div>
 	</div>
 </article>
+<ui-view autoscroll="false"></ui-view>

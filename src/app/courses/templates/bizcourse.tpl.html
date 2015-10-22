@@ -1,0 +1,14 @@
+<article class="container" id="BizCourse">
+    <div class="course-name">
+        <h2>{{course.course.Name}}</h2>
+        <p>{{course.course.Description}}</p>
+    </div>
+    <div class="class-names">
+        <div class="class-name" ng-repeat="class in course.classList" ng-click="course.selectClass(class)" ng-class="{'active-class': class.Name == course.selectedClass.Name}">
+            {{class.Name}}
+        </div>
+    </div>
+    <div class="class-content" compile="course.selectedClass.TemplateUrl">
+    </div>
+</article>
+<button class="btn btn-primary biz-button">Next Class</button>

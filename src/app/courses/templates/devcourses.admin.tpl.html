@@ -18,7 +18,7 @@
                 <div class="col-xs-6">Name</div>
                 <div class="col-xs-2">Active</div>
             </div>
-            <div class="course-list-item col-xs-12" ng-repeat="_course in course.coursesList | filter: course.filterCourseList | filter:{Active: course.courseActiveFilter} | orderBy: 'ListOrder'" ng-class="{inactive: !_course.Active}">
+            <div class="course-list-item col-xs-12" ng-repeat="_course in courses.coursesList | filter: courses.filterCourseList | filter:{Active: courses.courseActiveFilter} | orderBy: 'ListOrder'" ng-class="{inactive: !_course.Active}">
                 <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
                 <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
                 <div class="col-xs-2">
@@ -32,9 +32,50 @@
                 </div>
             </div>
         </div>
-        <div class="edit-course admin-sec col-xs-12">
+        <div class="course-edit admin-sec col-xs-12">
             <h4>Edit Course</h4>
+
+            <form>
+                <div class="form-group col-xs-12">
+                    <label>Select Course</label>
+                    <select class="form-control" ng-model="courses.editSelected">
+                        <option ng-repeat="o in courses.coursesList">{{o.Name}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Name</label>
+                    <input class="form-control" placeholder="Name" ng-model="courses.coursesList[courses.selectedCourseIndex].Name">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>ID</label>
+                    <input class="form-control" placeholder="ID" ng-model="courses.coursesList[courses.selectedCourseIndex].ID">
+                </div>
+                <div class="form-group col-xs-12">
+                    <label>Description</label>
+                    <textarea rows="2" class="form-control" placeholder="Description" ng-model="courses.coursesList[courses.selectedCourseIndex].Description"></textarea>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Active</label>
+                    <input class="form-control" placeholder="Active" ng-model="courses.coursesList[courses.selectedCourseIndex].Active">
+                </div>
+                <div class="form-group col-xs-6">
+                    <label>Image Link</label>
+                    <input class="form-control" placeholder="Image URL" ng-model="courses.coursesList[courses.selectedCourseIndex].ImgUrl">
+                </div>
+                <div class="col-xs-8 col-xs-offset-2 course-list-titles">
+                    <div class="col-xs-12">ClassID</div>
+
+                </div>
+                <div class="course-list-item col-xs-8 col-xs-offset-2" ng-repeat="_course in courses.coursesList[courses.selectedCourseIndex].Classes">
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                    <div class="col-xs-9">
+                        {{_course}}
+                    </div>
+                </div>
+            </form>
         </div>
+
         <div class="add-course admin-sec col-xs-12">
             <h4>Add Course</h4>
             <form>
@@ -63,10 +104,11 @@
                 <button class="btn btn-primary">Create Course</button>
             </div>
         </div>
+
         <div class="delete-course admin-sec col-xs-12">
             <h4>Delete Course</h4>
             <select class="form-control" ng-model="course.deleteSelected">
-                <option ng-repeat="o in course.coursesList">{{o.Name}}</option>
+                <option ng-repeat="o in courses.coursesList">{{o.Name}}</option>
             </select>
             <button class="btn btn-danger pull-right">DELETE COURSE</button>
         </div>

@@ -50,8 +50,10 @@ angular.module( 'orderCloud', [
 	.constant('apiurl', 'http://core.four51.com:9002')
 	.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
 
-	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
-	/*.constant('devapiurl', 'http://localhost:55555')*/
+	//.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	.constant('devapiurl', 'https://devcenterapi-test.herokuapp.com')
+	//.constant('devapiurl', 'http://localhost:55555')
+
 
 ;
 
@@ -109,8 +111,9 @@ function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	}
 }*/
 
-function AppCtrl( $state, DevAuth, Auth ) {
+function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	var vm = this;
+	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E');
 	vm.logout = function() {
 		DevAuth.RemoveToken();
 		Auth.RemoveToken();

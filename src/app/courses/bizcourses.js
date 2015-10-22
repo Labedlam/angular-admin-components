@@ -73,15 +73,35 @@ function BizCourseAdminController(CoursesList) {
     var vm = this;
     vm.coursesList = CoursesList;
 
-    vm.filterCourseList = function(obj) {
+    vm.moveScript = moveScript;
+    vm.filterCourseList = filterCourseList;
+
+    function filterCourseList(obj) {
         if (vm.courseFilter == 'all') {
             return true;
         } else if (vm.courseFilter == 'hidden') {
-            return obj.Hide == true;
+            return obj.AdminHide == true;
         } else {
-            return obj.Hide == false;
+            return obj.AdminHide == false;
         }
 
+    }
+
+    function moveScript(direction, listOrder) {
+        console.log(listOrder);
+        var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
+        var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
+        var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+
+        console.log(curScriptIndex);
+
+        if (direction == 'up') {
+            vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
+            vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+        } else {
+            vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
+            vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+        }
     }
 }
 

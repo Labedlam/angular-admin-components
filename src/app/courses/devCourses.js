@@ -3,6 +3,7 @@ angular.module( 'orderCloud' )
 	.config( CoursesConfig )
 	.controller( 'DevCoursesCtrl', DevCoursesController )
 	.controller( 'DevCourseCtrl', DevCourseController )
+	.controller( 'DevCoursesAdminCtrl', DevCoursesAdminController )
 	.controller( 'DevClassCtrl', DevClassController )
 	.controller( 'DevClassEditCtrl', DevClassEditController)
 	.controller( 'LearningCtrl', LearningController)
@@ -51,8 +52,14 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				}
 			}
 		})
+		.state( 'base.devcourses.admin', {
+			url: '/admin',
+			templateUrl:'courses/templates/devcourses.admin.tpl.html',
+			controller:'DevCoursesAdminCtrl',
+			controllerAs: 'courses'
+		})
 		.state( 'base.devcourses.course', {
-			url: '/:courseid',
+			url: '/course/:courseid',
 			templateUrl:'courses/templates/devcourse.tpl.html',
 			controller:'DevCourseCtrl',
 			controllerAs: 'course',
@@ -574,7 +581,53 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 }
 
+function DevCoursesAdminController(CoursesList, Underscore, $scope) {
+	var vm = this;
+	vm.coursesList = CoursesList;
 
+	vm.moveScript = moveScript;
+	vm.filterCourseList = filterCourseList;
+	vm.editSelected = null;
+
+	$scope.$watch(function() {
+		return vm.editSelected;
+	}, function(newVal, oldVal) {
+		if (!newVal) {
+			return
+		} else {
+			console.log(newVal);
+			vm.selectedCourseIndex = Underscore.findIndex(vm.coursesList, {Name: newVal});
+		}
+	});
+
+	function filterCourseList(obj) {
+		if (vm.courseFilter == 'all') {
+			return true;
+		} else if (vm.courseFilter == 'hidden') {
+			return obj.AdminHide == true;
+		} else {
+			return obj.AdminHide == false;
+		}
+
+	}
+
+	function moveScript(direction, listOrder) {
+		console.log(listOrder);
+		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
+		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
+		var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+
+		console.log(curScriptIndex);
+
+		if (direction == 'up') {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
+			vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+		} else {
+			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
+			vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+		}
+	}
+}
 
 
 function ClassService($resource, apiurl, $q, Classes) {

@@ -2,10 +2,10 @@ angular.module('orderCloud')
 
     .config( ApiConsoleConfig )
     .controller('ApiConsoleCtrl', ApiConsoleController)
-    .controller('ResponseModalCtrl', ResponseModalController)
 	.factory('ApiLoader', ApiLoaderService)
 	.factory('LockableParams', LockableParamsService)
 	.factory('ApiConsoleService', ApiConsoleService)
+	.factory('ConsoleContext', ConsoleContextService)
 	.directive('parameterObject', ParameterObjectDirective)
 	.directive('emptyToNull', EmptyToNullDirective)
 	.filter('objectParams', objectParams)
@@ -29,16 +29,15 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controller': 'ApiConsoleCtrl',
         'controllerAs': 'console',
         'resolve': {
-			OrderCloudSections:  function($q, Docs) {
-				var defer = $q.defer();
-				Docs.GetAll().then(function(data) {
-					defer.resolve(data.Sections);
-				});
-				return defer.promise;
+			DocsReference: function(Docs) {
+				return Docs.GetAll();
 			},
-			OrderCloudResources: function (ApiLoader) {
-                return ApiLoader.getResources('orderCloud.sdk');
-            }
+			DevAccess: function(DevCenter) {
+				return DevCenter.Me.GetAccess();
+			},
+			ActiveContext: function(ConsoleContext) {
+				return ConsoleContext.Get();
+			}
         },
         'data':{
 			limitAccess: true,
@@ -47,16 +46,48 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudResources, ApiConsoleService, LockableParams) {
+function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, DevAccess, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
-	vm.Resources = OrderCloudResources;
-	vm.SelectedResource = null;
+	//Context variables
+	vm.AvailableContexts = DevAccess.Items;
+	vm.ActiveContext = ActiveContext ? Underscore.where(vm.AvailableContexts, {ClientID: ActiveContext.ClientID})[0] : null;
+	vm.SelectedContext = vm.ActiveContext;
 
-	vm.SelectedMethod = "";
+	//Console variables
+	vm.Sections = DocsReference.Sections;
+	vm.Resources = DocsReference.Resources;
+	vm.SelectedResource = null;
 	vm.SelectedEndpoint = null;
-	vm.Response = null;
+
+	//Response variables
 	vm.Responses = [];
 	vm.SelectedResponse = null;
+
+	vm.setContext = function(context) {
+		ConsoleContext.Update(context)
+			.then(function() {
+				if (!vm.ActiveContext) {
+					vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
+				} else {
+					LockableParams.Clear();
+					vm.Responses = [];
+					vm.SelectedResponse = null;
+					vm.SelectedEndpoint = null;
+				}
+				vm.ActiveContext = context;
+			});
+	};
+
+	vm.removeContext = function() {
+		LockableParams.Clear();
+		vm.SelectedContext = null;
+		vm.ActiveContext = null;
+		vm.SelectedResource = null;
+		vm.Responses = [];
+		vm.SelectedResponse = null;
+		LockableParams.Clear();
+		ConsoleContext.Remove();
+	};
 
 	vm.isLocked = function(paramName) {
 		return LockableParams.IsLocked(paramName);
@@ -77,71 +108,54 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 	};
 
 	vm.addNewFilter = function() {
-		vm.SelectedMethod.ResolvedParameters.Filters.push({Key: null, Value: null})
+		vm.SelectedEndpoint.Filters.push({Key: null, Value: null})
 	};
 
 	vm.removeFilter = function(filterIndex) {
-		vm.SelectedMethod.ResolvedParameters.Filters.splice(filterIndex, 1);
+		vm.SelectedEndpoint.Filters.splice(filterIndex, 1);
 	};
 
 	vm.Execute = function() {
-		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod)
-			.then( function(data) {
-				console.log(data);
-				if (!(data.ID || data.Meta)) return;
-				vm.Response = $filter('json')(data);
-			})
-			.catch( function(ex) {
-				if (!ex) return;
-				vm.Response = $filter('json')(ex);
-			});
+		ApiConsoleService.ExecuteApi(vm.SelectedEndpoint);
 	};
 
 	vm.SelectResource = function(scope) {
 		vm.SelectedResource = scope.resource;
-		vm.SelectedResource.Documentation = $resource( apiurl + '/v1/docs/' + vm.SelectedResource.name ).get();
-		vm.SelectedMethod = null;
 	};
 
-	vm.SelectMethod = function(scope) {
-		vm.SelectedMethod = scope.method;
+	if (vm.ActiveContext) {
+		vm.SelectResource({resource: Underscore.where(vm.Resources, {ID: 'Buyers'})[0]});
+	}
+
+	vm.SelectEndpoint = function(scope) {
+		vm.SelectedEndpoint = scope.endpoint;
 	};
 
 	$scope.$watch(function () {
 		return vm.SelectedResource;
 	}, function (n, o) {
-		if (!n || n === o) return;
-		vm.Response = null;
+		if (n && n === o) return;
 		vm.SelectedEndpoint = null;
-		vm.SelectedMethod = '';
 	});
 
 	$scope.$watch(function () {
-		return vm.SelectedMethod;
+		return vm.SelectedEndpoint;
 	}, function (n, o) {
 		if (!n || n == '' || n === o) return;
-		vm.Response = null;
-		vm.SelectedEndpoint = null;
-		if (angular.isDefined(n.params)) {
-			console.log('trigger');
-			ApiConsoleService.CreateParameters(vm.SelectedResource, n)
-				.then(function(data) {
-					console.log('trigger 2');
-					vm.SelectedEndpoint = data.SelectedEndpoint;
-					vm.SelectedMethod.ResolvedParameters = data.ResolvedParameters;
-				});
+		if (angular.isDefined(n.Parameters)) {
+			ApiConsoleService.InitializeParameters(n);
 		}
 	});
 
 	$scope.$on('event:responseSuccess', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('docs/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
+		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
@@ -152,105 +166,50 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, OrderCloudReso
 	}
 }
 
-function ResponseModalController($modalInstance, Response) {
-	var vm = this;
-	vm.response = Response;
-
-}
-
-function ApiConsoleService($injector, $resource, Underscore, apiurl, LockableParams) {
+function ApiConsoleService( $filter, $resource, apiurl, LockableParams ) {
 	var service = {
 		ExecuteApi: _executeApi,
-		CreateParameters: _createParameters
+		InitializeParameters: _initializeParameters
 	};
 
 	return service;
 
 	/////
-	function _executeApi(SelectedResource, SelectedMethod) {
-		var params = [];
-		angular.forEach(SelectedMethod.ResolvedParameters.Fields, function(p) {
-			if (p.Value == "") return; //Avoid registering blank strings
-			params.push(p.Value);
-		});
-		if (SelectedMethod.ResolvedParameters.Objects.length && SelectedMethod.ResolvedParameters.Objects[0].Value) params.push(JSON.parse(SelectedMethod.ResolvedParameters.Objects[0].Value));
-		if (SelectedMethod.ResolvedParameters.Filters.length) {
-			var filters = {};
-			angular.forEach(SelectedMethod.ResolvedParameters.Filters, function(filter) {
-				if (filter.Key && filter.Value) filters[filter.Key] = filter.Value;
+	function _executeApi(endpoint) {
+		var UriTemplate = '/' + $filter('URItoAngular')(endpoint.UriTemplate);
+		var HttpVerb = endpoint.HttpVerb;
+		var RequestBody = endpoint.RequestBody ? endpoint.RequestBody.Value : undefined;
+		var Parameters = writeParameters(endpoint);
+
+		function writeParameters(endpoint) {
+			var result = {};
+			angular.forEach(endpoint.Parameters, function(p) {
+				result[p.Name] = p.Value;
 			});
-			params.push(filters);
+			if (endpoint.Filters) {
+				angular.forEach(endpoint.Filters, function(filter) {
+					result[filter.Key] = filter.Value;
+				})
+			}
+			return result;
 		}
-		return $injector.get(SelectedResource.name)[SelectedMethod.name].apply(this, params);
+
+		return $resource(apiurl + UriTemplate, Parameters, {resourceMethod: {method: HttpVerb}}).resourceMethod(RequestBody).$promise;
 	}
 
-	function _createParameters(SelectedResource, SelectedMethod) {
-		var result = {
-			SelectedEndpoint: null,
-			ResolvedParameters: {
-				Fields: [],
-				Objects: [],
-				Filters: []
-			}
-		};
-		return $resource( apiurl + '/v1/docs/' + SelectedResource.name + '/' + SelectedMethod.name).get().$promise
-			.then( function(data) {
-				result.SelectedEndpoint = data;
-				analyzeParamters(data);
-				return result;
-			});
-
-		function analyzeParamters(endpoint) {
-			var lockableParams = LockableParams.Get();
-			angular.forEach(SelectedMethod.params, function(methodParameter) {
-				var match = Underscore.where(endpoint.Parameters, {Name: methodParameter});
-				var param = match.length ? match[0] : {Value: endpoint.RequestBody.Sample, Name: methodParameter, Required: true, Lockable: false, Type: 'object'};
-				if (param.Value) {
-					result.ResolvedParameters.Objects.push(param);
-				} else {
-					param.Lockable = angular.isDefined(lockableParams[param.Name]);
-					param.Value = param.Lockable ? lockableParams[param.Name] : null;
-					param.Name == 'filters' ? result.ResolvedParameters.CanFilter = true : result.ResolvedParameters.Fields.push(param);
-				}
-			});
-
-
-			/*angular.forEach(SelectedMethod.params, function(methodParameter) {
-				var isText = false;
-				var isRequired = true;
-				var isLockable = false;
-				var lockedValue = null;
-				angular.forEach(LockableParams.Get(), function(value, key) {
-					if (methodParameter == key) {
-						isLockable = true;
-						lockedValue = value
-					}
-				});
-				angular.forEach(endpoint.Parameters, function(parameter) {
-					if (parameter.Name == methodParameter) {
-						isText = true;
-						isRequired = parameter.Required;
-					}
-				});
-
-				function setValue() {
-					if (isText) {
-						return lockedValue;
-					} else {
-						return endpoint.RequestBody ? endpoint.RequestBody.Sample : null;
-					}
-				}
-
-				var resolvedParameter = {
-					Name: methodParameter,
-					Type: isText ? 'text' : 'object',
-					Value: setValue(),
-					Required: isRequired,
-					Lockable: isLockable
-				};
-				result.ResolvedParameters.push(resolvedParameter);
-			});*/
+	function _initializeParameters(endpoint) {
+		var lockableParams = LockableParams.Get();
+		if (endpoint.RequestBody) {
+			endpoint.RequestBody.Value = endpoint.RequestBody.Sample;
 		}
+		angular.forEach(endpoint.Parameters, function(param) {
+			if (param.Name == 'filters') {
+				endpoint.Filters = [];
+			} else {
+				param.Lockable = angular.isDefined(lockableParams[param.Name]);
+				param.Value = param.Lockable ? lockableParams[param.Name] : null;
+			}
+		});
 	}
 }
 
@@ -325,7 +284,8 @@ function LockableParamsService($q) {
 		Get: _get,
 		IsLocked: _isLocked,
 		SetLock: _setLock,
-		RemoveLock: _removeLock
+		RemoveLock: _removeLock,
+		Clear: _clearAll
 	};
 
 	var lockableParams = {
@@ -354,6 +314,15 @@ function LockableParamsService($q) {
 	function _removeLock(key) {
 		var defer = $q.defer();
 		lockableParams[key] = null;
+		defer.resolve();
+		return defer.promise;
+	}
+
+	function _clearAll() {
+		var defer = $q.defer();
+		angular.forEach(lockableParams, function(value, key) {
+			lockableParams[key] = null;
+		});
 		defer.resolve();
 		return defer.promise;
 	}
@@ -400,6 +369,45 @@ function ParameterObjectDirective() {
 		}
 	};
 	return obj;
+}
+
+function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
+	var service = {
+		Get: _getContext,
+		Update: _updateContext,
+		Remove: _removeContext
+	};
+
+	function _getContext() {
+		var deferred = $q.defer();
+		var token = Auth.GetToken();
+		if (!angular.isDefined(token)) {
+			deferred.resolve('No Context');
+		} else {
+			var tokenPayload = jwtHelper.decodeToken(token);
+			deferred.resolve({
+				ClientID: tokenPayload.cid.toUpperCase(),
+				User: tokenPayload.usr
+			});
+		}
+		return deferred.promise;
+	}
+
+	function _updateContext(context) {
+		var deferred = $q.defer();
+		DevCenter.AccessToken(context.ClientID, context.UserID)
+			.then(function(data) {
+				Auth.SetToken(data['access_token']);
+				deferred.resolve();
+			});
+		return deferred.promise;
+	}
+
+	function _removeContext() {
+		Auth.RemoveToken();
+	}
+
+	return service;
 }
 
 function EmptyToNullDirective() {

@@ -1,0 +1,184 @@
+<div id="Class" ng-class="{'interactive':class.current.Interactive}">
+	<nav class="navbar navbar-inverse navbar-fixed-bottom">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand">{{course.current.Name + ' / ' + class.current.Name}}</a>
+			</div>
+			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" id="SavedIds" dropdown auto-close="outsideClick">
+				<a href dropdown-toggle><i class="fa fa-bookmark-o"></i></a>
+				<div class="dropdown-menu dropup dropup-content oc-vars" aria-labelledby="SavedIds">
+					<div class="icon-container">
+						<i class="fa fa-cubes"></i>
+					</div>
+					<div class="dropup-title">
+						OrderCloud Variables
+					</div>
+					<div class="oc-vars col-xs-12">
+						<div class="oc-var col-xs-12" ng-init="editVar = false" ng-repeat="var in class.user.savedVars">
+							<div class="col-xs-1 left-icon">
+								<a href ng-click="class.removeExistingVar(var.hash)"><i class="fa fa-remove"></i></a>
+							</div>
+							<div class="oc-var oc-var-key col-xs-4" ng-hide="editVar">
+								{{var.key}}
+							</div>
+							<div class="oc-var oc-var-val col-xs-6" ng-hide="editVar">
+								{{var.val}}
+							</div>
+							<input placeholder="variable" class="oc-var oc-var-key oc-var-input-key col-xs-4" ng-model="var.key" ng-show="editVar">
+							<input placeholder="value" class="oc-var oc-var-val oc-var-input-val col-xs-6" ng-model="var.val" ng-show="editVar">
+							<div class="col-xs-1 right-icon" ng-hide="editVar">
+								<a href ng-click="editVar = !editVar"><i class="fa fa-edit"></i></a>
+							</div>
+							<!--TODO: add ng-click for update variable-->
+							<div class="col-xs-1 right-icon" ng-click="class.editExistingVar(var.hash, var)" ng-show="editVar">
+								<a href><i class="fa fa-check"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="divider"></div>
+					<div ng-init="class.viewVarAdd = false" ng-click="class.viewVarAdd = !class.viewVarAdd" ng-hide="class.viewVarAdd" class="add-var">
+						<a href><i class="fa fa-plus-circle"></i></a>
+					</div>
+					<div ng-show="class.viewVarAdd" class="var-inputs">
+						<div>
+							<div class="var-input-icons col-xs-1">
+								<a href ng-click="class.viewVarAdd = false; class.user.newVar = {};"><i class="fa fa-remove"></i></a>
+							</div>
+							<input class="var-input col-xs-4" ng-model="class.user.newVar.key" placeholder="object">
+							<input class="var-input col-xs-6" ng-model="class.user.newVar.val" placeholder="value">
+							<div class="var-input-icons col-xs-1">
+								<!--TODO: add ng-click for save new var-->
+								<a ng-click="class.saveNewVar(class.user.newVar)" href class="pull-right"><i class="fa fa-check"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="dropup-knob"></div>
+				</div>
+			</div>
+			<div class="icon-divider pull-right"></div>
+			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" dropdown auto-close="outsideClick">
+				<a href dropdown-toggle><i class="fa fa-user"></i></a>
+				<div class="dropdown-menu dropup dropup-content" aria-labelledby="context-btn">
+					<div class="icon-container">
+						<i class="fa fa-group"></i>
+					</div>
+					<div class="dropup-title">
+						App Context Definition
+					</div>
+					<form>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="clientID" ng-model="class.context.clientID">
+						</div>
+						<div class="divider"></div>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Username" ng-model="class.context.username">
+						</div>
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Password" ng-model="class.context.password">
+						</div>
+						<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.context.setContext()">Set Context</button>
+						<button class="btn btn-danger btn-block pull-left" ng-click="class.context.clearContext()">Clear Context</button>
+					</form>
+					<div class="dropup-knob"></div>
+				</div>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a dropdown-toggle class="context-user" ng-class="{contextSet: class.context.User}">{{class.context.User ? 'Context User: ' + class.context.User.FirstName + ' ' + class.context.User.LastName : 'No Context User Set'}}</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a ng-hide="class.current.Interactive" href="" ng-click="class.nextClass()">Next Class</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<article id="ClassContainer" ng-class="{'interactive':!class.current.Interactive}">
+		<div id="CourseContent">
+			<div class="course-title">{{class.current.Name}}</div>
+			<div class="reading-content" compile="class.current.TemplateUrl"></div>
+			<div ng-show="class.current.Interactive" id="ClassRequirements">
+				<div ng-init="class.goalsCollapse = true" class="heading">
+					<a href class="pull-right" ng-click="class.goalsCollapse = !class.goalsCollapse"><i class="fa" ng-class="{'fa-chevron-up': class.goalsCollapse, 'fa-chevron-down': !class.goalsCollapse }"></i></a>
+					<h4 class="title">
+						Successful Requests to Complete
+					</h4>
+
+				</div>
+				<div class="body" collapse="class.goalsCollapse">
+					<div class="progress-entry" ng-repeat="goal in class.current.Assert">
+						<small><em>{{goal.Method}}</em></small>
+						<div class="no-count" ng-show="!goal.Successes">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</div>
+						<progressbar ng-show="goal.Successes" max="goal.AmountNeeded" value="goal.Successes || 0">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</progressbar>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div id="InteractiveUI" ng-if="class.current.Interactive">
+			<div id="ScriptInputContainer">
+				<div class="run-button">
+					<button class="btn btn-primary btn-block" ng-click="class.Execute()">Run</button>
+				</div>
+				<div class="script-nav">
+					<div class="script-selector">
+						<div class="selector-prefix">
+							SCRIPT
+						</div>
+						<div class="selector-choice">
+							{{class.current.ActiveScriptName}}
+						</div>
+						<div class="selector-icon">
+							<a ng-click="class.showScriptSelector = !class.showScriptSelector" href><i class="fa" ng-class="{'fa-chevron-down': !class.showScriptSelector, 'fa-chevron-up': class.showScriptSelector}"></i></a>
+						</div>
+						<div class="selector-dropdown" ng-init="class.showScriptSelector = false" ng-show="class.showScriptSelector">
+							<div class="script-option" ng-repeat="script in class.current.ScriptModels.Scripts" ng-click="class.activeScriptFn(script.Title)">
+								<h4>{{script.Name}}</h4>
+								<span><em>{{script.Description}}</em></span>
+							</div>
+							<div class="box-pointer"></div>
+						</div>
+					</div>
+
+				</div>
+				<div style="font-size: 1.1em" id="ScriptInput" class="code-block"
+					 ng-repeat="script in class.current.ScriptModels.Scripts" ng-class="{ActiveCodeBlock: script.Title == class.current.ActiveScript}"
+					 ui-ace="{
+				useWrapMode : true,
+				theme:'twilight',
+				mode: 'javascript',
+				tabSize: '4',
+				useSoftTabs: true,
+				showPrintMargin: false
+			}" ng-model="script.Model"></div>
+			</div>
+			<div id="Response">
+				<div id="ResponseList">
+					<div class="log-item-container" ng-repeat="response in class.Responses | orderBy:'+':true">
+						<div class="log-item">
+							<div class="apiRequestDisplay" ng-class="{success: (response.status < 300 && response.status >= 200), danger: (response.status >= 300 || response.status < 200), disabled: response != class.SelectedResponse}" ng-click="class.SelectResponse(response)">
+								<pre>{{response.config.method}}</pre>
+								<pre><i class="fa pull-right" ng-class="{'fa-check':(response.status < 300 && response.status >= 200), 'fa-warning': (response.status >= 300 || response.status < 200)}"></i>{{(response.config.url | OCRoutingUrl) + (response.config.params | OCUrlParams)}} <small>{{response.status + ' ' + response.statusText}}</small></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="ResponseBody" readonly ui-ace="{
+					useWrapMode : true,
+					theme:'twilight',
+					mode: 'json',
+					tabSize: '4',
+					useSoftTabs: true,
+					showPrintMargin: false,
+					showGutter: false
+					}" ng-model="class.SelectedResponse.data">
+				</div>
+				<div class="alert alert-success response-alert" role="alert" ng-show="class.classComplete">
+					<a class="pull-right" href ng-click="class.nextClass()">GO TO NEXT CLASS</a> <span class="response-words">All Requests Succeeded. Great Job!</span><i class="fa fa-check pull-left"></i>
+				</div>
+			</div>
+		</div>
+	</article>
+</div>

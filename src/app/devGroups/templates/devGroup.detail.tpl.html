@@ -1,0 +1,92 @@
+<div id="DevGroupDetail" class="container">
+	<div class="row">
+		<div class="col-md-4 team-info">
+			<aside class="panel panel-default">
+				<div class="panel-body">
+					<h3 class="page-header">{{devGroupDetail.model.Name}}
+						<small class="text-muted"><br/>{{devGroupDetail.model.Description}}</small>
+					</h3>
+					<div class="row">
+						<div class="col-xs-6">
+							<p class="lead"><b>{{devGroupDetail.members.length}}</b> Members</p>
+						</div>
+						<div class="col-xs-6">
+							<p class="lead"><b>{{devGroupDetail.instances.length}}</b> Instances</p>
+						</div>
+					</div>
+				</div>
+			</aside>
+		</div>
+		<div class="col-md-8 team-detail">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default"
+								ng-class="{active:devGroupDetail.activeTab == 'Members'}"
+								ng-click="devGroupDetail.setTab('Members')">Members</button>
+						<button type="button" class="btn btn-default"
+								ng-class="{active:devGroupDetail.activeTab == 'Instances'}"
+								ng-click="devGroupDetail.setTab('Instances')">Instances</button>
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<form name="addNewMemberForm" ng-submit="" ng-show="devGroupDetail.activeTab == 'Members'">
+						<div class="form-group input-group">
+							<input id="DevUserSearch" class="form-control" type="search" placeholder="Invite a new member..."
+								   autocomplete="off"
+								   ng-model="devGroupDetail.userSearchTerm"
+								   typeahead-template-url="common/user.result.tpl.html"
+								   uib-typeahead="user as user for user in devGroupDetail.searchDevUsers($viewValue)"
+								   typeahead-on-select="devGroupDetail.selectDevUser($item)"/>
+							<span class="input-group-btn">
+								<button class="btn btn-primary" ng-click="devGroupDetail.inviteDevUser()"><i class="fa fa-send"></i> Send Invite</button>
+							</span>
+						</div>
+					</form>
+					<form name="addNewInstanceForm" ng-submit="" ng-show="devGroupDetail.activeTab == 'Instances'">
+						<div class="form-group input-group">
+							<input id="DevAccessSearch" class="form-control" type="search" placeholder="Find an instance..."
+								   autocomplete="off"
+								   ng-model="devGroupDetail.accessSearchTerm"
+								   typeahead-template-url="common/access.result.tpl.html"
+								   uib-typeahead="access as access.AppName for access in devGroupDetail.searchAccess($viewValue)"
+								   typeahead-on-select="devGroupDetail.selectAccess($item)"/>
+							<span class="input-group-btn">
+								<button class="btn btn-primary" ng-click="devGroupDetail.grantAccess()"><i class="fa fa-check"></i> Grant Access</button>
+							</span>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="GroupMembers" ng-show="devGroupDetail.activeTab == 'Members'">
+				<ul class="list-group">
+					<li class="list-group-item dev-user-list-item" ng-repeat="member in devGroupDetail.members">
+						<p>{{member.Username + ' - ' + member.FirstName + ' ' + member.LastName}}</p>
+						<div class="btn-group" uib-dropdown>
+							<button type="button" class="btn btn-default" uib-dropdown-toggle>
+								<i class="fa fa-cog"></i> <span class="caret"></span>
+							</button>
+							<ul uib-dropdown-menu role="menu">
+								<li role="menuitem"><a href="#">Make Group Admin</a></li>
+								<li role="menuitem"><a href="#" class="text-danger">Remove from Group</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div id="GroupInstances" ng-show="devGroupDetail.activeTab == 'Instances'">
+				<ul class="list-group" ng-if="devGroupDetail.instances.length">
+					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.instances">
+						<div><b>{{instance.CompanyName}}</b><br/>
+							<span class="text-muted"><b>Client ID: </b>{{instance.ClientID}}</span>
+						</div>
+						<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
+					</li>
+				</ul>
+				<div class="well well-lg text-center" ng-if="!devGroupDetail.instances.length">
+					This group does not have access to an OrderCloud instance.
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

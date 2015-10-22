@@ -1,4 +1,7 @@
 angular.module( 'orderCloud', [
+
+	"com.2fdevs.videogular",
+	"com.2fdevs.videogular.plugins.controls",
 	'templates-app',
 	'ngSanitize',
 	'ngAnimate',
@@ -8,15 +11,14 @@ angular.module( 'orderCloud', [
 	'ui.bootstrap',
 	'orderCloud.sdk',
 	'markdown',
-	'ui.ace'
+	'ui.ace',
+	'angular-jwt'
 ])
 
 	.run( Security )
-	/*.run(function($rootScope) {
-		$rootScope.clientid = '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f';
-	})*/
+	.run( ErrorHandling )
 	.config( Routing )
-	.config( ErrorHandling )
+	//.config( ErrorHandling )
 	.controller( 'AppCtrl', AppCtrl )
 
 	//Constants needed for the OrderCloud AngularJS SDK
@@ -40,35 +42,54 @@ angular.module( 'orderCloud', [
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))
 	//Test Environment
-	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
-	.constant('apiurl', 'https://testapi.ordercloud.io')
-	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
-	/*.constant('devapiurl', 'http://localhost:55555')*/
+	//.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
+	//.constant('apiurl', 'https://testapi.ordercloud.io')
+	//.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
+
+	.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
+	.constant('apiurl', 'http://core.four51.com:9002')
+	.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
+
+	//.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	.constant('devapiurl', 'https://devcenterapi-test.herokuapp.com')
+	//.constant('devapiurl', 'http://localhost:55555')
+
 
 ;
 
-function Security( $rootScope, $state, Auth, Me ) {
+function Security( $rootScope, $state, DevAuth, Me ) {
 	$rootScope.$on('$stateChangeStart', function(e, to) {
 		/*TODO: make the '$stateChangeStart event' accept a function so users can control the redirect from each state's declaration.*/
 		if (!to.data || !to.data.limitAccess) return;
-		Auth.IsAuthenticated()
+		DevAuth.IsAuthenticated()
 			.catch(sendToLogin);
-		Me.Get()
-			.catch(sendToLogin);
+		//Me.Get()
+		//	.catch(sendToLogin);
 		function sendToLogin() {
 			$state.go('login');
 		}
 	})
 }
 
+function ErrorHandling($rootScope, DevAuth, Auth) {
+/*	$rootScope.$on('event:auth-loginRequired', function() {
+		DevAuth.RemoveToken();
+		Auth.RemoveToken();
+	});*/
+	$rootScope.$on('event:error', function(response) {
+		console.log('Unhandled Error Caught');
+		console.dir(response);
+	})
+}
+
 function Routing( $urlRouterProvider, $urlMatcherFactoryProvider ) {
 	$urlMatcherFactoryProvider.strictMode(false);
-	$urlRouterProvider.otherwise( '/dashboard' );
+	$urlRouterProvider.otherwise( '/home' );
 	//$locationProvider.html5Mode(true);
 	//TODO: For HTML5 mode to work we need to always return index.html as the entry point on the serverside
 }
 
-function ErrorHandling( $provide ) {
+/*function ErrorHandling( $provide ) {
 	$provide.decorator('$exceptionHandler', handler );
 
 	function handler( $delegate, $injector ) {
@@ -88,13 +109,18 @@ function ErrorHandling( $provide ) {
 			$injector.get( '$rootScope' ).$broadcast( 'exception', ex, cause );
 		}
 	}
-}
+}*/
 
-function AppCtrl( $state, Credentials ) {
+function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	var vm = this;
+	//regular
+	//$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4Y2I4YTIxOWU0OGVkNjUwMGRkZGU2YTc4MzYyYzQ1MzYxZjA5MmYwNTE3OTQ1MDZhZmZiZWU5OWVlZmVlY2E0ZWE5ZGVhNjEyNDdlMmUzODRlZTg0YjU5NzZjODk2NTQ0ZmYzOTM3YWM3NGQ0ZWY3Mjk3NzIzYWQ5ZTY3NTM4OThjZWU4ODQ5.M_0hJrULQSLukqd1HT5lgo2782Fqb22bTbTAkhKa4XM');
+	//admin
+	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E');
 	vm.logout = function() {
-		Credentials.Delete();
-		$state.go('base.dashboard',{}, {reload:true});
+		DevAuth.RemoveToken();
+		Auth.RemoveToken();
+		$state.go('base.home',{}, {reload:true});
 	};
 	vm.$state = $state;
 }

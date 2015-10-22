@@ -1,0 +1,36 @@
+<main id="Register">
+	<div class="container">
+<!--		<div class="text-center">
+			<ordercloud-logo data-width="300px" data-height="100px" data-color="#FFFFFF"></ordercloud-logo>
+		</div>-->
+		<h2 class="text-center">Sign up today</h2>
+		<p class="lead text-center">Experience OrderCloud free for 14 days</p>
+		<form name="ordercloud_registration" ng-submit="register.submit()">
+			<div class="form-group placeholder-label">
+				<label>First Name</label>
+				<input type="text" placeholder="First Name" class="form-control" ng-model="register.information.FirstName" required/>
+			</div>
+			<div class="form-group placeholder-label">
+				<label>Last Name</label>
+				<input type="text" placeholder="Last Name" class="form-control" ng-model="register.information.LastName" required/>
+			</div>
+			<div class="form-group placeholder-label">
+				<label>Email</label>
+				<input type="text" placeholder="Email" class="form-control" ng-model="register.information.Email" required/>
+			</div>
+			<div class="form-group placeholder-label">
+				<label>Username</label>
+				<input type="text" placeholder="Username" class="form-control" ng-model="register.information.Username" required/>
+			</div>
+			<div class="form-group placeholder-label">
+				<label>Password</label>
+				<input type="password" placeholder="Password" class="form-control" ng-model="register.information.Password" required/>
+			</div>
+			<button type="submit" class="btn btn-lg btn-block btn-dark-blue" ng-disabled="ordercloud_registration.$invalid">Register</button>
+		</form>
+		<br/>
+		<div class="text-center">
+			Already have an account?  <button type="button" class="btn btn-dark-blue" ui-sref="login">Log In</button>
+		</div>
+	</div>
+</main>

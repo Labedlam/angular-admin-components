@@ -26,7 +26,7 @@
 				</li>
 				<div ng-repeat-end>
 					<ul class="resource-list">
-						<li class="resource-list-item" ui-sref-active="active" ng-repeat="resource in docs.content.Resources | filter:{Section:section}" ui-sref="base.docs.resource({resourceID:resource.ID})">
+						<li class="resource-list-item" ui-sref-active="active" ng-repeat="resource in docs.content.Resources | filter:{Section:section}" ui-sref="base.docs.section.resource({resourceID:resource.ID})">
 							{{resource.Name}}
 						</li>
 					</ul>

@@ -2,11 +2,17 @@ angular.module( 'orderCloud' )
 
 	.filter('OCRoutingUrl', OCRoutingUrl)
 	.filter('OCUrlParams', OCUrlParams)
+	.filter('URItoAngular', URItoAngular)
 ;
 
 function OCRoutingUrl() {
 	return function(value) {
-		return value.split('.io/')[1];
+		if (value.split('.io/')[1]) {
+			return value.split('.io/')[1];
+		} else {
+			return value.split(':9002/')[1];
+		}
+
 	}
 }
 
@@ -18,5 +24,13 @@ function OCUrlParams() {
 			paramString += ((paramString.length ? '&' : '?') + key + '=' + value);
 		});
 		return paramString;
+	}
+}
+
+function URItoAngular() {
+	return function(value) {
+		value = value.replace('{', ':');
+		value = value.replace('}', '');
+		return value;
 	}
 }

@@ -1,33 +1,83 @@
 <div id="ConsoleContainer">
-	<aside id="ConsoleMenu">
-		<div class="list-group console-menu">
+	<aside id="ConsoleMenu" ng-if="console.ActiveContext">
+		<ul class="section-list">
+			<li ng-repeat-start="section in console.Sections">
+				{{section}}
+			</li>
+			<div ng-repeat-end>
+				<ul class="resource-list">
+					<li ng-repeat="resource in console.Resources | filter:{Section:section}">
+						<a href="" ng-class="{active:console.SelectedResource.Name == resource.Name}" ng-click="console.SelectResource(this)">{{resource.Name}}</a>
+					</li>
+				</ul>
+			</div>
+		</ul>
+
+<!--		<div class="list-group console-menu">
 			<button type="button" class="list-group-item"
-					ng-class="{active:console.SelectedResource == resource}"
-					ng-repeat="resource in console.Resources" ng-click="console.SelectResource(this)">{{resource.name}} <!--<span class="badge">{{resource.methods.length}}</span>--></button>
-		</div>
+					ng-class="{active:console.SelectedResource.Name == resource.Name}"
+					ng-repeat="resource in console.Resources | orderBy:'+Section'" ng-click="console.SelectResource(this)">{{resource.Name}} &lt;!&ndash;<span class="badge">{{resource.methods.length}}</span>&ndash;&gt;</button>
+		</div>-->
 	</aside>
-	<article class="container-fluid" ng-hide="console.SelectedResource">
+
+	<article class="container" ng-if="!console.SelectedResource">
 		<h3 class="page-header"><i class="fa fa-tools"></i>API Console</h3>
+		<div id="ContextSettings" class="well" ng-init="ContextMenuOpen = false">
+			<h4 ng-click="ContextMenuOpen = !ContextMenuOpen">Select a Context <i class="fa fa-chevron-right" ng-class="{'fa-rotate-90':ContextMenuOpen}"></i></h4>
+			<div uib-collapse="!ContextMenuOpen">
+				<div ng-click="console.SelectedContext = context" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}" ng-repeat="context in console.AvailableContexts">
+					<b>Company: </b>{{context.AppName}}<br/>
+					<b>User: </b>{{context.UserName}}<br/>
+					<small class="text-muted">{{context.ClientID}}</small>
+				</div>
+			</div>
+		</div>
+		<form name="ContextSettings" ng-submit="console.setContext(console.SelectedContext)" novalidate>
+			<div class="input-group">
+				<select class="form-control" ng-model="console.SelectedContext" ng-options="context as context.AppName for context in console.AvailableContexts" required></select>
+				<span class="input-group-btn">
+					<button type="submit" class="btn btn-primary" ng-disabled="ContextSettings.$invalid">Set Context</button>
+				</span>
+			</div>
+		</form>
+		<hr/>
+
 		<p>Welcome to the OrderCloud API Console!  The purpose of this tool is to give developers an idea of how the OrderCloud RESTful API is structured through an interactive UI.</p>
 		<p>Begin by choosing a resource from the left and then specify an endpoint in the drop-down.  If the selected endpoint has parameters available, fill these out by clicking "params" to the right of the endpoint.  When creating and updating you will often need to provide a request body as well.  These request bodies will always be in <code>JSON</code> format and is editable below the endpoint selector.</p>
 		<p class="alert alert-danger">Keep in mind that <b>this <em>will</em> alter your database</b>, and changes will be immediately reflected in any application using your distributor companies' client id.</p>
 	</article>
-	<div id="Console" ng-show="console.SelectedResource">
+	<div id="Console" ng-if="console.SelectedResource">
 		<article id="Request">
+			<div id="ContextSettings" class="well" ng-init="ContextMenuOpen = false">
+				<div ng-show="!ContextMenuOpen" ng-click="ContextMenuOpen = true">
+					<b>Company: </b>{{console.ActiveContext.AppName}}<br/>
+					<b>User: </b>{{console.ActiveContext.UserName}}<br/>
+					<small class="text-muted">{{console.ActiveContext.ClientID}}</small>
+				</div>
+				<h4 ng-show="ContextMenuOpen" ng-click="ContextMenuOpen = false">Select a Context <i class="fa fa-chevron-right" ng-class="{'fa-rotate-90':ContextMenuOpen}"></i></h4>
+				<div uib-collapse="!ContextMenuOpen">
+					<div ng-click="console.setContext(context)" ng-class="{active:console.ActiveContext == context}" ng-repeat="context in console.AvailableContexts">
+						<b>Company: </b>{{context.AppName}}<br/>
+						<b>User: </b>{{context.UserName}}<br/>
+						<small class="text-muted">{{context.ClientID}}</small>
+
+					</div>
+				</div>
+			</div>
 			<h3 class="page-title">
-				{{console.SelectedResource.name}}
+				{{console.SelectedResource.Name}}
 				<small ng-bind="console.SelectedEndpoint.Name"></small>
 			</h3>
 			<!--		<p ng-bind-html="comment | markdown" ng-repeat="comment in console.SelectedResource.Documentation.Comments"></p>
 					<p ng-bind-html="comment | markdown" ng-repeat="comment in console.SelectedEndpoint.Comments"></p>-->
 			<section class="console-selector">
-				<span dropdown>
-				  <a href dropdown-toggle>
-					  {{console.SelectedMethod.name || 'Method'}} <span class="caret"></span>
+				<span uib-dropdown>
+				  <a href uib-dropdown-toggle>
+					  {{console.SelectedEndpoint.ID || 'Method'}} <span class="caret"></span>
 				  </a>
-				  <ul class="dropdown-menu">
-					  <li ng-repeat="method in console.SelectedResource.methods" ng-class="{active:console.SelectedMethod.name == method.name}">
-						  <a href ng-click="console.SelectMethod(this)">{{method.name}}</a>
+				  <ul uib-dropdown-menu>
+					  <li ng-repeat="endpoint in console.SelectedResource.Endpoints" ng-class="{active:console.SelectedEndpoint.ID == endpoint.ID}">
+						  <a href ng-click="console.SelectEndpoint(this)">{{endpoint.ID}}</a>
 					  </li>
 				  </ul>
 				</span>
@@ -35,10 +85,10 @@
 				<!--<span class="btn btn-link" ng-if="console.SelectedEndpoint && console.SelectedEndpoint.Parameters.length" ng-click="console.SelectedEndpoint.showParams = !console.SelectedEndpoint.showParams">
 					Params
 				</span>-->
-				<button class="btn btn-primary" ng-click="console.Execute()" ng-disabled="!console.SelectedMethod">Send <i class="fa fa-send-o"></i></button>
+				<button class="btn btn-primary" ng-click="console.Execute()" ng-disabled="!console.SelectedEndpoint">Send <i class="fa fa-send-o"></i></button>
 			</section>
-			<section id="Configuration" ng-show="console.SelectedEndpoint">
-				<table class="table" ng-if="console.SelectedMethod.ResolvedParameters.Fields.length">
+			<section id="Configuration" ng-if="console.SelectedEndpoint">
+				<table class="table" ng-if="console.SelectedEndpoint.Parameters.length">
 					<thead>
 					<tr>
 						<th>Name</th>
@@ -47,7 +97,28 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="field in console.SelectedMethod.ResolvedParameters.Fields">
+					<tr ng-repeat="param in console.SelectedEndpoint.Parameters | filter:{Name: '!filters'}">
+						<td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
+						<td><div class="label" ng-class="{
+								'label-primary': param.Type == 'string',
+								'label-warning': param.Type == 'boolean',
+								'label-info': param.Type == 'integer'
+							}">{{param.Type}}</div></td>
+						<td>
+							<div ng-class="{'input-group': param.Lockable}">
+								<input type="{{param.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
+									   uib-tooltip="{{param.Description}}"
+									   tooltip-trigger="focus"
+									   ng-model="param.Value" ng-required="param.Required" ng-disabled="console.isLocked(param.Name)"/>
+									<span class="input-group-btn" ng-if="param.Lockable">
+										<button class="btn btn-default" ng-click="console.isLocked(param.Name) ? console.unlockParam(param.Name) : console.lockParam(param.Name, param.Value)" ng-disabled="!param.Value" uib-tooltip="{{console.isLocked(param.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true" tooltip-placement="left">
+											<i class="fa" ng-class="{'fa-lock': console.isLocked(param.Name), 'fa-unlock-alt': !console.isLocked(param.Name)}"></i>
+										</button>
+									</span>
+							</div>
+						</td>
+					</tr>
+					<!--<tr ng-repeat="field in console.SelectedMethod.ResolvedParameters.Fields">
 						<td>{{field.Name}} <small class="text-muted" ng-if="!field.Required">(optional)</small></td>
 						<td><div class="label" ng-class="{
 								'label-primary': field.Type == 'string',
@@ -57,33 +128,33 @@
 						<td>
 							<div ng-class="{'input-group': field.Lockable}">
 								<input type="{{field.Type == 'integer' ? 'number' : 'text'}}" class="form-control"
-									   tooltip="{{field.Description}}"
+									   uib-tooltip="{{field.Description}}"
 									   tooltip-trigger="focus"
 									   ng-model="field.Value" ng-required="field.Required" ng-disabled="console.isLocked(field.Name)"/>
 								<span class="input-group-btn" ng-if="field.Lockable">
-									<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true">
+									<button class="btn btn-default" ng-click="console.isLocked(field.Name) ? console.unlockParam(field.Name) : console.lockParam(field.Name, field.Value)" ng-disabled="!field.Value" uib-tooltip="{{console.isLocked(field.Name) ? 'Unlock Value' : 'Lock Value'}}" tooltip-append-to-body="true" tooltip-placement="left">
 										<i class="fa" ng-class="{'fa-lock': console.isLocked(field.Name), 'fa-unlock-alt': !console.isLocked(field.Name)}"></i>
 									</button>
 								</span>
 							</div>
 						</td>
-					</tr>
+					</tr>-->
 					</tbody>
 				</table>
-				<table class="table" ng-if="console.SelectedMethod.ResolvedParameters.CanFilter">
+				<table class="table" ng-if="console.SelectedEndpoint.Filters">
 					<colgroup>
 						<col/>
 						<col/>
 						<col style="width:50px;"/>
 					</colgroup>
-					<thead ng-if="console.SelectedMethod.ResolvedParameters.Filters.length">
+					<thead ng-if="console.SelectedEndpoint.Filters.length">
 					<tr>
 						<th>Key</th>
 						<th colspan="2">Value</th>
 					</tr>
 					</thead>
 					<tbody>
-					<tr ng-repeat="filter in console.SelectedMethod.ResolvedParameters.Filters">
+					<tr ng-repeat="filter in console.SelectedEndpoint.Filters">
 						<td><input class="form-control" type="text" ng-model="filter.Key" /></td>
 						<td><input class="form-control" type="text" ng-model="filter.Value" /></td>
 						<td><button class="btn btn-danger btn-block"><i class="fa fa-minus-circle" ng-click="console.removeFilter($index)"></i></button></td>
@@ -93,9 +164,9 @@
 					</tr>
 					</tbody>
 				</table>
-				<div ng-repeat="field in console.SelectedMethod.ResolvedParameters.Objects">
-					<p class="" class="page-header">
-						{{'Request Body: ' + field.Name + ' object'}}
+				<div ng-if="console.SelectedEndpoint.RequestBody">
+					<p class="page-header">
+						Request Body
 					</p>
 					<div ui-ace="{
 						onLoad: console.setMaxLines,
@@ -105,7 +176,7 @@
 						tabSize: '4',
 						useSoftTabs: true,
 						showPrintMargin: false
-					}" ng-model="field.Value">
+					}" ng-model="console.SelectedEndpoint.RequestBody.Value">
 					</div>
 				</div>
 											<!--<pre>{{console.SelectedResource.name + '.' + console.SelectedMethod.name + '('}}<span ng-repeat="p in console.SelectedMethod.resolvedParameters">{{((p.Value != null && p.Value != '') ? (p.Type == 'text' ? ('\'' + p.Value + '\'') : p.Value) : p.Name) + (!$last ? ', ' : ')') }}</span></pre>-->

@@ -2,24 +2,24 @@
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" ng-click="mainCollapsed = !mainCollapsed" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			<button type="button" class="navbar-toggle" ng-click="mainCollapsed = !mainCollapsed" aria-expanded="false">
 				<span class="sr-only">Toggle navigation</span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="" ui-sref="base.dashboard"><ordercloud-logo data-width="200px" data-color="#FFFFFF"></ordercloud-logo></a>
+			<a class="" ui-sref="base.home"><ordercloud-logo data-width="200px" data-height="60px" data-color="#FFFFFF"></ordercloud-logo></a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
-		<div class="navbar-collapse" collapse="mainCollapsed" id="bs-example-navbar-collapse-1">
+		<div class="navbar-collapse" uib-collapse="mainCollapsed">
 			<ul class="nav navbar-nav">
 				<li>
-					<a ui-sref="base.about" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">About</a>
+					<a ui-sref="base.about" role="button" aria-haspopup="true">About</a>
 				</li>
-				<li class="dropdown" dropdown ng-if="base.currentUser">
-					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Documentation</a>
-					<div class="dropdown-menu top-caret bordered mega" dropdown-menu>
+				<li uib-dropdown ng-if="base.currentUser">
+					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Documentation</a>
+					<div class="uib-dropdown-menu top-caret bordered mega">
 						<ul>
 							<li role="presentation" ng-repeat="item in base.exploreDropdown" ng-mouseenter="base.exploreDropdown.activeItem = item" ui-sref="{{item.StateRef}}">{{item.Display}}</li>
 						</ul>
@@ -32,25 +32,25 @@
 						<!--<li ui-sref-active="active"><a>Components</a></li>-->
 					</div>
 				</li>
-				<li><a href="" ui-sref="base.console">Console</a></li>
-				<li class="dropdown" dropdown>
-					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Learn</a>
-					<ul class="dropdown-menu top-caret bordered" dropdown-menu>
-						<li ui-sref-active="active" ui-sref="base.gettingstarted" ng-if="base.currentUser"><a>Get Started</a></li>
-						<li ><a ui-sref="base.docs">API Docs</a></li>
-						<li ><a ui-sref="base.docs">Getting Started</a></li>
-						<li  ng-if="base.currentUser"><a ui-sref="base.courses">Courses</a></li>
-					</ul>
-				</li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Docs</a></li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Developers</a></li>
+				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Businesses</a></li>
+				<li><a href="" ui-sref="base.learning" ng-if="base.currentUser">Learn</a></li>
+				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
+				<li><a href="" ui-sref="base.adminCompany" ng-if="base.currentUser.CreateCompanies">New Company</a></li>
+				<li><a href="" ui-sref="base.groupsList">Groups</a></li>
+
 
 				<!--<li ui-sref-active="active"  ng-if="base.currentUser"><a>My Apps</a></li>-->
 
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-if="!base.currentUser"><a ui-sref="login">Sign In</a></li>
-				<li class="dropdown" dropdown ng-if="base.currentUser">
-					<a href="" class="dropdown-toggle" dropdown-toggle role="button" aria-haspopup="true">Account</a>
-					<ul class="dropdown-menu top-caret" dropdown-menu>
+				<li ng-if="!base.currentUser"><a ui-sref="login">Log in</a></li>
+				<li ng-if="!base.currentUser"><span>or</span></li>
+				<li ng-if="!base.currentUser"><button class="btn btn-dark-blue navbar-btn" ui-sref="register">Sign up</button></li>
+				<li uib-dropdown ng-if="base.currentUser">
+					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Account</a>
+					<ul class="uib-dropdown-menu top-caret">
 						<li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
 						<li><a href>Settings</a></li>
 						<li><a href>Notifications</a></li>

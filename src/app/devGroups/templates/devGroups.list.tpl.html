@@ -1,0 +1,45 @@
+<div id="DevGroupList" class="container" ng-if="base.currentUser.CreateGroups || devGroups.list.length">
+	<div class="row">
+		<div class="col-sm-5">
+			<form novalidate autocomplete="off">
+				<input type="search" class="form-control" ng-model="devGroups.searchTerm" aria-label="Find a group" placeholder="Find a group..."/>
+			</form>
+		</div>
+		<div class="col-sm-7 text-right">
+			<button class="btn btn-success" ui-sref="base.newGroup"  ng-if="base.currentUser.CreateGroups"><i class="fa fa-plus-circle"></i> New Group</button>
+		</div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-sm-6" ng-repeat="group in devGroups.list | filter:devGroups.searchTerm">
+			<div class="panel panel-default group-panel">
+				<div class="panel-body">
+					<button class="btn btn-default pull-right">Leave</button>
+					<h4><b><a href="" ui-sref="base.groupDetail({groupID:group.ID})">{{group.Name}}</a></b></h4>
+					<p class="text-muted">{{group.Members.length + ' member' + (group.Members.length == 1 ? ' | ' : 's | ') + group.Instances.length + ' instance' + (group.Instances.length == 1 ? '' : 's') }}</p>
+				</div>
+				<div class="panel-footer">
+					<div class="group-member-bite" ng-repeat="member in group.Members" uib-tooltip="{{member.Username}}" tooltip-placement="bottom">
+						{{member.FirstName[0] + member.LastName[0]}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12" ng-if="!devGroups.list.length">
+			<div class="well well-lg text-center">
+				<h4><i class="fa fa-users"></i> You currently do not belong to any groups, <a href="" ui-sref="base.newGroup">create one now</a></h4>
+			</div>
+		</div>
+		<div class="col-xs-12" ng-if="!(devGroups.list | filter:devGroups.searchTerm).length">
+			<div class="well well-lg text-center">
+				<h4><i class="fa fa-search"></i> We couldn't find any groups that match your search</h4>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="DevGroupList" class="container" ng-if="!(base.currentUser.CreateGroups && devGroups.list.length)">
+	<div class="well well-lg text-center">
+		<h4>You do not belong to a development group and do not have permission to create one
+			<br/> Contact Four51 for group admin capabilities.</h4>
+	</div>
+</div>

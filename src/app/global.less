@@ -1,7 +1,20 @@
 body {
-  padding-top:60px; // Source - http://getbootstrap.com/components/#callout-navbar-fixed-top-padding
+  overflow:hidden;
+  &.base-body {
+    padding-top:@navbar-height; // Source - http://getbootstrap.com/components/#callout-navbar-fixed-top-padding
+    main {
+      min-height:calc(~"100vh - "@navbar-height);
+      max-height:calc(~"100vh - "@navbar-height);
+    }
+  }
 }
 
+main {
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+[ng-click],
 [ui-sref] {
   cursor: pointer;
 }
@@ -23,15 +36,13 @@ h1, h2, h3, h4, h5, h6 {
   font-family:@header-font;
 }
 
-
 //angularjs form validation
-.ng-dirty.ng-valid {
-  .form-control-validation-angular(@state-success-text; @state-success-text; @state-success-bg);
-}
-
-.ng-invalid {
+.ng-dirty.ng-invalid {
   .form-control-validation-angular(@state-danger-text; @state-danger-text; @state-danger-bg);
 }
+
+//UI-BOOTSTRAP CURSOR STYLES
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 .table {
   // Cells
@@ -55,4 +66,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 .chip-3 {
   background-color: @chip3;
+}
+
+[uib-typeahead] +
+.dropdown-menu {
+  li:nth-of-type(even) {
+    background-color:@table-bg-accent;
+  }
 }

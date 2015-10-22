@@ -1,0 +1,116 @@
+<article class="container-fluid" id="BizCourseEditor">
+    <div class="course-general container">
+        <div class="col-xs-6">
+            <h4>Course Admin</h4>
+            <form>
+                <div class="col-xs-12">
+                    <div class="form-group col-xs-6">
+                        <label for="CourseName">Name</label>
+                        <input type="text" class="form-control" ng-model="course.course.Name">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="CourseID">ID</label>
+                        <input disabled type="text" class="form-control" ng-model="course.course.ID">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="CourseDescription">Description</label>
+                        <textarea class="form-control" rows="2" ng-model="course.course.Description"></textarea>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classActive">Active</label>
+                        <select class="form-control" ng-model="course.course.Active" ng-options="o for o in [true, false]">
+                        </select>
+                    </div>
+                    <div class="col-xs-12 order-container">
+                        <span>Class Order</span>
+                        <div class="col-xs-12 course-class-order" ng-class="{inactive: !class.Active}" ng-class-even="{'even-class': true}" ng-repeat="class in course.classList | orderBy: 'CourseOrder'">
+                            <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}" ng-click="course.changeClassOrder(class, 'down')"></i></a>
+                            <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}" ng-click="course.changeClassOrder(class, 'up')"></i></a>
+                            <div class="col-xs-4">{{class.Name}}</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success save-button pull-right" ng-click="course.saveCourse()">Save Course</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-6">
+            <h4>Class Admin</h4>
+            <form name="classInfo">
+                <div class="col-xs-12">
+                    <div class="form-group col-xs-6">
+                        <label for="classID">Class</label>
+                        <select class="form-control" ng-model="course.pickClass">
+                            <option ng-repeat="o in course.classList | orderBy: 'CourseOrder'" ng-model="o">{{o.Name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classID">ID</label>
+                        <input disabled type="text" class="form-control" ng-model="course.classList[course.indexSelected].ID">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classActive">Active</label>
+                        <select class="form-control" ng-model="course.classList[course.indexSelected].Active" ng-options="o for o in [true, false]">
+                        </select>
+                    </div>
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-success save-button pull-right" ng-click="course.saveAllClasses()">Save All Classes</button>
+                        <button type="submit" class="btn btn-success save-button pull-right" ng-click="course.saveClass()">Save Class</button>
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="create-class col-xs-12">
+                <div class="col-xs-12">
+                    <button class="btn btn-primary" ng-init="course.showAddClass = false" ng-hide="course.showAddClass" ng-click="course.showAddClass = !course.showAddClass">Add Class</button>
+                </div>
+                <div ng-show="course.showAddClass">
+                    <div class="col-xs-12">
+                        <span>Please save any changes you have made before creating a new class</span>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classID">Class Name</label>
+                        <input type="text" class="form-control" ng-model="course.newClass.Name">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classID">ID</label>
+                        <input type="text" class="form-control" ng-model="course.newClass.ID">
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="classActive">Active</label>
+                        <select class="form-control" ng-model="course.newClass.Active" ng-options="o for o in [true, false]">
+                        </select>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-danger pull-right">Cancel</button>
+                        <button class="btn btn-success pull-right" ng-click="course.addNewClass()">Submit</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="class-editor-container col-xs-6">
+        <div class="class-editor" ui-ace="{
+        useWrapMode : true,
+        theme:'idle_fingers',
+        mode: 'html',
+        tabSize: '4',
+        useSoftTabs: true,
+        showPrintMargin: false,
+        showGutter: false
+        }" ng-model="course.classList[course.indexSelected].TemplateUrl"></div>
+    </div>
+
+    <div class="class-content-container col-xs-6">
+        <div class="class-content" compile="course.selectedClass.TemplateUrl"></div>
+    </div>
+
+
+</article>

@@ -27,11 +27,15 @@ function DocsConfig( $stateProvider ) {
 			controller: 'DocsSectionCtrl',
 			controllerAs: 'docsSection'
 		})
-		.state( 'base.docs.resource', {
+		.state( 'base.docs.section.resource', {
 			url: '/:resourceID',
-			templateUrl: 'docs/templates/resource.tpl.html',
-			controller: 'DocsResourceCtrl',
-			controllerAs: 'docsResource',
+			views: {
+				'@base.docs': {
+					templateUrl: 'docs/templates/resource.tpl.html',
+					controller: 'DocsResourceCtrl',
+					controllerAs: 'docsResource'
+				}
+			},
 			resolve: {
 				SelectedResource: function($q, Docs, DocsService, $stateParams) {
 					var d = $q.defer();

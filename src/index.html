@@ -8,7 +8,7 @@
     <!-- endinject -->
 </head>
 
-<body>
+<body ng-class="{'base-body':!(application.$state.is('login') || application.$state.is('register'))}">
 <ui-view></ui-view>
 <!-- build:js assets/app.js -->
 <!-- bower:js -->

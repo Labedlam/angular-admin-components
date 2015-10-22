@@ -1,31 +1,66 @@
 #ConsoleContainer {
+  min-height:calc(~"100vh - "@navbar-height);
+  max-height:calc(~"100vh - "@navbar-height);
   display:flex;
   flex-flow:row nowrap;
   overflow:hidden;
 }
+#ContextSelector {
+  padding:10px;
+  background-color:black;
+}
 #ConsoleMenu,
 #Console {
   max-height:~'calc(100vh - 60px)';
-  overflow-y:auto;
 }
 #ConsoleMenu {
+  overflow-y:auto;
   flex: 0 1 auto;
-  min-width:200px;
-  border-right:1px solid @list-group-border;
-  .list-group {
+  min-width:225px;
+  //border-right:1px solid @list-group-border;
+  ul {
+    padding:0;
     margin:0;
   }
-  .list-group-item {
-    padding-top:15px;
-    padding-bottom:15px;
-    border-radius:0;
-    border-right:none;
-    border-left:none;
-    &:first-child {
-      border-top:none;
+  li {
+    list-style: none;
+  }
+  .section-list {
+    > li {
+      padding:10px;
+      background-color:@console-log-bg;
+      color:lighten(@console-log-bg, 70);
+      font-weight:lighter;
+      font-size:1.3em;
     }
-    &:last-child {
-      border-bottom:none;
+  }
+  .resource-list {
+    > li {
+      padding:0 5px;
+      background-color:lighten(@console-log-bg, 20);
+      &:first-child {
+        padding-top:5px;
+      }
+      &:last-child {
+        padding-bottom:5px;
+      }
+      a {
+        transition:all 200ms ease-in-out;
+        padding:7px 10px;
+        display:block;
+        border-radius:@border-radius-base;
+        color:lighten(@console-log-bg, 70);
+        &:focus,
+        &:hover {
+          color:lighten(@console-log-bg, 90);
+          text-decoration: none;
+          background-color:lighten(@console-log-bg, 10);
+        }
+        &.active {
+          background-color:@four51-blue;
+          color:white;
+        }
+      }
     }
   }
 }
@@ -44,6 +79,7 @@
 #Request {
   max-width:1000px;
   padding:@padding-base-vertical @padding-base-horizontal;
+  overflow-y:auto;
   .body-title {
     color:white;
     background-color:@gray;
@@ -67,7 +103,7 @@
   max-height:200px;
   overflow-y:auto;
   overflow-x:hidden;
-  background-color:#141414;
+  background-color:@console-log-bg;
   padding:@padding-base-vertical @padding-base-horizontal;
   .apiRequestDisplay {
     cursor: pointer;

@@ -1,7 +1,18 @@
 #dev-center-navigation {
+  background-repeat:no-repeat;
+  background-size:100% 1000px;
+  background-image: radial-gradient(at center bottom, @four51-blue 0%, darken(@four51-blue, 15) 100%); /* W3C */
   .navbar-nav {
 	& > li > a {
 	  text-transform: uppercase;
+	}
+	& > li > span {
+	  color:@navbar-default-link-color;
+	  padding-top:@navbar-padding-vertical;
+	  padding-bottom:@navbar-padding-vertical;
+	  display:block;
+	  line-height:20px;
+	  vertical-align:middle;
 	}
   }
   .navbar-header {
@@ -11,6 +22,15 @@
 	  }
 	}
   }
+}
+
+.btn-dark-blue {
+  .button-variant(white, darken(@four51-blue, 25), darken(@four51-blue, 30));
+}
+
+.navbar-btn {
+  margin-left:@navbar-padding-horizontal;
+  margin-right:@navbar-padding-horizontal;
 }
 
 //Top caret styling for dropdowns

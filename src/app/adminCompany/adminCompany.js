@@ -38,7 +38,7 @@ function AdminCompanyController($timeout, CanCreateCompany, DevCenter) {
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
 			//TODO: waiting for a search term to be available on DevGroup list
-			return DevCenter.Me.DevGroups(1, 10, true).then(function(data) {
+			return DevCenter.Me.Groups(1, 10, true).then(function(data) {
 				return data.Items;
 			});
 		}), 300);

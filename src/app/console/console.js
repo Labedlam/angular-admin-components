@@ -30,7 +30,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controllerAs': 'console',
         'resolve': {
 			DevAccess: function(DevCenter) {
-				return DevCenter.Me.Access();
+				return DevCenter.Me.GetAccess();
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();

@@ -1,0 +1,59 @@
+#DevGroupList {
+  padding-top:40px;
+  .group-panel {
+	p {
+	  margin-bottom:0;
+	}
+  }
+  .group-member-bite {
+	display:inline-block;
+	width:30px;
+	height:30px;
+	background-color:@four51-orange;
+	color:white;
+	text-align:center;
+	line-height:30px;
+	vertical-align: middle;
+	border-radius:@border-radius-base;
+	margin-right:4px;
+	cursor: default;
+  }
+}
+
+#DevGroupCreate {
+  max-width:600px;
+}
+
+#DevGroupDetail {
+  .team-info {
+	h3 {
+	  margin-top:0;
+	}
+	.panel {
+	  margin-top:40px;
+	}
+  }
+  .team-detail {
+	padding-top:40px;
+  }
+  .dev-user-list-item {
+	display:flex;
+	flex-flow:row nowrap;
+	align-items:center;
+	p {
+	  margin:0;
+	  flex:1 0 auto;
+	}
+	.dropdown {
+	  margin:0;
+	  flex: 0 1 auto;
+	}
+	.dropdown-menu {
+	  left:auto;
+	  right:0;
+	  > li > a.text-danger {
+		color:@brand-danger;
+	  }
+	}
+  }
+}

@@ -3,6 +3,7 @@ body {
   &.base-body {
     padding-top:@navbar-height; // Source - http://getbootstrap.com/components/#callout-navbar-fixed-top-padding
     main {
+      min-height:calc(~"100vh - "@navbar-height);
       max-height:calc(~"100vh - "@navbar-height);
     }
   }
@@ -36,10 +37,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 //angularjs form validation
-.ng-dirty.ng-valid {
-  .form-control-validation-angular(@state-success-text; @state-success-text; @state-success-bg);
-}
-
 .ng-dirty.ng-invalid {
   .form-control-validation-angular(@state-danger-text; @state-danger-text; @state-danger-bg);
 }

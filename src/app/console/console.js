@@ -29,15 +29,15 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controller': 'ApiConsoleCtrl',
         'controllerAs': 'console',
         'resolve': {
+			DocsReference: function(Docs) {
+				return Docs.GetAll();
+			},
 			DevAccess: function(DevCenter) {
 				return DevCenter.Me.GetAccess();
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
-			},
-			OrderCloudResources: function (ApiLoader) {
-                return ApiLoader.getResources('orderCloud.sdk');
-            }
+			}
         },
         'data':{
 			limitAccess: true,
@@ -46,7 +46,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, ActiveContext, DevAccess, OrderCloudResources, ApiConsoleService, LockableParams, ConsoleContext) {
+function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, DevAccess, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
 	//Context variables
 	vm.AvailableContexts = DevAccess.Items;
@@ -54,9 +54,9 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 	vm.SelectedContext = vm.ActiveContext;
 
 	//Console variables
-	vm.Resources = OrderCloudResources;
+	vm.Sections = DocsReference.Sections;
+	vm.Resources = DocsReference.Resources;
 	vm.SelectedResource = null;
-	vm.SelectedMethod = '';
 	vm.SelectedEndpoint = null;
 
 	//Response variables
@@ -70,9 +70,9 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 					vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
 				} else {
 					LockableParams.Clear();
-					vm.SelectedMethod = null;
 					vm.Responses = [];
 					vm.SelectedResponse = null;
+					vm.SelectedEndpoint = null;
 				}
 				vm.ActiveContext = context;
 			});
@@ -108,61 +108,42 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 	};
 
 	vm.addNewFilter = function() {
-		vm.SelectedMethod.ResolvedParameters.Filters.push({Key: null, Value: null})
+		vm.SelectedEndpoint.Filters.push({Key: null, Value: null})
 	};
 
 	vm.removeFilter = function(filterIndex) {
-		vm.SelectedMethod.ResolvedParameters.Filters.splice(filterIndex, 1);
+		vm.SelectedEndpoint.Filters.splice(filterIndex, 1);
 	};
 
 	vm.Execute = function() {
-		ApiConsoleService.ExecuteApi(vm.SelectedResource, vm.SelectedMethod);
-/*			.then( function(data) {
-				console.log(data);
-				if (!(data.ID || data.Meta)) return;
-				vm.Response = $filter('json')(data);
-			})
-			.catch( function(ex) {
-				if (!ex) return;
-				vm.Response = $filter('json')(ex);
-			});*/
+		ApiConsoleService.ExecuteApi(vm.SelectedEndpoint);
 	};
 
 	vm.SelectResource = function(scope) {
 		vm.SelectedResource = scope.resource;
-		vm.SelectedResource.Documentation = $resource( apiurl + '/v1/docs/' + vm.SelectedResource.name ).get();
-		vm.SelectedMethod = null;
 	};
 
 	if (vm.ActiveContext) {
-		vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
+		vm.SelectResource({resource: Underscore.where(vm.Resources, {ID: 'Buyers'})[0]});
 	}
 
-	vm.SelectMethod = function(scope) {
-		vm.SelectedMethod = scope.method;
+	vm.SelectEndpoint = function(scope) {
+		vm.SelectedEndpoint = scope.endpoint;
 	};
 
 	$scope.$watch(function () {
 		return vm.SelectedResource;
 	}, function (n, o) {
-		if (!n || n === o) return;
-		vm.Response = null;
+		if (n && n === o) return;
 		vm.SelectedEndpoint = null;
-		vm.SelectedMethod = '';
 	});
 
 	$scope.$watch(function () {
-		return vm.SelectedMethod;
+		return vm.SelectedEndpoint;
 	}, function (n, o) {
 		if (!n || n == '' || n === o) return;
-		vm.Response = null;
-		vm.SelectedEndpoint = null;
-		if (angular.isDefined(n.params)) {
-			ApiConsoleService.CreateParameters(vm.SelectedResource, n)
-				.then(function(data) {
-					vm.SelectedEndpoint = data.SelectedEndpoint;
-					vm.SelectedMethod.ResolvedParameters = data.ResolvedParameters;
-				});
+		if (angular.isDefined(n.Parameters)) {
+			ApiConsoleService.InitializeParameters(n);
 		}
 	});
 
@@ -185,62 +166,50 @@ function ApiConsoleController($scope, $resource, $filter, apiurl, Underscore, Ac
 	}
 }
 
-function ApiConsoleService($injector, $resource, Underscore, apiurl, LockableParams) {
+function ApiConsoleService( $filter, $resource, apiurl, LockableParams ) {
 	var service = {
 		ExecuteApi: _executeApi,
-		CreateParameters: _createParameters
+		InitializeParameters: _initializeParameters
 	};
 
 	return service;
 
 	/////
-	function _executeApi(SelectedResource, SelectedMethod) {
-		var params = [];
-		angular.forEach(SelectedMethod.ResolvedParameters.Fields, function(p) {
-			if (p.Value == "") return; //Avoid registering blank strings
-			params.push(p.Value);
-		});
-		if (SelectedMethod.ResolvedParameters.Objects.length && SelectedMethod.ResolvedParameters.Objects[0].Value) params.push(JSON.parse(SelectedMethod.ResolvedParameters.Objects[0].Value));
-		if (SelectedMethod.ResolvedParameters.Filters.length) {
-			var filters = {};
-			angular.forEach(SelectedMethod.ResolvedParameters.Filters, function(filter) {
-				if (filter.Key && filter.Value) filters[filter.Key] = filter.Value;
+	function _executeApi(endpoint) {
+		var UriTemplate = '/' + $filter('URItoAngular')(endpoint.UriTemplate);
+		var HttpVerb = endpoint.HttpVerb;
+		var RequestBody = endpoint.RequestBody ? endpoint.RequestBody.Value : undefined;
+		var Parameters = writeParameters(endpoint);
+
+		function writeParameters(endpoint) {
+			var result = {};
+			angular.forEach(endpoint.Parameters, function(p) {
+				result[p.Name] = p.Value;
 			});
-			params.push(filters);
+			if (endpoint.Filters) {
+				angular.forEach(endpoint.Filters, function(filter) {
+					result[filter.Key] = filter.Value;
+				})
+			}
+			return result;
 		}
-		return $injector.get(SelectedResource.name)[SelectedMethod.name].apply(this, params);
+
+		return $resource(apiurl + UriTemplate, Parameters, {resourceMethod: {method: HttpVerb}}).resourceMethod(RequestBody).$promise;
 	}
 
-	function _createParameters(SelectedResource, SelectedMethod) {
-		var result = {
-			SelectedEndpoint: null,
-			ResolvedParameters: {
-				Fields: [],
-				Objects: [],
-				Filters: []
-			}
-		};
-		return $resource( apiurl + '/v1/docs/' + SelectedResource.name + '/' + SelectedMethod.name).get().$promise
-			.then( function(data) {
-				result.SelectedEndpoint = data;
-				analyzeParamters(data);
-				return result;
-			});
-
-		function analyzeParamters(endpoint) {
-			var lockableParams = LockableParams.Get();
-			angular.forEach(SelectedMethod.params, function(methodParameter) {
-				var match = Underscore.where(endpoint.Parameters, {Name: methodParameter});
-				var param = match.length ? match[0] : {Value: endpoint.RequestBody.Sample, Name: methodParameter, Required: true, Lockable: false, Type: 'object'};
-				if (param.Value) {
-					result.ResolvedParameters.Objects.push(param);
-				} else {
-					param.Lockable = angular.isDefined(lockableParams[param.Name]);
-					param.Value = param.Lockable ? lockableParams[param.Name] : null;
-					param.Name == 'filters' ? result.ResolvedParameters.CanFilter = true : result.ResolvedParameters.Fields.push(param);
-				}
-			});
+	function _initializeParameters(endpoint) {
+		var lockableParams = LockableParams.Get();
+		if (endpoint.RequestBody) {
+			endpoint.RequestBody.Value = endpoint.RequestBody.Sample;
 		}
+		angular.forEach(endpoint.Parameters, function(param) {
+			if (param.Name == 'filters') {
+				endpoint.Filters = [];
+			} else {
+				param.Lockable = angular.isDefined(lockableParams[param.Name]);
+				param.Value = param.Lockable ? lockableParams[param.Name] : null;
+			}
+		});
 	}
 }
 

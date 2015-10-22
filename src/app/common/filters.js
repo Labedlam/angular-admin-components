@@ -2,6 +2,7 @@ angular.module( 'orderCloud' )
 
 	.filter('OCRoutingUrl', OCRoutingUrl)
 	.filter('OCUrlParams', OCUrlParams)
+	.filter('URItoAngular', URItoAngular)
 ;
 
 function OCRoutingUrl() {
@@ -23,5 +24,13 @@ function OCUrlParams() {
 			paramString += ((paramString.length ? '&' : '?') + key + '=' + value);
 		});
 		return paramString;
+	}
+}
+
+function URItoAngular() {
+	return function(value) {
+		value = value.replace('{', ':');
+		value = value.replace('}', '');
+		return value;
 	}
 }

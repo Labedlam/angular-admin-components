@@ -77,7 +77,7 @@
 			<div id="GroupInstances" ng-show="devGroupDetail.activeTab == 'Instances'">
 				<ul class="list-group" ng-if="devGroupDetail.instances.length">
 					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.instances">
-						<div><b>{{instance.CompanyName || instance.AppName.split('for ')[1]}}</b><br/>
+						<div><b>{{instance.CompanyName}}</b><br/>
 							<span class="text-muted"><b>Client ID: </b>{{instance.ClientID}}</span>
 						</div>
 						<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>

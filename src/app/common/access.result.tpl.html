@@ -1,6 +1,6 @@
 <a class="access-search-result" href="">
 	<div>
-		<span ng-bind-html="match.model.CompanyName || match.model.AppName.split('for ')[1] | uibTypeaheadHighlight:query"></span>
+		<span ng-bind-html="match.model.CompanyName | uibTypeaheadHighlight:query"></span>
 		<br/>
 		<span ng-bind-html="match.model.ClientID | uibTypeaheadHighlight:query"></span>
 	</div>

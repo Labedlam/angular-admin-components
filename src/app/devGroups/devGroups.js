@@ -154,6 +154,7 @@ function DevGroupDetailController($timeout, DevCenter, SelectedGroup, GroupMembe
 
 	vm.grantAccess = function() {
 		if (!selectedAccess) return;
+		selectedAccess.DevGroupID = vm.model.ID;
 		DevCenter.AccessToken(selectedAccess.ClientID, selectedAccess.UserID).then(function(data) {
 			DevCenter.SaveGroupAccess(selectedAccess, true, data['access_token'])
 		})

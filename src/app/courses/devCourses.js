@@ -584,7 +584,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 }
 
-function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies) {
+function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies, Courses, Classes) {
 	var vm = this;
 	vm.coursesList = CoursesList;
 
@@ -622,19 +622,21 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies) {
 	}
 
 	function changeCourseOrder(direction, listOrder) {
-		console.log(listOrder);
-		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
-		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
-		var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
+		var curScriptIndex = Underscore.findIndex(vm.coursesList, {ListOrder: listOrder});
+		var upScriptIndex = Underscore.findIndex(vm.coursesList, {ListOrder: listOrder - 1});
+		var downScriptIndex = Underscore.findIndex(vm.coursesList, {ListOrder: listOrder + 1});
 
-		console.log(curScriptIndex);
 
 		if (direction == 'up') {
-			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
-			vm.current.ScriptModels.Scripts[upScriptIndex].ListOrder += 1;
+			vm.coursesList[curScriptIndex].ListOrder -= 1;
+			vm.coursesList[upScriptIndex].ListOrder += 1;
+			Courses.Patch(vm.coursesList[curScriptIndex].ID, {ListOrder: vm.coursesList[curScriptIndex].ListOrder});
+			Courses.Patch(vm.coursesList[upScriptIndex].ID, {ListOrder: vm.coursesList[upScriptIndex].ListOrder});
 		} else {
-			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder += 1;
-			vm.current.ScriptModels.Scripts[downScriptIndex].ListOrder -= 1;
+			vm.coursesList[curScriptIndex].ListOrder += 1;
+			vm.coursesList[downScriptIndex].ListOrder -= 1;
+			Courses.Patch(vm.coursesList[curScriptIndex].ID, {ListOrder: vm.coursesList[curScriptIndex].ListOrder});
+			Courses.Patch(vm.coursesList[downScriptIndex].ID, {ListOrder: vm.coursesList[downScriptIndex].ListOrder});
 		}
 	}
 
@@ -643,7 +645,7 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies) {
 			var val = array[index];
 			var otherVal = array[index - 1];
 			var left = array.slice(0, index-1);
-			var right = array.slice(index+1, array.length - 1);
+			var right = array.slice(index+1, array.length);
 			return left.concat(val).concat(otherVal).concat(right);
 		} else {
 			var val = array[index];
@@ -654,21 +656,14 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies) {
 		}
 	}
 
-	function changeClassOrder(_class, move) {
-		var curListOrder = _class.CourseOrder;
-		var otherClassIndex = -1;
+	function changeClassOrder(classid, move) {
+		var curListIndex = Underscore.indexOf(vm.coursesList[vm.selectedCourseIndex].Classes, classid);
 		if (move == 'down') {
-			otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder + 1});
-			vm.classList[otherClassIndex].CourseOrder -= 1;
-			_class.CourseOrder += 1;
-			vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder-2, 'down');
+			vm.coursesList[vm.selectedCourseIndex].Classes = _changeArrayOrder(vm.coursesList[vm.selectedCourseIndex].Classes, curListIndex, 'down');
 		} else if (move == 'up') {
-			otherClassIndex = Underscore.findIndex(vm.classList, {CourseOrder: curListOrder - 1});
-			vm.classList[otherClassIndex].CourseOrder += 1;
-			_class.CourseOrder -= 1;
-			vm.course.Classes = _changeArrayOrder(vm.course.Classes, _class.CourseOrder, 'up');
+			vm.coursesList[vm.selectedCourseIndex].Classes = _changeArrayOrder(vm.coursesList[vm.selectedCourseIndex].Classes, curListIndex, 'up');
 		}
-		Courses.Patch($stateParams.courseid, {Classes: vm.course.Classes});
+		Courses.Patch(vm.coursesList[vm.selectedCourseIndex].ID, {Classes: vm.coursesList[vm.selectedCourseIndex].Classes});
 	}
 
 	function deleteClass(classid) {

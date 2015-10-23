@@ -19,8 +19,8 @@
                 <div class="col-xs-2">Active</div>
             </div>
             <div class="course-list-item col-xs-12" ng-repeat="_course in courses.coursesList | filter: courses.filterCourseList | filter:{Active: courses.courseActiveFilter} | orderBy: 'ListOrder'" ng-class="{inactive: !_course.Active}">
-                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
-                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}" ng-click="courses.changeCourseOrder('down', _course.ListOrder)"></i></a>
+                <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}" ng-click="courses.changeCourseOrder('up', _course.ListOrder)"></i></a>
                 <div class="col-xs-2">
                     {{_course.ListOrder}}
                 </div>
@@ -72,8 +72,8 @@
                     <a href ng-click="confirmClassDelete = !confirmClassDelete" ng-init="confirmClassDelete = false" class="pull-right"><i class="fa fa-remove" style="color: red;"></i></a>
                     <a href ui-sref="base.devcourses.course.edit({courseid: courses.coursesList[courses.selectedCourseIndex].ID, classid: class})" class="pull-right"><i class="fa fa-edit" style="color: black"></i></a>
                     <a href ui-sref="base.devcourses.course.class({courseid: courses.coursesList[courses.selectedCourseIndex].ID, classid: class})" class="pull-right"><i class="fa fa-eye" style="color: black"></i></a>
-                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}"></i></a>
-                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}"></i></a>
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-down': !$last}" ng-click="courses.changeClassOrder(class, 'down')"></i></a>
+                    <a href class="pull-right"><i class="fa" ng-class="{'fa-arrow-up': !$first}" ng-click="courses.changeClassOrder(class, 'up')"></i></a>
                     <div class="col-xs-9">
                         {{class}}
                     </div>

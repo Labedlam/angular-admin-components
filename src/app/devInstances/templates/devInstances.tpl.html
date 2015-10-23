@@ -1,0 +1,41 @@
+<div id="DevInstancesList" class="container" ng-if="application.$state.is('base.instancesList')">
+	<h3 class="page-header">OrderCloud Instances</h3>
+	<div class="row">
+		<div class="col-sm-5">
+			<form novalidate autocomplete="off">
+				<input type="search" class="form-control" ng-model="instances.searchTerm" aria-label="Find an instance" placeholder="Find an instance..."/>
+			</form>
+		</div>
+		<div class="col-sm-7 text-right">
+			<button class="btn btn-success pull-right" type="button" ui-sref="base.newInstance" ng-if="base.currentUser.CreateCompanies"><i class="fa fa-plus-circle"></i> New Instance</button>
+		</div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-sm-4">
+			<ul class="list-group" ng-if="instances.list.length">
+				<li class="list-group-item dev-access-list-item" ng-repeat="instance in instances.list | filter:instances.searchTerm" ng-click="instances.selectInstance(this)">
+					<div><b>{{instance.CompanyName}}</b><br/>
+						<span class="text-muted">{{instance.DevGroupName}}</span>
+					</div>
+					<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
+				</li>
+			</ul>
+		</div>
+		<div class="col-sm-8">
+			<div ng-if="instances.selectedInstance">
+				<h4 class="page-header">{{instances.selectedInstance.CompanyName}}
+					<small class="text-muted"><i class="fa fa-lock"></i> {{instances.selectedInstance.Claims}}</small>
+				</h4>
+				<p><b>Client ID:</b> {{instances.selectedInstance.ClientID}}</p>
+				<!--<p><b>Group ID:</b>{{instances.selectedInstance.DevGroupID}}</p>-->
+				<!--<p><b>Group Name:</b> {{instances.selectedInstance.DevGroupName}}</p>-->
+				<p><b>User ID:</b> {{instances.selectedInstance.UserID}}</p>
+				<p><b>Username:</b> {{instances.selectedInstance.UserName}}</p>
+			</div>
+			<div class="well well-lg text-center" ng-if="!instances.selectedInstance">
+				<b>Select an Instance from the left</b>
+			</div>
+		</div>
+	</div>
+</div>

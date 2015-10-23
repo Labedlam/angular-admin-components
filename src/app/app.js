@@ -42,13 +42,13 @@ angular.module( 'orderCloud', [
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))
 	//Test Environment
-	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
-	.constant('apiurl', 'https://testapi.ordercloud.io')
-	.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
+	//.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
+	//.constant('apiurl', 'https://testapi.ordercloud.io')
+	//.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
 
-	//.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
-	//.constant('apiurl', 'http://core.four51.com:9002')
-	//.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
+	.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
+	.constant('apiurl', 'http://core.four51.com:9002')
+	.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
 
 	//.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	.constant('devapiurl', 'https://devcenterapi-test.herokuapp.com')

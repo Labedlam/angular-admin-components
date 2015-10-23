@@ -1,0 +1,44 @@
+<div id="DevInstanceCreate" class="container">
+	<h3 class="page-header">New Intance</h3>
+	<form name="ordercloud_newInstance" ng-submit="instanceCreate.submit()">
+		<div class="form-group">
+			<label>Default Development Group</label>
+			<input id="DevGroupSearch" class="form-control" type="search" placeholder="Search for a Development Group..."
+				   autocomplete="off"
+				   ng-model="instanceCreate.devGroupSearchTerm"
+				   typeahead-append-to-body="true"
+				   uib-typeahead="group as group.Name for group in instanceCreate.searchDevGroups($viewValue)"
+				   typeahead-on-select="instanceCreate.selectGroup($item)"/>
+			<!--typeahead-template-url="instanceCreate/templates/instanceCreate.devGroupSearch.tpl.html"-->
+		</div>
+		<div class="form-group">
+			<label>Company Name</label>
+			<input type="text" class="form-control" ng-model="instanceCreate.information.CompanyName" required/>
+		</div>
+		<hr/>
+		<div class="alert alert-info">This will be the default admin user for the newly created company.</div>
+		<div class="form-group">
+			<label>Email</label>
+			<input type="email" class="form-control" ng-model="instanceCreate.information.Email" required/>
+		</div>
+		<div class="form-group">
+			<label>Username</label>
+			<input type="text" class="form-control" ng-model="instanceCreate.information.Username" required/>
+		</div>
+		<div class="form-group">
+			<label>First Name</label>
+			<input type="text" class="form-control" ng-model="instanceCreate.information.FirstName" required/>
+		</div>
+		<div class="form-group">
+			<label>Last Name</label>
+			<input type="text" class="form-control" ng-model="instanceCreate.information.LastName" required/>
+		</div>
+		<div class="form-group">
+			<label>Password</label>
+			<input type="password" class="form-control" ng-model="instanceCreate.information.Password" required/>
+		</div>
+
+		<button type="button" class="btn btn-default" ui-sref="base.instancesList">Cancel</button>
+		<button type="submit" class="btn btn-primary" ng-disabled="ordercloud_newInstance.$invalid || !instanceCreate.assignedGroupID">Submit</button>
+	</form>
+</div>

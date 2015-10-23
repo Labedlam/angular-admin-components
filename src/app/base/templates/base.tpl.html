@@ -17,34 +17,24 @@
 				<li>
 					<a ui-sref="base.about" role="button" aria-haspopup="true">About</a>
 				</li>
-				<li uib-dropdown ng-if="base.currentUser">
-					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Documentation</a>
+				<li><a href="" ui-sref="base.docs">Docs</a></li>
+				<li uib-dropdown>
+					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Resources</a>
 					<div class="uib-dropdown-menu top-caret bordered mega">
 						<ul>
-							<li role="presentation" ng-repeat="item in base.exploreDropdown" ng-mouseenter="base.exploreDropdown.activeItem = item" ui-sref="{{item.StateRef}}">{{item.Display}}</li>
+							<li role="presentation" ng-repeat="item in base.resourcesDropdown" ng-hide="(!base.currentUser && item.Display == 'Courses')" ng-mouseenter="base.resourcesDropdown.activeItem = item" ui-sref="{{item.StateRef}}">{{item.Display}}</li>
 						</ul>
-						<div ng-if="base.exploreDropdown.activeItem">
-							{{base.exploreDropdown.activeItem.Description}}
+						<div ng-if="base.resourcesDropdown.activeItem">
+							{{base.resourcesDropdown.activeItem.Description}}
 						</div>
-						<!--						<li ui-sref-active="active"><a ui-sref="base.console">Console</a></li>
-                                                <li ui-sref-active="active"><a >AngularJS SDK</a></li>
-                                                <li ui-sref-active="active"><a >AngularJS Seed</a></li>-->
-						<!--<li ui-sref-active="active"><a>Components</a></li>-->
 					</div>
 				</li>
-				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Docs</a></li>
-				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Developers</a></li>
-				<li><a href="" ui-sref="base.docs" ng-if="!base.currentUser">Businesses</a></li>
-				<li><a href="" ui-sref="base.learning" ng-if="base.currentUser">Learn</a></li>
-				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
-				<li><a href="" ui-sref="base.adminCompany" ng-if="base.currentUser.CreateCompanies">New Company</a></li>
-				<li><a href="" ui-sref="base.groupsList">Groups</a></li>
-
-
-				<!--<li ui-sref-active="active"  ng-if="base.currentUser"><a>My Apps</a></li>-->
-
+				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Getting Started</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
+				<li><a href="" ui-sref="base.instancesList" ng-if="base.currentUser">Instances</a></li>
+				<li><a href="" ui-sref="base.groupsList" ng-if="base.currentUser">Groups</a></li>
 				<li ng-if="!base.currentUser"><a ui-sref="login">Log in</a></li>
 				<li ng-if="!base.currentUser"><span>or</span></li>
 				<li ng-if="!base.currentUser"><button class="btn btn-dark-blue navbar-btn" ui-sref="register">Sign up</button></li>

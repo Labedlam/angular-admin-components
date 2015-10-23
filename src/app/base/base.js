@@ -36,20 +36,30 @@ function BaseConfig( $stateProvider ) {
 function BaseController( CurrentUser ) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
-	vm.exploreDropdown = [
+	vm.resourcesDropdown = [
 		{
-			Display: 'API Docs',
-			Description: 'Documentation of the entire OrderCloud RESTful API.  Everything a developer needs to successfully communicate OrderCloud.',
+			Display: 'Courses',
+			Description: 'Train yourself to use the OrderCloud Platform',
+			StateRef: 'base.courses'
+		},
+		{
+			Display: 'SDK Overview',
+			Description: 'SDK overview Description',
 			StateRef: 'base.docs'
 		},
 		{
-			Display: 'SDKs',
-			Description: 'SDKs Description',
+			Display: 'Seed Overview',
+			Description: 'Seed overview Description',
 			StateRef: 'base.docs'
 		},
 		{
-			Display: 'Seeds',
-			Description: 'Seeds Description',
+			Display: 'Components Overview',
+			Description: 'Component overview Description',
+			StateRef: 'base.docs'
+		},
+		{
+			Display: 'Integrations Overview',
+			Description: 'Integration platform Description',
 			StateRef: 'base.docs'
 		}
 	]

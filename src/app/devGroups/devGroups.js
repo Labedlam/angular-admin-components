@@ -2,6 +2,7 @@ angular.module('orderCloud')
 	.config(DevGroupsConfig)
 	.controller('DevGroupsListCtrl', DevGroupsListController)
 	.controller('DevGroupCreateCtrl', DevGroupCreateController)
+	.controller('DevGroupEditCtrl', DevGroupEditController)
 	.controller('DevGroupDetailCtrl', DevGroupDetailController)
 ;
 
@@ -13,9 +14,9 @@ function DevGroupsConfig( $stateProvider ) {
 			controller:'DevGroupsListCtrl',
 			controllerAs: 'devGroups',
 			resolve: {
-				GroupsList: function($q, DevCenter) {
+				AcceptedGroupsList: function($q, DevCenter) {
 					var deferred = $q.defer();
-					DevCenter.Me.Groups().then(function(data) {
+					DevCenter.Me.Groups.List(1, 200, true).then(function(data) {
 						var queue = [];
 						angular.forEach(data.Items, function(group) {
 							var members = [],
@@ -41,6 +42,9 @@ function DevGroupsConfig( $stateProvider ) {
 						})
 					});
 					return deferred.promise;
+				},
+				PendingGroupsList: function($q, DevCenter) {
+					return DevCenter.Me.Groups.List(1, 200, false);
 				}
 			}
 		})
@@ -57,6 +61,21 @@ function DevGroupsConfig( $stateProvider ) {
 				}
 			}
 		})
+		.state( 'base.editGroup', {
+			url: '/groups/:groupID/settings',
+			templateUrl: 'devGroups/templates/devGroup.edit.tpl.html',
+			controller: 'DevGroupEditCtrl',
+			controllerAs: 'devGroupEdit',
+			resolve: {
+				SelectedGroup: function($q, $stateParams, DevCenter) {
+					var deferred = $q.defer();
+					DevCenter.Me.Groups.Get($stateParams.groupID).then(function(data) {
+						data.GroupAdmin ? deferred.resolve(data) : deferred.reject();
+					});
+					return deferred.promise;
+				}
+			}
+		})
 		.state( 'base.groupDetail', {
 			url: '/groups/:groupID',
 			templateUrl: 'devGroups/templates/devGroup.detail.tpl.html',
@@ -64,7 +83,7 @@ function DevGroupsConfig( $stateProvider ) {
 			controllerAs: 'devGroupDetail',
 			resolve: {
 				SelectedGroup: function($stateParams, DevCenter) {
-					return DevCenter.Group.Get($stateParams.groupID);
+					return DevCenter.Me.Groups.Get($stateParams.groupID);
 				},
 				GroupMembers: function($stateParams, DevCenter) {
 					return DevCenter.Group.ListMemeberAssignments($stateParams.groupID);
@@ -73,14 +92,47 @@ function DevGroupsConfig( $stateProvider ) {
 					return DevCenter.Group.GetAccess($stateParams.groupID);
 				}
 			}
-
 		})
 }
 
-function DevGroupsListController(GroupsList, DevCenter) {
+function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, CurrentUser, DevCenter) {
 	var vm = this;
 	vm.searchTerm = null;
-	vm.list = GroupsList;
+
+	vm.activeTab = AcceptedGroupsList.length ? 'accepted' : 'pending';
+
+	vm.setTab = function(tabName) {
+		vm.activeTab = tabName;
+	};
+
+	vm.acceptedList = AcceptedGroupsList;
+	vm.pendingList = PendingGroupsList.Items;
+
+	vm.acceptInvite = function(scope) {
+		DevCenter.Group.SaveMemberAssignment(scope.group.ID, {
+			UserID: CurrentUser.ID,
+			Accepted: true,
+			GroupAdmin: false
+		}).then(function() {
+			$state.reload()
+		})
+	};
+
+	vm.leaveGroup = function(scope) {
+		//TODO:pending DEVCTR-16051
+		DevCenter.Group.DeleteMemberAssignment(scope.group.ID, CurrentUser.ID)
+			.then(function() {
+				$state.reload();
+			})
+	};
+
+	vm.declineInvite = function(scope) {
+		//TODO:pending DEVCTR-16051
+		DevCenter.Group.DeleteMemberAssignment(scope.group.ID, CurrentUser.ID)
+			.then(function() {
+				$state.reload();
+			})
+	}
 }
 
 function DevGroupCreateController($state, DevCenter) {
@@ -98,7 +150,24 @@ function DevGroupCreateController($state, DevCenter) {
 	}
 }
 
-function DevGroupDetailController($timeout, DevCenter, SelectedGroup, GroupMembers, GroupInstances) {
+function DevGroupEditController($state, DevCenter, SelectedGroup) {
+	var vm = this;
+	vm.model = SelectedGroup;
+
+	vm.submit = function() {
+		DevCenter.Group.Update(vm.model.ID, vm.model).then(function(data) {
+			$state.go('base.groupDetail', {groupID:vm.model.ID});
+		})
+	};
+
+	vm.deleteGroup = function() {
+		DevCenter.Group.Delete(vm.model.ID).then(function(data) {
+			$state.go('base.groupsList');
+		});
+	}
+}
+
+function DevGroupDetailController($state, $timeout, DevCenter, SelectedGroup, GroupMembers, GroupInstances) {
 	var vm = this,
 		selectedAccess,
 		selectedUser;
@@ -130,8 +199,39 @@ function DevGroupDetailController($timeout, DevCenter, SelectedGroup, GroupMembe
 
 	vm.inviteDevUser = function() {
 		if (!selectedUser) return;
-		DevCenter.Group.SaveMemberAssignment(vm.model.ID, selectedUser.ID, false, false).then(function(data) {
+		DevCenter.Group.SaveMemberAssignment(vm.model.ID, {
+			UserID: selectedUser.ID,
+			Accepted: false,
+			GroupAdmin: false
+		}).then(function() {
+			$state.reload();
+		})
+	};
 
+	vm.removeMember = function(scope) {
+		DevCenter.Group.DeleteMemberAssignment(vm.model.ID, scope.member.ID)
+			.then(function() {
+				$state.reload();
+			});
+	};
+
+	vm.makeGroupAdmin = function(scope) {
+		DevCenter.Group.SaveMemberAssignment(vm.model.ID, {
+			UserID: scope.member.ID,
+			Accepted: true,
+			GroupAdmin: true
+		}).then(function() {
+			$state.reload();
+		})
+	};
+
+	vm.demoteMember = function(scope) {
+		DevCenter.Group.SaveMemberAssignment(vm.model.ID, {
+			UserID: scope.member.ID,
+			Accepted: true,
+			GroupAdmin: false
+		}).then(function() {
+			$state.reload();
 		})
 	};
 

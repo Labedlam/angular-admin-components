@@ -49,10 +49,18 @@
 		<div ng-repeat="group in devGroups.pendingList">
 			<div class="panel panel-default group-panel">
 				<div class="panel-body">
-					<button class="btn btn-default pull-right" ng-click="devGroups.acceptInvite(this)">Accept Invite</button>
-					<button class="btn btn-default pull-right" ng-click="devGroups.declineInvite(this)">Decline Invite</button>
-					<h4><b>{{group.Name}}</b></h4>
-					<p class="text-muted">{{group.Description}}</p>
+					<div class="row">
+						<div class="col-xs-5">
+							<h4><b>{{group.Name}}</b></h4>
+							<p class="text-muted">{{group.Description}}</p>
+						</div>
+						<div class="col-xs-7 text-right">
+							<div class="btn-group">
+								<button class="btn btn-success" ng-click="devGroups.acceptInvite(this)">Accept</button>
+								<button class="btn btn-danger" ng-click="devGroups.declineInvite(this)">Decline</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

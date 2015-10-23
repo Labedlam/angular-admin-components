@@ -120,8 +120,8 @@ function DevInstanceCreateController($timeout, CanCreateInstance, DevCenter) {
 		if (!model || model.length < 2) return;
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
-			//TODO: waiting for a search term to be available on DevGroup list
-			return DevCenter.Me.Groups(1, 10, true).then(function(data) {
+			//TODO: waiting for a search term to be available on DevGroup list (global, not just /me/devgroups)
+			return DevCenter.Me.Groups.List(1, 10, true).then(function(data) {
 				return data.Items;
 			});
 		}), 300);

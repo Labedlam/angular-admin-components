@@ -119,7 +119,6 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 	};
 
 	vm.leaveGroup = function(scope) {
-		//TODO:pending DEVCTR-16051
 		DevCenter.Group.DeleteMemberAssignment(scope.group.ID, CurrentUser.ID)
 			.then(function() {
 				$state.reload();
@@ -127,7 +126,6 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 	};
 
 	vm.declineInvite = function(scope) {
-		//TODO:pending DEVCTR-16051
 		DevCenter.Group.DeleteMemberAssignment(scope.group.ID, CurrentUser.ID)
 			.then(function() {
 				$state.reload();

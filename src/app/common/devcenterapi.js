@@ -1,7 +1,7 @@
 angular.module( 'orderCloud' )
     .factory( 'Classes', Classes )
     .factory( 'Courses', Courses )
-    .factory( 'Users', Users )
+    .factory( 'DcUsers', DcUsers )
 ;
 function Courses($resource, devapiurl, $cookies) {
     var service = {
@@ -66,7 +66,7 @@ function Classes($resource, devapiurl, $cookies) {
     return service;
 }
 
-function Users ($q, $resource, devapiurl, $cookies) {
+function DcUsers ($q, $resource, devapiurl, $cookies) {
     var service = {
         Get: _get,
         SaveOcVar: _saveOcVar,

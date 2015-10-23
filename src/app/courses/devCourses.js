@@ -237,7 +237,7 @@ function DevCourseController( SelectedCourse, ClassesList) {
 	vm.classes = ClassesList;
 }
 
-function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, Users, Context, Me, $filter, $sce ) {
+function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, DcUsers, Context, Me, $filter, $sce ) {
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.user = {};
@@ -434,6 +434,7 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 			var ex = new Function("injector", injectString + fullScript);
 			ex($injector);
+			console.log('hit');
 		} else {
 			vm.consoleMessage = 'script is not executable';
 		}
@@ -483,14 +484,14 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			}
 		});
 		if (pass) {
-			Users.SaveClassProgress(vm.current.ID);
+			DcUsers.SaveClassProgress(vm.current.ID);
 		}
 		vm.classComplete = pass;
 	}
 
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
-		//var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
-		var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
+		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
+		//var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
 		var method = response.config.method;
 		var epSplit = endpoint.split('/');
 		console.log(response);
@@ -537,9 +538,9 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	}
 
 	function saveNewVar(newVar) {
-		Users.SaveOcVar(newVar)
+		DcUsers.SaveOcVar(newVar)
 			.then(function(data) {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						vm.user.newVar = {};
@@ -554,9 +555,9 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	}
 
 	function removeExistingVar(varHash) {
-		Users.DeleteOcVar({hash: varHash})
+		DcUsers.DeleteOcVar({hash: varHash})
 			.then(function() {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						stringReplace();
@@ -568,9 +569,9 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			})
 	}
 	function editExistingVar(varHash, existingVar) {
-		Users.PatchOcVar({hash: varHash}, existingVar)
+		DcUsers.PatchOcVar({hash: varHash}, existingVar)
 			.then(function() {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						stringReplace();
@@ -775,14 +776,14 @@ function CourseService(Courses, $q) {
 	return service;
 }
 
-function UserService(Users, $q) {
+function UserService(DcUsers, $q) {
 	var service = {
 		getOcVars: _getOcVars
 	};
 
 	function _getOcVars() {
 		var d = $q.defer();
-		Users.GetOcVars()
+		DcUsers.GetOcVars()
 			.then(function(data) {
 				d.resolve(data);
 			}, function(error) {

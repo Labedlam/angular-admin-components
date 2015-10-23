@@ -42,13 +42,13 @@ angular.module( 'orderCloud', [
 		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
 	}))
 	//Test Environment
-	//.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
-	//.constant('apiurl', 'https://testapi.ordercloud.io')
-	//.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
+	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
+	.constant('apiurl', 'https://testapi.ordercloud.io')
+	.constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858') //Test
 
-	.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
-	.constant('apiurl', 'http://core.four51.com:9002')
-	.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
+	//.constant('authurl', 'http://core.four51.com:11629/OAuth/Token')
+	//.constant('apiurl', 'http://core.four51.com:9002')
+	//.constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
 
 	//.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	.constant('devapiurl', 'https://devcenterapi-test.herokuapp.com')
@@ -116,7 +116,7 @@ function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	//regular
 	//$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4Y2I4YTIxOWU0OGVkNjUwMGRkZGU2YTc4MzYyYzQ1MzYxZjA5MmYwNTE3OTQ1MDZhZmZiZWU5OWVlZmVlY2E0ZWE5ZGVhNjEyNDdlMmUzODRlZTg0YjU5NzZjODk2NTQ0ZmYzOTM3YWM3NGQ0ZWY3Mjk3NzIzYWQ5ZTY3NTM4OThjZWU4ODQ5.M_0hJrULQSLukqd1HT5lgo2782Fqb22bTbTAkhKa4XM');
 	//admin
-	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4ZmU4YTIxZGUzOGJkMzUwMGRkNmU2ZjI4MjY3YzQ1ZjM4YTc5N2EyNTY3OTQ1NTdhZWFkZWVjMGVhZmZlZmY3ZWI5M2I3MzEyMzI1MmIzMzRmZWE0YjA4NzdjZDkxNTA0YmYwOTM3OWM2NGQ0YmYxNzQ3YjIyYWU.-kgniqgo-ZQRKASbaXdUDQIqcA31H0DcgsaYQHneq4E');
+	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.ZjI4YmFkODMwOTEzYzk5ZjBlMDczN2U2NmM5NmQ3Y2M4ZmI1ZmQ1NWU0ZDZkODE5MWRiMGEzZjFjNTNkOTcwNzY1YWI4MWY4NDc3MDQ4NGI.qOFpOYwqA6Vh9KvwdXMjBmk3657oUevQD73r2JDVI34');
 	vm.logout = function() {
 		DevAuth.RemoveToken();
 		Auth.RemoveToken();

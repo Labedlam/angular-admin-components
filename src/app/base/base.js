@@ -40,7 +40,7 @@ function BaseController( CurrentUser ) {
 		{
 			Display: 'Courses',
 			Description: 'Train yourself to use the OrderCloud Platform',
-			StateRef: 'base.courses'
+			StateRef: 'base.devcourses'
 		},
 		{
 			Display: 'SDK Overview',

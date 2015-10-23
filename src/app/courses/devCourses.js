@@ -489,8 +489,8 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	}
 
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
-		//var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
-		var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
+		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
+		//var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
 		var method = response.config.method;
 		var epSplit = endpoint.split('/');
 		console.log(response);

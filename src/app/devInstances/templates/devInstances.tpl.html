@@ -42,7 +42,7 @@
 				<div ng-show="instances.selectedInstance.activeTab == 'contributors'">
 					<ul class="list-group">
 						<li class="list-group-item" ng-repeat="group in instances.selectedInstance.DevGroups">
-							<i class="fa fa-users"></i> {{group.Name}}
+							<i class="fa fa-users text-muted"></i> {{group.Name}}
 						</li>
 						<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">
 							<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>

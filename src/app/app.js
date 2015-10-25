@@ -54,6 +54,9 @@ angular.module( 'orderCloud', [
 	.constant('devapiurl', 'https://devcenterapi-test.herokuapp.com')
 	//.constant('devapiurl', 'http://localhost:55555')
 
+	.constant('environment', 'test')
+	/*.constant('environment', 'production')*/
+
 
 ;
 
@@ -116,7 +119,7 @@ function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	//regular
 	//$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.YjlmN2Y5ZDMwMTRjYzM4NjU3NWU3MmIwNmFlZTg5OTA4Y2I4YTIxOWU0OGVkNjUwMGRkZGU2YTc4MzYyYzQ1MzYxZjA5MmYwNTE3OTQ1MDZhZmZiZWU5OWVlZmVlY2E0ZWE5ZGVhNjEyNDdlMmUzODRlZTg0YjU5NzZjODk2NTQ0ZmYzOTM3YWM3NGQ0ZWY3Mjk3NzIzYWQ5ZTY3NTM4OThjZWU4ODQ5.M_0hJrULQSLukqd1HT5lgo2782Fqb22bTbTAkhKa4XM');
 	//admin
-	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.ZjI4YmFkODMwOTEzYzk5ZjBlMDczN2U2NmM5NmQ3Y2M4ZmI1ZmQ1NWU0ZDZkODE5MWRiMGEzZjFjNTNkOTcwNzY1YWI4MWY4NDc3MDQ4NGI.qOFpOYwqA6Vh9KvwdXMjBmk3657oUevQD73r2JDVI34');
+	$cookies.put('dc-token', 'eyJhbGciOiJIUzI1NiJ9.Y2RlM2Y3ZjJkOTk1ZWY5N2JjZGI5N2RlMGY1OTZiMzlkMmY0MjRjMDcwZjA0YmIyYTBhYzczNWZjMGJkYWUzNjUyNjI3MDA0MDI1OQ.m3qQMRisV9gAUJAp05xTq2NJ9FtpbZvZJyOndt-pzR4');
 	vm.logout = function() {
 		DevAuth.RemoveToken();
 		Auth.RemoveToken();

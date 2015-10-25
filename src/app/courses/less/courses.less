@@ -135,23 +135,18 @@
 	padding:15px;
 	border:1px solid @list-group-border;
 	margin-bottom:5px;
-	display:flex;
-	flex-flow:row nowrap;
-	align-content:center;
+
 	&:hover {
 	  background-color:@list-group-hover-bg;
 	}
 	figure {
-	  flex:1;
 	  max-width:100px;
 	}
-	div {
+	.course-info {
 	  padding:15px;
-	  flex:1;
-	  display:flex;
-	  flex-flow:column nowrap;
-	  align-items:flex-start;
-	  justify-content: center;
+	}
+	.progress-title {
+	  text-align: right;
 	}
 	h4 {
 	  margin:0;
@@ -168,6 +163,18 @@
 	h3 {
 	  text-align: center;
 	}
+  }
+  .course-class-list .completed {
+	background-color: lighten(@four51-blue, 20);
+	.pull-right {
+	  padding-top: 10px;
+	  font-size: 1.2em;
+	  color: @four51-navy;
+	}
+	.fa {
+	  padding-top: 10px;
+	}
+
   }
 }
 

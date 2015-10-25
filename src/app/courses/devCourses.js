@@ -9,7 +9,7 @@ angular.module( 'orderCloud' )
 	.controller( 'LearningCtrl', LearningController)
 	.factory( 'ClassSvc', ClassService )
 	.factory( 'CourseSvc', CourseService )
-	.factory( 'UserSvc', UserService )
+	.factory( 'DcUserSvc', DcUserService )
 
 ;
 
@@ -226,18 +226,30 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 
 }
 
-function DevCoursesController( CoursesList ) {
+function DevCoursesController( CoursesList, DcUsers ) {
 	var vm = this;
 	vm.list = CoursesList;
+
+	vm.list.forEach(function(each) {
+		DcUsers.GetCourseProgress(each.ID)
+			.then(function(data) {
+				each.CourseProgress = data.toJSON();
+			})
+	})
 }
 
-function DevCourseController( SelectedCourse, ClassesList) {
+function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 	var vm = this;
 	vm.current = SelectedCourse;
 	vm.classes = ClassesList;
+
+	DcUsers.GetCourseProgress(vm.current.ID)
+		.then(function(data) {
+			vm.CompletedClasses = data.CompletedClasses;
+		})
 }
 
-function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, DcUsers, Context, Me, $filter, $sce ) {
+function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, DcUsers, Context, Me, $filter, $sce ){
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.user = {};
@@ -375,7 +387,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	function renderHtml(html) {
 		return $sce.trustAsHtml(html);
 	}
-
 	function setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:100
@@ -384,13 +395,11 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	function SelectResponse(response) {
 		vm.SelectedResponse = response;
 	}
-
 	function activeScriptFn(scriptTitle) {
 		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Title;
 		vm.showScriptSelector = false;
 		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Name;
 	}
-
 	function nextClass() {
 		if (nextClassID) {
 			console.log(nextClassID);
@@ -402,7 +411,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			$state.go('base.courses');
 		}
 	}
-
 	function Execute() {
 		vm.turnOnLog = true;
 		vm.goalsCollapse = false;
@@ -440,7 +448,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		}
 
 	}
-
 	function setContext() {
 		Context.setContext(vm.context.clientID, vm.context.username, vm.context.password)
 			.then(function() {
@@ -460,13 +467,11 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 				vm.context.SetErrorMsg = reason;
 			});
 	}
-
 	function clearContext() {
 		Context.clearContext();
 		vm.contextSet = false;
 		vm.context.User = null;
 	}
-
 	function findNextCourseID() {
 		Courses.List('developer').then(function(data) {
 			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
@@ -475,7 +480,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			}
 		})
 	}
-
 	function checkAssertions() {
 		var pass = true;
 		angular.forEach(vm.current.Assert, function(assertion) {
@@ -488,7 +492,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		}
 		vm.classComplete = pass;
 	}
-
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
 		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
 		//var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
@@ -536,7 +539,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		})
 
 	}
-
 	function saveNewVar(newVar) {
 		DcUsers.SaveOcVar(newVar)
 			.then(function(data) {
@@ -553,7 +555,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 				console.log(err);
 			})
 	}
-
 	function removeExistingVar(varHash) {
 		DcUsers.DeleteOcVar({hash: varHash})
 			.then(function() {
@@ -776,9 +777,10 @@ function CourseService(Courses, $q) {
 	return service;
 }
 
-function UserService(DcUsers, $q) {
+function DcUserService(DcUsers, $q) {
 	var service = {
-		getOcVars: _getOcVars
+		getOcVars: _getOcVars,
+		getCourseProgress: _getCourseProgress
 	};
 
 	function _getOcVars() {
@@ -790,6 +792,10 @@ function UserService(DcUsers, $q) {
 				d.reject(error);
 			});
 		return d.promise;
+	}
+
+	function _getCourseProgress() {
+
 	}
 
 

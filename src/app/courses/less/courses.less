@@ -204,8 +204,11 @@
 	font-size: 1.1em;
 	color: @alert-danger-text;
   }
-  .context-user.contextSet {
-	color: @alert-info-text;
+  .fa-user {
+	color: @alert-danger-text;
+  }
+  .fa-user.contextSet {
+	color: @alert-success-text;
   }
   .container-fluid {
 	margin-right: 12px;
@@ -224,7 +227,7 @@
 	.dropup-content {
 	  background-color: @gray-lighter;
 	  margin: 0 2px 12px 0;
-	  width: 290px;
+	  width: 320px;
 	  padding: 10px;
 	  cursor: default;
 	  .col-xs-12 {
@@ -235,6 +238,17 @@
 		border-radius: 6px;
 		margin: 10px 5px;
 		height: 2px;
+	  }
+	  .dropup-subtitle {
+		font-weight: 700;
+		//border-top: 1px solid lighten(@gray-light, 30);
+	  }
+	  .dropup-subvalue {
+		height: 1.5em;
+		//border-bottom: 1px solid lighten(@gray-light, 30);
+	  }
+	  .buyer-input {
+		padding-bottom: 10px;
 	  }
 	  .oc-vars {
 		max-height: 250px;

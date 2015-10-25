@@ -58,36 +58,49 @@
 			</div>
 			<div class="icon-divider pull-right"></div>
 			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" dropdown auto-close="outsideClick">
-				<a href dropdown-toggle><i class="fa fa-user"></i></a>
+				<a href dropdown-toggle><i class="fa fa-user" ng-class="{contextSet: class.contextUser}"></i></a>
 				<div class="dropdown-menu dropup dropup-content" aria-labelledby="context-btn">
 					<div class="icon-container">
-						<i class="fa fa-group"></i>
+						<i class="fa fa-group" ></i>
 					</div>
 					<div class="dropup-title">
 						App Context Definition
 					</div>
 					<form>
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="clientID" ng-model="class.context.clientID">
+							<select type="text" class="form-control" placeholder="clientID" ng-model="class.ContextName">
+								<option ng-repeat="item in class.contextOptions.Items">{{item.CompanyName}}</option>
+							</select>
+						</div>
+						<div class="col-xs-12 dropup-subtitle">
+							ClientID
+						</div>
+						<div class="col-xs-12 dropup-subvalue">
+							{{class.context.ClientID}}
+						</div>
+						<div class="col-xs-12 dropup-subtitle">
+							UserName
+						</div>
+						<div class="col-xs-12 dropup-subvalue">
+							{{class.context.UserName}}
 						</div>
 						<div class="divider"></div>
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Username" ng-model="class.context.username">
+						<div class="col-xs-12 form-group buyer-input">
+							<label>BuyerID</label>
+							<input class="form-control" type="text" ng-model="class.buyerID">
 						</div>
-						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password" ng-model="class.context.password">
+						<div class="col-xs-12">
+							<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.setContext()">Set Context</button>
+							<button class="btn btn-danger btn-block pull-left" ng-click="class.clearContext()">Clear Context</button>
 						</div>
-						<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.context.setContext()">Set Context</button>
-						<button class="btn btn-danger btn-block pull-left" ng-click="class.context.clearContext()">Clear Context</button>
+
 					</form>
 					<div class="dropup-knob"></div>
 				</div>
 			</div>
-			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a dropdown-toggle class="context-user" ng-class="{contextSet: class.context.User}">{{class.context.User ? 'Context User: ' + class.context.User.FirstName + ' ' + class.context.User.LastName : 'No Context User Set'}}</a>
-				</li>
-			</ul>
+			<div class="nav navbar-nav navbar-right btm-nav-icon" ng-show="class.confirmContextSet">
+				<i class="fa fa-check-circle fa-2x" style="padding-top: 5px; color: green;"></i>
+			</div>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a ng-hide="class.current.Interactive" href="" ng-click="class.nextClass()">Next Class</a>

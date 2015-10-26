@@ -9,7 +9,7 @@ angular.module( 'orderCloud' )
 	.controller( 'LearningCtrl', LearningController)
 	.factory( 'ClassSvc', ClassService )
 	.factory( 'CourseSvc', CourseService )
-	.factory( 'UserSvc', UserService )
+	.factory( 'DcUserSvc', DcUserService )
 
 ;
 
@@ -84,8 +84,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 					console.log($stateParams);
 					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid);
 				},
-				OcVars: function (UserSvc) {
-					return UserSvc.getOcVars();
+				OcVars: function (DcUserSvc) {
+					return DcUserSvc.getOcVars();
+				},
+				ContextOptions: function(DevCenter) {
+					return DevCenter.Me.GetAccess(1, 100);
 				}
 			}
 		})
@@ -226,24 +229,39 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 
 }
 
-function DevCoursesController( CoursesList ) {
+function DevCoursesController( CoursesList, DcUsers ) {
 	var vm = this;
 	vm.list = CoursesList;
+
+	vm.list.forEach(function(each) {
+		DcUsers.GetCourseProgress(each.ID)
+			.then(function(data) {
+				each.CourseProgress = data.toJSON();
+			})
+	})
 }
 
-function DevCourseController( SelectedCourse, ClassesList) {
+function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 	var vm = this;
 	vm.current = SelectedCourse;
 	vm.classes = ClassesList;
+
+	DcUsers.GetCourseProgress(vm.current.ID)
+		.then(function(data) {
+			vm.CompletedClasses = data.CompletedClasses;
+		})
 }
 
-function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, Users, Context, Me, $filter, $sce ) {
+function DevClassController( $scope, $state, $injector, Auth, Underscore,
+							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars,
+							 ContextOptions, DcUsers, DevCenter, Me, BuyerID, $filter,
+							 $sce, $localForage, $cookies, $timeout ){
 	var vm = this;
 	vm.current = SelectedClass;
+	vm.contextOptions = ContextOptions.toJSON();
 	vm.user = {};
 	vm.user.savedVars = OcVars;
 	vm.alert = {};
-	vm.context = {};
 	vm.Responses = [];
 	vm.classComplete = false;
 
@@ -252,12 +270,25 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	vm.SelectResponse = SelectResponse;
 	vm.nextClass = nextClass;
 	vm.Execute = Execute;
-	vm.context.setContext = setContext;
-	vm.context.clearContext = clearContext;
+	vm.setContext = setContext;
+	vm.clearContext = clearContext;
 	vm.renderHtml = renderHtml;
 	vm.removeExistingVar = removeExistingVar;
 	vm.editExistingVar = editExistingVar;
 	vm.saveNewVar = saveNewVar;
+
+	if (!BuyerID.Get()) {
+		BuyerID.Set('__NONE_SET__');
+	} else {
+		vm.buyerID = BuyerID.Get();
+		vm.BuyerSet = true;
+	}
+
+	$localForage.getItem('context-user')
+		.then(function(data) {
+			vm.context = data;
+			vm.ContextName = data.CompanyName;
+		});
 
 
 	vm.openRequestCount = 0;
@@ -269,9 +300,9 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	if (!nextClassID) findNextCourseID();
 	Me.Get()
 		.then(function(data) {
-			vm.context.User = data;
+			vm.contextUser = data;
 		}, function() {
-			vm.context.User = null;
+			vm.contextUser = null;
 		});
 
 	function stringReplace() {
@@ -352,6 +383,10 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
 					var response = angular.copy(c);
+					console.log(c);
+					if (c.config.url.indexOf('__NONE_SET__') > -1) {
+						vm.BuyerSet = false;
+					}
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
@@ -371,11 +406,19 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		}
 	}
 
+	$scope.$watch(function() {
+		return vm.ContextName;
+	}, function(newVal) {
+		if (!newVal) {
+			return
+		} else {
+			vm.context = Underscore.where(vm.contextOptions.Items, {CompanyName: newVal})[0];
+		}
+	});
 
 	function renderHtml(html) {
 		return $sce.trustAsHtml(html);
 	}
-
 	function setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:100
@@ -384,13 +427,11 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 	function SelectResponse(response) {
 		vm.SelectedResponse = response;
 	}
-
 	function activeScriptFn(scriptTitle) {
 		vm.current.ActiveScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Title;
 		vm.showScriptSelector = false;
 		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Name;
 	}
-
 	function nextClass() {
 		if (nextClassID) {
 			console.log(nextClassID);
@@ -402,7 +443,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			$state.go('base.courses');
 		}
 	}
-
 	function Execute() {
 		vm.turnOnLog = true;
 		vm.goalsCollapse = false;
@@ -434,38 +474,49 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 
 			var ex = new Function("injector", injectString + fullScript);
 			ex($injector);
+			console.log('hit');
 		} else {
 			vm.consoleMessage = 'script is not executable';
 		}
 
 	}
-
 	function setContext() {
-		Context.setContext(vm.context.clientID, vm.context.username, vm.context.password)
-			.then(function() {
+		DevCenter.AccessToken(vm.context.ClientID, vm.context.UserID)
+			.then(function(data) {
+				$localForage.setItem('context-user', vm.context);
+				Auth.SetToken(data['access_token']);
 				vm.contextSet = true;
-				vm.context.username = '';
-				vm.context.password = '';
 				Me.Get()
 					.then(function(data) {
-						if (vm.context.User) {
-							vm.context.User = data;
-						}
+						vm.contextUser = data;
 					}, function(reason) {
 						console.log(reason);
-					})
+					});
+				if (vm.buyerID) {
+					BuyerID.Set(vm.buyerID);
+					vm.BuyerSet = true;
+				}
+				vm.confirmContextSet = true;
+				$timeout(function() {
+					vm.confirmContextSet = false;
+				}, 2000)
 			}, function(reason) {
-				vm.context.SetError = true;
-				vm.context.SetErrorMsg = reason;
+				vm.contextError = true;
+				vm.contextErrorMsg = reason;
 			});
-	}
 
+
+	}
 	function clearContext() {
-		Context.clearContext();
 		vm.contextSet = false;
-		vm.context.User = null;
+		Auth.RemoveToken();
+		$localForage.removeItem('context-user');
+		vm.contextUser = null;
+		vm.context = null;
+		vm.ContextName = "";
+		$cookies.remove('DevCenter.buyerID');
+		vm.buyerID = "";
 	}
-
 	function findNextCourseID() {
 		Courses.List('developer').then(function(data) {
 			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
@@ -474,7 +525,6 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			}
 		})
 	}
-
 	function checkAssertions() {
 		var pass = true;
 		angular.forEach(vm.current.Assert, function(assertion) {
@@ -483,11 +533,10 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			}
 		});
 		if (pass) {
-			Users.SaveClassProgress(vm.current.ID);
+			DcUsers.SaveClassProgress(vm.current.ID);
 		}
 		vm.classComplete = pass;
 	}
-
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
 		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
 		//var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
@@ -535,11 +584,10 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 		})
 
 	}
-
 	function saveNewVar(newVar) {
-		Users.SaveOcVar(newVar)
+		DcUsers.SaveOcVar(newVar)
 			.then(function(data) {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						vm.user.newVar = {};
@@ -552,11 +600,10 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 				console.log(err);
 			})
 	}
-
 	function removeExistingVar(varHash) {
-		Users.DeleteOcVar({hash: varHash})
+		DcUsers.DeleteOcVar({hash: varHash})
 			.then(function() {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						stringReplace();
@@ -568,9 +615,9 @@ function DevClassController( $scope, $state, $injector, Underscore, ClassSvc, Co
 			})
 	}
 	function editExistingVar(varHash, existingVar) {
-		Users.PatchOcVar({hash: varHash}, existingVar)
+		DcUsers.PatchOcVar({hash: varHash}, existingVar)
 			.then(function() {
-				Users.GetOcVars()
+				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
 						stringReplace();
@@ -775,14 +822,14 @@ function CourseService(Courses, $q) {
 	return service;
 }
 
-function UserService(Users, $q) {
+function DcUserService(DcUsers, $q) {
 	var service = {
 		getOcVars: _getOcVars
 	};
 
 	function _getOcVars() {
 		var d = $q.defer();
-		Users.GetOcVars()
+		DcUsers.GetOcVars()
 			.then(function(data) {
 				d.resolve(data);
 			}, function(error) {
@@ -790,6 +837,7 @@ function UserService(Users, $q) {
 			});
 		return d.promise;
 	}
+
 
 
 	return service

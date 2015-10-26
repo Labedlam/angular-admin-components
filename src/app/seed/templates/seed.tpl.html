@@ -5,7 +5,7 @@
     <p>A seed project for custom Four51 Solutions built on AngularJS</p>
     <hr>
     <h2><a id="Get_started_4"></a>Get started</h2>
-    <p>Node.js is required for the following node package manager (npm) tasks. If you don’t have node.js installed, you can download it <a href="http://nodejs.org/">here</a>.</p>
+    <p>Node.js is required for the following node package manager (npm) tasks. If you don't have node.js installed, you can download it <a href="http://nodejs.org/">here</a>.</p>
 <pre><code class="language-sh">$ npm -g install karma bower
     $ npm -g install <span class="hljs-string">"gulpjs/gulp-cli#4.0"</span>
     $ npm install
@@ -21,7 +21,7 @@
     <h2><a id="Configure_WebStorm_25"></a>Configure WebStorm</h2>
     <p>WebStorm is our chosen development IDE. It provides an interface for the capabilities of the seed projects configuration.</p>
     <h3><a id="Karma_Unit_Testing_28"></a>Karma Unit Testing</h3>
-    <p>Once you’ve installed the prerequisites and run your gulp build you can setup and run your Karma tests.</p>
+    <p>Once you've installed the prerequisites and run your gulp build you can setup and run your Karma tests.</p>
     <p>Create a Run configuration using the Karma plugin with the following settings:</p>
     <p>Node interpreter: C:\Program Files (x86)\nodejs\node.exe</p>
     <p>Karma package: C:\Four51\WebFiles\SPASites\defaults\OrderCloud\node_modules\karma</p>
@@ -58,7 +58,7 @@
     <p>This section provides a little more detailed understanding of what goes into
         getting <code>OrderCloud</code> up and running. Though <code>OrderCloud</code> is really simple
         to use, it might help to have an understanding of the tools involved here, like
-        Node.js and Gulp and Bower. If you’re completely new to highly organized,
+        Node.js and Gulp and Bower. If you're completely new to highly organized,
         modern JavaScript development, take a few short minutes to read <a href="tools.md">this overview
             of the tools</a> before continuing with this section.</p>
     <p>Here it is:</p>
@@ -84,7 +84,7 @@
 <pre><code class="language-sh">$ bower install packagename --save
 </code></pre>
     <p>The <code>--save</code> flag tells Bower to add the package at its current version to
-        our project’s <code>bower.js</code> file so should another developer download our
+        our project's <code>bower.js</code> file so should another developer download our
         application (or we download it from a different computer), we can simply run the
         <code>bower install</code> command as above and all our dependencies will be installed for
         us. Neat!</p>
@@ -102,7 +102,7 @@
         the app should automatically reload your application with the appropriate changes. Also
         if you make any changes to your style sheets (less or css) the app will rebuild those changes
         and inject them directly into the application, without reloading the entire page!</p>
-    <p>When you’re ready to push your app into production, just run the <code>compile</code>
+    <p>When you're ready to push your app into production, just run the <code>compile</code>
         command:</p>
 <pre><code class="language-sh">$ gulp compile
 </code></pre>
@@ -119,7 +119,7 @@
     <h3><a id="The_Build_System_164"></a>The Build System</h3>
     <p>The best way to learn about the build system is by familiarizing yourself with
         Gulp and then looking through the code, <code>Gulpfile.js</code> and the Gulp folder.
-        But you don’t need to do that to be very productive with
+        But you don't need to do that to be very productive with
         <code>OrderCloud</code>. What follows in this section is a quick introduction to the
         tasks provided and should be plenty to get you started.</p>
     <p>Below is a description of the gulp tasks in the project, sorted by their general purpose
@@ -196,7 +196,7 @@
     </ul>
     <p>As covered in the previous section, <code>gulp build</code> and <code>gulp watch</code> will execute a full build
         up-front and then run any of the aforementioned <code>watch</code> tasks as needed to
-        ensure the fastest possible build. So whenever you’re working on your project,
+        ensure the fastest possible build. So whenever you're working on your project,
         start with:</p>
 <pre><code class="language-sh">$ gulp build
 </code></pre>
@@ -206,7 +206,7 @@
     <p>And everything will be done automatically!</p>
     <h3><a id="Build_vs_Compile_257"></a>Build vs. Compile</h3>
     <p>To make the build even faster, tasks are placed into two categories: build and
-        compile. The build tasks (like those we’ve been discussing) are the minimal
+        compile. The build tasks (like those we've been discussing) are the minimal
         tasks required to run your app during development.</p>
     <p>Compile tasks, however, get your app ready for production. The compile tasks
         include concatenation, minification, compression, etc. These tasks take a little

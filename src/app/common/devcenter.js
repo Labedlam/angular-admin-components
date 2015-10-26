@@ -10,12 +10,13 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		Logout: _logout,
 		AccessToken: _getAccessToken,
 		SaveGroupAccess: _saveGroupAccess,
+		DeleteGroupAccess: _deleteGroupAccess,
 		Users: {
 			List: _usersList
 		},
 		Me: {
 			Get: _meGet,
-			//Update: _meUpdate,
+			Update: _meUpdate,
 			GetAccess: _meAccessGet,
 			Groups:  {
 				List: _meGroups,
@@ -63,8 +64,13 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		return $resource(apiurl + '/v1/devcenter/imersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'clientID': clientID, 'userID': userID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
 	}
 
+	//ADMIN ONLY
 	function _saveGroupAccess(access, accepted, token) {
 		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: 'Bearer ' + token}}}).DevGroupAccessSave(access).$promise;
+	}
+
+	function _deleteGroupAccess(userID, clientID, claims, devGroupID, token) {
+		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessDelete: {method: 'DELETE', params:{ 'userID': userID, 'clientID': clientID, 'claims': claims, 'devGroupID': devGroupID }, headers:{Authorization: 'Bearer ' + token}}}).DevGroupAccessDelete().$promise;
 	}
 
 	//USERS
@@ -75,6 +81,10 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	//ME
 	function _meGet() {
 		return $resource(apiurl + '/v1/devcenter/me', {}, {MeGet: {method: 'GET', headers:{Authorization: DevAuth.GetToken()}}}).MeGet().$promise;
+	}
+
+	function _meUpdate(devUser) {
+		return $resource(apiurl + '/v1/devcenter/me', null, { MeUpdate: { method: 'PUT', headers:{Authorization: DevAuth.GetToken()}}}).MeUpdate(devUser).$promise;
 	}
 
 	function _meGroups(page, pageSize, accepted) {

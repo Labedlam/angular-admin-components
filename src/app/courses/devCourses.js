@@ -111,7 +111,7 @@ function LearningController () {
 
 }
 
-function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
+function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore, BuyerID) {
 	var vm = this;
 	vm.current = EditClass;
 	vm.docs = {};
@@ -132,6 +132,13 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 		editor.setOptions({
 			maxLines:100
 		});
+	}
+
+	if (!BuyerID.Get()) {
+		BuyerID.Set('__NONE_SET__');
+	} else {
+		vm.buyerID = BuyerID.Get();
+		vm.BuyerSet = true;
 	}
 
 

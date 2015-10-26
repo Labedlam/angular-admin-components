@@ -1,4 +1,4 @@
-<div id="DevInstancesList" class="container" ng-if="application.$state.is('base.instancesList')">
+<div id="DevInstancesList" class="container" ng-if="instances.list.length || (!instances.list.length && base.currentUser.CreateCompanies)">
 	<div class="row">
 		<div class="col-sm-5">
 			<form novalidate autocomplete="off">
@@ -10,9 +10,15 @@
 		</div>
 	</div>
 	<hr/>
-	<div class="row">
+	<div class="well well-lg text-center" ng-if="!instances.list.length">
+		You are not in a group that has access to an intance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.
+	</div>
+	<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length">
+		<i class="fa fa-search"></i> We couldn't find an instance that matches your search
+	</div>
+	<div class="row" ng-if="instances.list.length && (instances.list | filter:instances.searchTerm).length">
 		<div class="col-sm-4">
-			<ul class="list-group" ng-if="instances.list.length">
+			<ul class="list-group">
 				<li class="list-group-item dev-access-list-item" ng-repeat="instance in instances.list | filter:instances.searchTerm" ng-click="instances.selectInstance(this)">
 					<div><b>{{instance.CompanyName}}</b></div>
 					<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
@@ -41,8 +47,9 @@
 				</div>
 				<div ng-show="instances.selectedInstance.activeTab == 'contributors'">
 					<ul class="list-group">
-						<li class="list-group-item" ng-repeat="group in instances.selectedInstance.DevGroups">
-							<i class="fa fa-users text-muted"></i> {{group.Name}}
+						<li class="list-group-item instance-group-list-item" ng-repeat="group in instances.selectedInstance.DevGroups">
+							<div><i class="fa fa-users text-muted"></i> {{group.Name}}</div>
+							<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)"><b class="text-danger">Remove</b></button>
 						</li>
 						<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">
 							<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>

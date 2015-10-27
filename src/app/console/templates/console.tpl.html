@@ -29,7 +29,7 @@
 			<ul class="list-group">
 				<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}">
 					<div class="context-info">
-						<b>Company:</b> {{context.CompanyName}} <br/>
+						<b>{{context.CompanyName}}</b> <br/>
 						<small class="text-muted">{{context.ClientID}}</small>
 					</div>
 					<div class="context-claims">
@@ -46,7 +46,7 @@
 				<ul class="list-group">
 					<li class="list-group-item context-list-item">
 						<div class="context-info">
-							<b>Company:</b> {{console.ActiveContext.CompanyName}} <br/>
+							<b>{{console.ActiveContext.CompanyName}}</b> <br/>
 							<small class="text-muted">{{console.ActiveContext.ClientID}}</small>
 						</div>
 						<div class="context-claims">
@@ -68,7 +68,7 @@
 				<ul class="list-group">
 					<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm">
 						<div class="context-info">
-							<b>Company:</b> {{context.CompanyName}} <br/>
+							<b>{{context.CompanyName}}</b> <br/>
 							<small class="text-muted">{{context.ClientID}}</small>
 						</div>
 						<div class="context-claims">
@@ -154,9 +154,10 @@
 						</tbody>
 					</table>
 					<div ng-if="console.SelectedEndpoint.RequestBody">
-						<p class="page-header">
-							Request Body
-						</p>
+						<div class="labeled-divider">
+							<span>Request Body</span>
+							<hr/>
+						</div>
 						<div ui-ace="{
 						onLoad: console.setMaxLines,
 						useWrapMode : true,

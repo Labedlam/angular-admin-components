@@ -24,13 +24,15 @@ function DevInstancesConfig( $stateProvider ) {
 								var existingIndex = results.indexOf(existingResult);
 								results[existingIndex].DevGroups.push({
 									ID: instance.DevGroupID,
-									Name: instance.DevGroupName
+									Name: instance.DevGroupName,
+									Accepted: instance.Accepted
 								});
 							} else {
 								instance.DevGroups = [
 									{
 										ID: instance.DevGroupID,
-										Name: instance.DevGroupName
+										Name: instance.DevGroupName,
+										Accepted: instance.Accepted
 									}
 								];
 								delete instance.DevGroupID;
@@ -92,7 +94,7 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 		vm.selectedInstance.DevGroupID = group.ID;
 		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID).then(function(data) {
 			Auth.RemoveToken();
-			DevCenter.SaveGroupAccess(vm.selectedInstance, null, data['access_token']).then(function() {
+			DevCenter.SaveGroupAccess(vm.selectedInstance, null, ('Bearer ' + data['access_token'])).then(function() {
 				vm.selectedInstance.DevGroups.push({
 					ID:group.ID,
 					Name:group.Name
@@ -107,7 +109,7 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID)
 			.then(function(data) {
 				Auth.RemoveToken();
-				DevCenter.DeleteGroupAccess(vm.selectedInstance.UserID, vm.selectedInstance.ClientID, vm.selectedInstance.Claims, scope.group.ID, data['access_token'])
+				DevCenter.DeleteGroupAccess(vm.selectedInstance.UserID, vm.selectedInstance.ClientID, vm.selectedInstance.Claims, scope.group.ID, ('Bearer ' + data['access_token']))
 					.then(function() {
 						vm.selectedInstance.DevGroups.splice(vm.selectedInstance.DevGroups.indexOf(scope.group), 1);
 					})
@@ -115,7 +117,7 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 	}
 }
 
-function DevInstanceCreateController($timeout, CanCreateInstance, DevCenter) {
+function DevInstanceCreateController($state, $timeout, DevCenter) {
 	var vm = this;
 
 	vm.information = {
@@ -133,7 +135,7 @@ function DevInstanceCreateController($timeout, CanCreateInstance, DevCenter) {
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
 			//TODO: waiting for a search term to be available on DevGroup list (global, not just /me/devgroups)
-			return DevCenter.Me.Groups.List(1, 10, true).then(function(data) {
+			return DevCenter.Group.List(model, 1, 10).then(function(data) {
 				return data.Items;
 			});
 		}), 300);
@@ -145,8 +147,8 @@ function DevInstanceCreateController($timeout, CanCreateInstance, DevCenter) {
 	};
 
 	vm.submit = function() {
-		DevCenter.Company.Create(vm.information, vm.assignedGroupID).then(function(data) {
-			//TODO: Success Page for Created Company
+		DevCenter.Company.Create(vm.information, vm.assignedGroupID).then(function() {
+			$state.go('base.instancesList');
 		});
 	}
 }

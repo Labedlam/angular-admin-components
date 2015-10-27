@@ -88,8 +88,20 @@
 					</li>
 				</ul>
 				<div class="well well-lg text-center" ng-if="!devGroupDetail.instances.length">
-					This group does not have access to an OrderCloud instance.
+					<p class="lead">This group does not have access to an OrderCloud instance.</p>
 				</div>
+				<ul class="list-group" ng-if="devGroupDetail.pendingInstances.length" ng-if="devGroupDetail.model.GroupAdmin">
+					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.pendingInstances">
+						<div><b>{{instance.CompanyName}}</b><br/>
+							<span class="text-muted"><b>Client ID: </b>{{instance.ClientID}}</span>
+						</div>
+						<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
+						<div class="btn-group">
+							<button class="btn btn-success" ng-click="devGroupDetail.acceptInstance(this)">Accept</button>
+							<button class="btn btn-danger" ng-click="devGroupDetail.declineInstance(this)">Decline</button>
+						</div>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

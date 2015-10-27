@@ -11,7 +11,7 @@ function SdkOverviewConfig( $stateProvider ) {
             url: '/sdkOverview',
             templateUrl:'sdkOverview/templates/sdkOverview.tpl.html',
             controller:'SdkOverviewCtrl',
-            controllerAs: 'sdkOverview',
+            controllerAs: 'sdk',
             resolve: {
                 Documentation: function(Docs) {
                     return Docs.GetAll();
@@ -23,6 +23,10 @@ function SdkOverviewConfig( $stateProvider ) {
 function SdkOverviewController($sce, Documentation ) {
     var vm = this;
     vm.content = Documentation;
-    vm.config = {}
 
+    vm.setMaxLines = function(editor) {
+        editor.setOptions({
+            maxLines:100
+        });
+    };
 }

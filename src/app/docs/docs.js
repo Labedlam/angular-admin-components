@@ -6,6 +6,7 @@ angular.module( 'orderCloud' )
 	.controller( 'DocsSectionCtrl', DocsSectionController )
 	.factory( 'DocsService', DocsService )
 	.factory( 'Docs', DocsFactory )
+	.factory( 'DocsExtend', DocsExtend)
 ;
 
 function DocsConfig( $stateProvider ) {
@@ -109,6 +110,44 @@ function DocsService(  ) {
 	return service;
 }
 
+function DocsExtend() {
+	var service = {
+        extend: _extend
+    };
+
+    function _extend(data) {
+        if (Object.prototype.toString.call(data) == '[object Array]') {
+            angular.forEach(data, function(item) {
+                xtnd(item);
+            })
+        }
+        else {
+            xtnd(data);
+        }
+
+        function xtnd(doc) {
+            //append additional properties to single object here
+			angular.forEach(doc.Resources, function(resource) {
+				angular.forEach(resource.Endpoints, function(endpoint) {
+					var sample = "{0}.{1}({2}).then(successFn).catch(errorFn);";
+					endpoint.CodeSample = sample.replace('{0}', resource.ID).replace('{1}', endpoint.ID).replace('{2}', _getParams(endpoint.Parameters));
+				});
+			});
+        }
+
+		function _getParams(params) {
+			var temp = [];
+			angular.forEach(params, function(p) {
+				if (p.Name != 'buyerID')
+					temp.push(p.Name);
+			});
+			return temp.join(", ").replace('search, searchOn, sortBy, page, pageSize, filters', 'listArgs');
+		}
+    }
+
+    return service;
+}
+
 function DocsFactory($resource, $injector, apiurl, Auth) {
 	var service = {
 		GetAll: _getall,
@@ -120,6 +159,10 @@ function DocsFactory($resource, $injector, apiurl, Auth) {
 	var _extendCustom, _extendLocal;
 	try {
 		_extendCustom = $injector.get('Extend');
+	}
+	catch(ex) { }
+
+	try {
 		_extendLocal = $injector.get('DocsExtend');
 	}
 	catch(ex) { }
@@ -138,7 +181,7 @@ function DocsFactory($resource, $injector, apiurl, Auth) {
 	}
 
 	function _getall() {
-		return $resource(apiurl + '/v1/docs').get().$promise;
+		return $resource(apiurl + '/v1/docs').get().$promise.extend(docsExtend);
 	}
 
 	function _getresource(resource) {

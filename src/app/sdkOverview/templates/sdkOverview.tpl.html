@@ -69,5 +69,85 @@
         }
         </code></pre>
     </article>
+    <div class="container">
+        <div class="row">
+            <aside class="col-sm-3 docs-nav">
+                <ul class="section-list">
+                    <li ng-class="{active: sdk.activeSection == section}" ng-repeat-start="section in sdk.content.Sections">
+                        <a ng-click="sdk.activeSection = section">{{section}}</a>
+                    </li>
+                    <div ng-repeat-end>
+                        <ul class="resource-list">
+                            <li class="resource-list-item" ng-click="sdk.activeResource = resource" ng-repeat="resource in sdk.content.Resources | filter:{Section:section}">
+                                {{resource.Name}}
+                            </li>
+                        </ul>
+                    </div>
+                </ul>
+            </aside>
+            <div class="col-sm-9">
+                <h3 class="page-title">{{sdk.activeResource.Name}}</h3>
+                <p ng-repeat="line in sdk.activeResource.Comments" ng-bind-html="line | markdown"></p>
+                <accordion>
+                    <accordion-group heading="{{endpoint.Name}}" ng-repeat="endpoint in sdk.activeResource.Endpoints">
+                        <pre>{{endpoint.CodeSample}}</pre>
+                        <div ng-if="endpoint.Parameters.length">
+                            <h6>Parameters:</h6>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Required</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="param in endpoint.Parameters">
+                                    <td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
+                                    <td><div class="label" ng-class="{
+                                                'label-primary': param.Type == 'string',
+                                                'label-warning': param.Type == 'boolean',
+                                                'label-info': param.Type == 'integer'
+                                            }">{{param.Type}}</div></td>
+                                    <td>{{param.Required}}</td>
+                                    <td>{{param.Description}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div ng-if="endpoint.RequestBody.Sample && endpoint.RequestBody.Sample != 'null'">
+                                    <h5>Request Body Sample:</h5>
+                                    <div readonly ui-ace="{
+                                                onLoad: sdk.setMaxLines,
+                                                useWrapMode : true,
+                                                theme:'twilight',
+                                                mode: 'json',
+                                                tabSize: '4',
+                                                useSoftTabs: true,
+                                                showPrintMargin: false
+                                            }" ng-model="endpoint.RequestBody.Sample"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <h5><b>Response Status: <span class="text-danger">{{endpoint.ResponseStatus}}</span></b></h5>
+                                <div ng-if="endpoint.ResponseBody.Sample && endpoint.ResponseBody.Sample != 'null'" readonly ui-ace="{
+                                                                        onLoad: sdk.setMaxLines,
+                                                                        useWrapMode : true,
+                                                                        theme:'twilight',
+                                                                        mode: 'json',
+                                                                        tabSize: '4',
+                                                                        useSoftTabs: true,
+                                                                        showPrintMargin: false
+                                                                    }" ng-model="endpoint.ResponseBody.Sample"></div>
+                            </div>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+        </div>
+    </div>
 </div>
 

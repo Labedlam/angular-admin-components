@@ -14,7 +14,7 @@ function DevGroupsConfig( $stateProvider ) {
 			controller:'DevGroupsListCtrl',
 			controllerAs: 'devGroups',
 			resolve: {
-				AcceptedGroupsList: function($q, DevCenter) {
+				AcceptedGroupsList: function($q, DevCenter, Underscore) {
 					var deferred = $q.defer();
 					DevCenter.Me.Groups.List(1, 200, true).then(function(data) {
 						var queue = [];
@@ -28,7 +28,7 @@ function DevGroupsConfig( $stateProvider ) {
 										members = members.concat(mData.Items);
 										DevCenter.Group.GetAccess(group.ID)
 											.then(function(aData) {
-												instances = instances.concat(aData.Items);
+												instances = instances.concat(Underscore.filter(aData.Items, {Accepted:true}));
 												group.Members = members;
 												group.Instances = instances;
 												df.resolve();
@@ -88,8 +88,11 @@ function DevGroupsConfig( $stateProvider ) {
 				GroupMembers: function($stateParams, DevCenter) {
 					return DevCenter.Group.ListMemeberAssignments($stateParams.groupID);
 				},
-				GroupInstances: function($stateParams, DevCenter) {
-					return DevCenter.Group.GetAccess($stateParams.groupID);
+				AcceptedGroupInstances: function($stateParams, DevCenter) {
+					return DevCenter.Group.GetAccess($stateParams.groupID, 1, 200, true);
+				},
+				PendingGroupInstances: function($stateParams, DevCenter) {
+					return DevCenter.Group.GetAccess($stateParams.groupID, 1, 200, false);
 				}
 			}
 		})
@@ -165,13 +168,14 @@ function DevGroupEditController($state, DevCenter, SelectedGroup) {
 	}
 }
 
-function DevGroupDetailController($state, $timeout, DevCenter, SelectedGroup, GroupMembers, GroupInstances) {
+function DevGroupDetailController($state, $timeout, DevAuth, DevCenter, SelectedGroup, GroupMembers, AcceptedGroupInstances, PendingGroupInstances) {
 	var vm = this,
 		selectedAccess,
 		selectedUser;
 	vm.model = SelectedGroup;
 	vm.members = GroupMembers.Items;
-	vm.instances = GroupInstances.Items;
+	vm.instances = AcceptedGroupInstances.Items;
+	vm.pendingInstances = PendingGroupInstances.Items;
 	vm.activeTab = 'Members';
 
 	vm.setTab = function(tabName) {
@@ -254,8 +258,21 @@ function DevGroupDetailController($state, $timeout, DevCenter, SelectedGroup, Gr
 		if (!selectedAccess) return;
 		selectedAccess.DevGroupID = vm.model.ID;
 		DevCenter.AccessToken(selectedAccess.ClientID, selectedAccess.UserID).then(function(data) {
-			DevCenter.SaveGroupAccess(selectedAccess, true, data['access_token'])
+			DevCenter.SaveGroupAccess(selectedAccess, true, ('Bearer ' + data['access_token']))
 		})
-	}
+	};
+
+	vm.acceptInstance = function(scope) {
+		DevCenter.SaveGroupAccess(scope.instance, true, DevAuth.GetToken()).then(function() {
+			vm.instances.push(scope.instance);
+			vm.pendingInstances.splice(scope.$index, 1);
+		})
+	};
+
+	vm.declineInstance = function(scope) {
+		DevCenter.DeleteGroupAccess(scope.instance.UserID, scope.instance.ClientID, scope.instance.Claims, scope.instance.DevGroupID, DevAuth.GetToken()).then(function() {
+			vm.pendingInstances.splice(scope.$index, 1);
+		})
+	};
 
 }

@@ -13,7 +13,7 @@ function RegisterConfig( $stateProvider ) {
 		})
 }
 
-function RegisterController( $state, DevAuth, Auth, DevCenter) {
+function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter) {
 	var vm = this;
 
 	vm.newUserInfo = null;
@@ -28,12 +28,19 @@ function RegisterController( $state, DevAuth, Auth, DevCenter) {
 
 	vm.submit = function() {
 		DevCenter.Register(vm.information).then(function(userInfo) {
-			DevCenter.Login({Email:userInfo.Email, Password:userInfo.Password})
-				.then(function(data) {
-					Auth.RemoveToken();
-					DevAuth.SetToken(data['access_token']);
-					$state.go('base.home');
-				})
+			DcAdmin.Register(userInfo).then(function(data) {
+				userInfo.MongoDBHash = data.UserHash;
+				DevCenter.Login({Email:userInfo.Email, Password:userInfo.Password}).then(function(dataA) {
+					DevAuth.SetToken(dataA['access_token']);
+					DevCenter.Me.Update(userInfo).then(function() {
+						DcAdmin.Authenticate(data.UserHash).then(function(dataB) {
+							$cookies.put('dc-token', dataB['access_token']);
+							Auth.RemoveToken();
+							$state.go('base.home');
+						});
+					})
+				});
+			});
 		})
 	};
 

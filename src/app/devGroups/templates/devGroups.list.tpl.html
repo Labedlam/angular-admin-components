@@ -31,17 +31,17 @@
 		</div>
 		<div class="col-xs-12" ng-if="!devGroups.acceptedList.length && base.currentUser.CreateGroups">
 			<div class="well well-lg text-center">
-				<h4>You currently do not belong to any groups, <a href="" ui-sref="base.newGroup">create one now</a></h4>
+				<p class="lead">You currently do not belong to any groups, <a href="" ui-sref="base.newGroup">create one now</a></p>
 			</div>
 		</div>
 		<div class="col-xs-12" ng-if="!devGroups.acceptedList.length && !base.currentUser.CreateGroups && devGroups.pendingList.length">
 			<div class="well well-lg text-center">
-				<h4>You currently do not belong to any groups, <a href="" ng-click="devGroups.setTab('pending')">view your invites</a> and accept a pending invitation.</h4>
+				<p class="lead">You currently do not belong to any groups, <a href="" ng-click="devGroups.setTab('pending')">view your invites</a> and accept a pending invitation.</p>
 			</div>
 		</div>
 		<div class="col-xs-12" ng-if="devGroups.acceptedList.length && !(devGroups.acceptedList | filter:devGroups.searchTerm).length">
 			<div class="well well-lg text-center">
-				<h4><i class="fa fa-search"></i> We couldn't find any groups that match your search</h4>
+				<p class="lead"><i class="fa fa-search"></i> We couldn't find any groups that match your search</p>
 			</div>
 		</div>
 	</div>
@@ -66,14 +66,14 @@
 		</div>
 		<div ng-if="!devGroups.pendingList.length">
 			<div class="well well-lg text-center">
-				<h4>You do not have any pending group invitations.</h4>
+				<p class="lead">You do not have any pending group invitations.</p>
 			</div>
 		</div>
 	</div>
 </div>
 <div id="DevGroupList" class="container" ng-if="!base.currentUser.CreateGroups && !devGroups.acceptedList.length && !devGroups.pendingList.length">
 	<div class="well well-lg text-center">
-		<h4>You do not belong to a development group and do not have permission to create one
-			<br/> Contact Four51 for group admin capabilities or request an invite from a group admin.</h4>
+		<p class="lead">You do not belong to a development group and do not have permission to create one
+			<br/> Contact Four51 for group admin capabilities or request an invite from a group admin.</p>
 	</div>
 </div>

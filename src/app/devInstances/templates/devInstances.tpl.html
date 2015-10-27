@@ -1,76 +1,83 @@
-<div id="DevInstancesList" class="container" ng-if="instances.list.length || (!instances.list.length && base.currentUser.CreateCompanies)">
-	<div class="row">
-		<div class="col-sm-5">
-			<form novalidate autocomplete="off">
-				<input type="search" class="form-control" ng-model="instances.searchTerm" aria-label="Find an instance" placeholder="Find an instance..."/>
-			</form>
+<div id="DevInstancesList" class="container">
+	<div ng-if="instances.list.length || (!instances.list.length && base.currentUser.CreateCompanies)">
+		<div class="row">
+			<div class="col-sm-5">
+				<form novalidate autocomplete="off">
+					<input type="search" class="form-control" ng-model="instances.searchTerm" aria-label="Find an instance" placeholder="Find an instance..."/>
+				</form>
+			</div>
+			<div class="col-sm-7 text-right">
+				<button class="btn btn-success pull-right" type="button" ui-sref="base.newInstance" ng-if="base.currentUser.CreateCompanies"><i class="fa fa-plus-circle"></i> New Instance</button>
+			</div>
 		</div>
-		<div class="col-sm-7 text-right">
-			<button class="btn btn-success pull-right" type="button" ui-sref="base.newInstance" ng-if="base.currentUser.CreateCompanies"><i class="fa fa-plus-circle"></i> New Instance</button>
+		<hr/>
+		<div class="well well-lg text-center" ng-if="!instances.list.length">
+			<p class="lead">You are not in a group that has access to an intance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.</p>
 		</div>
-	</div>
-	<hr/>
-	<div class="well well-lg text-center" ng-if="!instances.list.length">
-		You are not in a group that has access to an intance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.
-	</div>
-	<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length">
-		<i class="fa fa-search"></i> We couldn't find an instance that matches your search
-	</div>
-	<div class="row" ng-if="instances.list.length && (instances.list | filter:instances.searchTerm).length">
-		<div class="col-sm-4">
-			<ul class="list-group">
-				<li class="list-group-item dev-access-list-item" ng-repeat="instance in instances.list | filter:instances.searchTerm" ng-click="instances.selectInstance(this)">
-					<div><b>{{instance.CompanyName}}</b></div>
-					<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
-				</li>
-			</ul>
+		<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length">
+			<p class="lead"><i class="fa fa-search"></i> We couldn't find an instance that matches your search</p>
 		</div>
-		<div class="col-sm-8">
-			<div ng-if="instances.selectedInstance">
-				<div class="row">
-					<div class="col-xs-7">
-						<h4>{{instances.selectedInstance.CompanyName}}</h4>
-					</div>
-					<div class="col-xs-5 text-right">
-						<div class="btn-group">
-							<button class="btn btn-default" ng-class="{active:instances.selectedInstance.activeTab == 'instance'}" ng-click="instances.setInstanceTab('instance')">Instance</button>
-							<button class="btn btn-default" ng-class="{active:instances.selectedInstance.activeTab == 'contributors'}" ng-click="instances.setInstanceTab('contributors')">Contributors</button>
+		<div class="row" ng-if="instances.list.length && (instances.list | filter:instances.searchTerm).length">
+			<div class="col-sm-4">
+				<ul class="list-group">
+					<li class="list-group-item dev-access-list-item" ng-repeat="instance in instances.list | filter:instances.searchTerm" ng-click="instances.selectInstance(this)">
+						<div><b>{{instance.CompanyName}}</b></div>
+						<p class="text-muted"><i class="fa fa-lock"></i> {{instance.Claims}}</p>
+					</li>
+				</ul>
+			</div>
+			<div class="col-sm-8">
+				<div ng-if="instances.selectedInstance">
+					<div class="row">
+						<div class="col-xs-7">
+							<h4>{{instances.selectedInstance.CompanyName}}</h4>
+						</div>
+						<div class="col-xs-5 text-right">
+							<div class="btn-group">
+								<button class="btn btn-default" ng-class="{active:instances.selectedInstance.activeTab == 'instance'}" ng-click="instances.setInstanceTab('instance')">Instance</button>
+								<button class="btn btn-default" ng-class="{active:instances.selectedInstance.activeTab == 'contributors'}" ng-click="instances.setInstanceTab('contributors')">Contributors</button>
+							</div>
 						</div>
 					</div>
-				</div>
-				<hr/>
-				<div ng-show="instances.selectedInstance.activeTab == 'instance'">
-					<p><b>Client ID:</b> {{instances.selectedInstance.ClientID}}</p>
-					<p><b>User ID:</b> {{instances.selectedInstance.UserID}}</p>
-					<p><b>Username:</b> {{instances.selectedInstance.UserName}}</p>
-					<p><b>Claims:</b> {{instances.selectedInstance.Claims}}</p>
-				</div>
-				<div ng-show="instances.selectedInstance.activeTab == 'contributors'">
-					<ul class="list-group">
-						<li class="list-group-item instance-group-list-item" ng-repeat="group in instances.selectedInstance.DevGroups">
-							<div><i class="fa fa-users text-muted"></i> {{group.Name}}</div>
-							<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)"><b class="text-danger">Remove</b></button>
-						</li>
-						<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">
-							<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>
-						</li>
-					</ul>
-					<form name="ordercloud_addGroupToInstanceForm" ng-if="instances.selectedInstance.addNewGroup">
-						<div class="form-group input-group">
-							<input type="text" placeholder="Find a group..." aria-label="Find a group" ng-model="instances.groupSearchTerm" class="form-control"
-								   autocomplete="off"
-								   uib-typeahead="group as group.Name for group in instances.searchDevGroups($viewValue)"
-								   typeahead-on-select="instances.shareAccess($item)"/>
+					<hr/>
+					<div ng-show="instances.selectedInstance.activeTab == 'instance'">
+						<p><b>Client ID:</b> {{instances.selectedInstance.ClientID}}</p>
+						<p><b>User ID:</b> {{instances.selectedInstance.UserID}}</p>
+						<p><b>Username:</b> {{instances.selectedInstance.UserName}}</p>
+						<p><b>Claims:</b> {{instances.selectedInstance.Claims}}</p>
+					</div>
+					<div ng-show="instances.selectedInstance.activeTab == 'contributors'">
+						<ul class="list-group">
+							<li class="list-group-item instance-group-list-item" ng-repeat="group in instances.selectedInstance.DevGroups">
+								<div><i class="fa fa-users text-muted"></i> {{group.Name}}</div>
+								<button type="button" class="btn btn-default" disabled ng-if="!group.Accepted" style="margin-right:15px;"><span class="text-danger">Invite Pending</span></button>
+								<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)" ng-if="instances.selectedInstance.DevGroups.length > 1"><b class="text-danger">Remove</b></button>
+							</li>
+							<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">
+								<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>
+							</li>
+						</ul>
+						<form name="ordercloud_addGroupToInstanceForm" ng-if="instances.selectedInstance.addNewGroup">
+							<div class="form-group input-group">
+								<input id="DevGroupSearch" type="text" placeholder="Find a group..." aria-label="Find a group" ng-model="instances.groupSearchTerm" class="form-control"
+									   autocomplete="off"
+									   typeahead-template-url="common/group.result.tpl.html"
+									   uib-typeahead="group as group.Name for group in instances.searchDevGroups($viewValue)"
+									   typeahead-on-select="instances.shareAccess($item)"/>
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="instances.selectedInstance.addNewGroup = false">Cancel</button>
 							</span>
-						</div>
-					</form>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="well well-lg text-center" ng-if="!instances.selectedInstance">
+					<p class="lead">Select an Instance from the left</p>
 				</div>
 			</div>
-			<div class="well well-lg text-center" ng-if="!instances.selectedInstance">
-				<b>Select an Instance from the left</b>
-			</div>
 		</div>
+	</div>
+	<div class="well well-lg text-center" ng-if="!instances.list.length && !base.currentUser.CreateCompanies">
+		<p class="lead">You do not have any available OrderCloud instance.  Check your <a href="" ui-sref="base.groupsList">group invites</a>.</p>
 	</div>
 </div>

@@ -2,6 +2,7 @@ angular.module( 'orderCloud' )
     .factory( 'Classes', Classes )
     .factory( 'Courses', Courses )
     .factory( 'DcUsers', DcUsers )
+    .factory( 'DcAdmin', DcAdmin )
 ;
 function Courses($resource, devapiurl, $cookies, environment) {
     var service = {
@@ -113,4 +114,21 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
 
 
     return service;
+}
+
+function DcAdmin($resource, environment, devapiurl) {
+    var service = {
+        Register: _register,
+        Authenticate: _authenticate
+    };
+
+    function _register(newUser) {
+        return $resource(devapiurl + '/admin/registeruser', {}, {call: {method: 'POST', headers: {'environment': environment}}}).call(newUser).$promise
+    }
+
+    function _authenticate(userHash) {
+        return $resource(devapiurl + '/authenticate', {UserHash:userHash}, {call: {method: 'POST', headers: {'environment': environment}}}).call().$promise
+    }
+
+    return service
 }

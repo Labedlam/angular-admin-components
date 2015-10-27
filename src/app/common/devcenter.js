@@ -67,11 +67,11 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 
 	//ADMIN ONLY
 	function _saveGroupAccess(access, accepted, token) {
-		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: 'Bearer ' + token}}}).DevGroupAccessSave(access).$promise;
+		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: token}}}).DevGroupAccessSave(access).$promise;
 	}
 
 	function _deleteGroupAccess(userID, clientID, claims, devGroupID, token) {
-		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessDelete: {method: 'DELETE', params:{ 'userID': userID, 'clientID': clientID, 'claims': claims, 'devGroupID': devGroupID }, headers:{Authorization: 'Bearer ' + token}}}).DevGroupAccessDelete().$promise;
+		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessDelete: {method: 'DELETE', params:{ 'userID': userID, 'clientID': clientID, 'claims': claims, 'devGroupID': devGroupID }, headers:{Authorization: token}}}).DevGroupAccessDelete().$promise;
 	}
 
 	//USERS
@@ -101,8 +101,8 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	}
 
 	//USER GROUPS
-	function _groupList(search, page, pageSize, accepted) {
-		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupGet: {method: 'GET', params: { 'search': search, 'page': page, 'pageSize': pageSize, 'accepted': accepted }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	function _groupList(search, page, pageSize) {
+		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupGet: {method: 'GET', params: { 'search': search, 'page': page, 'pageSize': pageSize }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
 	}
 
 	function _groupCreate(group) {

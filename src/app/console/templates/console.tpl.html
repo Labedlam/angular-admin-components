@@ -14,11 +14,11 @@
 		</ul>
 	</aside>
 
-	<article class="container" ng-if="!console.SelectedResource">
-		<h3 class="page-header"><i class="fa fa-tools"></i>API Console</h3>
-		<p>Welcome to the OrderCloud API Console!  The purpose of this tool is to give developers an idea of how the OrderCloud RESTful API is structured through an interactive UI.</p>
-		<p>Begin by choosing a resource from the left and then specify an endpoint in the drop-down.  If the selected endpoint has parameters available, fill these out by clicking "params" to the right of the endpoint.  When creating and updating you will often need to provide a request body as well.  These request bodies will always be in <code>JSON</code> format and is editable below the endpoint selector.</p>
-		<p class="alert alert-danger">Keep in mind that <b>this <em>will</em> alter your database</b>, and changes will be immediately reflected in any application using your distributor companies' client id.</p>
+	<article id="Intro" class="container" ng-if="!console.SelectedResource">
+		<h3 class="page-header text-center"><i class="fa fa-tools"></i>OrderCloud Console</h3>
+		<p><b>Welcome to the OrderCloud API Console!</b>  The purpose of this tool is to give developers an easy way to instantly access and/or alter important data during the development process.  It is also useful for new OrderCloud developers looking to get an idea of how the our RESTful API is structured through an interactive UI.</p>
+		<p>Begin by choosing from one of your available instances below.  This will give the console a "context" in which it can function.  You can change your active context to easily switch between different instances at any time. Choose from any of the OrderCloud resources on the left part of the console and specify an endpoint in the drop-down. Fill out the necessary parameters and request bodies then click "Send". This will make the specified API call within the active instance and present you with OrderCloud's response data on the right.</p>
+		<p class="alert alert-danger">Keep in mind <b>the console <em>will</em> alter your data</b>, and changes will be immediately reflected in any application using the same instance.</p>
 		<hr/>
 		<div id="ContextSettings">
 			<form name="contextFilterForm">
@@ -29,7 +29,7 @@
 			<ul class="list-group">
 				<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}">
 					<div class="context-info">
-						<b>Company:</b> {{context.CompanyName}} <br/>
+						<b>{{context.CompanyName}}</b> <br/>
 						<small class="text-muted">{{context.ClientID}}</small>
 					</div>
 					<div class="context-claims">
@@ -46,7 +46,7 @@
 				<ul class="list-group">
 					<li class="list-group-item context-list-item">
 						<div class="context-info">
-							<b>Company:</b> {{console.ActiveContext.CompanyName}} <br/>
+							<b>{{console.ActiveContext.CompanyName}}</b> <br/>
 							<small class="text-muted">{{console.ActiveContext.ClientID}}</small>
 						</div>
 						<div class="context-claims">
@@ -68,7 +68,7 @@
 				<ul class="list-group">
 					<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm">
 						<div class="context-info">
-							<b>Company:</b> {{context.CompanyName}} <br/>
+							<b>{{context.CompanyName}}</b> <br/>
 							<small class="text-muted">{{context.ClientID}}</small>
 						</div>
 						<div class="context-claims">
@@ -154,9 +154,10 @@
 						</tbody>
 					</table>
 					<div ng-if="console.SelectedEndpoint.RequestBody">
-						<p class="page-header">
-							Request Body
-						</p>
+						<div class="labeled-divider">
+							<span>Request Body</span>
+							<hr/>
+						</div>
 						<div ui-ace="{
 						onLoad: console.setMaxLines,
 						useWrapMode : true,

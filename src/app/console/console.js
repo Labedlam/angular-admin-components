@@ -43,7 +43,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 								ID: instance.DevGroupID,
 								Name: instance.DevGroupName
 							});
-						} else {
+						} else if (instance.Accepted) {
 							instance.DevGroups = [
 								{
 									ID: instance.DevGroupID,

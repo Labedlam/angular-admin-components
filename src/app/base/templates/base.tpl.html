@@ -14,10 +14,10 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="navbar-collapse" uib-collapse="mainCollapsed">
 			<ul class="nav navbar-nav">
-				<li>
+				<li ui-sref-active="active">
 					<a ui-sref="base.about" role="button" aria-haspopup="true">About</a>
 				</li>
-				<li><a href="" ui-sref="base.docs">Docs</a></li>
+				<li ui-sref-active="active"><a href="" ui-sref="base.docs">Docs</a></li>
 				<li uib-dropdown>
 					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Resources</a>
 					<div class="uib-dropdown-menu top-caret bordered mega">
@@ -32,9 +32,9 @@
 				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Getting Started</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
-				<li><a href="" ui-sref="base.instancesList" ng-if="base.currentUser">Instances</a></li>
-				<li><a href="" ui-sref="base.groupsList" ng-if="base.currentUser">Groups</a></li>
+				<li ui-sref-active="active"><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
+				<li ui-sref-active="active"><a href="" ui-sref="base.instancesList" ng-if="base.currentUser">Instances</a></li>
+				<li ui-sref-active="active"><a href="" ui-sref="base.groupsList" ng-if="base.currentUser">Groups</a></li>
 				<li ng-if="!base.currentUser"><a ui-sref="login">Log in</a></li>
 				<li ng-if="!base.currentUser"><span>or</span></li>
 				<li ng-if="!base.currentUser"><button class="btn btn-dark-blue navbar-btn" ui-sref="register">Sign up</button></li>

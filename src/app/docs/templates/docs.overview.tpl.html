@@ -14,9 +14,10 @@
 		<p>OrderCloud API authentication is based on <a href="https://tools.ietf.org/html/rfc6749">OAuth 2</a> and supports 2 different workflows; in OAuth terms, grant types.</p>
 	</div>
 </div>
+<!--
 
 <h3 class="page-header">OAuth 2 Workflows</h3>
-<!--	<p>In both OAuth 2 grant types, a successful authorization request returns an access token, valid for a limited amount of time, that is passed via a request header in all subsequent requests to the OrderCloud API.</p>-->
+&lt;!&ndash;	<p>In both OAuth 2 grant types, a successful authorization request returns an access token, valid for a limited amount of time, that is passed via a request header in all subsequent requests to the OrderCloud API.</p>&ndash;&gt;
 <p><b>Both</b> OAuth 2 grant types use the following Method and Request URL:</p>
 <div class="apiRequestDisplay">
 	<pre>POST</pre>
@@ -46,6 +47,7 @@
 </div>
 
 <p>Headers: <code>{Content-Type: 'application/json', Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'}</code></p>
+-->
 
 <h3 class="page-header">Writable IDs</h3>
 <p>Most resources that map to an entity of some sort (Orders, Users, Addresses, etc.) contain an ID that is optionally writable on creation or update. If you do not pass one, one will be auto-generated and returned in the response, and will be guaranteed to be unique. If you choose to pass an ID, you are responsible for ensuring uniqueness. Things that live under the context of a single Buyer need only be unique within that context. Things that are shared (such as products) must be unique within across the entire seller organization.</p>
@@ -63,11 +65,93 @@
 		showPrintMargin: false
 	}" ng-model="docs.ReadmeScripts[1]"></div>
 
-<h3 class="page-header">Date Format</h3>
-<p>Dates/times returned in the API are in UTC time and conform to <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>. Example:</p>
-<pre>2015-04-23T00:00:00.000Z</pre>
+<h3 class="page-header">Getting Lists of Things</h3>
+<p>Most endpoints that return a list support a robust set of querying parameters to custom taylor the results to your needs.</p>
+<br/>
+<h4>Searching</h4>
+<p>For open-ended, Google-esque searches, simply provide a search parameter:</p>
+
+	<pre>v1/buyers/xyz/users?search=smith</pre>
+
+<p>The above example will return all results containing "smith", including "Smith", "Smithers", and "McSmith". The fields searched include <code>FirstName</code>, <code>LastName</code>, and <code>UserName</code>. (This of course varies from endpoint to endpoint. See the Reference section for specific details.) You can optionally specify which fields are searched by providing a <code>searchOn</code> parameter:</p>
+
+	<pre>v1/buyers/xyz/users?search=smith&searchOn=LastName,UserName</pre>
+
+<br/>
+<h4>Sorting</h4>
+<p>Each list endpoint has a default sort order. (See the Reference section for details). You may change this sort order with the sortBy parameter:</p>
+
+	<pre>v1/buyers/xyz/users?search=smith&sortBy=Email,ID</pre>
+
+<p>Specify reverse sort order by preceding the column name with <code>!</code>:</p>
+
+	<pre>v1/buyers/xyz/users?search=smith&sortBy=!LastName</pre>
+
+<br/>
+<h4>Filtering</h4>
+<p>Filtering is useful when you want to get a little more specific than what search offers. (You may, however, mix & match filtering with searching, sorting, etc. as much as you like.) Specify the field names directly as query parameters along with the desired values:</p>
+
+	<pre>v1/buyers/xyx/users?LastName=Smith&FirstName=John</pre>
+
+<p>This will only return exact matches on users named "John Smith". Fuzzy matches are supported using the <code>*</code> wildcard character:</p>
+
+	<pre>v1/buyers/xyx/users?LastName=*Sm*th&FirstName=John*</pre>
+
+<p>This will return both "John Smith" and "Johnny McSmooth". You can also use | as a logical OR:This will return both "John Smith" and "Johnny McSmooth". You can also use <code>|</code> as a logical OR:</p>
+
+	<pre>v1/buyers/xyx/users?LastName=Smith|Jo*&FirstName=Johnny</pre>
+
+<p>This will return "John Smith", "Johnny Jones", and "John Johnson". Maybe you want "John Smith" but not "John Jones". You can negate your conditions by prefixing them with <code>!</code>, and logically AND them together by simply providing the same parameter multiple times:</p>
+
+	<pre>v1/buyers/xyx/users?LastName=!Smith&LastName=!Jones</pre>
+
+<p>This will return all users <em>except</em> those with last name "Smith" or "Jones". Dates and numeric values support <code>></code> (greater than) and <code><</code> (less then) prefixes:</p>
+
+	<pre>v1/buyers/xyx/users?DateCreated=>01-01-2015</pre>
+
+<p>For a more advanced example, let's say you want users whose ID is the range of 0 to 9 inclusive. Ranges are not directly supported, but you can use the existing features to achieve this. One way would be like this:</p>
+
+	<pre>v1/buyers/xyx/users?ID=0|1|2|3|4|5|6|7|8|9</pre>
+
+<p>Of course that's not going to be feasible if the range is very large or you're dealing with floating-point numbers. A better way would be to leverage <code>></code> and <code><</code>, but we want the range to be <em>inclusive</em>, and there are no <code>>=</code> or <code><=</code> operators. We can however leverage the <code>!</code> operator:</p>
+
+	<pre>v1/buyers/xyx/users?ID=!<0&ID=!>9</pre>
+
+<p>Here we're saying "give me all users whose ID is not less than 0 and not greater than 9", which is effectively equivalent to our 0-9 range.</p>
+<br/>
+<h4>XP Support</h4>
+<p>For resources that support Extended Properties (<code>xp</code>), you can search, sort, and filter on those values, even if within a deep object graph, using dot notation:</p>
+
+	<pre>v1/buyers/xyx/users?xp.MoreInfo.Gender=f*</pre>
+<br/>
+<h4>Paging</h4>
+<p>Lists are generally capped at 20 items by default. At that point paging kicks in. You can use the <code>page</code> and <code>pagesize</code> parameters to specify the page (starting at 1) and items per page (maximum of 100), respectively.</p>
+
+	<pre>v1/buyers/xyx/users?DateCreated=>01-01-2015</pre>
+<br/>
+<h4>Response Body</h4>
+<p>Responses for most list endpoints contain an object wrapping an <code>Items</code> array, which contains the actual "things", and a <code>Meta</code> object containing useful count/paging metadata.</p>
+<div  readonly ui-ace="{
+		onLoad: docs.setMaxLines,
+		useWrapMode : true,
+		theme:'twilight',
+		mode: 'json',
+		tabSize: '4',
+		useSoftTabs: true,
+		showPrintMargin: false
+	}" ng-model="docs.ReadmeScripts[0]"></div>
+<br/>
+<p>Note that unlike the page parameter, <code>ItemRange</code> values are zero-based.</p>
+<br/>
+<h4>Performance Considerations</h4>
+<p>Your data is highly indexed for fast retrieval using any of the methods above, including deep <code>xp</code> object graphs. However, there are a few things to keep in mind to keep things snappy for your users. Filters with lots of OR conditions or with values that start with the <code>*</code> wildcard character may be particularly performance sensitive. Of course, the larger the set of data, the more likely you are to notice any performance impact. It pays to know the data model well, and use grouping constructs like User Groups and Categories effectively.</p>
 
 <h3 class="page-header">Other Conventions</h3>
+
+<h4>Date Format</h4>
+<p>Dates/times returned in the API are in UTC time and conform to <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>. Example:</p>
+<pre>2015-04-23T00:00:00.000Z</pre>
+<br/>
 
 <h4>Creating Things</h4>
 <p>Resource creation is generally done via <code>POST</code> and, when successful, retuns a 201 (created) status, a Location header containing the URI of the created resource, and for convenience the full JSON representation (equivalent to <code>GET</code> on the new resource) in the body. For things that do not contain identity, such as relationships, <code>PUT</code> is used for creation. The rationale is that you don't need to care whether you're creating or updating in these cases; <code>PUT</code> is <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">idempotent </a> by definition, meaning it can be called multiple times without different outcomes.</p>
@@ -80,25 +164,4 @@
 <h4>Deleting Things</h4>
 <p>Resource deletion is generally done via <code>DELETE</code> and, when successful, returns a 204 (no content) response and an empty body.</p>
 <br/>
-
-<h4>Lists and Pagination</h4>
-<p>Endpoints that return lists of things are generally capped at 20 items by default. At that point paging kicks in. You can use the <code>page</code> and <code>pagesize</code> parameters to specify the page (starting at 1) and items per page (maximum of 100), respectively.</p>
-
-<div class="apiRequestDisplay">
-	<pre>GET</pre>
-	<pre>https://api.ordercloud.io/v1/addresses?page=1&amp;pagesize=20</pre>
-</div>
-
-<p>Of course it's helpful to know how many total items there are. You can inspect <code>Meta</code> in the response body for this information.</p>
-<div  readonly ui-ace="{
-		onLoad: docs.setMaxLines,
-		useWrapMode : true,
-		theme:'twilight',
-		mode: 'json',
-		tabSize: '4',
-		useSoftTabs: true,
-		showPrintMargin: false
-	}" ng-model="docs.ReadmeScripts[0]"></div>
-<br/>
-<p>This indicates that the first 20 items out of 200 are being returned. Note that unlike the <code>page</code> parameter, range values are zero-based.</p>
 <hr/>

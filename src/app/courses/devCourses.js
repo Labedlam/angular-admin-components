@@ -445,6 +445,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Name;
 	}
 	function nextClass() {
+		DcUsers.SaveClassProgress(vm.current.ID);
 		if (nextClassID) {
 			console.log(nextClassID);
 			$state.go('.', {classid: nextClassID})

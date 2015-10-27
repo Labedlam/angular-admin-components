@@ -40,6 +40,19 @@ h1, h2, h3, h4, h5, h6 {
   margin:0;
 }
 
+.labeled-divider {
+  position:relative;
+  span {
+    position:absolute;
+    top:-10px;
+    background-color:white;
+    left:35%;
+    right:35%;
+    text-align:center;
+    margin:0 auto;
+  }
+}
+
 //angularjs form validation
 .ng-dirty.ng-invalid {
   .form-control-validation-angular(@state-danger-text; @state-danger-text; @state-danger-bg);

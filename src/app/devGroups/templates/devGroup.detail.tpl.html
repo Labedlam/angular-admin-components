@@ -90,6 +90,10 @@
 				<div class="well well-lg text-center" ng-if="!devGroupDetail.instances.length">
 					<p class="lead">This group does not have access to an OrderCloud instance.</p>
 				</div>
+				<div class="labeled-divider" ng-if="devGroupDetail.pendingInstances.length">
+					<span>Pending Invitations</span>
+					<hr/>
+				</div>
 				<ul class="list-group" ng-if="devGroupDetail.pendingInstances.length" ng-if="devGroupDetail.model.GroupAdmin">
 					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.pendingInstances">
 						<div><b>{{instance.CompanyName}}</b><br/>

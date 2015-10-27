@@ -59,7 +59,7 @@ function DevInstancesConfig( $stateProvider ) {
 		})
 }
 
-function DevInstancesController($state, $timeout, DevCenter, AvailableInstances) {
+function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInstances) {
 	var vm = this;
 	vm.list = AvailableInstances;
 	vm.selectedInstance = null;
@@ -80,7 +80,7 @@ function DevInstancesController($state, $timeout, DevCenter, AvailableInstances)
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
 			//TODO: waiting for a search term to be available on DevGroup list
-			return DevCenter.Me.Groups.List(1, 10).then(function(data) {
+			return DevCenter.Group.List(model, 1, 10).then(function(data) {
 				return data.Items;
 			});
 		}), 300);
@@ -91,6 +91,7 @@ function DevInstancesController($state, $timeout, DevCenter, AvailableInstances)
 		if (!vm.selectedInstance) return;
 		vm.selectedInstance.DevGroupID = group.ID;
 		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID).then(function(data) {
+			Auth.RemoveToken();
 			DevCenter.SaveGroupAccess(vm.selectedInstance, null, data['access_token']).then(function() {
 				vm.selectedInstance.DevGroups.push({
 					ID:group.ID,
@@ -100,6 +101,17 @@ function DevInstancesController($state, $timeout, DevCenter, AvailableInstances)
 				vm.selectedInstance.addNewGroup = false;
 			})
 		})
+	};
+
+	vm.deleteAccess = function(scope) {
+		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID)
+			.then(function(data) {
+				Auth.RemoveToken();
+				DevCenter.DeleteGroupAccess(vm.selectedInstance.UserID, vm.selectedInstance.ClientID, vm.selectedInstance.Claims, scope.group.ID, data['access_token'])
+					.then(function() {
+						vm.selectedInstance.DevGroups.splice(vm.selectedInstance.DevGroups.indexOf(scope.group), 1);
+					})
+			})
 	}
 }
 

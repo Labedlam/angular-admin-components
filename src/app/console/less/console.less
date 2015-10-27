@@ -78,7 +78,7 @@
 
 #Request {
   max-width:1000px;
-  padding:@padding-base-vertical @padding-base-horizontal;
+  padding:@padding-base-horizontal;
   overflow-y:auto;
   .body-title {
     color:white;
@@ -144,6 +144,24 @@
 
 #ResponseBody {
   flex:1 0 auto;
+}
+
+.context-list-item {
+  display:flex;
+  flex-flow:row nowrap;
+  align-items:center;
+  > div {
+    &.context-info {
+      flex:1 0 auto;
+    }
+    &.context-claims {
+      flex:0 1 auto;
+      padding-right:15px;
+    }
+  }
+  > button {
+    flex:0 1 auto;
+  }
 }
 
 .console-selector {

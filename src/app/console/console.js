@@ -2,7 +2,6 @@ angular.module('orderCloud')
 
     .config( ApiConsoleConfig )
     .controller('ApiConsoleCtrl', ApiConsoleController)
-	.factory('ApiLoader', ApiLoaderService)
 	.factory('LockableParams', LockableParamsService)
 	.factory('ApiConsoleService', ApiConsoleService)
 	.factory('ConsoleContext', ConsoleContextService)
@@ -32,8 +31,33 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			DocsReference: function(Docs) {
 				return Docs.GetAll();
 			},
-			DevAccess: function(DevCenter) {
-				return DevCenter.Me.GetAccess();
+			AvailableInstances: function($q, Underscore, DevCenter) {
+				var deferred = $q.defer();
+				DevCenter.Me.GetAccess().then(function(data) {
+					var results = [];
+					angular.forEach(data.Items, function(instance) {
+						var existingResult = Underscore.where(results, {ClientID: instance.ClientID, UserID: instance.UserID, Claims: instance.Claims})[0];
+						if (existingResult) {
+							var existingIndex = results.indexOf(existingResult);
+							results[existingIndex].DevGroups.push({
+								ID: instance.DevGroupID,
+								Name: instance.DevGroupName
+							});
+						} else {
+							instance.DevGroups = [
+								{
+									ID: instance.DevGroupID,
+									Name: instance.DevGroupName
+								}
+							];
+							delete instance.DevGroupID;
+							delete instance.DevGroupName;
+							results.push(instance);
+						}
+					});
+					deferred.resolve(results);
+				});
+				return deferred.promise;
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
@@ -46,10 +70,12 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, DevAccess, ApiConsoleService, LockableParams, ConsoleContext) {
+function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, AvailableInstances, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
 	//Context variables
-	vm.AvailableContexts = DevAccess.Items;
+	vm.AvailableContexts = AvailableInstances;
+
+	//TODO: this might have to change to account for claims/userid along with ClientID
 	vm.ActiveContext = ActiveContext ? Underscore.where(vm.AvailableContexts, {ClientID: ActiveContext.ClientID})[0] : null;
 	vm.SelectedContext = vm.ActiveContext;
 
@@ -63,11 +89,18 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	vm.Responses = [];
 	vm.SelectedResponse = null;
 
+	vm.updateContext = function(context) {
+		vm.SelectedContext = context;
+		vm.setContext(context);
+		vm.ContextMenuOpen = false;
+		vm.contextSearchTerm = '';
+	};
+
 	vm.setContext = function(context) {
 		ConsoleContext.Update(context)
 			.then(function() {
 				if (!vm.ActiveContext) {
-					vm.SelectResource({resource: Underscore.where(vm.Resources, {name: 'Buyers'})[0]});
+					vm.SelectResource({resource: Underscore.where(vm.Resources, {Name: 'Buyers'})[0]});
 				} else {
 					LockableParams.Clear();
 					vm.Responses = [];
@@ -213,71 +246,6 @@ function ApiConsoleService( $filter, $resource, apiurl, LockableParams ) {
 	}
 }
 
-function ApiLoaderService($q, $injector) {
-	var service = {
-		getResources: _getResources
-	};
-
-	return service;
-
-	/////
-	function _getParamNames (func) {
-		var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-		var ARGUMENT_NAMES = /([^\s,]+)/g;
-		var fnStr = func.toString().replace(STRIP_COMMENTS, '');
-		var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
-
-		if(result === null) result = [];
-
-		return result;
-	};
-
-	function _getResources(moduleName) {
-		var deferred = $q.defer();
-		var filterFactories = [
-			'Auth',
-			'Request',
-			'Docs',
-			'Underscore',
-			'Tests',
-			'Registration',
-			'Credentials',
-			'AdminApiClients'
-		];
-		var services = [];
-
-		angular.forEach(angular.module(moduleName)._invokeQueue, function(component) {
-			var componentName = component[2][0];
-			if (component[1] == 'factory' && filterFactories.indexOf(componentName) == -1 && componentName.indexOf('Extend') == -1) {
-				var factory = {
-					name: componentName,
-					methods: []
-				};
-				var f;
-				try {
-					f =  $injector.get(factory.name);
-					angular.forEach(f, function(value, key) {
-						var method = {
-							name: key,
-							fn: value.toString(),
-							resolvedParameters: {},
-							callerStatement: null,
-							results: null,
-							params: _getParamNames(value)
-						};
-						factory.methods.push(method);
-					});
-				}
-				catch (ex) {}
-
-				services.push(factory);
-			}
-		});
-		deferred.resolve(services);
-
-		return deferred.promise;
-	};
-}
 
 function LockableParamsService($q) {
 	var service = {

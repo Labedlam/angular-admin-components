@@ -24,6 +24,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 			}
 		},
 		Group: {
+			List: _groupList,
 			Create: _groupCreate,
 			Update: _groupUpdate,
 			Delete: _groupDelete,
@@ -100,6 +101,10 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	}
 
 	//USER GROUPS
+	function _groupList(search, page, pageSize, accepted) {
+		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupGet: {method: 'GET', params: { 'search': search, 'page': page, 'pageSize': pageSize, 'accepted': accepted }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	}
+
 	function _groupCreate(group) {
 		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupSave: {method: 'POST', params:{}, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupSave(group).$promise;
 	}

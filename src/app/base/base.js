@@ -55,7 +55,7 @@ function BaseController( CurrentUser ) {
 		{
 			Display: 'Components Overview',
 			Description: 'Component overview Description',
-			StateRef: 'base.docs'
+			StateRef: 'base.componentsOverview'
 		},
 		{
 			Display: 'Integrations Overview',

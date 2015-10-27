@@ -87,8 +87,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				OcVars: function (DcUserSvc) {
 					return DcUserSvc.getOcVars();
 				},
-				ContextOptions: function(DevCenter) {
-					return DevCenter.Me.GetAccess(1, 100);
+				ContextOptions: function(DevCenter, Underscore) {
+					return DevCenter.Me.GetAccess(1, 100)
+						.then(function(data) {
+							return Underscore.filter(data.Items, {Accepted: true});
+						});
 				}
 			}
 		})
@@ -265,7 +268,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 							 $sce, $localForage, $cookies, $timeout ){
 	var vm = this;
 	vm.current = SelectedClass;
-	vm.contextOptions = ContextOptions.toJSON();
+	vm.contextOptions = ContextOptions;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
 	vm.alert = {};
@@ -421,7 +424,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		if (!newVal) {
 			return
 		} else {
-			vm.context = Underscore.where(vm.contextOptions.Items, {CompanyName: newVal})[0];
+			vm.context = Underscore.where(vm.contextOptions, {CompanyName: newVal})[0];
 		}
 	});
 

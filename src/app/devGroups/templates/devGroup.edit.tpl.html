@@ -1,0 +1,18 @@
+<div id="DevGroupEdit" class="container">
+	<h3 class="page-header">Group Settings</h3>
+	<form name="ordercloud_editDevGroup" ng-submit="devGroupEdit.submit()">
+		<div class="form-group">
+			<label>Group Name</label>
+			<input type="text" class="form-control" ng-model="devGroupEdit.model.Name" required disabled/>
+			<div class="help-block">Your group name cannot be changed once created</div>
+		</div>
+		<div class="form-group">
+			<label>Group Description <small class="text-muted">(optional)</small></label>
+			<textarea class="form-control" ng-model="devGroupEdit.model.Description"></textarea>
+		</div>
+		<button type="button" class="btn btn-default" ui-sref="base.groupDetail({groupID:devGroupEdit.model.ID})">Cancel</button>
+		<button type="submit" class="btn btn-primary" ng-disabled="ordercloud_editDevGroup.$invalid">Submit</button>
+		<hr/>
+		<button type="button" class="btn btn-block btn-danger" ng-click="devGroupEdit.deleteGroup()"><i class="fa fa-trash"></i> Delete Group</button>
+	</form>
+</div>

@@ -29,8 +29,8 @@ function OCUrlParams() {
 
 function URItoAngular() {
 	return function(value) {
-		value = value.replace('{', ':');
-		value = value.replace('}', '');
+		value = value.replace(/{/g, ':');
+		value = value.replace(/}/g, '');
 		return value;
 	}
 }

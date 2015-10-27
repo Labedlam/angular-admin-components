@@ -1,0 +1,49 @@
+.form-group.dev-group-search {
+  position:relative;
+}
+
+#DevInstancesList {
+  padding-top:40px;
+  h4 {
+    margin-bottom:0;
+  }
+}
+
+#DevGroupSearch {
+  & + .dropdown-menu {
+    width:100%;
+    .group-search-result {
+      padding:10px;
+    }
+  }
+}
+
+.dev-access-list-item {
+  display:flex;
+  flex-flow:row nowrap;
+  align-items:center;
+  div {
+	flex: 1 0 auto;
+  }
+  div.btn-group,
+  p {
+	margin:0;
+	flex: 0 1 auto;
+  }
+  div.btn-group {
+    margin-left:15px;
+  }
+}
+
+.instance-group-list-item {
+  display:flex;
+  flex-flow:row nowrap;
+  align-items:center;
+  div {
+    flex: 1 0 auto;
+  }
+  button {
+    margin:0;
+    flex: 0 1 auto;
+  }
+}

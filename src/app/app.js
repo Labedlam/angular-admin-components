@@ -25,22 +25,6 @@ angular.module( 'orderCloud', [
 	.constant('ocscope', 'FullAccess')
 	.constant('appname', 'DevCenter')
 
-	//Client ID for a Registered Distributor or Buyer Company
-	//.constant('clientid', '7a26bc3f-cff2-497d-8ead-83e569e9d849')
-	.constant('clientid', (function() {
-		var host = window.location.hostname.split('.')[0];
-		var clients = {
-			'partner': '79B2578B-9317-4395-A690-3AA84F0C74ED',
-			'aveda': '84220402-FF8A-49C7-8C28-D321C7AFE37D',
-			'echidna': '018DDFBD-AFF8-413A-8518-F45FC774619B',
-			'devcenter': '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f',
-			'ost': '13b39209-b02b-4d19-92fb-00ea490c2863',
-			'taylor': '73ad7724-dea4-463d-aa6c-160caa98e2e5',
-			'jitterbit': 'dc23aae2-b120-429f-8432-323ce1a3b69f',
-			'ian': '36070750-ebb2-451e-a831-fa11bb0e8a09'
-		};
-		return clients[host] || '0e0450e6-27a0-4093-a6b3-d7cd9ebc2b8f'; //DISTRIBUTOR - Four51 OrderCloud Components
-	}))
 	//Test Environment
 	.constant('authurl', 'https://testauth.ordercloud.io/oauth/token')
 	.constant('apiurl', 'https://testapi.ordercloud.io')

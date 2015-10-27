@@ -10,18 +10,23 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		Logout: _logout,
 		AccessToken: _getAccessToken,
 		SaveGroupAccess: _saveGroupAccess,
+		DeleteGroupAccess: _deleteGroupAccess,
 		Users: {
 			List: _usersList
 		},
 		Me: {
 			Get: _meGet,
-			//Update: _meUpdate,
+			Update: _meUpdate,
 			GetAccess: _meAccessGet,
-			Groups: _meGroups
+			Groups:  {
+				List: _meGroups,
+				Get: _meGroupsGet
+			}
 		},
 		Group: {
+			List: _groupList,
 			Create: _groupCreate,
-			Get: _groupGet,
+			Update: _groupUpdate,
 			Delete: _groupDelete,
 			SaveMemberAssignment: _groupSaveMemberAssignment,
 			ListMemeberAssignments: _groupListMemberAssignments,
@@ -60,8 +65,13 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		return $resource(apiurl + '/v1/devcenter/imersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'clientID': clientID, 'userID': userID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
 	}
 
+	//ADMIN ONLY
 	function _saveGroupAccess(access, accepted, token) {
-		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: 'Bearer ' + token}}}).DevGroupAccessSave(access).$promise;
+		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: token}}}).DevGroupAccessSave(access).$promise;
+	}
+
+	function _deleteGroupAccess(userID, clientID, claims, devGroupID, token) {
+		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessDelete: {method: 'DELETE', params:{ 'userID': userID, 'clientID': clientID, 'claims': claims, 'devGroupID': devGroupID }, headers:{Authorization: token}}}).DevGroupAccessDelete().$promise;
 	}
 
 	//USERS
@@ -74,29 +84,41 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		return $resource(apiurl + '/v1/devcenter/me', {}, {MeGet: {method: 'GET', headers:{Authorization: DevAuth.GetToken()}}}).MeGet().$promise;
 	}
 
-	function _meGroups(page, pageSize, accepted) {
-		return $resource(apiurl + '/v1/devcenter/Me/DevGroups', {}, {DevGroupGet: {method: 'GET', params: { 'page': page, 'pageSize': pageSize, 'accepted': accepted }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	function _meUpdate(devUser) {
+		return $resource(apiurl + '/v1/devcenter/me', null, { MeUpdate: { method: 'PUT', headers:{Authorization: DevAuth.GetToken()}}}).MeUpdate(devUser).$promise;
 	}
 
-	function _meAccessGet(page, pageSize) {
-		return $resource(apiurl + '/v1/devcenter/me/access', {}, {DevAccessGet: {method: 'GET', params: {'page': page, 'pageSize': pageSize}, headers:{Authorization: DevAuth.GetToken()}}}).DevAccessGet().$promise;
+	function _meGroups(page, pageSize, accepted) {
+		return $resource(apiurl + '/v1/devcenter/me/devgroups', {}, {DevGroupGet: {method: 'GET', params: { 'page': page, 'pageSize': pageSize, 'accepted': accepted }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	}
+
+	function _meGroupsGet(groupID) {
+		return $resource(apiurl + '/v1/devcenter/me/devgroups/:groupID', { 'groupID': groupID }, {DevGroupGet: {method: 'GET', headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	}
+
+	function _meAccessGet(page, pageSize, accepted) {
+		return $resource(apiurl + '/v1/devcenter/me/access', {}, {DevAccessGet: {method: 'GET', params: {'page': page, 'pageSize': pageSize, 'accepted':accepted}, headers:{Authorization: DevAuth.GetToken()}}}).DevAccessGet().$promise;
 	}
 
 	//USER GROUPS
+	function _groupList(search, page, pageSize) {
+		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupGet: {method: 'GET', params: { 'search': search, 'page': page, 'pageSize': pageSize }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+	}
+
 	function _groupCreate(group) {
 		return $resource(apiurl + '/v1/devcenter/devgroups', {}, {DevGroupSave: {method: 'POST', params:{}, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupSave(group).$promise;
 	}
-	
-	function _groupGet(groupID) {
-		return $resource(apiurl + '/v1/devcenter/devgroups/:groupID', { 'groupID': groupID }, {DevGroupGet: {method: 'GET', headers:{Authorization: DevAuth.GetToken()}}}).DevGroupGet().$promise;
+
+	function _groupUpdate(groupID, group) {
+		return $resource(apiurl + '/v1/devcenter/devgroups/:groupID', { 'groupID': groupID }, { DevGroupUpdate: { method: 'PUT', headers:{Authorization: DevAuth.GetToken()}}}).DevGroupUpdate(group).$promise;
 	}
 
 	function _groupDelete(groupID) {
 		return $resource(apiurl + '/v1/devcenter/devgroups/:groupID', { 'groupID': groupID }, {DevGroupDelete: {method: 'DELETE', headers:{Authorization: DevAuth.GetToken()}}}).DevGroupDelete().$promise;
 	}
 
-	function _groupSaveMemberAssignment(groupID, userID, accepted, groupAdmin) {
-		return $resource(apiurl + '/v1/devcenter/devgroups/:groupID/memberusers', { 'groupID': groupID }, {DevGroupSave: {method: 'POST', params: { 'userID': userID, 'accepted': accepted, 'groupAdmin': groupAdmin }, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupSave().$promise;
+	function _groupSaveMemberAssignment(groupID, assignment) {
+		return $resource(apiurl + '/v1/devcenter/devgroups/:groupID/memberusers', { 'groupID': groupID }, {DevGroupSave: {method: 'POST', headers:{Authorization: DevAuth.GetToken()}}}).DevGroupSave(assignment).$promise;
 	}
 
 	function _groupListMemberAssignments(groupID, page, pageSize, accepted) {

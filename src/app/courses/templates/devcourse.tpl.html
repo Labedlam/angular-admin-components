@@ -8,8 +8,7 @@
 		<div class="jumbotron" compile="course.current.LongDescription"></div>
 		<div class="list-group course-class-list">
 			<a class="list-group-item" ng-repeat="class in course.classes | orderBy: 'CourseOrder'" ng-class="{completed: course.CompletedClasses.indexOf(class.ID) > -1}" ui-sref=".class({classid:class.ID})">
-				<i class="fa fa-check pull-right" ng-if="course.CompletedClasses.indexOf(class.ID) > -1" ></i>
-				<span class="pull-right" ng-if="course.CompletedClasses.indexOf(class.ID) > -1">Complete</span>
+				<span class="pull-right" ng-if="course.CompletedClasses.indexOf(class.ID) > -1">Class Complete</span>
 				<h4 class="list-group-item-heading">{{class.Name}}</h4>
 				<p class="list-group-item-text">{{class.Description}}</p>
 			</a>

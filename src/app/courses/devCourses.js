@@ -293,8 +293,10 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	$localForage.getItem('context-user')
 		.then(function(data) {
-			vm.context = data;
-			vm.ContextName = data.CompanyName;
+			if (data) {
+				vm.context = data;
+				vm.ContextName = data.CompanyName;
+			}
 		});
 
 

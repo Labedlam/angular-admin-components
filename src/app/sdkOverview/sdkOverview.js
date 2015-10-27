@@ -11,12 +11,18 @@ function SdkOverviewConfig( $stateProvider ) {
             url: '/sdkOverview',
             templateUrl:'sdkOverview/templates/sdkOverview.tpl.html',
             controller:'SdkOverviewCtrl',
-            controllerAs: 'sdkOverview'
+            controllerAs: 'sdkOverview',
+            resolve: {
+                Documentation: function(Docs) {
+                    return Docs.GetAll();
+                }
+            }
         })
 }
 
-function SdkOverviewController($sce ) {
+function SdkOverviewController($sce, Documentation ) {
     var vm = this;
+    vm.content = Documentation;
     vm.config = {}
 
 }

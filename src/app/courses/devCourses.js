@@ -87,8 +87,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				OcVars: function (DcUserSvc) {
 					return DcUserSvc.getOcVars();
 				},
-				ContextOptions: function(DevCenter) {
-					return DevCenter.Me.GetAccess(1, 100);
+				ContextOptions: function(DevCenter, Underscore) {
+					return DevCenter.Me.GetAccess(1, 100)
+						.then(function(data) {
+							return Underscore.filter(data.Items, {Accepted: true});
+						});
 				}
 			}
 		})
@@ -111,7 +114,7 @@ function LearningController () {
 
 }
 
-function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore) {
+function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore, BuyerID) {
 	var vm = this;
 	vm.current = EditClass;
 	vm.docs = {};
@@ -132,6 +135,13 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 		editor.setOptions({
 			maxLines:100
 		});
+	}
+
+	if (!BuyerID.Get()) {
+		BuyerID.Set('__NONE_SET__');
+	} else {
+		vm.buyerID = BuyerID.Get();
+		vm.BuyerSet = true;
 	}
 
 
@@ -258,7 +268,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 							 $sce, $localForage, $cookies, $timeout ){
 	var vm = this;
 	vm.current = SelectedClass;
-	vm.contextOptions = ContextOptions.toJSON();
+	vm.contextOptions = ContextOptions;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
 	vm.alert = {};
@@ -286,8 +296,10 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	$localForage.getItem('context-user')
 		.then(function(data) {
-			vm.context = data;
-			vm.ContextName = data.CompanyName;
+			if (data) {
+				vm.context = data;
+				vm.ContextName = data.CompanyName;
+			}
 		});
 
 
@@ -412,7 +424,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		if (!newVal) {
 			return
 		} else {
-			vm.context = Underscore.where(vm.contextOptions.Items, {CompanyName: newVal})[0];
+			vm.context = Underscore.where(vm.contextOptions, {CompanyName: newVal})[0];
 		}
 	});
 

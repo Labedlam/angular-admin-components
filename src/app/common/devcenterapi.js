@@ -118,11 +118,16 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
 
 function DcAdmin($resource, environment, devapiurl) {
     var service = {
-        Register: _register
+        Register: _register,
+        Authenticate: _authenticate
     };
 
     function _register(newUser) {
-        return $resource(devapiurl + '/register', {}, {call: {method: 'POST', headers: {'environment': environment}}}).call(newUser).$promise
+        return $resource(devapiurl + '/admin/registeruser', {}, {call: {method: 'POST', headers: {'environment': environment}}}).call(newUser).$promise
+    }
+
+    function _authenticate(userHash) {
+        return $resource(devapiurl + '/authenticate', {UserHash:userHash}, {call: {method: 'POST', headers: {'environment': environment}}}).call().$promise
     }
 
     return service

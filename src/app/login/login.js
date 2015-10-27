@@ -17,19 +17,24 @@ function LoginConfig( $stateProvider ) {
 	});
 }
 
-function LoginController( $rootScope, $state, DevCenter, DevAuth, Auth ) {
+function LoginController( $rootScope, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
 	var vm = this;
 
 	vm.submit = function() {
 		DevCenter.Login( vm.credentials )
 			.then(function(data) {
 				if (data['access_token']) {
-					Auth.RemoveToken();
 					DevAuth.SetToken(data['access_token']);
-					$rootScope.isAuthenticated = true;
-					$state.go( 'base.home' );
+					DevCenter.Me.Get().then(function(data) {
+						DcAdmin.Authenticate(data.MongoDBHash).then(function(dataA) {
+							$cookies.put('dc-token', dataA['access_token']);
+							Auth.RemoveToken();
+							$rootScope.isAuthenticated = true;
+							$state.go('base.home');
+						});
+					})
 				} else {
-					$state.reload();
+					$state.reload()
 				}
 			}).catch(function( ex ) {
 				console.dir( ex );

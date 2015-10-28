@@ -1,3 +1,29 @@
+<article id="Intro" class="container" ng-if="!console.SelectedResource">
+	<h3 class="page-header text-center"><i class="fa fa-tools"></i>OrderCloud Console</h3>
+	<p><b>Welcome to the OrderCloud API Console!</b>  The purpose of this tool is to give developers an easy way to instantly access and/or alter important data during the development process.  It is also useful for new OrderCloud developers looking to get an idea of how the our RESTful API is structured through an interactive UI.</p>
+	<p>Begin by choosing from one of your available instances below.  This will give the console a "context" in which it can function.  You can change your active context to easily switch between different instances at any time. Choose from any of the OrderCloud resources on the left part of the console and specify an endpoint in the drop-down. Fill out the necessary parameters and request bodies then click "Send". This will make the specified API call within the active instance and present you with OrderCloud's response data on the right.</p>
+	<p class="alert alert-danger">Keep in mind <b>the console <em>will</em> alter your data</b>, and changes will be immediately reflected in any application using the same instance.</p>
+	<hr/>
+	<div id="ContextSettings">
+		<form name="contextFilterForm">
+			<div class="form-group">
+				<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="console.contextSearchTerm"/>
+			</div>
+		</form>
+		<ul class="list-group">
+			<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}">
+				<div class="context-info">
+					<b>{{context.CompanyName}}</b> <br/>
+					<small class="text-muted">{{context.ClientID}}</small>
+				</div>
+				<div class="context-claims">
+					<span class="text-muted"><i class="fa fa-lock"></i> {{context.Claims}}</span>
+				</div>
+				<button class="btn btn-success" ng-click="console.updateContext(context)" ng-disabled="console.ActiveContext == context">Activate</button>
+			</li>
+		</ul>
+	</div>
+</article>
 <div id="ConsoleContainer">
 	<aside id="ConsoleMenu" ng-if="console.ActiveContext">
 		<ul class="section-list">
@@ -13,33 +39,6 @@
 			</div>
 		</ul>
 	</aside>
-
-	<article id="Intro" class="container" ng-if="!console.SelectedResource">
-		<h3 class="page-header text-center"><i class="fa fa-tools"></i>OrderCloud Console</h3>
-		<p><b>Welcome to the OrderCloud API Console!</b>  The purpose of this tool is to give developers an easy way to instantly access and/or alter important data during the development process.  It is also useful for new OrderCloud developers looking to get an idea of how the our RESTful API is structured through an interactive UI.</p>
-		<p>Begin by choosing from one of your available instances below.  This will give the console a "context" in which it can function.  You can change your active context to easily switch between different instances at any time. Choose from any of the OrderCloud resources on the left part of the console and specify an endpoint in the drop-down. Fill out the necessary parameters and request bodies then click "Send". This will make the specified API call within the active instance and present you with OrderCloud's response data on the right.</p>
-		<p class="alert alert-danger">Keep in mind <b>the console <em>will</em> alter your data</b>, and changes will be immediately reflected in any application using the same instance.</p>
-		<hr/>
-		<div id="ContextSettings">
-			<form name="contextFilterForm">
-				<div class="form-group">
-					<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="console.contextSearchTerm"/>
-				</div>
-			</form>
-			<ul class="list-group">
-				<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}">
-					<div class="context-info">
-						<b>{{context.CompanyName}}</b> <br/>
-						<small class="text-muted">{{context.ClientID}}</small>
-					</div>
-					<div class="context-claims">
-						<span class="text-muted"><i class="fa fa-lock"></i> {{context.Claims}}</span>
-					</div>
-					<button class="btn btn-success" ng-click="console.updateContext(context)" ng-disabled="console.ActiveContext == context">Activate</button>
-				</li>
-			</ul>
-		</div>
-	</article>
 	<div id="Console" ng-if="console.SelectedResource">
 		<article id="Request">
 			<div id="ActiveContext" uib-collapse="console.ContextMenuOpen">
@@ -178,7 +177,11 @@
 					<div class="log-item">
 						<div class="apiRequestDisplay" ng-class="{success: (response.status < 300 && response.status >= 200), danger: (response.status >= 300 || response.status < 200), disabled: response != console.SelectedResponse}" ng-click="console.SelectResponse(response)">
 							<pre>{{response.config.method}}</pre>
-							<pre><i class="fa pull-right" ng-class="{'fa-check':(response.status < 300 && response.status >= 200), 'fa-warning': (response.status >= 300 || response.status < 200)}"></i>{{(response.config.url | OCRoutingUrl) + (response.config.params | OCUrlParams)}} <small>{{response.status + ' ' + response.statusText}}</small></pre>
+							<pre>
+								<span>{{(response.config.url | OCRoutingUrl) + (response.config.params | OCUrlParams)}} <small>{{response.status + ' ' + response.statusText}}</small></span>
+								<span></span>
+								<i class="fa" ng-class="{'fa-check':(response.status < 300 && response.status >= 200), 'fa-warning': (response.status >= 300 || response.status < 200)}"></i>
+							</pre>
 						</div>
 					</div>
 				</div>

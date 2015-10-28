@@ -1,25 +1,22 @@
-#Intro.container {
+#Intro {
   max-width:600px;
 }
+
 #ConsoleContainer {
-  min-height:calc(~"100vh - "@navbar-height);
-  max-height:calc(~"100vh - "@navbar-height);
   display:flex;
   flex-flow:row nowrap;
   overflow:hidden;
 }
-#ContextSelector {
-  padding:10px;
-  background-color:black;
-}
 #ConsoleMenu,
 #Console {
-  max-height:~'calc(100vh - 60px)';
+  min-height:calc(~"100vh - "@navbar-height);
+  max-height:calc(~"100vh - "@navbar-height);
 }
 #ConsoleMenu {
   overflow-y:auto;
   flex: 0 1 auto;
-  min-width:225px;
+  min-width:@console-menu-width;
+  max-width:@console-menu-width;
   //border-right:1px solid @list-group-border;
   ul {
     padding:0;
@@ -80,8 +77,9 @@
 }
 
 #Request {
-  max-width:1000px;
-  padding:@padding-base-horizontal;
+  max-width:@console-request-width;
+  min-width:@console-request-width;
+  padding:@padding-large-horizontal*2;
   overflow-y:auto;
   .body-title {
     color:white;
@@ -96,6 +94,7 @@
 }
 
 #Response {
+  max-width:calc(~'100vw - '(@console-menu-width + @console-request-width));
   display:flex;
   flex-flow:column nowrap;
 }
@@ -115,6 +114,86 @@
       margin-top:@padding-base-vertical;
       margin-bottom:0;
       border:0;
+    }
+  }
+}
+
+.apiRequestDisplay {
+  display:flex;
+  flex-flow:row nowrap;
+  pre {
+    &:first-child {
+      border: 1px solid @brand-primary;
+      background-color:@brand-primary;
+      color:white;
+      font-weight:bold;
+      flex:1;
+      max-width:75px;
+      text-align:center;
+      .border-right-radius(0);
+    }
+    &:last-child {
+      flex:1;
+      border-left:none;
+      white-space:nowrap;
+      overflow-x:hidden;
+      .border-left-radius(0);
+      display:flex;
+      flex-flow:row nowrap;
+      align-items:center;
+      span {
+        flex:0 1 auto;
+        max-width:~'calc(100% - 20px)';
+        overflow:hidden;
+        &:nth-of-type(2) {
+          flex: 1 0 auto;
+        }
+      }
+      i {
+        width:20px;
+        text-align:center;
+        flex:0 1 auto;
+      }
+/*      i {
+        padding:20px;
+        background-color:@pre-bg;
+      }*/
+    }
+  }
+  &.danger {
+    pre {
+      border-color:@brand-danger;
+      &:first-child {
+        background-color:@brand-danger;
+      }
+      &:last-child {
+        color:@brand-danger;
+        background-color:lighten(@brand-danger, 38);
+      }
+    }
+  }
+  &.success {
+    pre {
+      border-color:@brand-success;
+      &:first-child {
+        background-color:@brand-success;
+      }
+      &:last-child {
+        color: @brand-success;
+        background-color:lighten(@brand-success, 38);
+      }
+    }
+  }
+  &.disabled {
+    pre {
+      border-color:@gray;
+      &:first-child {
+        background-color:@gray-light;
+      }
+      &:last-child {
+        color: @text-muted;
+        background-color:lighten(@gray-lighter,5);
+      }
     }
   }
 }

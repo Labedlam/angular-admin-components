@@ -1,16 +1,16 @@
 angular.module( 'orderCloud' )
 
-    .config( SdkOverviewConfig )
-    .controller( 'SdkOverviewCtrl', SdkOverviewController )
+    .config( SdkConfig )
+    .controller( 'SdkCtrl', SdkController )
 
 ;
 
-function SdkOverviewConfig( $stateProvider ) {
+function SdkConfig( $stateProvider ) {
     $stateProvider
-        .state( 'base.sdkOverview', {
-            url: '/sdkOverview',
-            templateUrl:'sdkOverview/templates/sdkOverview.tpl.html',
-            controller:'SdkOverviewCtrl',
+        .state( 'base.sdk', {
+            url: '/sdk',
+            templateUrl:'sdk/templates/sdk.tpl.html',
+            controller:'SdkCtrl',
             controllerAs: 'sdk',
             resolve: {
                 Documentation: function(Docs) {
@@ -20,7 +20,7 @@ function SdkOverviewConfig( $stateProvider ) {
         })
 }
 
-function SdkOverviewController($sce, Documentation ) {
+function SdkController($sce, Documentation ) {
     var vm = this;
     vm.content = Documentation;
 

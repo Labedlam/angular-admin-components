@@ -45,7 +45,7 @@ function BaseController( CurrentUser ) {
 		{
 			Display: 'SDK Overview',
 			Description: 'SDK overview Description',
-			StateRef: 'base.sdkOverview'
+			StateRef: 'base.sdk'
 		},
 		{
 			Display: 'Seed Overview',
@@ -55,7 +55,7 @@ function BaseController( CurrentUser ) {
 		{
 			Display: 'Components Overview',
 			Description: 'Component overview Description',
-			StateRef: 'base.componentsOverview'
+			StateRef: 'base.components'
 		},
 		{
 			Display: 'Integrations Overview',

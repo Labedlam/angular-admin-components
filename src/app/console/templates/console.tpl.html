@@ -4,7 +4,7 @@
 	<p>Begin by choosing from one of your available instances below.  This will give the console a "context" in which it can function.  You can change your active context to easily switch between different instances at any time. Choose from any of the OrderCloud resources on the left part of the console and specify an endpoint in the drop-down. Fill out the necessary parameters and request bodies then click "Send". This will make the specified API call within the active instance and present you with OrderCloud's response data on the right.</p>
 	<p class="alert alert-danger">Keep in mind <b>the console <em>will</em> alter your data</b>, and changes will be immediately reflected in any application using the same instance.</p>
 	<hr/>
-	<div id="ContextSettings">
+	<div>
 		<form name="contextFilterForm">
 			<div class="form-group">
 				<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="console.contextSearchTerm"/>
@@ -51,11 +51,19 @@
 						<div class="context-claims">
 							<span class="text-muted"><i class="fa fa-lock"></i> {{console.ActiveContext.Claims}}</span>
 						</div>
-						<button class="btn btn-default" ng-click="console.ContextMenuOpen = true">Switch Context</button>
+						<div class="btn-group" uib-dropdown>
+							<button type="button" class="btn btn-default" uib-dropdown-toggle>
+								<i class="fa fa-cog"></i> <span class="caret"></span>
+							</button>
+							<ul uib-dropdown-menu role="menu">
+								<li role="menuitem"><a href="" ng-click="console.ContextMenuOpen = true">Switch Context</a></li>
+								<li role="menuitem"><a href="" ng-click="console.removeContext()"><span class="text-danger">Clear Context</span></a></li>
+							</ul>
+						</div>
 					</li>
 				</ul>
 			</div>
-			<div id="ContextSettings" uib-collapse="!console.ContextMenuOpen">
+			<div uib-collapse="!console.ContextMenuOpen">
 				<form name="contextFilterForm">
 					<div class="form-group input-group">
 						<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="console.contextSearchTerm"/>

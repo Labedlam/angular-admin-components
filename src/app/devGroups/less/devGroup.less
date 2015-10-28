@@ -52,12 +52,29 @@
 		padding-right:15px;
 	  }
 	}
+	> span.invite-status {
+	  flex: 0 1 auto;
+	  padding:@padding-base-vertical @padding-base-horizontal;
+	  color:@brand-warning;
+	}
 	.dropdown-menu {
 	  left:auto;
 	  right:0;
 	  > li > a.text-danger {
 		color:@brand-danger;
 	  }
+	}
+  }
+}
+
+.invite-list-item {
+  display:flex;
+  flex-flow:row nowrap;
+  align-items:center;
+  div {
+	flex: 1 0 auto;
+	&.btn-group {
+	  flex: 0 1 auto;
 	}
   }
 }

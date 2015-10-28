@@ -64,7 +64,7 @@
 					<li class="list-group-item dev-user-list-item" ng-repeat="member in devGroupDetail.members | orderBy:'-Accepted'" ng-if="member.Accepted || (devGroupDetail.model.GroupAdmin && !member.Accepted)">
 						<p>{{member.Username + ' - ' + member.FirstName + ' ' + member.LastName}}</p>
 						<div ng-if="member.GroupAdmin"><span class="label label-default">Group Admin</span></div>
-						<div ng-if="!member.Accepted"><button class="btn btn-default" disabled="true"><span class="text-danger">Invited</span></button></div>
+						<span ng-if="!member.Accepted" class="invite-status">Invite Pending</span>
 						<div class="btn-group" uib-dropdown ng-if="devGroupDetail.model.GroupAdmin">
 							<button type="button" class="btn btn-default" uib-dropdown-toggle>
 								<i class="fa fa-cog"></i> <span class="caret"></span>
@@ -90,11 +90,11 @@
 				<div class="well well-lg text-center" ng-if="!devGroupDetail.instances.length">
 					<p class="lead">This group does not have access to an OrderCloud instance.</p>
 				</div>
-				<div class="labeled-divider" ng-if="devGroupDetail.pendingInstances.length">
+				<div class="labeled-divider" ng-if="devGroupDetail.pendingInstances.length && devGroupDetail.model.GroupAdmin">
 					<span>Pending Invitations</span>
 					<hr/>
 				</div>
-				<ul class="list-group" ng-if="devGroupDetail.pendingInstances.length" ng-if="devGroupDetail.model.GroupAdmin">
+				<ul class="list-group" ng-if="devGroupDetail.pendingInstances.length && devGroupDetail.model.GroupAdmin">
 					<li class="list-group-item dev-access-list-item" ng-repeat="instance in devGroupDetail.pendingInstances">
 						<div><b>{{instance.CompanyName}}</b><br/>
 							<span class="text-muted"><b>Client ID: </b>{{instance.ClientID}}</span>

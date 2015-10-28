@@ -12,7 +12,7 @@
 		</div>
 		<hr/>
 		<div class="well well-lg text-center" ng-if="!instances.list.length">
-			<p class="lead">You are not in a group that has access to an intance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.</p>
+			<p class="lead">You are not in a group that has access to an instance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.</p>
 		</div>
 		<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length">
 			<p class="lead"><i class="fa fa-search"></i> We couldn't find an instance that matches your search</p>
@@ -50,7 +50,7 @@
 						<ul class="list-group">
 							<li class="list-group-item instance-group-list-item" ng-repeat="group in instances.selectedInstance.DevGroups">
 								<div><i class="fa fa-users text-muted"></i> {{group.Name}}</div>
-								<button type="button" class="btn btn-default" disabled ng-if="!group.Accepted" style="margin-right:15px;"><span class="text-danger">Invite Pending</span></button>
+								<span class="invite-status" ng-if="!group.Accepted">Invite Pending</span>
 								<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)" ng-if="instances.selectedInstance.DevGroups.length > 1"><b class="text-danger">Remove</b></button>
 							</li>
 							<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">

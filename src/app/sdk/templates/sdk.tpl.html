@@ -73,13 +73,13 @@
         <div class="row">
             <aside class="col-sm-3 docs-nav">
                 <ul class="section-list">
-                    <li ng-class="{active: sdk.activeSection == section}" ng-repeat-start="section in sdk.content.Sections">
-                        <a ng-click="sdk.activeSection = section">{{section}}</a>
+                    <li ng-class="{active: sdk.activeSection == section}" ng-repeat-start="section in sdk.content.Sections" ng-click="sdk.activeSection = section">
+                        {{section}}
                     </li>
                     <div ng-repeat-end>
                         <ul class="resource-list">
-                            <li class="resource-list-item" ng-click="sdk.activeResource = resource" ng-repeat="resource in sdk.content.Resources | filter:{Section:section}">
-                                {{resource.Name}}
+                            <li ng-repeat="resource in sdk.content.Resources | filter:{Section:section}">
+                                <a href="" ng-class="{active: sdk.activeResource == resource}" ng-click="sdk.activeResource = resource">{{resource.Name}}</a>
                             </li>
                         </ul>
                     </div>

@@ -1,25 +1,28 @@
-<header class="jumbotron" ui-sref="base.docs">
+<div id="ApiDocumentation">
+	<header class="dc-header" ui-sref="base.docs">
+		<div class="container">
+			<h2>API Documentation</h2>
+
+		</div>
+	</header>
 	<div class="container">
-		<h2>API Documentation</h2>
-	</div>
-</header>
-<div class="container">
-	<div class="row">
-		<aside class="col-sm-3 docs-nav">
-			<ul class="section-list">
-				<li ui-sref-active="active" ng-repeat-start="section in docs.content.Sections" ui-sref="base.docs.section({sectionID:section})">
-					{{section}}
-				</li>
-				<div ng-repeat-end>
-					<ul class="resource-list">
-						<li ng-repeat="resource in docs.content.Resources | filter:{Section:section}">
-							<a href="" ui-sref-active="active" ui-sref="base.docs.section.resource({sectionID:section, resourceID:resource.ID})">{{resource.Name}}</a>
-						</li>
-					</ul>
-				</div>
-			</ul>
-		</aside>
-		<article class="col-sm-9" ng-if="application.$state.is('base.docs')" ng-include="'docs/templates/docs.overview.tpl.html'"></article>
-		<article class="col-sm-9" ui-view></article>
+		<div class="row">
+			<aside class="col-sm-3 docs-nav">
+				<ul class="section-list">
+					<li ui-sref-active="active" ng-repeat-start="section in docs.content.Sections" ui-sref="base.docs.section({sectionID:section})">
+						{{section}}
+					</li>
+					<div ng-repeat-end>
+						<ul class="resource-list">
+							<li ng-repeat="resource in docs.content.Resources | filter:{Section:section}">
+								<a href="" ui-sref-active="active" ui-sref="base.docs.section.resource({sectionID:section, resourceID:resource.ID})">{{resource.Name}}</a>
+							</li>
+						</ul>
+					</div>
+				</ul>
+			</aside>
+			<article class="col-sm-9" ng-if="application.$state.is('base.docs')" ng-include="'docs/templates/docs.overview.tpl.html'"></article>
+			<article class="col-sm-9" ui-view></article>
+		</div>
 	</div>
 </div>

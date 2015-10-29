@@ -36,6 +36,26 @@ h1, h2, h3, h4, h5, h6 {
   font-family:@header-font;
 }
 
+.dc-header {
+  background-repeat:no-repeat;
+  background-size:100% calc(100vw);
+  background-image: radial-gradient(at center center, darken(@four51-blue, 25) 0%, darken(@four51-blue, 25) 60%, darken(@four51-blue, 35) 100%); /* W3C */
+  //background-color: darken(@four51-blue, 25);
+  color:white;
+  padding:40px 0 15px;
+  margin-bottom:20px;
+  h2 {
+    font-family:@body-font;
+    font-weight:lighter;
+    margin:0;
+  }
+}
+
+.page-header {
+  border-bottom-width: 3px;
+  font-weight:bold;
+}
+
 .well.well-lg p.lead {
   margin:0;
 }

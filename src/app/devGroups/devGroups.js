@@ -258,19 +258,19 @@ function DevGroupDetailController($state, $timeout, DevAuth, DevCenter, Selected
 		if (!selectedAccess) return;
 		selectedAccess.DevGroupID = vm.model.ID;
 		DevCenter.AccessToken(selectedAccess.ClientID, selectedAccess.UserID).then(function(data) {
-			DevCenter.SaveGroupAccess(selectedAccess, true, ('Bearer ' + data['access_token']))
+			DevCenter.SaveGroupAccess(selectedAccess, ('Bearer ' + data['access_token']))
 		})
 	};
 
 	vm.acceptInstance = function(scope) {
-		DevCenter.SaveGroupAccess(scope.instance, true, DevAuth.GetToken()).then(function() {
+		DevCenter.AcceptGroupAccess(scope.instance.ID).then(function() {
 			vm.instances.push(scope.instance);
 			vm.pendingInstances.splice(scope.$index, 1);
 		})
 	};
 
 	vm.declineInstance = function(scope) {
-		DevCenter.DeleteGroupAccess(scope.instance.UserID, scope.instance.ClientID, scope.instance.Claims, scope.instance.DevGroupID, DevAuth.GetToken()).then(function() {
+		DevCenter.DeleteGroupAccess(scope.instance.ID, DevAuth.GetToken()).then(function() {
 			vm.pendingInstances.splice(scope.$index, 1);
 		})
 	};

@@ -51,7 +51,7 @@
 							<li class="list-group-item instance-group-list-item" ng-repeat="group in instances.selectedInstance.DevGroups">
 								<div><i class="fa fa-users text-muted"></i> {{group.Name}}</div>
 								<span class="invite-status" ng-if="!group.Accepted">Invite Pending</span>
-								<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)" ng-if="(instances.selectedInstance.DevGroups | filter:{Accepted:true}).length > 1 || !group.Accepted"><b class="text-danger">Remove</b></button>
+								<button type="button" class="btn btn-default" ng-click="instances.deleteAccess(this)" ng-if="(instances.selectedInstance.DevGroups | filter:{Accepted:true}).length > 1 && group.Accepted"><b class="text-danger">Remove</b></button>
 							</li>
 							<li class="list-group-item text-center" ng-if="!instances.selectedInstance.addNewGroup">
 								<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>

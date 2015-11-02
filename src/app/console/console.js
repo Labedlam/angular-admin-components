@@ -40,16 +40,19 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 						if (existingResult) {
 							var existingIndex = results.indexOf(existingResult);
 							results[existingIndex].DevGroups.push({
+								AccessID: instance.ID,
 								ID: instance.DevGroupID,
 								Name: instance.DevGroupName
 							});
 						} else if (instance.Accepted) {
 							instance.DevGroups = [
 								{
+									AccessID: instance.ID,
 									ID: instance.DevGroupID,
 									Name: instance.DevGroupName
 								}
 							];
+							delete instance.ID,
 							delete instance.DevGroupID;
 							delete instance.DevGroupName;
 							results.push(instance);
@@ -97,7 +100,7 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	};
 
 	vm.setContext = function(context) {
-		ConsoleContext.Update(context)
+		ConsoleContext.Update(context.DevGroups[0].AccessID)
 			.then(function() {
 				if (!vm.ActiveContext) {
 					vm.SelectResource({resource: Underscore.where(vm.Resources, {Name: 'Buyers'})[0]});
@@ -361,9 +364,9 @@ function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
 		return deferred.promise;
 	}
 
-	function _updateContext(context) {
+	function _updateContext(accessID) {
 		var deferred = $q.defer();
-		DevCenter.AccessToken(context.ClientID, context.UserID)
+		DevCenter.AccessToken(accessID)
 			.then(function(data) {
 				Auth.SetToken(data['access_token']);
 				deferred.resolve();

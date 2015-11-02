@@ -11,6 +11,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		AccessToken: _getAccessToken,
 		SaveGroupAccess: _saveGroupAccess,
 		DeleteGroupAccess: _deleteGroupAccess,
+		AcceptGroupAccess: _acceptGroupAccess,
 		Users: {
 			List: _usersList
 		},
@@ -61,17 +62,22 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		$state.go('base.home');
 	}
 
-	function _getAccessToken(clientID, userID) {
-		return $resource(apiurl + '/v1/devcenter/imersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'clientID': clientID, 'userID': userID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
+	function _getAccessToken(accessID) {
+		return $resource(apiurl + '/v1/devcenter/imersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'accessID': accessID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
 	}
 
 	//ADMIN ONLY
-	function _saveGroupAccess(access, accepted, token) {
-		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessSave: {method: 'POST', params:{'accepted': accepted}, headers:{Authorization: token}}}).DevGroupAccessSave(access).$promise;
+	function _saveGroupAccess(access, token) {
+		return $resource(apiurl + '/v1/devcenter/access', {}, {DevGroupAccessSave: {method: 'POST', headers:{Authorization: token}}}).DevGroupAccessSave(access).$promise;
 	}
 
-	function _deleteGroupAccess(userID, clientID, claims, devGroupID, token) {
-		return $resource(apiurl + '/v1/devcenter/devgroupaccess', {}, {DevGroupAccessDelete: {method: 'DELETE', params:{ 'userID': userID, 'clientID': clientID, 'claims': claims, 'devGroupID': devGroupID }, headers:{Authorization: token}}}).DevGroupAccessDelete().$promise;
+	function _deleteGroupAccess(accessID, token) {
+		return $resource(apiurl + '/v1/devcenter/access/:accessID', {accessID: accessID}, {DevGroupAccessDelete: {method: 'DELETE', headers:{Authorization: token}}}).DevGroupAccessDelete().$promise;
+	}
+
+	//DEV GROUP ADMIN ONLY
+	function _acceptGroupAccess(accessID) {
+		return $resource(apiurl + '/v1/devcenter/acceptAccess', {}, {DevGroupAccessSave: {method: 'POST', params: {accessID:accessID}, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupAccessSave().$promise;
 	}
 
 	//USERS

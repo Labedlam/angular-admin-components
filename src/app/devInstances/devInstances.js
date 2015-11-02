@@ -23,6 +23,7 @@ function DevInstancesConfig( $stateProvider ) {
 							if (existingResult) {
 								var existingIndex = results.indexOf(existingResult);
 								results[existingIndex].DevGroups.push({
+									AccessID: instance.ID,
 									ID: instance.DevGroupID,
 									Name: instance.DevGroupName,
 									Accepted: instance.Accepted
@@ -30,11 +31,13 @@ function DevInstancesConfig( $stateProvider ) {
 							} else {
 								instance.DevGroups = [
 									{
+										AccessID: instance.ID,
 										ID: instance.DevGroupID,
 										Name: instance.DevGroupName,
 										Accepted: instance.Accepted
 									}
 								];
+								delete instance.ID;
 								delete instance.DevGroupID;
 								delete instance.DevGroupName;
 								results.push(instance);
@@ -92,9 +95,12 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 	vm.shareAccess = function(group) {
 		if (!vm.selectedInstance) return;
 		vm.selectedInstance.DevGroupID = group.ID;
-		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID).then(function(data) {
+		vm.selectedInstance.DevGroupName = group.Name;
+		DevCenter.AccessToken(vm.selectedInstance.DevGroups[0].AccessID).then(function(data) {
 			Auth.RemoveToken();
-			DevCenter.SaveGroupAccess(vm.selectedInstance, null, ('Bearer ' + data['access_token'])).then(function() {
+			DevCenter.SaveGroupAccess(vm.selectedInstance, ('Bearer ' + data['access_token'])).then(function(data) {
+				console.log('Group Access');
+				console.dir(data);
 				vm.selectedInstance.DevGroups.push({
 					ID:group.ID,
 					Name:group.Name
@@ -106,10 +112,10 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 	};
 
 	vm.deleteAccess = function(scope) {
-		DevCenter.AccessToken(vm.selectedInstance.ClientID, vm.selectedInstance.UserID)
+		DevCenter.AccessToken(scope.group.AccessID)
 			.then(function(data) {
 				Auth.RemoveToken();
-				DevCenter.DeleteGroupAccess(vm.selectedInstance.UserID, vm.selectedInstance.ClientID, vm.selectedInstance.Claims, scope.group.ID, ('Bearer ' + data['access_token']))
+				DevCenter.DeleteGroupAccess(scope.group.AccessID, ('Bearer ' + data['access_token']))
 					.then(function() {
 						vm.selectedInstance.DevGroups.splice(vm.selectedInstance.DevGroups.indexOf(scope.group), 1);
 					})

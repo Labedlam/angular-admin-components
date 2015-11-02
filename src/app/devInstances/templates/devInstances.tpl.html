@@ -1,4 +1,11 @@
+<header class="dc-header">
+	<div class="container">
+		<h2>OrderCloud Instances</h2>
+	</div>
+</header>
 <div id="DevInstancesList" class="container">
+	<p class="lead">OrderCloud Instances represent a point of access for a collection of developer groups. Instance creators have the ability to share new instances with any group in the Dev Center. Once shared, the developer group's admin user will need to accept the invitation before the instance is made available to the rest of the group.</p>
+	<hr/>
 	<div ng-if="instances.list.length || (!instances.list.length && base.currentUser.CreateCompanies)">
 		<div class="row">
 			<div class="col-sm-5">

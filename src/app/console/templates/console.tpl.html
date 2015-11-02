@@ -10,13 +10,21 @@
 			<p>Begin by choosing from one of your available instances to the right.  This will give the console a "context" in which it can function.  You can change your active context to easily switch between different instances at any time. Choose from any of the OrderCloud resources on the left part of the console and specify an endpoint in the drop-down. Fill out the necessary parameters and request bodies then click "Send". This will make the specified API call within the active instance and present you with OrderCloud's response data on the right.</p>
 			<p class="alert alert-danger">Keep in mind <b>the console <em>will</em> alter your data</b>, and changes will be immediately reflected in any application using the same instance.</p>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6" ng-if="!console.AvailableContexts.length">
+			<div class="well well-lg text-center">
+				<p class="lead">You do not have any available OrderCloud Instances at this time. Contact your developer group admin or Four51 for details.</p>
+			</div>
+		</div>
+		<div class="col-md-6" ng-if="console.AvailableContexts.length">
 			<form name="contextFilterForm">
 				<div class="form-group">
 					<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="console.contextSearchTerm"/>
 				</div>
 			</form>
-			<ul class="list-group">
+			<div class="well well-lg text-center" ng-if="!(console.AvailableContexts | filter:console.contextSearchTerm).length">
+				<p class="lead"><i class="fa fa-search"></i> We couldn't find a context that matches your search.</p>
+			</div>
+			<ul class="list-group" ng-if="(console.AvailableContexts | filter:console.contextSearchTerm).length">
 				<li class="list-group-item context-list-item" ng-repeat="context in console.AvailableContexts | filter:console.contextSearchTerm" ng-class="{active:console.ActiveContext == context, selected: console.SelectedContext == context}">
 					<div class="context-info">
 						<b>{{context.CompanyName}}</b> <br/>

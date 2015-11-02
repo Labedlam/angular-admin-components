@@ -130,23 +130,25 @@
   }
 }
 .courses-container {
-
   .course-summary {
 	padding:15px;
 	border:1px solid @list-group-border;
 	margin-bottom:5px;
-
+	border-radius:@border-radius-base;
+	transition:background-color 200ms ease-in-out;
 	&:hover {
 	  background-color:@list-group-hover-bg;
 	}
 	figure {
 	  max-width:100px;
+	  margin:0 auto;
 	}
 	.course-info {
 	  padding:15px;
 	}
-	.progress-title {
-	  text-align: right;
+	.progress {
+	  margin-bottom:0;
+	  background-color:#ddd;
 	}
 	h4 {
 	  margin:0;
@@ -155,26 +157,54 @@
 }
 
 #CourseHome {
-  header.jumbotron {
-	background-color: darken(@gray-lighter, 0);
-
-  }
-  .container .jumbotron {
-	h3 {
-	  text-align: center;
+  .course-class-list-item {
+	display:flex;
+	flex-flow:row nowrap;
+	align-items:center;
+	div[ui-sref] {
+	  flex:1 0 auto;
+	  padding:10px;
+	  h4, p {
+		margin:0;
+	  }
+	  h4 {
+		margin-top:5px;
+		font-weight:bold;
+	  }
+	  &:hover {
+		color:@brand-primary;
+	  }
+	}
+	.fa-check-circle {
+	  color:@brand-success;
+	}
+	p.lead {
+	  margin:0;
+	}
+	&.completed {
+	  .circle-label {
+		background-color:@brand-success;
+	  }
+	}
+	&:not(:last-child) {
+	  margin-bottom:10px;
+	  padding-bottom:10px;
+	  border-bottom:1px solid @list-group-border;
 	}
   }
-  .course-class-list .completed {
-	background-color: lighten(@four51-blue, 20);
-	.pull-right {
-	  padding-top: 10px;
-	  font-size: 1.2em;
-	  color: @four51-navy;
-	}
-	.fa {
-	  padding-top: 10px;
-	}
-
+  .circle-label {
+	background-color:@four51-orange;
+	color:white;
+	font-weight:bold;
+	font-size:1.2em;
+	width:30px;
+	height:30px;
+	border-radius:50%;
+	overflow:hidden;
+	display:flex;
+	align-items:center;
+	justify-content: center;
+	margin:0 auto;
   }
 }
 

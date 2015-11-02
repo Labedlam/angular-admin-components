@@ -63,7 +63,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	}
 
 	function _getAccessToken(accessID) {
-		return $resource(apiurl + '/v1/devcenter/imersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'accessID': accessID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
+		return $resource(apiurl + '/v1/devcenter/impersonateaccesstoken', {}, {DevTokenGet: {method: 'GET', params: { 'accessID': accessID }, headers:{Authorization: DevAuth.GetToken()}}}).DevTokenGet().$promise;
 	}
 
 	//ADMIN ONLY

@@ -1,22 +1,25 @@
 <article ng-if="application.$state.is('base.devcourses')">
-	<header class="jumbotron">
+	<header class="dc-header">
 		<div class="container">
-				<h3>ORDERCLOUD TRAINING AND REFERENCE GUIDES</h3>
+			<h2>OrderCloud Courses and Training</h2>
 		</div>
 	</header>
 	<div class="container">
-		<p class="lead">Whether you're completely new to using RESTful APIs or it's second nature, this is the place to learn everything there is to know about creating custom OrderCloud applications.</p>
+		<p class="lead">Whether you're completely new to using RESTful APIs or it's second nature, this is the place to learn everything there is to know about developing your own OrderCloud applications.</p>
 		<div class="courses-container" ng-repeat="course in courses.list | orderBy: 'ListOrder'">
-			<div class="course-summary col-xs-12" ui-sref="base.devcourses.course({courseid:course.ID})">
-				<figure class="col-xs-2">
-					<img class="img-responsive" ng-src="{{course.ImgUrl}}" alt=""/>
-				</figure>
-				<div class="col-xs-10 course-info">
-					<h4><b>{{course.Name}}</b></h4>
-					<p class="text-info">{{course.Description}}</p>
+			<div class="course-summary" ui-sref="base.devcourses.course({courseid:course.ID})">
+				<div class="row">
+					<div class="col-xs-2">
+						<figure>
+							<img class="img-responsive" ng-src="{{course.ImgUrl}}" alt=""/>
+						</figure>
+					</div>
+					<div class="col-xs-10 course-info">
+						<h4><b>{{course.Name}}</b></h4>
+						<p class="text-info">{{course.Description}}</p>
+						<uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="success">{{course.CourseProgress.Meta.Count}} of {{course.CourseProgress.Meta.TotalClasses}}</uib-progressbar>
+					</div>
 				</div>
-				<div class="progress-title col-xs-2">Course Progress</div>
-				<div class="col-xs-8"><uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="success">{{course.CourseProgress.Meta.Count}} of {{course.CourseProgress.Meta.TotalClasses}}</uib-progressbar></div>
 			</div>
 		</div>
 	</div>

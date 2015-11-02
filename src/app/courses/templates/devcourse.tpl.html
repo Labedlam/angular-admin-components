@@ -1,17 +1,24 @@
 <div id="CourseHome" ng-if="application.$state.is('base.devcourses.course')">
-	<header class="jumbotron">
+	<header class="dc-header">
 		<div class="container">
-			<h2>{{course.current.Name}}</h2>
+			<h2><b>Course: </b>{{course.current.Name}}</h2>
 		</div>
 	</header>
 	<article class="container">
-		<div class="jumbotron" compile="course.current.LongDescription"></div>
-		<div class="list-group course-class-list">
-			<a class="list-group-item" ng-repeat="class in course.classes | orderBy: 'CourseOrder'" ng-class="{completed: course.CompletedClasses.indexOf(class.ID) > -1}" ui-sref=".class({classid:class.ID})">
-				<span class="pull-right" ng-if="course.CompletedClasses.indexOf(class.ID) > -1">Class Complete</span>
-				<h4 class="list-group-item-heading">{{class.Name}}</h4>
-				<p class="list-group-item-text">{{class.Description}}</p>
-			</a>
+		<div compile="course.current.LongDescription"></div>
+		<div class="course-class-list-item" ng-repeat="class in course.classes | orderBy: 'CourseOrder'" ng-class="{'completed': course.CompletedClasses.indexOf(class.ID) > -1}">
+			<div>
+				<div class="circle-label">
+					<span class="content">{{$index + 1}}</span>
+				</div>
+			</div>
+			<div ui-sref=".class({classid:class.ID})">
+				<h4>{{class.Name}}</h4>
+				<p>{{class.Description}}</p>
+			</div>
+			<div  ng-if="course.CompletedClasses.indexOf(class.ID) > -1">
+				<p class="lead"><i class="fa fa-check-circle"></i> <span class="text-muted">COMPLETED</span></p>
+			</div>
 		</div>
 	</article>
 </div>

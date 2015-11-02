@@ -107,7 +107,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="param in endpoint.Parameters">
+                                <tr ng-repeat="param in endpoint.Parameters | OCFilteredParameters:sdk.activeResource.Name">
                                     <td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
                                     <td><div class="label" ng-class="{
                                                 'label-primary': param.Type == 'string',

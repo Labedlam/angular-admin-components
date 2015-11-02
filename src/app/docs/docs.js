@@ -110,7 +110,7 @@ function DocsService(  ) {
 	return service;
 }
 
-function DocsExtend() {
+function DocsExtend($filter, Underscore) {
 	var service = {
         extend: _extend
     };
@@ -130,18 +130,14 @@ function DocsExtend() {
 			angular.forEach(doc.Resources, function(resource) {
 				angular.forEach(resource.Endpoints, function(endpoint) {
 					var sample = "{0}.{1}({2}).then(successFn).catch(errorFn);";
-					endpoint.CodeSample = sample.replace('{0}', resource.ID).replace('{1}', endpoint.ID).replace('{2}', _getParams(endpoint.Parameters));
+					endpoint.CodeSample = sample.replace('{0}', resource.ID).replace('{1}', endpoint.ID).replace('{2}', _getParams(endpoint.Parameters, resource.Name));
 				});
 			});
         }
 
-		function _getParams(params) {
-			var temp = [];
-			angular.forEach(params, function(p) {
-				if (p.Name != 'buyerID')
-					temp.push(p.Name);
-			});
-			return temp.join(", ").replace('search, searchOn, sortBy, page, pageSize, filters', 'listArgs');
+		function _getParams(params, resourceName) {
+			var temp = $filter('OCFilteredParameters')(params, resourceName);
+			return Underscore.pluck(temp, 'Name').join(', ').replace('search, searchOn, sortBy, page, pageSize, filters', 'listArgs');
 		}
     }
 

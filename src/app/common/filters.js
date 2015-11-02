@@ -3,6 +3,7 @@ angular.module( 'orderCloud' )
 	.filter('OCRoutingUrl', OCRoutingUrl)
 	.filter('OCUrlParams', OCUrlParams)
 	.filter('URItoAngular', URItoAngular)
+	.filter('OCFilteredParameters', OCFilteredParameters)
 ;
 
 function OCRoutingUrl() {
@@ -32,5 +33,25 @@ function URItoAngular() {
 		value = value.replace(/{/g, ':');
 		value = value.replace(/}/g, '');
 		return value;
+	}
+}
+
+function OCFilteredParameters() {
+	return function(parameters, resourceName) {
+		var filtered = {
+			'buyerID': {
+				EndpointExceptions: ['Buyers']
+			}
+		};
+
+		var results = [];
+
+		angular.forEach(parameters, function(parameter) {
+			if (!filtered[parameter.Name] || (filtered[parameter.Name] && filtered[parameter.Name].EndpointExceptions.indexOf(resourceName) > -1)) {
+				results.push(parameter);
+			}
+		});
+
+		return results;
 	}
 }

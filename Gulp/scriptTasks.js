@@ -7,6 +7,7 @@ var wrap = require('gulp-wrapper');
 var templatecache = require('gulp-angular-templatecache');
 var del = require('del');
 var ngAnnotate = require('gulp-ng-annotate');
+var include = require('gulp-include');
 
 
 var pkg = require('../package.json');
@@ -37,6 +38,34 @@ gulp.task('b_m:js', function() {
             footer: "})( window, window.angular );\n"
         }))
         .pipe(gulp.dest(config.build + 'src'));
+});
+
+gulp.task('prod_config', function() {
+    return gulp
+        .src('./app_config/prod.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('test_config', function() {
+    return gulp
+        .src('./app_config/test.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('qa_config', function() {
+    return gulp
+        .src('./app_config/qa.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('local_config', function() {
+    return gulp
+        .src('./app_config/local.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
 });
 
 gulp.task('b_c:js', function() {

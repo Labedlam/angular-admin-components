@@ -494,7 +494,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	}
 	function setContext() {
-		DevCenter.AccessToken(vm.context.ClientID, vm.context.UserID)
+		DevCenter.AccessToken(vm.context.ID)
 			.then(function(data) {
 				$localForage.setItem('context-user', vm.context);
 				Auth.SetToken(data['access_token']);

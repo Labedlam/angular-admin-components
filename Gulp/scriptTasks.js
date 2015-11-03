@@ -7,7 +7,6 @@ var wrap = require('gulp-wrapper');
 var templatecache = require('gulp-angular-templatecache');
 var del = require('del');
 var ngAnnotate = require('gulp-ng-annotate');
-var include = require('gulp-include');
 
 
 var pkg = require('../package.json');

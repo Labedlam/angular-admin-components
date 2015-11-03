@@ -5,7 +5,54 @@
         </div>
     </header>
     <article class="container">
-        <h1>Hello World</h1>
-        <hr/>
+        <p>Components are the key to a reusable approach to implementing OrderCloud based solutions. AngularJs offers the opportunity to create robust applications with many, small and self contained modules. Each module or component, designed to be functional when injected in the OrderCloud seed, encapsulates one responsibility enabled by the OrderCloud API. By themselves, an OrderCloud solution can be comprised entirely of component library. However, they are intended to be building blocks for additional customization and development. Use them as an example of how to create your B2B solutions.</p>
+
+        <p>OrderCloud's Component library is an open source project, https://github.com/Four51/OrderCloud-Components-Dev. Contributions are welcome. Create a pull request for inclusion into the library. The project leaders will review all submissions and respond appropriately. We ask that every contributor follow the outstanding Angular Style Guide, https://github.com/johnpapa/angular-styleguide, managed by John Papa to maintain consistent and clean code.</p>
+
+        <p>To include a component in your application, simply copy the entire component folder and paste into the OrderCloud Seed in the app folder. The seed has logic to determine the presence of the component and add the item to the base app navigation.</p>
+
+        <h1>Basic component structure:</h1>
+
+        |- src/
+        |  |- app/
+        |  |  |- <js>
+        |  |  |- templates/
+        |  |  |  |- <html partial views: name.tpl.html>
+        |  |  |- less/
+        |  |  |  |- <less definitions: name.less>
+
+        <p>Components must follow a pattern in order to function within the OrderCloud Seed. Each component contains an Angular module that belongs to the 'orderCloud' application. The file naming scheme is expected for the gulp tasks to locate the proper files for concatenation and minification.</p>
+
+        <pre><code>angular.module( 'orderCloud' )</code></pre>
+
+        <p>All routing and controllers should be configured in this module. OrderCloud seed uses the Angular UI-Router module to manage UI state, http://angular-ui.github.io/ui-router/site/#/api/ui.router. A component can be comprised of multiple routes and templates. As you examine the library you will see many examples of the differen configurations that are capable. The example below shows a component constructed to contain 6 routes and templates.</p>
+
+        <pre><code>
+            config( CouponsConfig )
+            .controller( 'CouponsCtrl', CouponsController )
+            .controller( 'CouponEditCtrl', CouponEditController )
+            .controller( 'CouponCreateCtrl', CouponCreateController )
+            .controller( 'CouponAssignCtrl', CouponAssignController )
+            .controller( 'CouponAssignProductCtrl', CouponAssignProductController )
+            .controller( 'CouponAssignCategoryCtrl', CouponAssignCategoryController )
+
+            function CouponsConfig( $stateProvider ) {
+                $stateProvider
+                    .state( 'base.coupons', {
+                        url: '/coupons',
+                        templateUrl:'coupons/templates/coupons.tpl.html',
+                        controller:'CouponsCtrl',
+                        controllerAs: 'coupons',
+                        data: {componentName: 'Coupons'}, // used to identify for navigation inclusion
+                        resolve: {
+                            CouponList: function(Coupons) {
+                                return Coupons.List();
+                            }
+                        }
+                    });
+                }
+            }
+        </code></pre>
+
     </article>
 </div>

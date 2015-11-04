@@ -85,9 +85,8 @@ function blackList() {
 		require: 'ngModel',
 		link: function(scope, element, attributes, ctrl) {
 			function validator(ngModelValue) {
-				var valid = /(gmail|hotmail|yahoo|facebook|msn)/.test(ngModelValue);
-				console.log(!valid);
-				ctrl.$setValidity('blacklist', !valid);
+				var invalid = /(gmail|hotmail|yahoo|facebook|msn)/.test(ngModelValue);
+				ctrl.$setValidity('blacklist', !invalid ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ngModelValue) : !invalid);
 			}
 			ctrl.$parsers.push(validator);
 		}

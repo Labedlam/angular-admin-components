@@ -13,6 +13,23 @@ function RegisterConfig( $stateProvider ) {
 			controller:'RegisterCtrl',
 			controllerAs: 'register'
 		})
+		.state( 'emailConfirm', {
+			url: '/email-confirmation?code&token',
+			resolve: {
+				Confirmation: function($stateParams, $state, $cookies, Auth, DevAuth, DevCenter, DcAdmin) {
+					DevAuth.SetToken($stateParams.token);
+					DevCenter.Me.Get().then(function(data) {
+						DcAdmin.Authenticate(data.MongoDBHash).then(function(mongoLoginData) {
+							$cookies.put('dc-token', mongoLoginData['access_token']);
+							Auth.RemoveToken();
+							DevCenter.Me.Validate($stateParams.code).then(function() {
+								$state.go('base.home');
+							})
+						});
+					})
+				}
+			}
+		})
 }
 
 function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter) {
@@ -30,16 +47,19 @@ function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter
 
 	vm.submit = function() {
 		DevCenter.Register(vm.information).then(function(userInfo) {
-			DcAdmin.Register(userInfo).then(function(data) {
-				userInfo.MongoDBHash = data.UserHash;
-				DevCenter.Login({Email:userInfo.Email, Password:userInfo.Password}).then(function(dataA) {
-					DevAuth.SetToken(dataA['access_token']);
+			DcAdmin.Register(userInfo).then(function(mongoData) {
+				userInfo.MongoDBHash = mongoData.UserHash;
+				DevCenter.Login({Email:userInfo.Email, Password:userInfo.Password}).then(function(loginData) {
+					DevAuth.SetToken(loginData['access_token']);
 					DevCenter.Me.Update(userInfo).then(function() {
-						DcAdmin.Authenticate(data.UserHash).then(function(dataB) {
-							$cookies.put('dc-token', dataB['access_token']);
-							Auth.RemoveToken();
-							$state.go('base.home');
-						});
+						Auth.RemoveToken();
+						DevAuth.RemoveToken();
+						vm.successMessage = 'Thank you for registering, ' + userInfo.FirstName + ' ' + userInfo.LastName + '! Check your inbox and validate your email address.';
+						/*						DcAdmin.Authenticate(mongoData.UserHash).then(function(mongoLoginData) {
+						 $cookies.put('dc-token', mongoLoginData['access_token']);
+						 Auth.RemoveToken();
+						 $state.go('base.home');
+						 });*/
 					})
 				});
 			});

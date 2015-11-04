@@ -18,9 +18,14 @@ function BaseConfig( $stateProvider ) {
 					var deferred = $q.defer();
 					DevAuth.IsAuthenticated()
 						.then(function() {
-							//deferred.resolve(null);
 							DevCenter.Me.Get()
 								.then(function(currentUser) {
+									if (currentUser.TrialDateStart) {
+										var today = new Date();
+										var trialStart = new Date(currentUser.TrialDateStart);
+										var trialEnd = new Date(trialStart.setDate(trialStart.getDate() + 30));
+										currentUser.Expired = today >= trialEnd;
+									}
 									deferred.resolve(currentUser);
 								})
 						})

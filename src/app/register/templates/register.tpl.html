@@ -1,8 +1,10 @@
 <main id="Register">
-	<div class="container">
-<!--		<div class="text-center">
-			<ordercloud-logo data-width="300px" data-height="100px" data-color="#FFFFFF"></ordercloud-logo>
-		</div>-->
+	<div class="container" ng-if="register.successMessage">
+		<blockquote>
+			<p class="lead"><b>Almost Done...</b><br/>{{register.successMessage}}</p>
+		</blockquote>
+	</div>
+	<div class="container" ng-if="!register.successMessage">
 		<h2 class="text-center">Sign up today</h2>
 		<p class="lead text-center">Experience OrderCloud free for 30 days</p>
 		<form name="ordercloud_registration" ng-submit="register.submit()">

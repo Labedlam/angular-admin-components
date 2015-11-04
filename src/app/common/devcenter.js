@@ -18,6 +18,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		Me: {
 			Get: _meGet,
 			Update: _meUpdate,
+			Validate: _meValidate,
 			GetAccess: _meAccessGet,
 			Groups:  {
 				List: _meGroups,
@@ -92,6 +93,10 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 
 	function _meUpdate(devUser) {
 		return $resource(apiurl + '/v1/devcenter/me', null, { MeUpdate: { method: 'PUT', headers:{Authorization: DevAuth.GetToken()}}}).MeUpdate(devUser).$promise;
+	}
+
+	function _meValidate(code) {
+		return $resource(apiurl + '/v1/devcenter/me/validateAccount', {}, {MeValidate: {method:'POST', params:{code:code}, headers:{Authorization: DevAuth.GetToken()}}}).MeValidate().$promise
 	}
 
 	function _meGroups(page, pageSize, accepted) {

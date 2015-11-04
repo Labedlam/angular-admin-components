@@ -1,6 +1,7 @@
 angular.module('orderCloud')
 	.config(RegisterConfig)
 	.controller('RegisterCtrl', RegisterController)
+	.directive('compareTo', compareTo)
 ;
 
 function RegisterConfig( $stateProvider ) {
@@ -58,3 +59,22 @@ function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter
 	};
 
 }
+
+function compareTo() {
+	return {
+		require: "ngModel",
+		scope: {
+			otherModelValue: "=compareTo"
+		},
+		link: function(scope, element, attributes, ngModel) {
+
+			ngModel.$validators.compareTo = function(modelValue) {
+				return modelValue == scope.otherModelValue;
+			};
+
+			scope.$watch("otherModelValue", function() {
+				ngModel.$validate();
+			});
+		}
+	};
+};

@@ -61,20 +61,12 @@ function RegisterController( $state, $cookies, $resource, DcAdmin, DevAuth, Auth
 						 $state.go('base.home');
 						 });*/
 
-						$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",
-							{},
-							{
-								pardot: {
-									method: 'POST',
-									headers:{
-										Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA=='
-									}
-							}}).pardot({
-								"first_name": vm.FirstName,
-								"last_name": vm.LastName,
-								"email": vm.Email,
-								"phone": vm.PhoneNumber,
-								"company": vm.CompanyName,
+						$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
+								"first_name": vm.information.FirstName,
+								"last_name": vm.information.LastName,
+								"email": vm.information.Email,
+								"phone": vm.information.PhoneNumber,
+								"company": vm.information.CompanyName,
 								"created_by": "Devcenter"
 							}).$promise;
 					});

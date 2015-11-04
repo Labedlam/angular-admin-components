@@ -82,13 +82,13 @@ function compareTo() {
 
 function blackList() {
 	return {
+		restrict: 'A',
 		require: 'ngModel',
-		link: function(scope, element, attributes, ctrl) {
-			function validator(ngModelValue) {
-				var invalid = /(gmail|hotmail|yahoo|facebook|msn)/.test(ngModelValue);
-				ctrl.$setValidity('blacklist', !invalid ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(ngModelValue) : !invalid);
-			}
-			ctrl.$parsers.push(validator);
+		link: function(scope, element, attributes, ngModel) {
+			scope.$watch(attributes.ngModel, function(value) {
+				var personal = /(gmail|hotmail|yahoo|facebook|msn|outlook|aol)/.test(value);
+				ngModel.$setValidity(attributes.ngModel, !personal ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) : false);
+			});
 		}
 	}
 }

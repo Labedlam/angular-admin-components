@@ -24,53 +24,53 @@ function HomeController( ) {
     description1:'OrderCloud documentation and courses get developers on track and building on our platform effectively.',
     description2:'Integration access to hundreds of 3rd party platforms for ERP, CRM, CMS, Analytics, Tax, PIM and more.'
  },
-    { title:'BUSINESS OWNER', image:'assets/images/help.png', content:'second tab content' }
+        { title:'BUSINESS OWNER', image:'assets/images/business.png', content:['second tab content', 'second tab content','second tab content','second tab content'] }
   ];
 
 
     vm.myInterval = 5000;
-  vm.noWrapSlides = false;
-  vm.slides = [
-  {
-    image:'assets/images/aspot1.jpg',
-    title:'OrderCloud',
-    description:'one platform. infinite possibilities.',
-    buttonTitle:'watch video'
-  },
-  {
-    image:'assets/images/a3.jpg',
-    title:'Create, Configure and Deploy Quickly.',
-    description:'Rest APIs give 100% access to our data model ',
-    buttonTitle:'Learn More',
-    id:'spot2'
-  },
-  {
-    image:'assets/images/aspot1.jpg',
-    title:'OrderCloud',
-    description:'one platform. infinite possibilities.',
-    buttonTitle:'watch video'
-  }
+    vm.noWrapSlides = false;
+    vm.slides = [
+        {
+            image:'assets/images/a1.jpg',
+            title:'OrderCloud',
+            description:'one platform. infinite possibilities.',
+            buttonTitle:'watch video'
+        },
+        {
+            image:'assets/images/a3.jpg',
+            title:'Create, Configure and Deploy Quickly.',
+            description:'Rest APIs give 100% access to our data model ',
+            buttonTitle:'Learn More',
+            id:'spot2'
+        },
+        {
+            image:'assets/images/a2.png',
+            title:'Integrate Everything.',
+            description:"OrderCloud's REST API has your back. Integrate CRM, ERP, Tax, Analytics and more.",
+            buttonTitle:'watch video'
+        }
   ]
-  vm.slides2 = [
-  {
-    image:'assets/images/Github_Banner.jpg',
-    title:'World Class Scalability & Security',
-    description:'99% uptime across all experiences. PCI DSS and SSAE 16 Type || compliance',
-    buttonTitle:'Learn More'
-  },
-  {
-    image:'assets/images/Github_Banner.jpg',
-    title:'GitHub',
-    description:'GitHub Enterprise supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire',
-    buttonTitle:'watch video'
-  },
-  {
-    image:'assets/images/Github_Banner.jpg',
-    title:'GitHub',
-    description:'GitHub Enterprise supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire',
-    buttonTitle:'watch video'
-  }
-  ]
+    vm.slides2 = [
+        {
+            image:'assets/images/Github_Banner.jpg',
+            title:'GitHub',
+            description:'GitHub Enterprise supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire',
+            buttonTitle:'watch video'
+        },
+        {
+            image:'assets/images/world-class.jpg',
+            title:'World Class Scalability & Security',
+            description:'99% uptime across all experiences. PCI DSS and SSAE 16 Type || compliance',
+            buttonTitle:'Learn More'
+        },
+        {
+            image:'assets/images/b3.png',
+            title:'The control of on-premise. The flexibility of custom development. The scalability and low cost of SaaS.',
+            description:'OrderCloud is a platform-as-a-service (PaaS). This brings you the best of all worlds; control, flexibility, scalability, and security. Leverage our Component Based Architecture to rapidly build customized solutions while leveraging real-world, customer-proven components. ',
+            buttonTitle:'watch video'
+        }
+    ]
   vm.mobileslides = [
   {
     image:'assets/images/papa_johns.png',

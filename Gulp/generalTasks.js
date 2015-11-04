@@ -41,14 +41,26 @@ gulp.task('masterClean', function() {
 });
 
 //Major Project Build Tasks
-gulp.task('build', gulp.series(
+gulp.task('build_local', gulp.series(
     'masterClean',
-    gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets'),
+    gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets', 'local_config'),
     'build:inject'));
 
+gulp.task('build_prod', gulp.series(
+    'masterClean',
+    gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets', 'prod_config'),
+    'build:inject'));
+gulp.task('build_test', gulp.series(
+    'masterClean',
+    gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets', 'test_config'),
+    'build:inject'));
+gulp.task('build_qa', gulp.series(
+    'masterClean',
+    gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets', 'qa_config'),
+    'build:inject'));
 //Major Project Compile Tasks
 gulp.task('compile', gulp.series(
-    'build',
+    'build_prod',
     gulp.parallel('compile:js', 'compile:assets', 'compile:css'),
     'compile:inject'));
 

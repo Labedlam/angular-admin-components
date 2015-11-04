@@ -39,6 +39,34 @@ gulp.task('b_m:js', function() {
         .pipe(gulp.dest(config.build + 'src'));
 });
 
+gulp.task('prod_config', function() {
+    return gulp
+        .src('./app_config/prod.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('test_config', function() {
+    return gulp
+        .src('./app_config/test.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('qa_config', function() {
+    return gulp
+        .src('./app_config/qa.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
+gulp.task('local_config', function() {
+    return gulp
+        .src('./app_config/local.js')
+        .pipe(concat('config.js'))
+        .pipe(gulp.dest(config.build + '/src/app'))
+});
+
 gulp.task('b_c:js', function() {
     return del([
         config.build + 'src/**/*.js',

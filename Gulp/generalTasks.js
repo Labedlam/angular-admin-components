@@ -27,6 +27,7 @@ gulp.task('build:inject', function() {
             config.build + '**/*.js',
             config.build + 'assets/**/*.css',
             "!" + config.build + 'src/**/*.spec.js',
+            "!" + config.build + 'src/**/*.test.js',
             '!' + config.build + 'vendor/**/*'], {read:false}), {ignorePath: config.build.replace('.', ''), addRootSlash: false}))
         .pipe(gulp.dest(config.build));
 });

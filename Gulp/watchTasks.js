@@ -32,11 +32,11 @@ gulp.task('dev', function() {
 });
 
 gulp.task('karma:unit', function() {
-    return gulp.src([config.build + '**/*.spec.js'])
+    return gulp.src([config.src + '**/*.spec.js'])
         .pipe(karma({
             configFile:'karma.conf.js',
             action: 'watch'
-        }))
+        }));
 });
 
 

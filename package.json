@@ -17,6 +17,7 @@
     "browser-sync": "^2.8.0",
     "del": "^2.0.2",
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp-angular-protractor": "0.0.5",
     "gulp-angular-templatecache": "^1.7.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-concat": "^2.6.0",
@@ -40,6 +41,7 @@
     "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.1.5",
     "main-bower-files": "^2.9.0",
-    "path": "^0.11.14"
+    "path": "^0.11.14",
+    "protractor": "^2.5.1"
   }
 }

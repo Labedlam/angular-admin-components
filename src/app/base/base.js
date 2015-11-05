@@ -51,12 +51,12 @@ function BaseController( CurrentUser ) {
 			StateRef: 'base.devcourses'
 		},
 		{
-			Display: 'SDK Overview',
-			Description: 'SDK overview Description',
+			Display: 'Angular SDK',
+			Description: 'Four51 has developed a sophisticated SDK for the AngularJS framework. Unleash the power of OrderCloud by combining this tool with the Angular Seed.',
 			StateRef: 'base.sdk'
 		},
 		{
-			Display: 'Seed Overview',
+			Display: 'Angular Seed',
 			Description: 'Seed overview Description',
 			StateRef: 'base.seed'
 		},
@@ -70,5 +70,6 @@ function BaseController( CurrentUser ) {
 			Description: 'Integration platform Description',
 			StateRef: 'base.integrations'
 		}
-	]
+	];
+	vm.resourcesDropdown.activeItem = vm.resourcesDropdown[0];
 }

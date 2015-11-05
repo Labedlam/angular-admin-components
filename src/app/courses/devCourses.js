@@ -740,6 +740,13 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 			})
 	}
 
+	vm.contextPopover = "<b><i class='fa fa-exclamation-triangle'></i></b>";
+
+	vm.contextDropupOpen = false;
+	vm.contextDropupToggle = function(open) {
+		vm.contextDropupOpen = open;
+	};
+
 }
 
 function DevCoursesAdminController(AdminCoursesList, Underscore, $scope, $cookies, Courses, Classes) {

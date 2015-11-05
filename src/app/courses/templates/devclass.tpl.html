@@ -57,9 +57,9 @@
 				</div>
 			</div>
 			<div class="icon-divider pull-right"></div>
-			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" dropdown auto-close="outsideClick">
-				<a href dropdown-toggle><i class="fa fa-user" ng-class="{contextSet: class.contextUser}"></i></a>
-				<div class="dropdown-menu dropup dropup-content" aria-labelledby="context-btn">
+			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" uib-dropdown on-toggle="class.contextDropupToggle(open)" auto-close="outsideClick">
+				<a href uib-dropdown-toggle popover-placement="top" uib-popover-html="class.contextPopover" popover-trigger="none" popover-is-open="!class.contextSet && !class.contextDropupOpen"><i class="fa fa-user" ng-class="{contextSet: class.contextUser}"></i></a>
+				<div class="dropup dropup-content" uib-dropdown-menu aria-labelledby="context-btn">
 					<div class="icon-container">
 						<i class="fa fa-group" ></i>
 					</div>

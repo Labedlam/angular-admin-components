@@ -740,8 +740,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 			})
 	}
 
-	vm.contextPopover = "<b><i class='fa fa-exclamation-triangle'></i></b>";
-
+	vm.contextPopoverTemplate = 'courses/templates/context.popover.tpl.html';
 	vm.contextDropupOpen = false;
 	vm.contextDropupToggle = function(open) {
 		vm.contextDropupOpen = open;

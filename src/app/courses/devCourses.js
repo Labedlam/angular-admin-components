@@ -56,7 +56,12 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			url: '/admin',
 			templateUrl:'courses/templates/devcourses.admin.tpl.html',
 			controller:'DevCoursesAdminCtrl',
-			controllerAs: 'courses'
+			controllerAs: 'admin',
+			resolve: {
+				AdminCoursesList: function(CourseSvc) {
+					return CourseSvc.listCourses('developer', true);
+				}
+			}
 		})
 		.state( 'base.devcourses.course', {
 			url: '/course/:courseid',
@@ -117,6 +122,7 @@ function LearningController () {
 function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Underscore, BuyerID) {
 	var vm = this;
 	vm.current = EditClass;
+	checkEditMode();
 	vm.docs = {};
 
 	vm.updateClass = updateClass;
@@ -131,6 +137,9 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 	vm.addMethod = addMethod;
 	vm.addScript = addScript;
 	vm.moveScript = moveScript;
+	vm.overrideLiveClass = overrideLiveClass;
+	vm.enterEditMode = enterEditMode;
+	vm.cancelStaging = cancelStaging;
 	function setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:100
@@ -145,14 +154,66 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 	}
 
 
+	function checkEditMode() {
+		if (vm.current.EditMode) {
+			vm.InStaging = true;
+			Classes.GetStaged($stateParams.courseid, $stateParams.classid)
+				.then(function(data) {
+					vm.current = data;
+				})
+		}
+	}
+
+	function enterEditMode() {
+		if (!vm.InStaging) {
+			Classes.CopyToStaging($stateParams.courseid, $stateParams.classid)
+				.then(function() {
+					vm.InStaging = true;
+
+				})
+		}
+	}
+
+	function cancelStaging() {
+		if (vm.InStaging) {
+			Classes.CancelStaged($stateParams.courseid, $stateParams.classid)
+				.then(function() {
+					vm.InStaging = false;
+
+				})
+		}
+	}
+
+	function overrideLiveClass() {
+		if (vm.InStaging) {
+			Classes.OverrideLiveClass($stateParams.courseid, $stateParams.classid)
+				.then(function() {
+					vm.InStaging = false;
+					vm.areYouSure = false;
+				})
+		}
+	}
+
+
 	function updateClass() {
-		Classes.Update($stateParams.courseid, $stateParams.classid, vm.current)
-			.then(function(data) {
-				vm.confirmSave = false;
-				vm.classUpdated = true;
-			}, function(error) {
-				console.log(error);
-			})
+		if (vm.InStaging) {
+			Classes.UpdateStaged($stateParams.courseid, $stateParams.classid, vm.current)
+				.then(function() {
+					vm.confirmSave = false;
+					vm.classUpdated = true;
+				}, function(error) {
+					console.log(error);
+				})
+		} else {
+			Classes.Update($stateParams.courseid, $stateParams.classid, vm.current)
+				.then(function() {
+					vm.confirmSave = false;
+					vm.classUpdated = true;
+				}, function(error) {
+					console.log(error);
+				})
+		}
+
 	}
 
 	function moveScript(direction, listOrder) {
@@ -386,6 +447,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
 					addMethodCount(response);
+					checkIfObjectCreated();
 				}
 				vm.openRequestCount -= 1;
 
@@ -484,7 +546,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 			angular.forEach(vm.current.Dependencies, function(d) {
 				injectString += 'var ' + d + ' = injector.get("' + d + '");'
 			});
-
+			vm.stringExecute = fullScript;
 			var ex = new Function("injector", injectString + fullScript);
 			ex($injector);
 			console.log('hit');
@@ -493,6 +555,42 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		}
 
 	}
+
+	function checkIfObjectCreated() {
+		if (vm.stringExecute.indexOf('.Create') > -1) {
+			console.log('hit internal check');
+			var name = parseDependency(vm.stringExecute) + 'ID';
+			var val = parseIdValue(vm.stringExecute);
+			DcUsers.SaveOcVar({
+				key: name,
+				val: val
+			}).then(function() {
+				DcUsers.GetOcVars()
+					.then(function(data) {
+						vm.user.savedVars = data;
+					})
+			})
+		}
+		console.log('hit check');
+	}
+
+	function parseDependency(string) {
+		var end = string.indexOf('.Create');
+		var newString = string.slice(0, end);
+		var splitUp  = newString.split("\n");
+		console.log(splitUp);
+		console.log(splitUp.length);
+		return splitUp[splitUp.length - 1].slice(splitUp[splitUp.length -1] -1, -1);
+	}
+	function parseIdValue(string) {
+		var start = string.indexOf("ID:") + 2;
+		var newString = string.slice(start);
+		var splitUp = newString.split("\n");
+		var splitFinal = splitUp[0].split('"');
+		return splitFinal[1];
+
+	}
+
 	function setContext() {
 		DevCenter.AccessToken(vm.context.ID)
 			.then(function(data) {
@@ -644,10 +742,14 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 }
 
-function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies, Courses, Classes) {
+function DevCoursesAdminController(AdminCoursesList, Underscore, $scope, $cookies, Courses, Classes) {
 	var vm = this;
-	vm.coursesList = CoursesList;
-
+	vm.coursesList = AdminCoursesList;
+	for (var i = 0; i < vm.coursesList.length; i++) {
+		vm.coursesList[i] = vm.coursesList[i].toJSON();
+		delete vm.coursesList[i]["CourseProgress"];
+		console.log(vm.coursesList[i]);
+	}
 	vm.changeCourseOrder = changeCourseOrder;
 	vm.filterCourseList = filterCourseList;
 	vm.changeClassOrder = changeClassOrder;
@@ -655,7 +757,6 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies, Co
 	vm.saveCourse = saveCourse;
 	vm.createClass=  createClass;
 	vm.createCourse = createCourse;
-	vm.deleteCourse = deleteCourse;
 
 	vm.editSelected = $cookies.get('course_focus') || null;
 
@@ -727,29 +828,44 @@ function DevCoursesAdminController(CoursesList, Underscore, $scope, $cookies, Co
 	}
 
 	function deleteClass(classid) {
-		//delete class
-		//reload state
+		Classes.Delete(classid)
+			.then(function(data) {
+				Courses.List('developer', true)
+					.then(function(data) {
+						vm.coursesList = data;
+					})
+			})
 	}
 
-	function saveCourse() {
+	function saveCourse(course) {
 		//save course
-		//reload state
+		if (course) {
+			Courses.Update(course.ID, course);
+		}
+
 	}
 
-	function createClass() {
-		//createClass
-		//reload state
+	function createClass(classObj) {
+		Classes.Create(vm.coursesList[vm.selectedCourseIndex].ID, classObj)
+			.then(function() {
+				Courses.List('developer', true)
+					.then(function(data) {
+						vm.coursesList = data;
+					})
+			})
 	}
 
-	function createCourse() {
-		//create Course
-		//reload state
+	function createCourse(classObj) {
+		classObj.CourseType = 'developer';
+		Courses.Create(classObj)
+			.then(function() {
+				Courses.List('developer', true)
+					.then(function(data) {
+						vm.coursesList = data;
+					})
+			});
 	}
 
-	function deleteCourse() {
-		//delete course
-		//reload state
-	}
 }
 
 
@@ -819,10 +935,10 @@ function CourseService(Courses, $q) {
 		return d.promise;
 	}
 
-	function _listCourses(courseType) {
+	function _listCourses(courseType, adminPage) {
 		var d = $q.defer();
 		//
-		Courses.List(courseType)
+		Courses.List(courseType, adminPage)
 			.then(function(data) {
 				d.resolve(data);
 			}, function(err) {

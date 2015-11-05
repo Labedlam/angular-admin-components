@@ -32,7 +32,7 @@ function RegisterConfig( $stateProvider ) {
 		})
 }
 
-function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter) {
+function RegisterController( $state, $cookies, $resource, DcAdmin, DevAuth, Auth, DevCenter) {
 	var vm = this;
 
 	vm.newUserInfo = null;
@@ -60,7 +60,16 @@ function RegisterController( $state, $cookies, DcAdmin, DevAuth, Auth, DevCenter
 						 Auth.RemoveToken();
 						 $state.go('base.home');
 						 });*/
-					})
+
+						$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
+								"first_name": vm.information.FirstName,
+								"last_name": vm.information.LastName,
+								"email": vm.information.Email,
+								"phone": vm.information.PhoneNumber,
+								"company": vm.information.CompanyName,
+								"created_by": "Devcenter"
+							}).$promise;
+					});
 				});
 			});
 		})

@@ -25,6 +25,9 @@ function BaseConfig( $stateProvider ) {
 										var trialStart = new Date(currentUser.TrialDateStart);
 										var trialEnd = new Date(trialStart.setDate(trialStart.getDate() + 30));
 										currentUser.Expired = today >= trialEnd;
+
+										var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+										currentUser.TrialDaysRemaining = Math.round(Math.abs((today.getTime() - trialEnd.getTime())/(oneDay)));
 									}
 									deferred.resolve(currentUser);
 								})

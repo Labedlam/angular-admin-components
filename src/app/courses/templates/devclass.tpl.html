@@ -124,7 +124,7 @@
 					<div class="progress-entry" ng-repeat="goal in class.current.Assert">
 						<small><em>{{goal.Method}}</em></small>
 						<div class="no-count" ng-show="!goal.Successes">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</div>
-						<progressbar ng-show="goal.Successes" max="goal.AmountNeeded" value="goal.Successes || 0">{{goal.Successes || 0}} of {{goal.AmountNeeded}}</progressbar>
+						<progressbar ng-show="goal.Successes" max="goal.AmountNeeded" value="goal.Successes || 0">{{goal.Successes > goal.AmountNeeded ? goal.AmountNeeded : (goal.Successes || 0)}} of {{goal.AmountNeeded}}</progressbar>
 					</div>
 
 				</div>

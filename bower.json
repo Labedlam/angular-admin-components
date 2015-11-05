@@ -21,6 +21,7 @@
     "ordercloud-angular-sdk": "~0.8.5",
     "angular-jwt": "~0.0.9",
     "videogular": "~1.2.8",
-    "videogular-controls": "~1.2.8"
+    "videogular-controls": "~1.2.8",
+    "angular-toastr": "~1.5.0"
   }
 }

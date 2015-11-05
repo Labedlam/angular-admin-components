@@ -25,6 +25,7 @@ angular.module( 'orderCloud', [
 	.constant('ocscope', 'FullAccess')
 	.constant('appname', 'DevCenter')
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	//.constant('devapiurl', 'http://localhost:55555')
 
 ;
 

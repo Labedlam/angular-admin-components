@@ -29,7 +29,7 @@
 						</div>
 					</div>
 				</li>
-				<li><a href="" ui-sref="base.console" ng-if="base.currentUser">Getting Started</a></li>
+				<li><a  ui-sref="base.gettingstarted" ng-if="base.currentUser">Getting Started</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li ui-sref-active="active"><a href="" ui-sref="base.console" ng-if="base.currentUser">Console</a></li>
@@ -38,13 +38,14 @@
 				<li ng-if="!base.currentUser"><a ui-sref="login">Log in</a></li>
 				<li ng-if="!base.currentUser"><span>or</span></li>
 				<li ng-if="!base.currentUser"><button class="btn btn-dark-blue navbar-btn" ui-sref="register">Sign up</button></li>
-				<li uib-dropdown ng-if="base.currentUser">
-					<a href="" uib-dropdown-toggle role="button" aria-haspopup="true">Account</a>
+				<li class="link" ng-if="base.currentUser" uib-dropdown>
+					<a href uib-dropdown-toggle>
+						<i class="fa fa-user"></i>
+					</a>
 					<ul class="uib-dropdown-menu top-caret">
 						<li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
-						<li><a href>Settings</a></li>
-						<li><a href>Notifications</a></li>
-						<li><a href>Help</a></li>
+						<li><a href ui-sref="base.account">Account</a></li>
+						<li><a href>Support</a></li>
 						<li role="separator" class="divider"></li>
 						<li><a href="" ng-click="application.logout()"><i class="fa fa-power-off"></i> Logout</a></li>
 					</ul>

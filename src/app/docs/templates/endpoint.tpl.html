@@ -1,0 +1,63 @@
+<h4><b>{{docsEndpoint.Endpoint.Name}}</b></h4>
+<div class="apiRequestDisplay">
+	<pre>{{docsEndpoint.Endpoint.HttpVerb}}</pre>
+	<pre>{{docsEndpoint.Endpoint.UriTemplate}}</pre>
+</div>
+<div ng-if="docsEndpoint.Endpoint.Parameters.length">
+	<div class="labeled-divider">
+		<span>Parameters</span>
+		<hr/>
+	</div>
+	<table class="table table-bordered table-striped">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Description</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="param in docsEndpoint.Endpoint.Parameters">
+			<td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
+			<td><div class="label" ng-class="{
+				'label-primary': param.Type == 'string',
+				'label-warning': param.Type == 'boolean',
+				'label-info': param.Type == 'integer',
+				'label-success': param.Type == 'date'
+			}">{{param.Type}}</div></td>
+			<td>{{param.Description}}</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="rounded-corners" ng-if="docsEndpoint.Endpoint.RequestBody.Sample && docsEndpoint.Endpoint.RequestBody.Sample != 'null'">
+			<h5>Request Body Sample:</h5>
+			<div  readonly ui-ace="{
+				onLoad: docsEndpoint.setMaxLines,
+				useWrapMode : true,
+				theme:'twilight',
+				mode: 'json',
+				tabSize: '4',
+				useSoftTabs: true,
+				showPrintMargin: false,
+				showGutter:false
+			}" ng-model="docsEndpoint.Endpoint.RequestBody.Sample"></div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<h5><b>Response Status: <span class="text-danger">{{docsEndpoint.Endpoint.ResponseStatus}}</span></b></h5>
+		<div class="rounded-corners" ng-if="docsEndpoint.Endpoint.ResponseBody.Sample && docsEndpoint.Endpoint.ResponseBody.Sample != 'null'" readonly ui-ace="{
+			onLoad: docsEndpoint.setMaxLines,
+			useWrapMode : true,
+			theme:'twilight',
+			mode: 'json',
+			tabSize: '4',
+			useSoftTabs: true,
+			showPrintMargin: false,
+			showGutter:false
+		}" ng-model="docsEndpoint.Endpoint.ResponseBody.Sample"></div>
+	</div>
+</div>
+<hr/>

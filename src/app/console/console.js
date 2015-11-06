@@ -29,7 +29,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controllerAs': 'console',
         'resolve': {
 			DocsReference: function(Docs) {
-				return Docs.GetAll();
+				return Docs.All();
 			},
 			AvailableInstances: function($q, Underscore, DevCenter) {
 				var deferred = $q.defer();

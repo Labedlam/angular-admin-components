@@ -31,6 +31,9 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			DocsReference: function(Docs) {
 				return Docs.All();
 			},
+			DocsOutline: function(Docs) {
+				return Docs.Outline();
+			},
 			AvailableInstances: function($q, Underscore, DevCenter) {
 				var deferred = $q.defer();
 				DevCenter.Me.GetAccess().then(function(data) {
@@ -64,6 +67,15 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
+			},
+			DefaultResource: function($q, ActiveContext, Docs) {
+				var deferred = $q.defer();
+				if (ActiveContext) {
+					deferred.resolve(Docs.GetResource('Organizations', 'Buyers'));
+				} else {
+					deferred.resolve(null);
+				}
+				return deferred.promise;
 			}
         },
         'data':{
@@ -73,7 +85,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, AvailableInstances, ApiConsoleService, LockableParams, ConsoleContext) {
+function ApiConsoleController($scope, $filter, Underscore, DocsOutline, Docs, DocsReference, ActiveContext, DefaultResource, AvailableInstances, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
 	//Context variables
 	vm.AvailableContexts = AvailableInstances;
@@ -83,9 +95,8 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	vm.SelectedContext = vm.ActiveContext;
 
 	//Console variables
-	vm.Sections = DocsReference.Sections;
-	vm.Resources = DocsReference.Resources;
-	vm.SelectedResource = null;
+	vm.Outline = DocsOutline;
+	vm.SelectedResource = DefaultResource;
 	vm.SelectedEndpoint = null;
 
 	//Response variables
@@ -103,7 +114,7 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 		ConsoleContext.Update(context.DevGroups[0].AccessID)
 			.then(function() {
 				if (!vm.ActiveContext) {
-					vm.SelectResource({resource: Underscore.where(vm.Resources, {Name: 'Buyers'})[0]});
+					vm.SelectResource({ID:'Organizations'}, {ID:'Buyers'});
 				} else {
 					LockableParams.Clear();
 					vm.Responses = [];
@@ -155,16 +166,16 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 		ApiConsoleService.ExecuteApi(vm.SelectedEndpoint);
 	};
 
-	vm.SelectResource = function(scope) {
-		vm.SelectedResource = scope.resource;
+	vm.SelectResource = function(section, resource) {
+		Docs.GetResource(section.ID, resource.ID).then(function(rs) {
+			vm.SelectedResource = rs;
+		});
 	};
 
-	if (vm.ActiveContext) {
-		vm.SelectResource({resource: Underscore.where(vm.Resources, {ID: 'Buyers'})[0]});
-	}
-
-	vm.SelectEndpoint = function(scope) {
-		vm.SelectedEndpoint = scope.endpoint;
+	vm.SelectEndpoint = function(endpoint) {
+		Docs.GetEndpoint(vm.SelectedResource.Section, vm.SelectedResource.ID, endpoint.ID).then(function(ep) {
+			vm.SelectedEndpoint = ep;
+		});
 	};
 
 	$scope.$watch(function () {
@@ -184,6 +195,7 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	});
 
 	$scope.$on('event:responseSuccess', function(event, c) {
+		//if (['.html','/docs','devcenter/','devcenterapi'].indexOf(c.config.url) == -1) return;
 		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
@@ -191,7 +203,6 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);

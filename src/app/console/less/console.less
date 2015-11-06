@@ -24,11 +24,10 @@
   .section-list {
     > li {
       padding:10px;
-      background-color:@console-log-bg;
       color:lighten(@four51-blue, 30);
       background-repeat:no-repeat;
       background-size:200% calc(100vw);
-      background-image: radial-gradient(at left center, darken(@four51-blue, 25) 0%, darken(@four51-blue, 25) 60%, darken(@four51-blue, 35) 100%); /* W3C */
+      background-image: radial-gradient(at left center, darken(@four51-blue, 30) 0%, darken(@four51-blue, 30) 60%, darken(@four51-blue, 40) 100%); /* W3C */
       font-weight:lighter;
       font-size:1.3em;
       &.active {
@@ -39,7 +38,7 @@
   .resource-list {
     > li {
       padding:0 5px;
-      background-color:darken(@four51-blue, 15);
+      background-color:darken(@four51-blue, 25);
       &:first-child {
         padding-top:5px;
       }
@@ -51,12 +50,12 @@
         padding:7px 10px;
         display:block;
         border-radius:@border-radius-base;
-        color:lighten(@four51-blue, 30);
+        color:lighten(@four51-blue, 15);
         &:focus,
         &:hover {
           color:white;
           text-decoration: none;
-          background-color:darken(@four51-blue, 20);
+          background-color:darken(@four51-blue, 30);
         }
         &.active {
           background-color:@four51-blue;

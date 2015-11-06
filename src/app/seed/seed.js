@@ -15,7 +15,7 @@ function SeedConfig( $stateProvider ) {
         })
 }
 
-function SeedController($sce ) {
+function SeedController( ) {
     var vm = this;
     vm.config = {}
 

@@ -29,8 +29,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				return response;
 			},
 			'responseError': function(rejection) {
-				$rootScope.$broadcast('event:responseError', rejection);
-				return $q.reject(rejection);
+				if (['.html','/docs','devcenter/','devcenterapi'].indexOf(rejection.config.url) == -1) {
+					return $rootScope.$broadcast('event:responseError', rejection);
+				} else {
+					return $q.reject(rejection)
+				}
 			}
 		};
 	});
@@ -446,35 +449,26 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
-					if (typeof c.data == 'string' && c.data.indexOf('toast')) {
-						vm.openRequestCount -= 1;
-					} else {
-						var response = angular.copy(c);
-						response.data = $filter('json')(response.data);
-						vm.Responses.push(response);
-						vm.SelectedResponse = response;
-						addMethodCount(response);
-						checkIfObjectCreated(c);
-						vm.openRequestCount -= 1;
-					}
-
+					var response = angular.copy(c);
+					response.data = $filter('json')(response.data);
+					vm.Responses.push(response);
+					vm.SelectedResponse = response;
+					addMethodCount(response);
+					checkIfObjectCreated(c);
+					vm.openRequestCount -= 1;
 				}
-
-
 			}
 		});
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
-					var response = angular.copy(c);
-					console.log(c);
-					if (c.config.url.indexOf('__NONE_SET__') > -1) {
-						vm.BuyerSet = false;
-					}
-					response.data = $filter('json')(response.data);
-					vm.Responses.push(response);
-					vm.SelectedResponse = response;
+				var response = angular.copy(c);
+				console.log(c);
+				if (c.config.url.indexOf('__NONE_SET__') > -1) {
+					vm.BuyerSet = false;
 				}
+				response.data = $filter('json')(response.data);
+				vm.Responses.push(response);
+				vm.SelectedResponse = response;
 				vm.openRequestCount -= 1;
 			}
 		});

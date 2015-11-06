@@ -1,9 +1,9 @@
-<header class="dc-header" ng-if="!console.SelectedResource">
+<header class="dc-header" ng-if="!console.ActiveContext">
 	<div class="container">
 		<h2>OrderCloud Console</h2>
 	</div>
 </header>
-<article id="Intro" class="container" ng-if="!console.SelectedResource">
+<article id="Intro" class="container" ng-if="!console.ActiveContext">
 	<div class="row">
 		<div class="col-md-6">
 			<p><b>Welcome to the OrderCloud API Console!</b>  The purpose of this tool is to give developers an easy way to instantly access and/or alter important data during the development process.  It is also useful for new OrderCloud developers looking to get an idea of how the our RESTful API is structured through an interactive UI.</p>
@@ -39,22 +39,22 @@
 		</div>
 	</div>
 </article>
-<div id="ConsoleContainer">
-	<aside id="ConsoleMenu" ng-if="console.ActiveContext">
+<div id="ConsoleContainer" ng-if="console.ActiveContext">
+	<aside id="ConsoleMenu">
 		<ul class="section-list">
-			<li ng-repeat-start="section in console.Sections">
-				{{section}}
+			<li ng-repeat-start="section in console.Outline.Sections">
+				{{section.Name}}
 			</li>
 			<div ng-repeat-end>
 				<ul class="resource-list">
-					<li ng-repeat="resource in console.Resources | filter:{Section:section}">
-						<a href="" ng-class="{active:console.SelectedResource.Name == resource.Name}" ng-click="console.SelectResource(this)">{{resource.Name}}</a>
+					<li ng-repeat="resource in section.Resources">
+						<a href="" ng-class="{active:console.SelectedResource.Name == resource.Name}" ng-click="console.SelectResource(section, resource)">{{resource.Name}}</a>
 					</li>
 				</ul>
 			</div>
 		</ul>
 	</aside>
-	<div id="Console" ng-if="console.SelectedResource">
+	<div id="Console">
 		<article id="Request">
 			<div id="ActiveContext" uib-collapse="console.ContextMenuOpen">
 				<ul class="list-group">
@@ -112,7 +112,7 @@
 				  </a>
 				  <ul uib-dropdown-menu>
 					  <li ng-repeat="endpoint in console.SelectedResource.Endpoints" ng-class="{active:console.SelectedEndpoint.ID == endpoint.ID}">
-						  <a href ng-click="console.SelectEndpoint(this)">{{endpoint.ID}}</a>
+						  <a href ng-click="console.SelectEndpoint(endpoint)">{{endpoint.ID}}</a>
 					  </li>
 				  </ul>
 				</span>

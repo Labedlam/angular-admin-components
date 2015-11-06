@@ -1,66 +1,230 @@
-<div id="seed">
+<div id="Seed">
     <header class="dc-header" ui-sref="base.docs">
         <div class="container">
             <h2>OrderCloud AngularJS Seed</h2>
+            <p class="lead">A seed project for custom OrderCloud Solutions built on AngularJS</p>
         </div>
     </header>
+    <div class="container">
+        <h3 class="page-header">The OrderCloud Seed</h3>
+        <p>The term <b>"seed"</b> signifies this is the starting point for <b>all</b> OrderCloud applications created through the OrderCloud Development Center.  It was crafted using the most advanced web development tools and perfected over years of rapid development in the B2B world.</p>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/139426?v=3&s=200" alt="AngularJS Logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="https://angularjs.org/" target="_blank">AngularJS</a> <small>MVW Framework</small></h4>
+                <p>The OrderCloud Seed runs on AngularJS, a powerful front-end tool created by Google, which provides an environment that is incredibly expressive, readable, and quick to develop.  It's extensible toolset can be leveraged in part or in whole alongside other libraries. Choosing AngularJS for our first Seed was an easy decision because it helped us provide our clients with the most flexible Front-End Framework and the fastest development workflow.</p>
+                <p>It is highly recommended (if you haven't already) that you familiarize yourself with <a href="https://code.angularjs.org/1.4.5/docs/guide/introduction" target="_blank" tooltip="Angular Developer Guide (v1.4.5)">Angular</a> and it's concepts. We will cover some of the features that pertain to the <b>OrderCloud AngularJS SDK (Software Development Kit)</b> in the next class; however, learning everything about Angular requires education beyond the scope of these courses.</p>
+            </div>
+        </div>
+
+        <h3 class="page-header">
+            Developer Tools <br/>
+            <small>The following tools help the developer work efficiently with the Seed in a way that is compatible with the Development Center.</small>
+        </h3>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/6078720?v=3&s=200" alt="NPM logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="https://www.npmjs.com/" target="_blank">Node Package Manager (NPM)</a> <small>Installation of Build tools.</small></h4>
+                <p>NPM is used by the OrderCloud seed to install all of the necessary packages for Building and Compiling your application source code.  In the unlikely scenario a developer wants to alter or add to the OrderCloud Build - they will use NPM to install a new package and when done correctly (saving the install to your package.json), the Dev Center will alter its Build process as well.</p>
+                <p>When a developer first opens an OrderCloud Seed, running <code>$npm install</code> is the first step toward development.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars3.githubusercontent.com/u/3709251?v=3&s=200" alt="Bower logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://bower.io/" target="_blank">Bower</a> <small>Front-End package management</small></h4>
+                <p>Bower is used to install all of the OrderCloud seed's Front-End modules (listed below) - including AngularJS. The developer will run a <code>$bower install</code> in the console after they complete the NPM install process. This will place each package beneath a brand new "vendor" directory which will be referred to during the Build process.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/6200624?v=3&s=200" alt="Gulp logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://gulpjs.com/" target="_blank">Gulp</a> <small>A streaming build system</small></h4>
+                <p>Gulp is a toolkit that will help OrderCloud developers automate painful or time-consuming tasks in their development workflow. For web development, it can help by doing CSS preprocessing, JS transpiling, minification, live reloading, and much more. Integrations are built into all major IDEs.</p>
+                <p>In the Seed, Gulp additionally takes care of cross-browser CSS, Angular Injection patterns, and even improves performance by compiling all project HTML files into one JS file that stores them in the templateCache.</p>
+            </div>
+        </div>
+
+        <h3 class="page-header">
+            The Front-End <br/>
+            <small>The Seed comes bundled with libraries that replace default AngularJS features and others that enhance Angular as it exists.</small>
+        </h3>
+
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/1530011?v=3&s=200" alt="Angular UI logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="https://github.com/angular-ui/ui-router" target="_blank">AngularUI Router</a> <small>Replaces Angular's ngRoute</small></h4>
+                <p>AngularUI Router is a routing framework for AngularJS, which allows you to organize the
+                    parts of your interface into a <a href="https://en.wikipedia.org/wiki/Finite-state_machine" target="_blank"><em>state machine</em></a>. Unlike the
+                    <a href="http://docs.angularjs.org/api/ngRoute.$route" target="_blank"><code>$route</code> service</a> in the Angular ngRoute module, which is organized around URL
+                    routes, UI-Router is organized around <a href="https://github.com/angular-ui/ui-router/wiki" target="_blank"><em>states</em></a>,
+                    which may optionally have routes, as well as other behavior, attached.</p>
+                <p>States are bound to named, nested and parallel views, allowing you to powerfully manage your application's interface.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars3.githubusercontent.com/u/2918581?v=3&s=200" alt="Bootstrap Logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a> <small>Design Framework of choice</small></h4>
+                <p>Bootstrap is a sleek, intuitive, and powerful front-end framework for faster and easier web development, created by <a href="https://twitter.com/mdo" target="_blank">Mark Otto</a> and <a href="https://twitter.com/fat" target="_blank">Jacob Thornton</a>, and maintained by the <a href="https://github.com/orgs/twbs/people" target="_blank">core team</a> with the massive support and involvement of the community.</p>
+                <p>Bootstrap was chosen due its high popularity in the developer community and the fact that it runs on CSS Preprocessors; these allow for incredibly quick customization and theming.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/1530011?v=3&s=200" alt="Angular UI logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://angular-ui.github.io/bootstrap/" target="_blank">AngularUI Bootstrap</a> <small>UI Library compatible with Bootstrap</small></h4>
+                <p>Native AngularJS (Angular) directives for Bootstrap. Smaller footprint (20kB gzipped), no 3rd party JS dependencies (jQuery, bootstrap JS) required.  Each JS Component described in the Bootstrap documentation is available as an Angular directive through this fantastic UI library.  All the most common UI components are accounted for and are incredibly easy to implement.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars2.githubusercontent.com/u/70142?v=3&s=200" alt="JQuery logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="https://jquery.com/" target="_blank">JQuery</a> <small>Javascript Library (dependency of AngularUI Bootstrap)</small></h4>
+                <p>jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <i class="fa fa-check-square-o text-primary"></i>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://jonsamwell.github.io/angular-auto-validate/" target="_blank">Angular Auto-Validate</a> <small>Automatic Form Validation</small></h4>
+                <p>An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification while still using the native angular validation mechanism. It gets away from having to specify validation messages upfront in the html and aims to drastically reduce markup complexity.</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row feature-row">
+            <div class="col-sm-3">
+                <figure>
+                    <img src="https://avatars3.githubusercontent.com/u/1505683?v=3&s=200" alt="FortAwesome logo"/>
+                </figure>
+            </div>
+            <div class="col-sm-9">
+                <h4><a href="http://fontawesome.io/" target="_blank">FontAwesome</a> <small>Font icons</small></h4>
+                <p>In a single collection, Font Awesome is a pictographic language of nearly 600 web-related actions. Font Awesome provides scalable vector icons that can instantly be customized -- size, color, drop shadow, and anything that can be done with the power of CSS.</p>
+                <p><a href="http://fontawesome.io/cheatsheet/" target="_blank">The cheatsheet</a> provides a comprehensive list of the available icons.</p>
+            </div>
+        </div>
+    </div>
     <article class="container">
-    <p class="lead">A seed project for custom OrderCloud Solutions built on AngularJS</p>
+
     <hr>
     <h3><a id="Overall_Directory_Structure_40"></a>Overall Directory Structure</h3>
     <p>At a high level, after following the getting started guide, the structure of the app should look roughly like this:</p>
-    <ul>
-        <li class="folder">
-            OrderCloud
-            <ul>
-                <li class="folder">
-                    Gulp
-                    <ul>
-                        <li class="file">assetTasks.js</li>
-                        <li class="file">generalTasks.js</li>
-                        <li class="file">scriptTasks.js</li>
-                        <li class="file">testTasks.js</li>
-                        <li class="file">watchTasks.js</li>
-                    </ul>
-                </li>
-                <li class="folder">
-                    karma
-                    <ul>
-                        <li class="file">karma-unit.tpl</li>
-                    </ul>
-                </li>
-                <li class="folder">
-                    node_modules
-                    <ul>
-                        <li class="file">... NPM Dependencies ...</li>
-                    </ul>
-                </li>
-                <li class="folder">
-                    src
-                    <ul>
-                        <li class="folder">
-                            app
-                            <ul>
-                                <li class="file">... application code ...</li>
-                            </ul>
-                        </li>
-                        <li class="folder">
-                            assets
-                            <ul>
-                                <li class="file">... static content like fonts and images ...</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="file">.bowerrc</li>
-                <li class="file">bower.json</li>
-                <li class="file">gulpConfig.js</li>
-                <li class="file">Gulpfile.js</li>
-                <li class="file">karma.conf.js</li>
-                <li class="file">package.json</li>
-            </ul>
-        </li>
-    </ul>
+        <div class="row">
+            <div class="col-md-4">
+                <ul class="directory-list">
+                    <li class="folder">
+                        OrderCloud Project
+                        <ul>
+                            <li class="folder">
+                                Gulp
+                                <ul>
+                                    <li class="file">assetTasks.js</li>
+                                    <li class="file">generalTasks.js</li>
+                                    <li class="file">scriptTasks.js</li>
+                                    <li class="file">testTasks.js</li>
+                                    <li class="file">watchTasks.js</li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                karma
+                                <ul>
+                                    <li class="file">karma-unit.tpl</li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                node_modules <span class="text-muted">(NPM Dependencies)</span>
+                            </li>
+                            <li class="folder">
+                                src
+                                <ul>
+                                    <li class="folder">
+                                        app
+                                        <ul>
+                                            <li class="folder">Login</li>
+                                            <li class="folder">Base</li>
+                                            <li class="folder">Home</li>
+                                            <li class="folder">Account</li>
+                                            <li class="folder">Common
+                                                <ul>
+                                                    <li class="folder">auto-id</li>
+                                                    <li class="folder">buyer-select</li>
+                                                    <li class="folder">files</li>
+                                                    <li class="folder">helper-factories</li>
+                                                    <li class="folder">infinite-scroll</li>
+                                                    <li class="folder">ordercloud-logo</li>
+                                                    <li class="folder">search</li>
+                                                </ul>
+                                            </li>
+                                            <li class="file">app.js</li>
+                                            <li class="file">global.less</li>
+                                            <li class="file">variables.less</li>
+                                        </ul>
+                                    </li>
+                                    <li class="folder">
+                                        assets <span class="text-muted">(Static content like fonts and images)</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                vendor <span class="text-muted">(Bower Dependencies)</span>
+                            </li>
+                            <li class="file">.bowerrc</li>
+                            <li class="file">bower.json</li>
+                            <li class="file">gulpConfig.js</li>
+                            <li class="file">Gulpfile.js</li>
+                            <li class="file">karma.conf.js</li>
+                            <li class="file">package.json</li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-8"></div>
+        </div>
+
     <h3><a id="Detailed_Installation_72"></a>Detailed Installation</h3>
     <p>This section provides a little more detailed understanding of what goes into
         getting <b>OrderCloud</b> up and running. Though <b>OrderCloud</b> is really simple

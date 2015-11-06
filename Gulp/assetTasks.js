@@ -60,7 +60,7 @@ gulp.task('b_m:appCss', function() {
 
 gulp.task('b_m:styles', function() {
     return gulp
-        .src(config.temp + '*.css')
+        .src([config.temp + 'lessStyles.css', config.temp + '*.css'])
         .pipe(replace('../fonts/', 'fonts/'))
         .pipe(concat(currVersion + '.css'))
         .pipe(gulp.dest(config.build + 'assets'))

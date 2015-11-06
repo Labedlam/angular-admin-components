@@ -81,46 +81,35 @@
         </p>
         <h3 class="page-header">Final Steps</h3>
         <p>Its the home stretch. Just a few more things to do and your app will be up and running.</p>
-        <ol>
-            <li>
-                Navigate to the folder created when you unzipped or cloned the repo with your terminal, so that the 
-                terminal window reads out the path starting from your base file directory and ending with your seed folder.
-            </li>
-            <li>
-                Now run <code>npm install</code>.
-                This will download and install the npm dependencies for the application. These are the dependencies that
-                are used in the build process. The new files will be installed in the /node_modules folder at the root
-                of your project.
-            </li>
-            <li>
-                Next run <code>bower install</code>.
-                This will download all the bower dependencies used by the application. Things like AngularJS, which
-                provides the framework for the entire application, as while as the OrderCloud-Angular-SDK which allows you
-                to easily interface with the API. The new files will be installed in the /vendor folder at the root of
-                your project.
-            </li>
-            <li>
-                Next run <code>gulp build</code>.
-                This will create an unminfied version of your app that you can open and test with. This task will create
-                a few new directories within your project. A majority of the files will be created in the /build folder,
-                which will house all of the files your application needs. The other folder created is the /temp directory.
-                You don't need to worry about this folder, it is just created as part of the build to cache files between
-                operations while moving them from /src to /build.
-            </li>
-            <li>
-                To open the app on a local host so you can start making changes, run <code>gulp watch</code>. When this
-                task completes it should open your app in your chosen default browser on port 8000. If you don't stop this
-                process (By pressing Ctrl + C at the same time in the terminal) gulp will continuously watch your /src
-                directory for changes and refresh the browser as you save your changes when developing.
-            </li>
-            <li>
-                Finally, to create a minified build of your code, that is, condensing all of your JavaScript files down
-                to one file and all of your styles (css, less, sass, stylus, ext...) down to a single separate file, run
-                <code>gulp compile</code>. This command will create another directory, /compile, that should contain the
-                minified Javascript file, the minified css file, and all the assets like fonts and images your application uses.
-                This is the folder we recommend deploying from as the minification will increase performance.
-            </li>
-        </ol>
+        <p>
+            To ensure your setup works, build your application and then run it with the following commands:
+        </p>
+        <p><code>gulp build</code></p>
+        <p><code>gulp watch</code></p>
+        <p>
+            The built files are placed in the <code>build/</code> directory by default. Add the <code>watch</code> should open the application on a localhost on port 8000.
+        </p>
+        <p>
+            <code>watch</code> actually starts a few other processes in the background to help you develop your application. Using
+            <code>browser-sync</code> and some built in gulp functions the app is now watching for changes in your source directory.
+            Should you make any changes to your html or js files the app should automatically reload your application
+            with the appropriate changes. Also if you make any changes to your style sheets (less or css) the app will
+            rebuild those changes and inject them directly into the application, without reloading the entire page!
+        </p>
+        <p>
+            When you're ready to push your app into production, just run the <code>compile</code> command:
+        </p>
+        <p><code>gulp compile</code></p>
+        <p>
+            This will concatenate and minify your sources and place them by default into the <code>compile/</code> directory. There
+            will only be three files (excluding assets): <code>index.html</code>, <code>OrderCloud.js</code>, and <code>OrderCloud.css</code>. All of the
+            vendor dependencies like AngularJS styles and the OrderCloud-SDK itself have been added to them for
+            super-easy deploying. If you use any assets (<code>src/assets/</code>) then they will be copied to <code>compile/</code> as is.
+        </p>
+        <p>
+            Lastly, a complete build is always available by simply running the default task, which runs <code>build</code> and then <code>compile</code>:
+        </p>
+        <p><code>gulp</code></p>
         <hr/>
     </article>
 </div>

@@ -13,13 +13,41 @@
 
         <h1>Basic component structure:</h1>
 
-        |- src/
-        |  |- app/
-        |  |  |- <js>
-        |  |  |- templates/
-        |  |  |  |- <html partial views: name.tpl.html>
-        |  |  |- less/
-        |  |  |  |- <less definitions: name.less>
+        <ul>
+            <li class="folder">
+                src
+                <ul>
+                    <li class="folder">
+                        app
+                        <ul>
+                            <li class="folder">
+                                component_name
+                                <ul>
+                                    <li class="file">componet_name.js</li>
+                                    <li class="folder">
+                                        templates
+                                        <ul>
+                                            <li class="file">... HTML Views ...</li>
+                                        </ul>
+                                    </li>
+                                    <li class="folder">
+                                        less
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <!--|- src/-->
+        <!--|  |- app/-->
+        <!--|  |  |- <js>-->
+        <!--|  |  |- templates/-->
+        <!--|  |  |  |- <html partial views: name.tpl.html>-->
+        <!--|  |  |- less/-->
+        <!--|  |  |  |- <less definitions: name.less>-->
 
         <p>Components must follow a pattern in order to function within the OrderCloud Seed. Each component contains an Angular module that belongs to the 'orderCloud' application. The file naming scheme is expected for the gulp tasks to locate the proper files for concatenation and minification.</p>
 
@@ -53,6 +81,6 @@
                 }
             }
         </code></pre>
-
+            <hr/>
     </article>
 </div>

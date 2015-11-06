@@ -5,20 +5,7 @@ angular.module('orderCloud')
 	.factory('LockableParams', LockableParamsService)
 	.factory('ApiConsoleService', ApiConsoleService)
 	.factory('ConsoleContext', ConsoleContextService)
-	.directive('parameterObject', ParameterObjectDirective)
-	.directive('emptyToNull', EmptyToNullDirective)
-	.filter('objectParams', objectParams)
 ;
-
-function objectParams() {
-	return function(params) {
-		var result = [];
-		angular.forEach(params, function(param) {
-			if (param.Type == 'object') result.push(param);
-		});
-		return result;
-	}
-}
 
 function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     $urlMatcherFactoryProvider.strictMode(false);
@@ -29,7 +16,10 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
         'controllerAs': 'console',
         'resolve': {
 			DocsReference: function(Docs) {
-				return Docs.GetAll();
+				return Docs.All();
+			},
+			DocsOutline: function(Docs) {
+				return Docs.Outline();
 			},
 			AvailableInstances: function($q, Underscore, DevCenter) {
 				var deferred = $q.defer();
@@ -64,6 +54,15 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
 			},
 			ActiveContext: function(ConsoleContext) {
 				return ConsoleContext.Get();
+			},
+			DefaultResource: function($q, ActiveContext, Docs) {
+				var deferred = $q.defer();
+				if (ActiveContext) {
+					deferred.resolve(Docs.GetResource('Organizations', 'Buyers'));
+				} else {
+					deferred.resolve(null);
+				}
+				return deferred.promise;
 			}
         },
         'data':{
@@ -73,7 +72,7 @@ function ApiConsoleConfig( $stateProvider, $urlMatcherFactoryProvider ) {
     });
 };
 
-function ApiConsoleController($scope, $filter, Underscore, DocsReference, ActiveContext, AvailableInstances, ApiConsoleService, LockableParams, ConsoleContext) {
+function ApiConsoleController($scope, $filter, Underscore, DocsOutline, Docs, ActiveContext, DefaultResource, AvailableInstances, ApiConsoleService, LockableParams, ConsoleContext) {
 	var vm = this;
 	//Context variables
 	vm.AvailableContexts = AvailableInstances;
@@ -83,27 +82,53 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	vm.SelectedContext = vm.ActiveContext;
 
 	//Console variables
-	vm.Sections = DocsReference.Sections;
-	vm.Resources = DocsReference.Resources;
-	vm.SelectedResource = null;
+	vm.Outline = DocsOutline;
+	vm.SelectedResource = DefaultResource;
 	vm.SelectedEndpoint = null;
 
 	//Response variables
 	vm.Responses = [];
 	vm.SelectedResponse = null;
 
-	vm.updateContext = function(context) {
+	//Functions
+	//--Console Context
+	vm.updateContext = _updateContext;
+	vm.setContext = _setContext;
+	vm.removeContext = _removeContext;
+
+	//--Console Menu
+	vm.SelectResource = _SelectResource;
+	vm.SelectEndpoint = _SelectEndpoint;
+
+	//--Lockable Parameters
+	vm.isLocked = _isLocked;
+	vm.unlockParam = _unlockParam;
+	vm.lockParam = _lockParam;
+
+	//--Filter Parameters
+	vm.addNewFilter = _addNewFilter;
+	vm.removeFilter = _removeFilter;
+
+	//--ACE editor
+	vm.setMaxLines = _setMaxLines;
+
+	//--Console Actions
+	vm.Execute = _Execute;
+	vm.SelectResponse = _SelectResponse;
+
+
+	function _updateContext(context) {
 		vm.SelectedContext = context;
 		vm.setContext(context);
 		vm.ContextMenuOpen = false;
 		vm.contextSearchTerm = '';
 	};
 
-	vm.setContext = function(context) {
+	function _setContext(context) {
 		ConsoleContext.Update(context.DevGroups[0].AccessID)
 			.then(function() {
 				if (!vm.ActiveContext) {
-					vm.SelectResource({resource: Underscore.where(vm.Resources, {Name: 'Buyers'})[0]});
+					vm.SelectResource({ID:'Organizations'}, {ID:'Buyers'});
 				} else {
 					LockableParams.Clear();
 					vm.Responses = [];
@@ -114,7 +139,7 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 			});
 	};
 
-	vm.removeContext = function() {
+	function _removeContext() {
 		LockableParams.Clear();
 		vm.SelectedContext = null;
 		vm.ActiveContext = null;
@@ -125,48 +150,53 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 		ConsoleContext.Remove();
 	};
 
-	vm.isLocked = function(paramName) {
+	function _SelectResource(section, resource) {
+		Docs.GetResource(section.ID, resource.ID).then(function(rs) {
+			vm.SelectedResource = rs;
+		});
+	};
+
+	function _SelectEndpoint(endpoint) {
+		Docs.GetEndpoint(vm.SelectedResource.Section, vm.SelectedResource.ID, endpoint.ID).then(function(ep) {
+			vm.SelectedEndpoint = ep;
+		});
+	};
+
+	function _isLocked(paramName) {
 		return LockableParams.IsLocked(paramName);
 	};
 
-	vm.unlockParam = function(paramName) {
+	function _unlockParam(paramName) {
 		LockableParams.RemoveLock(paramName)
 	};
 
-	vm.lockParam = function(paramName, paramValue) {
+	function _lockParam(paramName, paramValue) {
 		LockableParams.SetLock(paramName, paramValue)
 	};
 
-	vm.setMaxLines = function(editor) {
+	function _addNewFilter() {
+		vm.SelectedEndpoint.Filters.push({Key: null, Value: null})
+	};
+
+	function _removeFilter(filterIndex) {
+		vm.SelectedEndpoint.Filters.splice(filterIndex, 1);
+	};
+
+	function _setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:200
 		});
 	};
 
-	vm.addNewFilter = function() {
-		vm.SelectedEndpoint.Filters.push({Key: null, Value: null})
-	};
-
-	vm.removeFilter = function(filterIndex) {
-		vm.SelectedEndpoint.Filters.splice(filterIndex, 1);
-	};
-
-	vm.Execute = function() {
+	function _Execute() {
 		ApiConsoleService.ExecuteApi(vm.SelectedEndpoint);
 	};
 
-	vm.SelectResource = function(scope) {
-		vm.SelectedResource = scope.resource;
+	function _SelectResponse(response) {
+		vm.SelectedResponse = response;
 	};
 
-	if (vm.ActiveContext) {
-		vm.SelectResource({resource: Underscore.where(vm.Resources, {ID: 'Buyers'})[0]});
-	}
-
-	vm.SelectEndpoint = function(scope) {
-		vm.SelectedEndpoint = scope.endpoint;
-	};
-
+	//WATCHERS
 	$scope.$watch(function () {
 		return vm.SelectedResource;
 	}, function (n, o) {
@@ -183,7 +213,9 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 		}
 	});
 
+	//RESPONSE EVENTS
 	$scope.$on('event:responseSuccess', function(event, c) {
+		//if (['.html','/docs','devcenter/','devcenterapi'].indexOf(c.config.url) == -1) return;
 		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
@@ -191,15 +223,10 @@ function ApiConsoleController($scope, $filter, Underscore, DocsReference, Active
 	});
 
 	$scope.$on('event:responseError', function(event, c) {
-		if (c.config.url.indexOf('.html') > -1 || c.config.url.indexOf('/docs') > -1 || c.config.url.indexOf('devcenter/') > -1 || c.config.url.indexOf('devcenterapi') > -1) return;
 		c.data = $filter('json')(c.data);
 		vm.Responses.push(c);
 		vm.SelectResponse(c);
 	});
-
-	vm.SelectResponse = function(response) {
-		vm.SelectedResponse = response;
-	}
 }
 
 function ApiConsoleService( $filter, $resource, apiurl, LockableParams ) {
@@ -299,49 +326,6 @@ function LockableParamsService($q) {
 	}
 }
 
-function ParameterObjectDirective() {
-	var obj = {
-		restrict: 'A',
-		require: 'ngModel',
-		link: function(scope, element, attrs, ctrl) {
-			ctrl.$validators.parameterObject = function(modelValue, viewValue) {
-				if (ctrl.$isEmpty(modelValue)) return true;
-				try {
-					return validateModel(viewValue);
-				} catch(ex) {
-					return false;
-				}
-				function validateModel(value) {
-					var obj = JSON.parse(value.replace(/\n/g, ''));
-					var fieldErrors = 0;
-					angular.forEach(scope.console.SelectedEndpoint.RequestBody.Fields, function(field) {
-						//TODO: make empty objects and objects that are straight up missing required fields entirely invalid
-						angular.forEach(obj, function(value, key) {
-							if (key == field.Name && field.Required) {
-								switch (field.Type) {
-									case('string'):
-										if (!angular.isString(value) || !value.length) fieldErrors++;
-										break;
-									case('boolean'):
-										if (typeof(value) != 'boolean') fieldErrors++;
-										break;
-									case('object'):
-										if (!angular.isObject(value)) fieldErrors++;
-										break;
-									case('integer'):
-										if (!angular.isNumber(value)) fieldErrors++;
-								}
-							}
-						})
-					});
-					return fieldErrors == 0;
-				}
-			}
-		}
-	};
-	return obj;
-}
-
 function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
 	var service = {
 		Get: _getContext,
@@ -379,21 +363,4 @@ function ConsoleContextService($q, jwtHelper, DevCenter, Auth) {
 	}
 
 	return service;
-}
-
-function EmptyToNullDirective() {
-	var directive = {
-		restrict: 'A',
-		require: 'ngModel',
-		link: function (scope, elem, attrs, ctrl) {
-			ctrl.$parsers.push(function(viewValue) {
-				if(viewValue === "") {
-					return null;
-				}
-				return viewValue;
-			});
-		}
-	};
-
-	return directive;
 }

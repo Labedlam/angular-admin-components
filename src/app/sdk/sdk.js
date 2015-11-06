@@ -14,7 +14,7 @@ function SdkConfig( $stateProvider ) {
             controllerAs: 'sdk',
             resolve: {
                 Documentation: function(Docs) {
-                    return Docs.GetAll();
+                    return Docs.All();
                 }
             }
         })

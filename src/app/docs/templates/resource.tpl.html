@@ -1,67 +1,15 @@
-<h3 class="page-header">{{docsResource.current.Name}}</h3>
-<p ng-repeat="line in docsResource.current.Comments" ng-bind-html="line | markdown"></p>
-<accordion>
-	<accordion-group heading="{{endpoint.Name}}" ng-repeat="endpoint in docsResource.current.Endpoints">
-		<div class="apiRequestDisplay">
-			<pre>{{endpoint.HttpVerb}}</pre>
-			<pre>{{endpoint.UriTemplate}}</pre>
-		</div>
-		<div ng-if="endpoint.Parameters.length">
-			<div class="labeled-divider">
-				<span>Parameters</span>
-				<hr/>
-			</div>
-			<table class="table table-bordered table-striped">
-				<thead>
-				<tr>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Description</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr ng-repeat="param in endpoint.Parameters">
-					<td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
-					<td><div class="label" ng-class="{
-									'label-primary': param.Type == 'string',
-									'label-warning': param.Type == 'boolean',
-									'label-info': param.Type == 'integer',
-									'label-success': param.Type == 'date'
-								}">{{param.Type}}</div></td>
-					<td>{{param.Description}}</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div ng-if="endpoint.RequestBody.Sample && endpoint.RequestBody.Sample != 'null'">
-					<h5>Request Body Sample:</h5>
-					<!--<div hljs source="endpoint.RequestBody.Sample" language="json"></div>-->
-					<div  readonly ui-ace="{
-									onLoad: docsResource.setMaxLines,
-									useWrapMode : true,
-									theme:'twilight',
-									mode: 'json',
-									tabSize: '4',
-									useSoftTabs: true,
-									showPrintMargin: false
-								}" ng-model="endpoint.RequestBody.Sample"></div>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<h5><b>Response Status: <span class="text-danger">{{endpoint.ResponseStatus}}</span></b></h5>
-				<!--<div ng-if="endpoint.ResponseBody.Sample && endpoint.ResponseBody.Sample != 'null'" hljs source="endpoint.ResponseBody.Sample" language="json"></div>-->
-				<div ng-if="endpoint.ResponseBody.Sample && endpoint.ResponseBody.Sample != 'null'" readonly ui-ace="{
-															onLoad: docsResource.setMaxLines,
-															useWrapMode : true,
-															theme:'twilight',
-															mode: 'json',
-															tabSize: '4',
-															useSoftTabs: true,
-															showPrintMargin: false
-														}" ng-model="endpoint.ResponseBody.Sample"></div>
-			</div>
-		</div>
-	</accordion-group>
-</accordion>
+<h3 class="page-header">{{docsResource.Resource.Name}}</h3>
+<p ng-repeat="line in docsResource.Resource.Comments" ng-bind-html="line | markdown"></p>
+<hr ng-if="docsResource.Resource.Comments.length"/>
+<article>
+	<div uib-dropdown>
+		<button class="btn btn-default btn-block" uib-dropdown-toggle>
+			Endpoints <span class="caret"></span>
+		</button>
+		<ul class="endpoint-dropdown" uib-dropdown-menu>
+			<li role="presentation" ng-repeat="endpoint in docsResource.Resource.Endpoints" ui-sref-active="active"><a href="" ui-sref="base.docs.section.resource.endpoint({endpointID:endpoint.ID})">{{endpoint.Name}}</a></li>
+		</ul>
+    </div>
+	<hr/>
+	<ui-view></ui-view>
+</article>

@@ -1,1 +1,5 @@
-<article ng-include="docsSection.view"></article>
+<article ng-if="docsSection.Section.Name != 'Authentication'">
+	<h3 class="page-header">{{docsSection.Section.Name}}</h3>
+	<p ng-repeat="line in docsSection.Section.Comments" ng-bind-html="line | markdown"></p>
+</article>
+<article ng-if="docsSection.Section.Name == 'Authentication'" ng-include="'docs/templates/authentication.tpl.html'"></article>

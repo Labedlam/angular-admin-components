@@ -22,7 +22,7 @@
 								{{var.key}}
 							</div>
 							<div class="oc-var oc-var-val col-xs-6" ng-hide="editVar">
-								{{var.val}}
+								{{var.val | limitTo:15}}{{var.val.length > 15 ? '...' : ''}}
 							</div>
 							<input placeholder="variable" class="oc-var oc-var-key oc-var-input-key col-xs-4" ng-model="var.key" ng-show="editVar">
 							<input placeholder="value" class="oc-var oc-var-val oc-var-input-val col-xs-6" ng-model="var.val" ng-show="editVar">

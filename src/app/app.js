@@ -11,7 +11,8 @@ angular.module( 'orderCloud', [
 	'orderCloud.sdk',
 	'markdown',
 	'ui.ace',
-	'angular-jwt'
+	'angular-jwt',
+	'toastr'
 ])
 
 	.run( Security )

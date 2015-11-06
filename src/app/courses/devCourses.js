@@ -407,7 +407,11 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 							on = true;
 						}
 					}
-					script.Model = script.Model.replace('{' + method + '}', newString)
+					script.Model = script.Model.replace('{' + method + '}', newString);
+					if (script.Model.indexOf('"FullAccess"') > -1) {
+						script.Model = script.Model.replace("FullAccess", '"FullAccess"')
+					}
+
 				}
 			});
 			angular.forEach(vm.user.savedVars, function(ocVar) {
@@ -442,14 +446,20 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		$scope.$on('event:responseSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
-					var response = angular.copy(c);
-					response.data = $filter('json')(response.data);
-					vm.Responses.push(response);
-					vm.SelectedResponse = response;
-					addMethodCount(response);
-					checkIfObjectCreated();
+					if (typeof c.data == 'string' && c.data.indexOf('toast')) {
+						vm.openRequestCount -= 1;
+					} else {
+						var response = angular.copy(c);
+						response.data = $filter('json')(response.data);
+						vm.Responses.push(response);
+						vm.SelectedResponse = response;
+						addMethodCount(response);
+						checkIfObjectCreated(c);
+						vm.openRequestCount -= 1;
+					}
+
 				}
-				vm.openRequestCount -= 1;
+
 
 			}
 		});
@@ -556,8 +566,18 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	}
 
-	function checkIfObjectCreated() {
-		if (vm.stringExecute.indexOf('.Create') > -1) {
+	function checkIfObjectCreated(c) {
+		if (c.config.url.indexOf("apiclients") > -1 && vm.stringExecute.indexOf('.Create') > -1) {
+			DcUsers.SaveOcVar({
+				key: 'ClientID',
+				val: c.data.ID
+			}).then(function() {
+				DcUsers.GetOcVars()
+					.then(function(data) {
+						vm.user.savedVars = data;
+					})
+			})
+		} else if (vm.stringExecute.indexOf('.Create') > -1) {
 			console.log('hit internal check');
 			var name = parseDependency(vm.stringExecute) + 'ID';
 			var val = parseIdValue(vm.stringExecute);
@@ -571,7 +591,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					})
 			})
 		}
-		console.log('hit check');
 	}
 
 	function parseDependency(string) {

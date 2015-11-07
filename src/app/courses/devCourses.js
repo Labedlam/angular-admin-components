@@ -29,11 +29,14 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				return response;
 			},
 			'responseError': function(rejection) {
-				if (['.html','/docs','devcenter/','devcenterapi'].indexOf(rejection.config.url) == -1) {
-					return $rootScope.$broadcast('event:responseError', rejection);
-				} else {
-					return $q.reject(rejection)
-				}
+				var reject = true;
+				['.html','/docs','devcenter/','devcenterapi', 'oauth'].forEach(function(each) {
+					if (rejection.config.url.indexOf(each) > -1) {
+						reject = false;
+					}
+				});
+				return reject ? $q.reject(rejection) : $rootScope.$broadcast('event:responseError', rejection);
+
 			}
 		};
 	});

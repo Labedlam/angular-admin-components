@@ -2,7 +2,6 @@ angular.module( 'orderCloud' )
 
 	.config( AboutConfig )
 	.controller( 'AboutCtrl', AboutController )
-
 ;
 
 function AboutConfig( $stateProvider ) {
@@ -12,11 +11,31 @@ function AboutConfig( $stateProvider ) {
 			templateUrl:'about/templates/about.tpl.html',
 			controller:'AboutCtrl',
 			controllerAs: 'about'
-		})
+		});
 }
 
-function AboutController($sce ) {
+function AboutController($sce, $resource) {
 	var vm = this;
+
+	vm.info = {
+		"name": "",
+		"email": ""
+	};
+
+	vm.submit = function() {
+		$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
+			"first_name": vm.info.name,
+			"last_name": null,
+			"created_by": "MoreInfo",
+			"phone": null,
+			"company": null,
+			"email": vm.info.email
+		}).$promise.then(successPardot);
+	};
+
+	function successPardot(data) {
+		vm.submission = true;
+	}
 
 	vm.config = {
 				preload: "none",
@@ -35,5 +54,4 @@ function AboutController($sce ) {
 					}
 				}
 			};
-
 }

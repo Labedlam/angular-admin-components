@@ -1,8 +1,6 @@
 angular.module('orderCloud')
 	.config(RegisterConfig)
 	.controller('RegisterCtrl', RegisterController)
-	.directive('compareTo', compareTo)
-	.directive('blacklist', blackList)
 ;
 
 function RegisterConfig( $stateProvider ) {
@@ -88,34 +86,3 @@ function RegisterController( $state, $cookies, $resource, DcAdmin, DevAuth, Auth
 
 }
 
-function compareTo() {
-	return {
-		require: "ngModel",
-		scope: {
-			otherModelValue: "=compareTo"
-		},
-		link: function(scope, element, attributes, ngModel) {
-
-			ngModel.$validators.compareTo = function(modelValue) {
-				return modelValue == scope.otherModelValue;
-			};
-
-			scope.$watch("otherModelValue", function() {
-				ngModel.$validate();
-			});
-		}
-	};
-};
-
-function blackList() {
-	return {
-		restrict: 'A',
-		require: 'ngModel',
-		link: function(scope, element, attributes, ngModel) {
-			scope.$watch(attributes.ngModel, function(value) {
-				var personal = /(gmail|hotmail|yahoo|facebook|msn|outlook|aol)/.test(value);
-				ngModel.$setValidity(attributes.ngModel, !personal ? /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) : false);
-			});
-		}
-	}
-}

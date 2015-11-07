@@ -26,6 +26,8 @@ angular.module( 'orderCloud', [
 	.constant('ocscope', 'FullAccess')
 	.constant('appname', 'DevCenter')
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	.constant('disqussecret', 'tbwdYFibpxzTJWCcCg6xWhSmQ2pz6WyaoU6ARbKByUwFe9KakPaLbIIYUwOqc5RW')
+	.constant('disquspublic', 'O8x1eymZ0SEPXjSGgJWXoWciSmvk25lGGzOYbEoYVuTysw2Du7Bm9ntbFw42WfR6')
 	//.constant('devapiurl', 'http://localhost:55555')
 
 ;

@@ -15,7 +15,7 @@ function SupportConfig( $stateProvider ) {
         })
 }
 
-function SupportController( $window, CurrentUser ) {
+function SupportController( $window, CurrentUser, disqussecret, disquspublic ) {
     var vm = this;
 
     var disqusData = {
@@ -23,8 +23,8 @@ function SupportController( $window, CurrentUser ) {
         username: CurrentUser.Username,
         email: CurrentUser.Email
     };
-    var secretKey = 'tbwdYFibpxzTJWCcCg6xWhSmQ2pz6WyaoU6ARbKByUwFe9KakPaLbIIYUwOqc5RW';
-    var publicKey = 'O8x1eymZ0SEPXjSGgJWXoWciSmvk25lGGzOYbEoYVuTysw2Du7Bm9ntbFw42WfR6';
+    var secretKey = disqussecret;
+    var publicKey = disquspublic;
 
     var disqusStr = JSON.stringify(disqusData);
     var timestamp = Math.round(+new Date() / 1000);

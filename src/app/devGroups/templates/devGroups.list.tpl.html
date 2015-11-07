@@ -27,7 +27,7 @@
 		<div class="col-sm-6" ng-repeat="group in devGroups.acceptedList | filter:devGroups.searchTerm">
 			<div class="panel panel-default group-panel">
 				<div class="panel-body">
-					<button class="btn btn-default pull-right" ng-click="devGroups.leaveGroup(this)"><b class="text-danger">Leave</b></button>
+					<button class="btn btn-default pull-right" ng-if="(group.Members | filter:{Accepted:true}).length > 1 && (!group.GroupAdmin || group.AdminCount > 1)" ng-click="devGroups.leaveGroup(this)"><b class="text-danger">Leave</b></button>
 					<h4><b><a href="" ui-sref="base.groupDetail({groupID:group.ID})">{{group.Name}}</a></b></h4>
 					<p class="text-muted">{{(group.Members | filter:{Accepted:true}).length + ' member' + ((group.Members | filter:{Accepted:true}).length == 1 ? ' | ' : 's | ') + group.Instances.length + ' instance' + (group.Instances.length == 1 ? '' : 's') }}</p>
 				</div>

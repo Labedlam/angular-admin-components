@@ -1,157 +1,162 @@
-<div>
-    <header class="dc-header" ui-sref="base.docs">
-        <div class="container">
-            <h2>OrderCloud SDKs</h2>
-        </div>
-    </header>
-    <article class="container">
-        <h2>AngularJs OrderCloud SDK</h2>
-
-        <pre><code class="language-sh">
-            $ bower install ordercloud-angular-sdk --save-dev
-        </code></pre>
-
-        <p>Or just include the output in the dist folder directly in your project.</p>
-
-        <h2>REQUIREMENTS</h2>
-
-        <p>This sdk is to always be used in conjunction with another angular project.
-            You must also define some variable constants in the referencing application.</p>
-
-        <pre><code class="language-sh">
-            angular.module('orderCloud', [])
-            .constant('clientid', '...')
-            .constant('authurl', '...')
-            .constant('apiurl', '...')
-        </code></pre>
-
-        <p>In some cases, your app will need to access multiple buyer companies, so the buyerid is not stored as a constant. Instead, the buyerid is stored in an AngularJS factory named BuyerID within this sdk.
-            In order to set an initial/default buyerid, add a run function in addition to the above constants.</p>
-
-        <pre><code class="language-sh">
-            .run(
-            function(BuyerID) {
-            BuyerID.Set('BUYERIDHERE');
-            }
-            )
-        </code></pre>
-
-        <p>The BuyerID service can be used within any AngularJS controller and/or factory within your application in order to change which buyerid should be used.
-            Simply inject the BuyerID factory into your controller or factory and call BuyerID.Set('NEWIDHERE');.
-            If needed, BuyerID.Get() will return the buyerid that is currently set.</p>
-
-        <hr />
-
-        <h2>Cache</h2>
-
-        <p>An implementation of localForage <a href="https://github.com/ocombe/angular-localForage">(Github)</a>. This factory is a wrapper for their primary functions.
-            This factory is not the implementation of the api caching mechanism. Those are built directly into the resource factories.</p>
-
-        <h2>Extending the OrderCloud Data Model</h2>
-
-        <p>Many times, object(s) returned from the OrderCloud API require additional data points derived from the provided information in order to more easily and elegantly drive UI functionality. One simple example of this is to create a FullName property on User objects derived from the FirstName and LastName properties.
-            Similarly, another example would be to create a FullAddress property on an Address object by combining the AddressName, Street1, Street2, City, State, Zip, and Country properties. Additionally, functions can be extended onto data model objects in order to drive such AngularJS directives as ng-show, ng-if, etc.
-
-            When the $promise is returned from AngularJS $resource factory, the OrderCloud-Angular-SDK will attempt to locate and inject an 'Extend' factory from your AngularJS application. If this factory exists and a method within the factory with the respective OrderCloud end point exists, you can proceed to extend the data model.
-            A list of available end points and a simple example are located below.
-        </p>
-
-        <pre><code class="language-sh">
-            angular.module('myApp', [])
-            .factory('Extend', extendFactory)
-
-            function extendFactory() {
-            var service = {
-            Users: _users
-            };
-
-            function _users(user) {
-            user.FullName = user.FirstName + ' ' + user.LastName;
-            }
-
-            return service;
-            }
-        </code></pre>
-    </article>
+<header class="dc-header">
     <div class="container">
-        <div class="row">
-            <aside class="col-sm-3 docs-nav">
-                <ul class="section-list">
-                    <li ng-class="{active: sdk.activeSection == section}" ng-repeat-start="section in sdk.content.Sections" ng-click="sdk.activeSection = section">
-                        {{section}}
-                    </li>
-                    <div ng-repeat-end>
-                        <ul class="resource-list">
-                            <li ng-repeat="resource in sdk.content.Resources | filter:{Section:section}">
-                                <a href="" ng-class="{active: sdk.activeResource == resource}" ng-click="sdk.activeResource = resource">{{resource.Name}}</a>
-                            </li>
-                        </ul>
-                    </div>
-                </ul>
-            </aside>
-            <div class="col-sm-9">
-                <h3 class="page-title">{{sdk.activeResource.Name}}</h3>
-                <p ng-repeat="line in sdk.activeResource.Comments" ng-bind-html="line | markdown"></p>
-                <accordion>
-                    <accordion-group heading="{{endpoint.Name}}" ng-repeat="endpoint in sdk.activeResource.Endpoints">
-                        <pre>{{endpoint.CodeSample}}</pre>
-                        <div ng-if="endpoint.Parameters.length">
-                            <h6>Parameters:</h6>
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Required</th>
-                                    <th>Description</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="param in endpoint.Parameters | OCFilteredParameters:sdk.activeResource.Name">
-                                    <td>{{param.Name}} <small class="text-muted" ng-if="!param.Required">(optional)</small></td>
-                                    <td><div class="label" ng-class="{
-                                                'label-primary': param.Type == 'string',
-                                                'label-warning': param.Type == 'boolean',
-                                                'label-info': param.Type == 'integer'
-                                            }">{{param.Type}}</div></td>
-                                    <td>{{param.Required}}</td>
-                                    <td>{{param.Description}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div ng-if="endpoint.RequestBody.Sample && endpoint.RequestBody.Sample != 'null'">
-                                    <h5>Request Body Sample:</h5>
-                                    <div readonly ui-ace="{
-                                                onLoad: sdk.setMaxLines,
-                                                useWrapMode : true,
-                                                theme:'twilight',
-                                                mode: 'json',
-                                                tabSize: '4',
-                                                useSoftTabs: true,
-                                                showPrintMargin: false
-                                            }" ng-model="endpoint.RequestBody.Sample"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <h5><b>Response Status: <span class="text-danger">{{endpoint.ResponseStatus}}</span></b></h5>
-                                <div ng-if="endpoint.ResponseBody.Sample && endpoint.ResponseBody.Sample != 'null'" readonly ui-ace="{
-                                                                        onLoad: sdk.setMaxLines,
-                                                                        useWrapMode : true,
-                                                                        theme:'twilight',
-                                                                        mode: 'json',
-                                                                        tabSize: '4',
-                                                                        useSoftTabs: true,
-                                                                        showPrintMargin: false
-                                                                    }" ng-model="endpoint.ResponseBody.Sample"></div>
-                            </div>
-                        </div>
-                    </accordion-group>
-                </accordion>
-            </div>
+        <h2>OrderCloud AngularJS SDK</h2>
+        <hr/>
+        <p>The OrderCloud AngularJS SDK is an AngularJS module that greatly simplifies interaction with the OrderCloud RESTful API in the context of an AngularJS project. The module is an auto-generated reflection of the C# source code. This means there is one angular service for each API resource described in the docs, and the SDK will always be in sync with the latest API code. The SDK is available as a public bower package and easy to install.</p>
+    </div>
+</header>
+<article class="container">
+    <h3 class="page-header">Installation</h3>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>The OrderCloud Seed comes with the SDK pre-installed (both as a bower package and angular dependency). After you finish setting the Seed up you will be able to take advantage of the OrderCloud API right away</p>
+            <p>If you're starting your own Angular project from scratch, please follow the instructions on the right.</p>
+        </div>
+        <div class="col-sm-8">
+            <p>You can get the latest version of the OrderCloud AngularJS SDK using bower:</p>
+            <pre>$ bower install ordercloud-angular-sdk --save</pre>
+            <p>Once available, you will need to inject the SDK module as a dependency for your Angular application.</p>
+            <div class="rounded-corners" readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.installScript1"></div>
+            <p></p>
         </div>
     </div>
-</div>
+    <h3 class="page-header">Requirements</h3>
+    <p>The OrderCloud Angular SDK is meant for <b>Angular projects only.</b>  Attempting to use it in another framework is futile. In order to take advantage of the SDK you must first define a context in which you will be interacting with OrderCloud. This context is a defined by 6 required angular constants:</p>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>The values for the <b>clientid, ocscope,</b> and <b>appname</b> constants can be retrieved from any of your available OrderCloud Instances.</p>
+            <p>The <b>buyerid</b> constant is the ID of the default Buyer to be loaded by the runtime function.</p>
+            <p>The values for <b>authurl</b> and <b>apiurl</b> are the routes used by the SDK to talk to the OrderCloud API.</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners" readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.constantsScript1"></div>
+        </div>
+    </div>
+    <hr/>
+    <h4><b>Runtime</b></h4>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>The runtime function uses the SDKs BuyerID service to check if a buyer id context has already been set. If not, it uses the <b>buyerid</b> constant value.</p>
+            <p>The <b>BuyerID Service</b> is an example of an SDK service that does not have a respective API resource.  It is used by the SDK in <em>every</em> service method to set the <code>buyerid</code> parameter automatically.</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners" readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.runtimeScript1"></div>
+        </div>
+    </div>
+    <h3 class="page-header">Additional Features</h3>
+    <h4><b>Authentication</b></h4>
+    <p>The SDK handles authentication through a variety of angular services and interceptors which, similar to the BuyerID service, do not have a respective API resource.</p>
+    <h5><b>Credentials Service</b></h5>
+    <div class="row">
+        <div class="col-sm-4">
+            <p><code>Credentials</code> is the service used in the Seed's default <b>login</b> component. It takes in an object with <code>Username</code> and <code>Password</code> and returns an <code>access_token</code> when accepted by the OAuth server.</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners" readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.credentialsScript1"></div>
+        </div>
+    </div>
+    <h5><b>Auth Service</b></h5>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>The Auth service works in conjunction with the <code>Request</code> interceptor and <code>ngCookies</code> to store authentication tokens for the duration of a user's session. When a response hits the Request interceptor, if it has a property called <code>access_token</code> the Auth service is used to write the token to a cookie.</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners"  readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.authScript1"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>Vice versa, when an outgoing request is intercepted <code>Auth</code> will return the previously stored access token to be appended to the headers of the request (if one was not set already).</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners"  readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.authScript2"></div>
+        </div>
+    </div>
+    <hr/>
+    <h4><b>Extendable</b></h4>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>The SDK has a mechanism built in every service that allows developers to globally customize their API responses. Taking advantage of this feature you must adhere to the <b>Extend pattern</b> religiously. Before each service method <code>$promise</code> is returned, the SDK checks to see if the resource has been extended and performs the extension if present.</p>
+            <p>The example to the right shows the Extend pattern being used to extend the Buyers service. Because the same extend is performed on <code>Buyers.List()</code> and <code>Buyers.Get()</code>, the pattern checks the type of the data passed in and handles arrays with a <code>angular.forEach</code> loop.</p>
+        </div>
+        <div class="col-sm-8">
+            <div class="rounded-corners"  readonly ui-ace="{
+                onLoad: sdk.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+            }" ng-model="sdk.extendScript1"></div>
+        </div>
+    </div>
 
+    <h4><b>Impersonation</b></h4>
+    <p>The API allows the ability to <b>impersonate</b> other users in the same instance. An authenticated user can call upon <code>Users.GetAccessToken()</code> and store the returned token in an 'impersonation' cookie using <code>Auth.SetImpersonationToken()</code>. Once stored, you can perform any action on behalf of the impersonated user like this: <code>Products.As().List()</code>.</p>
+    <h3 class="page-header">Additional Services</h3>
+    <h4><b>LocalForage</b></h4>
+    <p>The SDK uses the AngularJS module for LocalForage called, <a href="https://github.com/ocombe/angular-localForage" target="_blank">angular-localForage</a>.</p>
+    <p><a href="http://mozilla.github.io/localForage/" target="_blank">localForage</a> is a JavaScript library that improves the offline experience of your web app by using an asynchronous data store with a simple, localStorage-like API. It allows developers to store many types of data instead of just strings.</p>
+    <p>localForage includes a localStorage-backed fallback store for browsers with no IndexedDB or WebSQL support. Asynchronous storage is available in the current versions of all major browsers: Chrome, Firefox, IE, and Safari (including Safari Mobile).</p>
+
+    <h4><b>Underscore</b></h4>
+    <p><a href="http://underscorejs.org/">Underscore</a> is a JavaScript library that provides a whole mess of useful functional programming helpers without extending any built-in objects.</p>
+    <p>The OrderCloud AngularJS SDK wraps the Underscore library in a service called <code>Underscore</code>.  You can take advantage of it anywhere in your AngularJS application.</p>
+    <hr/>
+</article>

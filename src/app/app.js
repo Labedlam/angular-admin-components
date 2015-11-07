@@ -1,6 +1,4 @@
-
 angular.module( 'orderCloud', [
-
 	"com.2fdevs.videogular",
 	"com.2fdevs.videogular.plugins.controls",
 	'templates-app',
@@ -13,7 +11,8 @@ angular.module( 'orderCloud', [
 	'orderCloud.sdk',
 	'markdown',
 	'ui.ace',
-	'angular-jwt'
+	'angular-jwt',
+	'toastr'
 ])
 
 	.run( Security )
@@ -25,6 +24,7 @@ angular.module( 'orderCloud', [
 	.constant('ocscope', 'FullAccess')
 	.constant('appname', 'DevCenter')
 	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
+	//.constant('devapiurl', 'http://localhost:55555')
 
 ;
 function Security( $rootScope, $state, DevAuth, Me ) {

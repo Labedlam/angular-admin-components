@@ -29,8 +29,11 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				return response;
 			},
 			'responseError': function(rejection) {
-				$rootScope.$broadcast('event:responseError', rejection);
-				return $q.reject(rejection);
+				if (['.html','/docs','devcenter/','devcenterapi'].indexOf(rejection.config.url) == -1) {
+					return $rootScope.$broadcast('event:responseError', rejection);
+				} else {
+					return $q.reject(rejection)
+				}
 			}
 		};
 	});
@@ -371,12 +374,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	var nextClassID = (vm.classIndex + 1 < vm.totalClasses) ? SelectedCourse.Classes[vm.classIndex + 1] : null;
 	var nextCourseID;
 	if (!nextClassID) findNextCourseID();
-	Me.Get()
-		.then(function(data) {
-			vm.contextUser = data;
-		}, function() {
-			vm.contextUser = null;
-		});
 
 	function stringReplace() {
 		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
@@ -407,7 +404,11 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 							on = true;
 						}
 					}
-					script.Model = script.Model.replace('{' + method + '}', newString)
+					script.Model = script.Model.replace('{' + method + '}', newString);
+					if (script.Model.indexOf('"FullAccess"') > -1) {
+						script.Model = script.Model.replace("FullAccess", '"FullAccess"')
+					}
+
 				}
 			});
 			angular.forEach(vm.user.savedVars, function(ocVar) {
@@ -447,24 +448,21 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
 					addMethodCount(response);
-					checkIfObjectCreated();
+					checkIfObjectCreated(c);
+					vm.openRequestCount -= 1;
 				}
-				vm.openRequestCount -= 1;
-
 			}
 		});
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
-				if (c.config.url.indexOf('docs/') == -1 && c.config.url.indexOf('heroku') == -1) {
-					var response = angular.copy(c);
-					console.log(c);
-					if (c.config.url.indexOf('__NONE_SET__') > -1) {
-						vm.BuyerSet = false;
-					}
-					response.data = $filter('json')(response.data);
-					vm.Responses.push(response);
-					vm.SelectedResponse = response;
+				var response = angular.copy(c);
+				console.log(c);
+				if (c.config.url.indexOf('__NONE_SET__') > -1) {
+					vm.BuyerSet = false;
 				}
+				response.data = $filter('json')(response.data);
+				vm.Responses.push(response);
+				vm.SelectedResponse = response;
 				vm.openRequestCount -= 1;
 			}
 		});
@@ -556,8 +554,18 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	}
 
-	function checkIfObjectCreated() {
-		if (vm.stringExecute.indexOf('.Create') > -1) {
+	function checkIfObjectCreated(c) {
+		if (c.config.url.indexOf("apiclients") > -1 && vm.stringExecute.indexOf('.Create') > -1) {
+			DcUsers.SaveOcVar({
+				key: 'ClientID',
+				val: c.data.ID
+			}).then(function() {
+				DcUsers.GetOcVars()
+					.then(function(data) {
+						vm.user.savedVars = data;
+					})
+			})
+		} else if (vm.stringExecute.indexOf('.Create') > -1) {
 			console.log('hit internal check');
 			var name = parseDependency(vm.stringExecute) + 'ID';
 			var val = parseIdValue(vm.stringExecute);
@@ -571,7 +579,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					})
 			})
 		}
-		console.log('hit check');
 	}
 
 	function parseDependency(string) {
@@ -739,6 +746,12 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				console.log(err);
 			})
 	}
+
+	vm.contextPopoverTemplate = 'courses/templates/context.popover.tpl.html';
+	vm.contextDropupOpen = false;
+	vm.contextDropupToggle = function(open) {
+		vm.contextDropupOpen = open;
+	};
 
 }
 

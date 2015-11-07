@@ -18,8 +18,6 @@ function GettingStartedConfig( $stateProvider ) {
         })
 }
 
-function GettingStartedController($sce ) {
+function GettingStartedController( ) {
     var vm = this;
-    vm.config = {}
-
 }

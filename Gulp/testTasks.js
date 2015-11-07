@@ -5,7 +5,7 @@ var browserSync = require('browser-sync').create();
 var appName = null;  //used for externally accessible site... must only include letters ('_', '-' not allowed)
 var portNumber = 12000;  //used for localhost
 
-
+var protractor = require('gulp-angular-protractor');
 
 if (appName) {
     appName = appName.toLowerCase();
@@ -54,3 +54,16 @@ gulp.task('testCompile', gulp.series('compile', function() {
         logPrefix: 'OrderCloud 3.0'
     })
 }));
+
+gulp.task('protractor', function () {
+    return gulp
+        .src('./tests/**/*.test.js')
+        .pipe(protractor({
+            configFile: './protractor.config.js',
+            autoStartStopServer: true,
+            debug: true
+        }))
+        .on('error', function(e) {
+            throw e;
+        });
+});

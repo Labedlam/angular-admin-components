@@ -9,13 +9,13 @@
 		<div class="row">
 			<aside class="col-sm-3 docs-nav">
 				<ul class="section-list">
-					<li ui-sref-active="active" ng-repeat-start="section in docs.content.Sections" ui-sref="base.docs.section({sectionID:section})">
-						{{section}}
+					<li ui-sref-active="active" ng-repeat-start="section in docs.outline.Sections" ui-sref="base.docs.section({sectionID:section.ID})">
+						{{section.Name}}
 					</li>
 					<div ng-repeat-end>
 						<ul class="resource-list">
-							<li ng-repeat="resource in docs.content.Resources | filter:{Section:section}">
-								<a href="" ui-sref-active="active" ui-sref="base.docs.section.resource({sectionID:section, resourceID:resource.ID})">{{resource.Name}}</a>
+							<li ng-repeat="resource in section.Resources">
+								<a href="" ui-sref-active="active" ui-sref="base.docs.section.resource({sectionID:section.ID, resourceID:resource.ID})">{{resource.Name}}</a>
 							</li>
 						</ul>
 					</div>

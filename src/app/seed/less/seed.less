@@ -1,0 +1,35 @@
+.directory-list {
+  list-style:none;
+  padding:10px;
+  background-color:@console-log-bg;
+  color:white;
+  border-radius:@border-radius-base;
+  ul {
+	padding-left:15px;
+  }
+  li {
+	list-style:none;
+	&.folder,
+	&.file {
+	  padding-left:@font-size-base;
+	  &:before {
+		font-family:FontAwesome;
+		display:inline-block;
+		width:@font-size-base;
+		margin-left:-@font-size-base;
+	  }
+	}
+	&.folder:before {
+	  color:@four51-orange;
+	  content:@fa-var-folder;
+	}
+	&.file:before {
+	  color:@four51-blue;
+	  content:@fa-var-file;
+	}
+  }
+}
+
+.angular-img {
+  max-width:50px;
+}

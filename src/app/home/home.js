@@ -47,7 +47,7 @@ function HomeController( $resource ) {
     vm.noWrapSlides = false;
     vm.slides = [
         {
-            image:'assets/images/a1.jpg',
+            image:'assets/images/bluerImage.jpg',
             title:'OrderCloud',
             description:'one platform. infinite possibilities.',
             buttonTitle:'watch video'

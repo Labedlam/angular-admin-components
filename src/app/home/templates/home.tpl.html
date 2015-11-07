@@ -146,14 +146,19 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             </div>
             <div>
             </div>
-            <form class="form-inline">
+            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="" placeholder="Name">
+                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" />
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" id="" placeholder="Email Address">
+                    <input type="test" class="form-control" name="emailfield" ng-model="home.info.email" required blacklist placeholder="Email Address" />
                 </div>
-                <button type="submit" class="">Request Info</button>
+                <button type="submit" ng-disabled="ordercloud_registration.$invalid" class="">Request Info</button><br />
+                <div class="form-group" ng-show="ordercloud_registration.$invalid && ordercloud_registration.$error.blacklist">
+                    <span class="helper-text">
+                        Your name and email are required and please use a valid company email address.
+                    </span>
+                </div>
             </form>
         </div>
     </div>

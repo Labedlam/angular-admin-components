@@ -17,8 +17,14 @@ function LoginConfig( $stateProvider ) {
 	});
 }
 
-function LoginController( $rootScope, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
+function LoginController( $rootScope, $resource, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
 	var vm = this;
+
+	vm.kyle = function() {
+		//$resource("https://testintegrations.ordercloud.io/components/delego/v1/test").get();
+		//$resource("https://testintegrations.ordercloud.io/components/esteelauder/v1/test").get();
+		$resource("https://testintegrations.ordercloud.io/components/esteelauder/v1/orderreview").save({"test": "testing"}).$promise
+	};
 
 	vm.submit = function() {
 		DevCenter.Login( vm.credentials )

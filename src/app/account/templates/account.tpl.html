@@ -6,9 +6,9 @@
     </header>
     <div id="Account" class="container">
         <form name="ProfileUpdateForm" ng-submit="account.update(ProfileUpdateForm)" ng-if="!account.profile.Expired" novalidate autocomplete="off">
-            <div class="alert alert-info" ng-if="account.profile.TrialDateStart">
+            <blockquote class="alert-info" ng-if="account.profile.TrialDateStart">
                 {{account.profile.TrialDaysRemaining}} days remaining in trial
-            </div>
+            </blockquote>
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label>First Name</label>
@@ -31,8 +31,8 @@
             <button type="button" class="btn btn-default" ng-disabled="ProfileUpdateForm.$pristine" ng-click="account.resetForm(ProfileUpdateForm)">Revert Changes</button>
             <!--<button type="button" class="btn btn-default" ui-sref="base.changePassword">Change Password</button>--> <!-- Password is currently not available to update for Dev users -->
         </form>
-        <div class="alert alert-danger" ng-if="account.profile.Expired">
+        <blockquote class="alert-danger" ng-if="account.profile.Expired">
             Your trial account is expired
-        </div>
+        </blockquote>
     </div>
 </article>

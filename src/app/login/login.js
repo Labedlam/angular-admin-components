@@ -17,7 +17,7 @@ function LoginConfig( $stateProvider ) {
 	});
 }
 
-function LoginController( $rootScope, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
+function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
 	var vm = this;
 
 	vm.submit = function() {
@@ -33,10 +33,10 @@ function LoginController( $rootScope, $cookies, $state, DcAdmin, DevCenter, DevA
 						});
 					})
 				} else {
-					$state.reload()
+					//$state.reload();
 				}
 			}).catch(function( ex ) {
-				console.dir( ex );
+				$exceptionHandler( ex );
 			});
 	};
 }

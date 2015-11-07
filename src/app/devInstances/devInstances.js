@@ -64,7 +64,7 @@ function DevInstancesConfig( $stateProvider ) {
 		})
 }
 
-function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInstances) {
+function DevInstancesController($state, $timeout, CurrentUser, DevCenter, Auth, AvailableInstances) {
 	var vm = this;
 	vm.list = AvailableInstances;
 	vm.selectedInstance = null;
@@ -85,9 +85,15 @@ function DevInstancesController($state, $timeout, DevCenter, Auth, AvailableInst
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
 			//TODO: waiting for a search term to be available on DevGroup list
+			if (CurrentUser.TrialDateStart) {
+				return DevCenter.Me.Groups.List(1, 10).then(function(data) {
+					return data.Items;
+				});
+			}
 			return DevCenter.Group.List(model, 1, 10).then(function(data) {
 				return data.Items;
 			});
+
 		}), 300);
 		return searching;
 	};
@@ -132,7 +138,8 @@ function DevInstanceCreateController($state, $timeout, DevCenter) {
 		"Username": null,
 		"Password": null,
 		"FirstName": null,
-		"LastName": null
+		"LastName": null,
+		"Active": true
 	};
 
 	var searching;
@@ -140,8 +147,9 @@ function DevInstanceCreateController($state, $timeout, DevCenter) {
 		if (!model || model.length < 2) return;
 		if (searching) $timeout.cancel(searching);
 		searching = $timeout((function() {
-			//TODO: waiting for a search term to be available on DevGroup list (global, not just /me/devgroups)
-			return DevCenter.Group.List(model, 1, 10).then(function(data) {
+			//Only search on your own dev groups when creating an instance
+			//TODO: waiting for a search term to be available on Me.DevGroup list
+			return DevCenter.Me.Groups.List(1, 10).then(function(data) {
 				return data.Items;
 			});
 		}), 300);

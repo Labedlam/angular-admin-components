@@ -65,13 +65,13 @@
 						<p>{{member.Username + ' - ' + member.FirstName + ' ' + member.LastName}}</p>
 						<div ng-if="member.GroupAdmin"><span class="label label-default">Group Admin</span></div>
 						<span ng-if="!member.Accepted" class="invite-status">Invite Pending</span>
-						<div class="btn-group" uib-dropdown ng-if="devGroupDetail.model.GroupAdmin">
+						<div class="btn-group" uib-dropdown ng-if="devGroupDetail.model.GroupAdmin && (!member.GroupAdmin || devGroupDetail.adminCount > 1)">
 							<button type="button" class="btn btn-default" uib-dropdown-toggle>
 								<i class="fa fa-cog"></i> <span class="caret"></span>
 							</button>
 							<ul uib-dropdown-menu role="menu">
 								<li role="menuitem" ng-if="!member.GroupAdmin && member.Accepted"><a href="" ng-click="devGroupDetail.makeGroupAdmin(this)">Make Group Admin</a></li>
-								<li role="menuitem" ng-if="member.GroupAdmin"><a href="" ng-click="devGroupDetail.demoteMember(this)">Demote</a></li>
+								<li role="menuitem" ng-if="member.GroupAdmin && devGroupDetail.adminCount > 1"><a href="" ng-click="devGroupDetail.demoteMember(this)">Demote</a></li>
 								<li role="menuitem"><a href="" class="text-danger" ng-click="devGroupDetail.removeMember(this)">Remove from Group</a></li>
 							</ul>
 						</div>

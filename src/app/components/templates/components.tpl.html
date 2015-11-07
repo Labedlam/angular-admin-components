@@ -7,9 +7,9 @@
     <article class="container">
         <p>Components are the key to a reusable approach to implementing OrderCloud based solutions. AngularJs offers the opportunity to create robust applications with many, small and self contained modules. Each module or component, designed to be functional when injected in the OrderCloud seed, encapsulates one responsibility enabled by the OrderCloud API. By themselves, an OrderCloud solution can be comprised entirely of component library. However, they are intended to be building blocks for additional customization and development. Use them as an example of how to create your B2B solutions.</p>
 
-        <p>OrderCloud's Component library is an open source project, https://github.com/Four51/OrderCloud-Components-Dev. Contributions are welcome. Create a pull request for inclusion into the library. The project leaders will review all submissions and respond appropriately. We ask that every contributor follow the outstanding Angular Style Guide, https://github.com/johnpapa/angular-styleguide, managed by John Papa to maintain consistent and clean code.</p>
+        <p>OrderCloud's <a target="_blank" ng-href="https://github.com/Four51/OrderCloud-Components-Dev">Component library</a> is an open source project hosted at Github. Contributions are welcome. Create a pull request for inclusion into the library. The project leaders will review all submissions and respond appropriately. We ask that every contributor follow the outstanding <a target="_blank" ng-href="https://github.com/johnpapa/angular-styleguide">Angular Style Guide</a>, managed by <a target="_blank" ng-href="https://github.com/johnpapa">John Papa</a>, to maintain consistent and clean code.</p>
 
-        <p>To include a component in your application, simply copy the entire component folder and paste into the OrderCloud Seed in the app folder. The seed has logic to determine the presence of the component and add the item to the base app navigation.</p>
+        <p>To include a component in your application, simply copy the entire component folder and paste into the OrderCloud Seed <code>app</code> folder. The seed has logic to determine the presence of the component and add the item to the base app navigation.</p>
 
         <h3 class="page-header">Basic component structure:</h3>
         <div class="row">
@@ -24,7 +24,7 @@
                                     <li class="folder">
                                         component_name
                                         <ul>
-                                            <li class="file">componet_name.js</li>
+                                            <li class="file">component_name.js</li>
                                             <li class="folder">
                                                 templates
                                                 <ul>
@@ -60,33 +60,34 @@
         <hr/>
         <pre>angular.module( 'orderCloud' )</pre>
 
-        <p>All routing and controllers should be configured in this module. OrderCloud seed uses the Angular UI-Router module to manage UI state, http://angular-ui.github.io/ui-router/site/#/api/ui.router. A component can be comprised of multiple routes and templates. As you examine the library you will see many examples of the differen configurations that are capable. The example below shows a component constructed to contain 6 routes and templates.</p>
+        <p>All routing and controllers should be configured in this module. OrderCloud seed uses the <a target="_blank" ng-href="http://angular-ui.github.io/ui-router/site/#/api/ui.router">Angular UI-Router</a> module to manage UI state. A component can be comprised of multiple routes and templates. As you examine the library you will see many examples of the different configurations that are capable. The example below shows a component constructed to contain 6 routes and templates.</p>
 
         <pre>
-            config( CouponsConfig )
-            .controller( 'CouponsCtrl', CouponsController )
-            .controller( 'CouponEditCtrl', CouponEditController )
-            .controller( 'CouponCreateCtrl', CouponCreateController )
-            .controller( 'CouponAssignCtrl', CouponAssignController )
-            .controller( 'CouponAssignProductCtrl', CouponAssignProductController )
-            .controller( 'CouponAssignCategoryCtrl', CouponAssignCategoryController )
+            angular.module( 'orderCloud' )
+                .config( CouponsConfig )
+                .controller( 'CouponsCtrl', CouponsController )
+                .controller( 'CouponEditCtrl', CouponEditController )
+                .controller( 'CouponCreateCtrl', CouponCreateController )
+                .controller( 'CouponAssignCtrl', CouponAssignController )
+                .controller( 'CouponAssignProductCtrl', CouponAssignProductController )
+                .controller( 'CouponAssignCategoryCtrl', CouponAssignCategoryController )
 
-            function CouponsConfig( $stateProvider ) {
-                $stateProvider
-                    .state( 'base.coupons', {
-                        url: '/coupons',
-                        templateUrl:'coupons/templates/coupons.tpl.html',
-                        controller:'CouponsCtrl',
-                        controllerAs: 'coupons',
-                        data: {componentName: 'Coupons'}, // used to identify for navigation inclusion
-                        resolve: {
-                            CouponList: function(Coupons) {
-                                return Coupons.List();
+                function CouponsConfig( $stateProvider ) {
+                    $stateProvider
+                        .state( 'base.coupons', {
+                            url: '/coupons',
+                            templateUrl:'coupons/templates/coupons.tpl.html',
+                            controller:'CouponsCtrl',
+                            controllerAs: 'coupons',
+                            data: {componentName: 'Coupons'}, // used to identify for navigation inclusion
+                            resolve: {
+                                CouponList: function(Coupons) {
+                                    return Coupons.List();
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
         </pre>
             <hr/>
     </article>

@@ -30,6 +30,7 @@ function DevGroupsConfig( $stateProvider ) {
 											.then(function(aData) {
 												instances = instances.concat(Underscore.filter(aData.Items, {Accepted:true}));
 												group.Members = members;
+												group.AdminCount = Underscore.where(members, {GroupAdmin:true}).length;
 												group.Instances = instances;
 												df.resolve();
 											})
@@ -136,7 +137,7 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 	}
 }
 
-function DevGroupCreateController($state, DevCenter) {
+function DevGroupCreateController($state, DevCenter, CurrentUser) {
 	var vm = this;
 	vm.newGroup = {
 		Name: null,
@@ -144,6 +145,7 @@ function DevGroupCreateController($state, DevCenter) {
 	};
 
 	vm.submit = function() {
+		if (CurrentUser.TrialDateStart) vm.newGroup.Private = true;
 		DevCenter.Group.Create(vm.newGroup).then(function(data){
 			$state.go('base.groupsList');
 			//TODO: Success Page for Group Created
@@ -168,12 +170,13 @@ function DevGroupEditController($state, DevCenter, SelectedGroup) {
 	}
 }
 
-function DevGroupDetailController($state, $timeout, DevAuth, DevCenter, SelectedGroup, GroupMembers, AcceptedGroupInstances, PendingGroupInstances) {
+function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCenter, SelectedGroup, GroupMembers, AcceptedGroupInstances, PendingGroupInstances) {
 	var vm = this,
 		selectedAccess,
 		selectedUser;
 	vm.model = SelectedGroup;
 	vm.members = GroupMembers.Items;
+	vm.adminCount = Underscore.where(vm.members, {GroupAdmin:true}).length;
 	vm.instances = AcceptedGroupInstances.Items;
 	vm.pendingInstances = PendingGroupInstances.Items;
 	vm.activeTab = 'Members';

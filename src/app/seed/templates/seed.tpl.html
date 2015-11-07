@@ -1,71 +1,128 @@
 <div id="Seed">
-    <header class="dc-header" ui-sref="base.docs">
+    <header class="dc-header">
         <div class="container">
             <h2>OrderCloud AngularJS Seed</h2>
-            <p class="lead">A seed project for custom OrderCloud Solutions built on AngularJS</p>
+            <hr/>
+            <p>The OrderCloud Seed runs on AngularJS, a powerful front-end tool created by Google, which provides an environment that is incredibly expressive, readable, and quick to develop.  It's extensible toolset can be leveraged in part or in whole alongside other libraries. Choosing AngularJS for our first Seed was an easy decision because it helped us provide our clients with the most flexible Front-End Framework and the fastest development workflow.</p>
+            <p>It is highly recommended (if you haven't already) that you familiarize yourself with <a href="https://code.angularjs.org/1.4.5/docs/guide/introduction" target="_blank" tooltip="Angular Developer Guide (v1.4.5)">Angular</a> and it's concepts.</p>
         </div>
     </header>
-    <div class="container">
-        <h3 class="page-header">The OrderCloud Seed</h3>
-        <p>The term <b>"seed"</b> signifies this is the starting point for <b>all</b> OrderCloud applications created through the OrderCloud Development Center.  It was crafted using the most advanced web development tools and perfected over years of rapid development in the B2B world.</p>
-        <div class="row feature-row">
-            <div class="col-sm-3">
-                <figure>
-                    <img src="https://avatars2.githubusercontent.com/u/139426?v=3&s=200" alt="AngularJS Logo"/>
-                </figure>
-            </div>
-            <div class="col-sm-9">
-                <h4><a href="https://angularjs.org/" target="_blank">AngularJS</a> <small>MVW Framework</small></h4>
-                <p>The OrderCloud Seed runs on AngularJS, a powerful front-end tool created by Google, which provides an environment that is incredibly expressive, readable, and quick to develop.  It's extensible toolset can be leveraged in part or in whole alongside other libraries. Choosing AngularJS for our first Seed was an easy decision because it helped us provide our clients with the most flexible Front-End Framework and the fastest development workflow.</p>
-                <p>It is highly recommended (if you haven't already) that you familiarize yourself with <a href="https://code.angularjs.org/1.4.5/docs/guide/introduction" target="_blank" tooltip="Angular Developer Guide (v1.4.5)">Angular</a> and it's concepts. We will cover some of the features that pertain to the <b>OrderCloud AngularJS SDK (Software Development Kit)</b> in the next class; however, learning everything about Angular requires education beyond the scope of these courses.</p>
-            </div>
-        </div>
-
-        <h3 class="page-header">
-            Developer Tools <br/>
-            <small>The following tools help the developer work efficiently with the Seed in a way that is compatible with the Development Center.</small>
+    <article class="container">
+        <h3 class="page-header">Project Directory Structure <br/>
+            <small>
+                After following the <a href="" ui-sref="base.gettingstarted">getting started guide</a>, the structure of your project should match the example below
+            </small>
         </h3>
-        <div class="row feature-row">
-            <div class="col-sm-3">
-                <figure>
-                    <img src="https://avatars2.githubusercontent.com/u/6078720?v=3&s=200" alt="NPM logo"/>
-                </figure>
-            </div>
-            <div class="col-sm-9">
-                <h4><a href="https://www.npmjs.com/" target="_blank">Node Package Manager (NPM)</a> <small>Installation of Build tools.</small></h4>
-                <p>NPM is used by the OrderCloud seed to install all of the necessary packages for Building and Compiling your application source code.  In the unlikely scenario a developer wants to alter or add to the OrderCloud Build - they will use NPM to install a new package and when done correctly (saving the install to your package.json), the Dev Center will alter its Build process as well.</p>
-                <p>When a developer first opens an OrderCloud Seed, running <code>$npm install</code> is the first step toward development.</p>
-            </div>
-        </div>
-        <hr/>
-        <div class="row feature-row">
-            <div class="col-sm-3">
-                <figure>
-                    <img src="https://avatars3.githubusercontent.com/u/3709251?v=3&s=200" alt="Bower logo"/>
-                </figure>
-            </div>
-            <div class="col-sm-9">
-                <h4><a href="http://bower.io/" target="_blank">Bower</a> <small>Front-End package management</small></h4>
-                <p>Bower is used to install all of the OrderCloud seed's Front-End modules (listed below) - including AngularJS. The developer will run a <code>$bower install</code> in the console after they complete the NPM install process. This will place each package beneath a brand new "vendor" directory which will be referred to during the Build process.</p>
-            </div>
-        </div>
-        <hr/>
-        <div class="row feature-row">
-            <div class="col-sm-3">
-                <figure>
-                    <img src="https://avatars2.githubusercontent.com/u/6200624?v=3&s=200" alt="Gulp logo"/>
-                </figure>
-            </div>
-            <div class="col-sm-9">
-                <h4><a href="http://gulpjs.com/" target="_blank">Gulp</a> <small>A streaming build system</small></h4>
-                <p>Gulp is a toolkit that will help OrderCloud developers automate painful or time-consuming tasks in their development workflow. For web development, it can help by doing CSS preprocessing, JS transpiling, minification, live reloading, and much more. Integrations are built into all major IDEs.</p>
-                <p>In the Seed, Gulp additionally takes care of cross-browser CSS, Angular Injection patterns, and even improves performance by compiling all project HTML files into one JS file that stores them in the templateCache.</p>
-            </div>
-        </div>
 
+        <div class="row">
+            <div class="col-md-4">
+                <ul class="directory-list">
+                    <li class="folder">
+                        OrderCloud Project
+                        <ul>
+                            <li class="folder">
+                                Gulp
+                                <ul>
+                                    <li class="file">assetTasks.js</li>
+                                    <li class="file">generalTasks.js</li>
+                                    <li class="file">scriptTasks.js</li>
+                                    <li class="file">testTasks.js</li>
+                                    <li class="file">watchTasks.js</li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                karma
+                                <ul>
+                                    <li class="file">karma-unit.tpl</li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                node_modules <span class="text-muted">(NPM Dependencies)</span>
+                            </li>
+                            <li class="folder">
+                                src
+                                <ul>
+                                    <li class="folder">
+                                        app
+                                        <ul>
+                                            <li class="folder">Login</li>
+                                            <li class="folder">Base</li>
+                                            <li class="folder">Home</li>
+                                            <li class="folder">Account</li>
+                                            <li class="folder">Common
+                                                <ul>
+                                                    <li class="folder">auto-id</li>
+                                                    <li class="folder">buyer-select</li>
+                                                    <li class="folder">files</li>
+                                                    <li class="folder">helper-factories</li>
+                                                    <li class="folder">infinite-scroll</li>
+                                                    <li class="folder">ordercloud-logo</li>
+                                                    <li class="folder">search</li>
+                                                </ul>
+                                            </li>
+                                            <li class="file">app.js</li>
+                                            <li class="file">global.less</li>
+                                            <li class="file">variables.less</li>
+                                        </ul>
+                                    </li>
+                                    <li class="folder">
+                                        assets <span class="text-muted">(Static content like fonts and images)</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                vendor <span class="text-muted">(Bower Dependencies)</span>
+                            </li>
+                            <li class="file">.bowerrc</li>
+                            <li class="file">bower.json</li>
+                            <li class="file">gulpConfig.js</li>
+                            <li class="file">Gulpfile.js</li>
+                            <li class="file">karma.conf.js</li>
+                            <li class="file">package.json</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4><b>Default Components</b></h4>
+                        <p>The Seed Project comes with four default components to give developers easy access into their instance.</p>
+                        <h5><b>Login</b></h5>
+                        <p>The login component provides a route with a login form and forgot password mechanism.  The form is wired up to authenticate a user and store their <code>access_token</code> via the OrderCloud Angular SDK. It also comes with a Forgot Password mechanism built in.  Once a user logs in, they are redirected to the Home page.</p>
+                        <h5><b>Base</b></h5>
+                        <p>The Base component can be thought of as the hub for all other components (excluding Login).  It provides automatic, mobile-friendly, navigation to any OrderCloud components included in the project.  By default everything you see post-login will be loaded into the Base components <code>ui-view</code></p>
+                        <h5><b>Home</b></h5>
+                        <p>The Home component is the best place to look for an example of an OrderCloud component.  It follows our best practices and everything is very minimal, making it easy for Developers to understand the different pieces involved.</p>
+                        <h5><b>Account</b></h5>
+                        <p>The Account component is accessible via the top nav dropdown. By default, it provides a form for updating the currently authenticated users profile and password. This also includes the only example of a UI-Bootstrap modal window.</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4><b>Useful Tools</b></h4>
+                        <p>All of the following are found under the <code>/src/app/common</code> directory.</p>
+                        <h5><b>auto-id</b></h5>
+                        <p>A Four51 Angular directive for adding the option of auto-generating IDs for things like Coupons and Gift Card codes.</p>
+                        <h5><b>buyer-select</b></h5>
+                        <p>This directive is used in the Base component for switching the active <code>buyerid</code> used by the OrderCloud Angular SDK.</p>
+                        <h5><b>files</b></h5>
+                        <p>Four51 created this directive to make uploading Files and attaching them to any model in OrderCloud easier than ever.</p>
+                        <h5><b>helper-factories</b></h5>
+                        <p>These factories are used by various OrderCloud components for simplifying more complex Assignment UIs.</p>
+                        <h5><b>infinite-scroll</b></h5>
+                        <p>This Four51 directive is <em>extremely</em> useful for large sets of data that need to be loaded in chunks as the user scrolls downward.</p>
+                        <h5><b>ordercloud-logo</b></h5>
+                        <p>This is an example of a directive that loads an SVG logo. It's visible in the top navigation.</p>
+                        <h5><b>search</b></h5>
+                        <p>This directive works in conjunction with the <code>infinite-scroll</code> to allow google-esque searches in every ordercloud component.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    <div class="container">
         <h3 class="page-header">
-            The Front-End <br/>
-            <small>The Seed comes bundled with libraries that replace default AngularJS features and others that enhance Angular as it exists.</small>
+            3rd-Party Front-End Tools<br/>
+            <small>The following tools either replace default AngularJS modules or enhance Angular as it exists. They all work well together and make customizing the UI a breeze.</small>
         </h3>
 
         <div class="row feature-row">
@@ -146,149 +203,15 @@
                 <p><a href="http://fontawesome.io/cheatsheet/" target="_blank">The cheatsheet</a> provides a comprehensive list of the available icons.</p>
             </div>
         </div>
+        <hr/>
+        <h4><b>Adding new 3rd-Party tools</b></h4>
+        <p>In the future, should you want to add a new Bower package to your app, run the <code>install</code> command and add <code>--save</code> to save the dependency in your bower.json file:</p>
+        <pre>$ bower install packagename --save</pre>
+        <p>Without the <code>--save</code>, newly installed packages will <b>not be picked up</b> by the build system.</p>
+        <hr/>
     </div>
     <article class="container">
-
-    <hr>
-    <h3><a id="Overall_Directory_Structure_40"></a>Overall Directory Structure</h3>
-    <p>At a high level, after following the getting started guide, the structure of the app should look roughly like this:</p>
-        <div class="row">
-            <div class="col-md-4">
-                <ul class="directory-list">
-                    <li class="folder">
-                        OrderCloud Project
-                        <ul>
-                            <li class="folder">
-                                Gulp
-                                <ul>
-                                    <li class="file">assetTasks.js</li>
-                                    <li class="file">generalTasks.js</li>
-                                    <li class="file">scriptTasks.js</li>
-                                    <li class="file">testTasks.js</li>
-                                    <li class="file">watchTasks.js</li>
-                                </ul>
-                            </li>
-                            <li class="folder">
-                                karma
-                                <ul>
-                                    <li class="file">karma-unit.tpl</li>
-                                </ul>
-                            </li>
-                            <li class="folder">
-                                node_modules <span class="text-muted">(NPM Dependencies)</span>
-                            </li>
-                            <li class="folder">
-                                src
-                                <ul>
-                                    <li class="folder">
-                                        app
-                                        <ul>
-                                            <li class="folder">Login</li>
-                                            <li class="folder">Base</li>
-                                            <li class="folder">Home</li>
-                                            <li class="folder">Account</li>
-                                            <li class="folder">Common
-                                                <ul>
-                                                    <li class="folder">auto-id</li>
-                                                    <li class="folder">buyer-select</li>
-                                                    <li class="folder">files</li>
-                                                    <li class="folder">helper-factories</li>
-                                                    <li class="folder">infinite-scroll</li>
-                                                    <li class="folder">ordercloud-logo</li>
-                                                    <li class="folder">search</li>
-                                                </ul>
-                                            </li>
-                                            <li class="file">app.js</li>
-                                            <li class="file">global.less</li>
-                                            <li class="file">variables.less</li>
-                                        </ul>
-                                    </li>
-                                    <li class="folder">
-                                        assets <span class="text-muted">(Static content like fonts and images)</span>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="folder">
-                                vendor <span class="text-muted">(Bower Dependencies)</span>
-                            </li>
-                            <li class="file">.bowerrc</li>
-                            <li class="file">bower.json</li>
-                            <li class="file">gulpConfig.js</li>
-                            <li class="file">Gulpfile.js</li>
-                            <li class="file">karma.conf.js</li>
-                            <li class="file">package.json</li>
-                        </ul>
-
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-8"></div>
-        </div>
-
-    <h3><a id="Detailed_Installation_72"></a>Detailed Installation</h3>
-    <p>This section provides a little more detailed understanding of what goes into
-        getting <b>OrderCloud</b> up and running. Though <b>OrderCloud</b> is really simple
-        to use, it might help to have an understanding of the tools involved here, like
-        Node.js and Gulp and Bower. If you're completely new to highly organized,
-        modern JavaScript development, take a few short minutes to read <a href="tools.md">this overview
-            of the tools</a> before continuing with this section.</p>
-    <p>Here it is:</p>
-    <p><code>OrderCloud</code> uses <a href="http://gulpjs.com/">Gulp</a> as its build system, so
-        <a href="http://nodejs.org">Node.js</a> is required. Also, we are using Gulp 4.0 prior to
-        its official release date. You can install Gulp 4.0 on your machine globally by running
-        the following command:</p>
-<pre><code class="language-sh">$ npm -g install <span class="hljs-string">"gulpjs/gulp-cli#4.0"</span> karma bower
-</code></pre>
-    <p>And then install the remaining build dependencies locally:</p>
-<pre><code class="language-sh">$ npm install
-</code></pre>
-    <p>This will read the <code>dependencies</code> (empty by default) and the <code>devDependencies</code>
-        (which contains our build requirements) from <code>package.json</code> and install
-        everything needed into a folder called <code>node_modules/</code>.</p>
-    <p>There are many Bower packages used by <b>OrderCloud</b>, like AngularJS and the
-        OrderCloud-Angular-SDK, which are listed in <code>bower.js</code>. To install them into the
-        <code>vendor/</code> directory, simply run:</p>
-<pre><code class="language-sh">$ bower install
-</code></pre>
-    <p>In the future, should you want to add a new Bower package to your app, run the
-        <code>install</code> command and add <code>--save</code> to save the dependency in your bower.json file:</p>
-<pre><code class="language-sh">$ bower install packagename --save
-</code></pre>
-    <p>The <code>--save</code> flag tells Bower to add the package at its current version to
-        our project's <code>bower.js</code> file so should another developer download our
-        application (or we download it from a different computer), we can simply run the
-        <code>bower install</code> command as above and all our dependencies will be installed for
-        us. Neat!</p>
-    <p>Technically, <b>OrderCloud</b> is now ready to go.</p>
-    <p>To ensure your setup works, build your application and then run it with the following
-        commands:</p>
-<pre><code class="language-sh">$ gulp build
-$ gulp watch</code></pre>
-    <p>
-        The built files are placed in the <code>build/</code> directory by default. Add the <code>watch</code> command should
-        open the application on a localhost on port 8000.
-    </p>
-    <p><code>watch</code> actually starts a few other processes in the background to help you develop your
-        application. Using <code>browser-sync</code> and some built in gulp functions the app is now watching
-        for changes in your source directory. Should you make any changes to your html or js files
-        the app should automatically reload your application with the appropriate changes. Also
-        if you make any changes to your style sheets (less or css) the app will rebuild those changes
-        and inject them directly into the application, without reloading the entire page!</p>
-    <p>When you're ready to push your app into production, just run the <code>compile</code>
-        command:</p>
-<pre><code class="language-sh">$ gulp compile
-</code></pre>
-    <p>This will concatenate and minify your sources and place them by default into the
-        <code>compile/</code> directory. There will only be three files (excluding assets): <code>index.html</code>,
-        <code>OrderCloud.js</code>, and <code>OrderCloud.css</code>. All of the vendor dependencies like
-        AngularJS styles and the OrderCloud-SDK itself have been added to them for super-easy
-        deploying. If you use any assets (<code>src/assets/</code>) then they will be copied to
-        <code>compile/</code> as is.</p>
-    <p>Lastly, a complete build is always available by simply running the default
-        task, which runs <code>build</code> and then <code>compile</code>:</p>
-<pre><code class="language-sh">$ gulp
-</code></pre>
-    <h3><a id="The_Build_System_164"></a>The Build System</h3>
+    <h3 class="page-header">The Build System</h3>
     <p>The best way to learn about the build system is by familiarizing yourself with
         Gulp and then looking through the code, <code>Gulpfile.js</code> and the Gulp folder.
         But you don't need to do that to be very productive with

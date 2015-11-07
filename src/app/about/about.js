@@ -30,8 +30,12 @@ function AboutController($sce, $resource) {
 			"phone": null,
 			"company": null,
 			"email": vm.info.email
-		}).$promise;
+		}).$promise.then(successPardot);
 	};
+
+	function successPardot(data) {
+		vm.submission = true;
+	}
 
 	vm.config = {
 				preload: "none",

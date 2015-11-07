@@ -146,21 +146,21 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             </div>
             <div>
             </div>
-            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()">
+            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()" ng-hide="ordercloud_registration.$submitted && ordercloud_registration.$valid">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" />
+                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" disable-validation-message="" />
                 </div>
                 <div class="form-group">
                     <input type="test" class="form-control" name="emailfield" ng-model="home.info.email" required blacklist placeholder="Email Address" disable-validation-message="" />
                 </div>
                 <button type="submit" ng-disabled="ordercloud_registration.$invalid" class="">Request Info</button>
-                <span ng-show="ordercloud_registration.$submitted && ordercloud_registration.valid">Thank you for requesting more information. Stay tuned!!</span><br />
-                <div class="form-group">
-                    <span class="helper-text" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !ordercloud_registration.$submitted">
-                        Your name and email are required and please use a valid company email address.
-                    </span>
-                </div>
+                <span class="help-block" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !ordercloud_registration.$submitted">
+                    Your name and email are required and please use a valid company email address.
+                </span>
             </form>
+            <div ng-show="ordercloud_registration.$submitted && ordercloud_registration.$valid">
+                Thank you for requesting more information. Stay tuned!!
+            </div>
         </div>
     </div>
     <div class="row footer-navigation hidden-xs">

@@ -62,12 +62,12 @@ function BaseController( CurrentUser ) {
 		},
 		{
 			Display: 'Components Overview',
-			Description: 'Component overview Description',
+			Description: 'AngularJs offers the opportunity to create robust applications with many, small and self contained modules.',
 			StateRef: 'base.components'
 		},
 		{
 			Display: 'Integrations Overview',
-			Description: 'Integration platform Description',
+			Description: 'OrderCloud handles integrations with its partner Jitterbit, a PaaS that can operate in the cloud, on premise, or a hybrid of both, to solve almost any type of data transportation and transformations.',
 			StateRef: 'base.integrations'
 		}
 	];

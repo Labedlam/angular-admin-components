@@ -9,26 +9,23 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-4 col-sm-6" ng-repeat="course in courses.list | orderBy: 'ListOrder'">
-				<article class="course-summary panel panel-default" ui-sref="base.devcourses.course({courseid:course.ID})">
-					<header class="panel-heading">
-						<p class="panel-title"><b>{{course.Name}}</b></p>
-					</header>
+				<article class="course-summary panel panel-default" >
+					<figure class="course-img">
+						<img class="img-responsive img-circle" ng-src="{{course.ImgUrl}}" alt=""/>
+					</figure>
 					<div class="panel-body">
-						<p class="text-info">{{course.Description}}</p>
-						<div class="row">
-							<div class="col-xs-6">
-								<p class="text-muted">{{course.Classes.length + ' classes'}} </p>
-							</div>
-							<div class="col-xs-6 text-right">
-								<p class="label label-primary">{{course.Difficulty}}</p>
-							</div>
+						<h3 class="course-title">{{course.Name}}</h3>
+						<p class="course-description">{{course.Description}}</p>
+						<button class="btn btn-success" ui-sref="base.devcourses.course({courseid:course.ID})" ng-if="course.CourseProgress.Meta.PercentDone == 0">START COURSE</button>
+						<button class="btn btn-success" ui-sref="base.devcourses.course.class({courseid:course.ID, classid:course.Classes[course.CourseProgress.CompletedClasses.length]})" ng-if="course.CourseProgress.Meta.PercentDone > 0">CONTINUE COURSE</button>
+						<div>
+							<span class="text-muted">{{course.Classes.length + ' classes'}}</span> | <span>{{course.Difficulty}}</span>
 						</div>
-						<hr/>
-						<uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="success">{{course.CourseProgress.Meta.Count}} of {{course.CourseProgress.Meta.TotalClasses}}</uib-progressbar>
 					</div>
-<!--					<figure>
-						<img class="img-responsive" ng-src="{{course.ImgUrl}}" alt=""/>
-					</figure>-->
+					<div class="panel-footer" ng-class="{'not-started': course.CourseProgress.Meta.PercentDone == 0}">
+						<uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="info">{{course.CourseProgress.Meta.Count}} of {{course.CourseProgress.Meta.TotalClasses}}</uib-progressbar>
+					</div>
+<!--					-->
 
 				</article>
 			</div>

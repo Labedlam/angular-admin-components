@@ -29,10 +29,10 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				return response;
 			},
 			'responseError': function(rejection) {
-				var reject = true;
-				['.html','/docs','devcenter/','devcenterapi', 'oauth'].forEach(function(each) {
+				var reject = false;
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit'].forEach(function(each) {
 					if (rejection.config.url.indexOf(each) > -1) {
-						reject = false;
+						reject = true;
 					}
 				});
 				return reject ? $q.reject(rejection) : $rootScope.$broadcast('event:responseError', rejection);

@@ -2,7 +2,7 @@
     <div class="container">
         <h2>OrderCloud AngularJS SDK</h2>
         <hr/>
-        <p>The OrderCloud AngularJS SDK is an AngularJS module that greatly simplifies interaction with the OrderCloud RESTful API in the context of an AngularJS project. The module is an auto-generated reflection of the C# source code. This means there is one angular service for each API resource described in the docs, and the SDK will always be in sync with the latest API code. The SDK is available as a public bower package and easy to install.</p>
+        <p>The OrderCloud AngularJS SDK is an AngularJS module that greatly simplifies interaction with the OrderCloud RESTful API in the context of an AngularJS project. The module is an auto-generated reflection of the OrderCloud API. This means there is one angular service for each API resource endpoint described in the docs, and the SDK will always be in sync with the latest API code. The SDK is available as a public bower package and easy to install.</p>
     </div>
 </header>
 <article class="container">
@@ -30,7 +30,7 @@
         </div>
     </div>
     <h3 class="page-header">Requirements</h3>
-    <p>The OrderCloud Angular SDK is meant for <b>Angular projects only.</b>  Attempting to use it in another framework is futile. In order to take advantage of the SDK you must first define a context in which you will be interacting with OrderCloud. This context is a defined by 6 required angular constants:</p>
+    <p>The OrderCloud Angular SDK is meant for <b>AngularJs projects only.</b>  Attempting to use it in another framework is futile. In order to take advantage of the SDK you must first define a context in which you will be interacting with OrderCloud. This context is defined by 6 required angular constants:</p>
     <div class="row">
         <div class="col-sm-4">
             <p>The values for the <b>clientid, ocscope,</b> and <b>appname</b> constants can be retrieved from any of your available OrderCloud Instances.</p>
@@ -111,7 +111,7 @@
     </div>
     <div class="row">
         <div class="col-sm-4">
-            <p>Vice versa, when an outgoing request is intercepted <code>Auth</code> will return the previously stored access token to be appended to the headers of the request (if one was not set already).</p>
+            <p>Vice versa, when an outgoing request is intercepted <code>Auth</code> will return the previously stored access token to be appended to the headers of the request (if one was not set as a custom header value).</p>
         </div>
         <div class="col-sm-8">
             <div class="rounded-corners"  readonly ui-ace="{
@@ -130,7 +130,7 @@
     <h4><b>Extendable</b></h4>
     <div class="row">
         <div class="col-sm-4">
-            <p>The SDK has a mechanism built in every service that allows developers to globally customize their API responses. Taking advantage of this feature you must adhere to the <b>Extend pattern</b> religiously. Before each service method <code>$promise</code> is returned, the SDK checks to see if the resource has been extended and performs the extension if present.</p>
+            <p>The SDK has a mechanism built in every service that allows developers to globally customize their API responses. To take advantage of this feature you must adhere to the <b>Extend pattern</b> explicitly. Before each service method <code>$promise</code> is returned, the SDK checks to see if the resource has been extended and performs the action if present.</p>
             <p>The example to the right shows the Extend pattern being used to extend the Buyers service. Because the same extend is performed on <code>Buyers.List()</code> and <code>Buyers.Get()</code>, the pattern checks the type of the data passed in and handles arrays with a <code>angular.forEach</code> loop.</p>
         </div>
         <div class="col-sm-8">
@@ -152,11 +152,11 @@
     <h3 class="page-header">Additional Services</h3>
     <h4><b>LocalForage</b></h4>
     <p>The SDK uses the AngularJS module for LocalForage called, <a href="https://github.com/ocombe/angular-localForage" target="_blank">angular-localForage</a>.</p>
-    <p><a href="http://mozilla.github.io/localForage/" target="_blank">localForage</a> is a JavaScript library that improves the offline experience of your web app by using an asynchronous data store with a simple, localStorage-like API. It allows developers to store many types of data instead of just strings.</p>
+    <p><a target="_blank" href="http://mozilla.github.io/localForage/">localForage</a> is a JavaScript library that improves the offline experience of your web app by using an asynchronous data store with a simple, localStorage-like API. It allows developers to store many types of data instead of just strings.</p>
     <p>localForage includes a localStorage-backed fallback store for browsers with no IndexedDB or WebSQL support. Asynchronous storage is available in the current versions of all major browsers: Chrome, Firefox, IE, and Safari (including Safari Mobile).</p>
 
     <h4><b>Underscore</b></h4>
-    <p><a href="http://underscorejs.org/">Underscore</a> is a JavaScript library that provides a whole mess of useful functional programming helpers without extending any built-in objects.</p>
+    <p><a target="_blank" href="http://underscorejs.org/">Underscore</a> is a JavaScript library that provides a whole mess of useful functional programming helpers without extending any built-in objects.</p>
     <p>The OrderCloud AngularJS SDK wraps the Underscore library in a service called <code>Underscore</code>.  You can take advantage of it anywhere in your AngularJS application.</p>
     <hr/>
 </article>

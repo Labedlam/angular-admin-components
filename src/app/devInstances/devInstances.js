@@ -138,7 +138,8 @@ function DevInstanceCreateController($state, $timeout, DevCenter) {
 		"Username": null,
 		"Password": null,
 		"FirstName": null,
-		"LastName": null
+		"LastName": null,
+		"Active": true
 	};
 
 	var searching;

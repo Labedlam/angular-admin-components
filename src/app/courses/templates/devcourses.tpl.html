@@ -14,7 +14,7 @@
 						<img class="img-responsive img-circle" ng-src="{{course.ImgUrl}}" alt=""/>
 					</figure>
 					<div class="panel-body">
-						<h3 class="course-title">{{course.Name}}</h3>
+						<h3 class="course-title" ui-sref="base.devcourses.course({courseid:course.ID})">{{course.Name}}</h3>
 						<p class="course-description">{{course.Description}}</p>
 						<button class="btn btn-success" ui-sref="base.devcourses.course({courseid:course.ID})" ng-if="course.CourseProgress.Meta.PercentDone == 0">START COURSE</button>
 						<button class="btn btn-success" ui-sref="base.devcourses.course.class({courseid:course.ID, classid:course.Classes[course.CourseProgress.CompletedClasses.length]})" ng-if="course.CourseProgress.Meta.PercentDone > 0">CONTINUE COURSE</button>

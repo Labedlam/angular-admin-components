@@ -12,7 +12,9 @@ angular.module( 'orderCloud', [
 	'markdown',
 	'ui.ace',
 	'angular-jwt',
-	'toastr'
+	'toastr',
+	'angulartics',
+	'angulartics.google.tagmanager'
 ])
 
 	.run( Security )

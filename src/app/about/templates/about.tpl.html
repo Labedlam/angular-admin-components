@@ -144,9 +144,9 @@
                     <input type="test" class="form-control" name="emailfield" ng-model="about.info.email" required blacklist placeholder="Email Address" />
                 </div>
                 <button type="submit" ng-disabled="ordercloud_registration.$invalid" class="">Request Info</button>
-                <span ng-show="vm.submission">Yeah!!</span><br />
-                <div class="form-group" ng-show="ordercloud_registration.$invalid && ordercloud_registration.$error.blacklist">
-                    <span class="helper-text">
+                <span ng-show="about.submission">Thank you for requesting more information. Stay tuned!!</span><br />
+                <div class="form-group">
+                    <span class="helper-text" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !about.submission">
                         Your name and email are required and please use a valid company email address.
                     </span>
                 </div>

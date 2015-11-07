@@ -27,8 +27,7 @@ function LoginController( $rootScope, $cookies, $state, DcAdmin, DevCenter, DevA
 					DevAuth.SetToken(data['access_token']);
 					DevCenter.Me.Get().then(function(data) {
 						DcAdmin.Authenticate(data.MongoDBHash).then(function(dataA) {
-							$cookies.put('dc-token', dataA['access_token']);
-							Auth.RemoveToken();
+							$cookies.put('dc-token', dataA.mongoToken);
 							$rootScope.isAuthenticated = true;
 							$state.go('base.home');
 						});

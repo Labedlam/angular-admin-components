@@ -374,12 +374,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	var nextClassID = (vm.classIndex + 1 < vm.totalClasses) ? SelectedCourse.Classes[vm.classIndex + 1] : null;
 	var nextCourseID;
 	if (!nextClassID) findNextCourseID();
-	Me.Get()
-		.then(function(data) {
-			vm.contextUser = data;
-		}, function() {
-			vm.contextUser = null;
-		});
 
 	function stringReplace() {
 		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {

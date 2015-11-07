@@ -24,6 +24,7 @@
     "ordercloud-angular-sdk": "~0.8.5",
     "videogular": "~1.2.8",
     "videogular-controls": "~1.2.8",
-    "crypto-js": "~3.1.5"
+    "crypto-js": "~3.1.5",
+    "angular-auto-validate": "~1.19.0"
   }
 }

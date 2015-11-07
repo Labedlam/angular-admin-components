@@ -14,7 +14,8 @@ angular.module( 'orderCloud', [
 	'angular-jwt',
 	'toastr',
 	'angulartics',
-	'angulartics.google.tagmanager'
+	'angulartics.google.tagmanager',
+	'jcs-autoValidate'
 ])
 
 	.run( Security )

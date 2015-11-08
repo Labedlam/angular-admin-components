@@ -378,6 +378,17 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	var nextCourseID;
 	if (!nextClassID) findNextCourseID();
 
+	function varReplace() {
+		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
+			console.log(vm.user.savedVars);
+			angular.forEach(vm.user.savedVars, function(ocVar) {
+				console.log(ocVar);
+				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val)
+			})
+		})
+	}
+	varReplace();
+
 	function stringReplace() {
 		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
 			angular.forEach(vm.current.ClassMethods, function(method) {
@@ -408,18 +419,18 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 						}
 					}
 					script.Model = script.Model.replace('{' + method + '}', newString);
-					if (script.Model.indexOf('"FullAccess"') > -1) {
+					if (script.Model.indexOf('"FullAccess"') == -1) {
 						script.Model = script.Model.replace("FullAccess", '"FullAccess"')
 					}
 
 				}
 			});
-			angular.forEach(vm.user.savedVars, function(ocVar) {
-				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val)
-			})
+
 		});
 	}
+
 	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example
+
 		ClassSvc.getDocs(method)
 			.then(function(data) {
 
@@ -435,6 +446,13 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				stringReplace();
 			})
 	});
+
+	Me.Get()
+		.then(function(data) {
+			vm.contextUser = data;
+		}, function(reason) {
+			console.log(reason);
+		});
 
 	if (SelectedClass.Interactive) {
 		$scope.$on('event:requestSuccess', function(event, c) {
@@ -607,6 +625,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				$localForage.setItem('context-user', vm.context);
 				Auth.SetToken(data['access_token']);
 				vm.contextSet = true;
+				console.log('hitcontext');
 				Me.Get()
 					.then(function(data) {
 						vm.contextUser = data;
@@ -713,7 +732,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 						vm.user.savedVars = vars;
 						vm.user.newVar = {};
 						vm.viewVarAdd = false;
-						stringReplace();
+						varReplace();
 					}, function(err) {
 						console.log(err);
 					})
@@ -727,7 +746,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
-						stringReplace();
+						varReplace();
 					}, function(err) {
 						console.log(err);
 					})
@@ -741,7 +760,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				DcUsers.GetOcVars()
 					.then(function(vars) {
 						vm.user.savedVars = vars;
-						stringReplace();
+						varReplace();
 					}, function(err) {
 						console.log(err);
 					})

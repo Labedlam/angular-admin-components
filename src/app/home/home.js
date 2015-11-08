@@ -57,7 +57,7 @@ function HomeController( $resource ) {
             buttonTitle:'watch video'
         },
         {
-            image:'assets/images/a3.jpg',
+            image:'assets/images/configureDeployQuickly.jpg',
             title:'Create, Configure and Deploy Quickly.',
             description:'Rest APIs give 100% access to our data model ',
             buttonTitle:'Learn More',

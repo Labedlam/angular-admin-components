@@ -98,6 +98,9 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				OcVars: function (DcUserSvc) {
 					return DcUserSvc.getOcVars();
 				},
+				OcContext: function(DcUserSvc) {
+					return DcUserSvc.getContext();
+				},
 				ContextOptions: function(DevCenter, Underscore) {
 					return DevCenter.Me.GetAccess(1, 100)
 						.then(function(data) {
@@ -330,7 +333,7 @@ function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 }
 
 function DevClassController( $scope, $state, $injector, Auth, Underscore,
-							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars,
+							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, OcContext,
 							 ContextOptions, DcUsers, DevCenter, Me, BuyerID, $filter,
 							 $sce, $localForage, $cookies, $timeout ){
 	var vm = this;
@@ -338,6 +341,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	vm.contextOptions = ContextOptions;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
+	vm.user.context = OcContext.toJSON();
 	vm.alert = {};
 	vm.Responses = [];
 	vm.classComplete = false;
@@ -363,7 +367,12 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	$localForage.getItem('context-user')
 		.then(function(data) {
-			if (data) {
+			if (data.ID != vm.user.context.ID) {
+				vm.context = vm.user.context;
+				vm.ContextName = vm.user.context.CompanyName;
+				setContext()
+			}
+			 else if (data) {
 				vm.context = data;
 				vm.ContextName = data.CompanyName;
 			}
@@ -468,6 +477,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
+					console.log(response);
 					addMethodCount(response);
 					checkIfObjectCreated(c);
 					vm.openRequestCount -= 1;
@@ -477,7 +487,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		$scope.$on('event:responseError', function(event, c) {
 			if (vm.turnOnLog) {
 				var response = angular.copy(c);
-				console.log(c);
 				if (c.config.url.indexOf('__NONE_SET__') > -1) {
 					vm.BuyerSet = false;
 				}
@@ -526,6 +535,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		vm.current.ActiveScriptName = Underscore.where(vm.current.ScriptModels.Scripts, {Title: scriptTitle})[0].Name;
 	}
 	function nextClass() {
+		vm.turnOnLog = false;
 		DcUsers.SaveClassProgress(vm.current.ID);
 		if (nextClassID) {
 			console.log(nextClassID);
@@ -587,7 +597,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					})
 			})
 		} else if (vm.stringExecute.indexOf('.Create') > -1) {
-			console.log('hit internal check');
+			console.log('hit bad spot');
 			var name = parseDependency(vm.stringExecute) + 'ID';
 			var val = parseIdValue(vm.stringExecute);
 			DcUsers.SaveOcVar({
@@ -619,13 +629,13 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	}
 
-	function setContext() {
+	function setContext(context) {
 		DevCenter.AccessToken(vm.context.ID)
 			.then(function(data) {
+				DcUsers.SetUserContext(vm.context);
 				$localForage.setItem('context-user', vm.context);
 				Auth.SetToken(data['access_token']);
 				vm.contextSet = true;
-				console.log('hitcontext');
 				Me.Get()
 					.then(function(data) {
 						vm.contextUser = data;
@@ -678,11 +688,9 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		vm.classComplete = pass;
 	}
 	function addMethodCount(response) { //Saves count of method calls based on endpoint
-		var endpoint = response.config.url.slice(response.config.url.indexOf('.io')+4);
-		//var endpoint = response.config.url.slice(response.config.url.indexOf('9002')+5);
+		var endpoint = response.config.url.indexOf('io') > -1 ? response.config.url.slice(response.config.url.indexOf('.io')+4) : response.config.url.slice(response.config.url.indexOf('9002')+5);
 		var method = response.config.method;
 		var epSplit = endpoint.split('/');
-		console.log(response);
 		angular.forEach(vm.docs, function(svc, svcKey) {
 			angular.forEach(svc, function(mtd, mtdKey) {
 				var newEpSplit = [];
@@ -705,6 +713,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 						if (Underscore.difference(docEpSplit, newEpSplit).length == 0 && Underscore.difference(newEpSplit, docEpSplit).length == 0) {
 							console.log('hello');
 							angular.forEach(vm.current.Assert, function(assertion) {
+								console.log(svcKey, mtdKey, assertion.Method);
 								if (svcKey + '.' + mtdKey == assertion.Method) {
 									if (assertion.Successes) {
 										assertion.Successes += 1;
@@ -988,13 +997,26 @@ function CourseService(Courses, $q) {
 
 function DcUserService(DcUsers, $q) {
 	var service = {
-		getOcVars: _getOcVars
+		getOcVars: _getOcVars,
+		getContext: _getContext
 	};
 
 	function _getOcVars() {
 		var d = $q.defer();
 		DcUsers.GetOcVars()
 			.then(function(data) {
+				d.resolve(data);
+			}, function(error) {
+				d.reject(error);
+			});
+		return d.promise;
+	}
+
+	function _getContext() {
+		var d = $q.defer();
+		DcUsers.GetUserContext()
+			.then(function(data) {
+				console.log(data);
 				d.resolve(data);
 			}, function(error) {
 				d.reject(error);

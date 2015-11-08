@@ -111,7 +111,9 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
         DeleteOcVar: _deleteOcVar,
         GetCourseProgress: _getCourseProgress,
         SaveClassProgress: _saveClassProgress,
-        GetClassProgress: _getClassProgress
+        GetClassProgress: _getClassProgress,
+        SetUserContext: _setUserContext,
+        GetUserContext: _getUserContext
     };
 
     function _get() {
@@ -146,7 +148,13 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
         return $resource(devapiurl + '/users/progress/:classid', {classid: classid}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call().$promise
     }
 
+    function _setUserContext(context) {
+        return $resource(devapiurl + '/users/saved-states/context/:contextid', {}, {call: {method: 'POST', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call(context).$promise
+    }
 
+    function _getUserContext() {
+        return $resource(devapiurl + '/users/saved-states/context', {}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call().$promise
+    }
 
     return service;
 }

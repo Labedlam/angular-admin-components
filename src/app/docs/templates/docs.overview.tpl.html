@@ -15,12 +15,33 @@
 	</div>
 </div>
 
-
 <h3 class="page-header">Writable IDs</h3>
 <p>Most resources that map to an entity of some sort (Orders, Users, Addresses, etc.) contain an ID that is optionally writable on creation or update. If you do not pass one, one will be auto-generated and returned in the response, and will be guaranteed to be unique. If you choose to pass an ID, you are responsible for ensuring uniqueness. Things that live under the context of a single Buyer need only be unique within that context. Things that are shared (such as products) must be unique within across the entire seller organization.</p>
 <blockquote class="alert-info">Writable IDs can be extremely useful for back-office integrations. They can potentially eliminate the need for a mapping middleware layer.</blockquote>
 
+<h3 class="page-header">Partial Resource Modification</h3>
+<p>While the existing <code>PUT</code> method only allows a complete replacement of a resource we allow the <code>PATCH</code> method for partial updates.</p>
+<p>Partial updates permit you to update certain attributes of a resource. For example, if you wish to update a <code>Product</code> description you only need to <code>PATCH</code> that single property.</p>
 
+<h3 class="page-header">Extended Properties (xp)</h3>
+<p>
+	The reality of all enterprise platforms is the need to customize the data model.
+	Ordercloud exposes the <code>{ xp: {} }</code> property on most resources allowing you to apply JSON objects.
+	The JSON object can be as complex and deeply nested as necessary. Additionally, the xp property is available for filtering, sorting and searching
+	in all pagination.
+</p>
+<pre><code>
+	{
+		xp:
+		{
+			"CustomProperty": "Value of property",
+			"Nested":
+			{
+				"Object": "Complexity supported"
+			}
+		}
+	}
+</code></pre>
 <h3 class="page-header">Error Handling</h3>
 <p>For all unsuccessful requests, we attempt to return the <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">most appropriate HTTP status in the 400 range</a>. Only when something goes terribly wrong on our end will you get a 500 response. And so long as our platform is responding (i.e. returing anything in the 4xx range or 500), you can count on the response body taking a standard shape:</p>
 <div  readonly ui-ace="{

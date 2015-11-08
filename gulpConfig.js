@@ -74,7 +74,8 @@ module.exports = {
 			'vendor/ace-builds/src/worker-json.js',
 			'vendor/ace-builds/src/worker-javascript.js',
 			'vendor/ace-builds/src/worker-html.js',
-			'vendor/crypto-js/crypto-js.js'
+			'vendor/crypto-js/crypto-js.js',
+			'vendor/angular-auto-validate/dist/jcs-auto-validate.js'
 		],
 		exclude_js: [
 			'!vendor/ordercloud-angular-sdk/dist/ordercloud-angular-sdk.min.js'

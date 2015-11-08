@@ -99,8 +99,8 @@ function HomeController( $resource ) {
     button:'Learn More'
   },
     {
-    image:'assets/images/staples.png',
-    title:'Staples',
+    image:'assets/images/turtle-wax-logo.png',
+    title:'Turtle Wax',
     description:'15000+ orders a month? No problem',
     text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
     button:'Learn More'

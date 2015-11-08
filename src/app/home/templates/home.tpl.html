@@ -6,7 +6,7 @@
                 <uib-slide ng-repeat="slide in home.slides">
                     <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
                     <div class="carousel-caption order-cloud-carousel">
-                        <h4>{{slide.title}}<sup>TM</sup></h4>
+                        <h4>{{slide.title}}</h4>
                         <p>{{slide.description}}</p>
                         <button>{{slide.buttonTitle}}</button>
                     </div>
@@ -70,7 +70,7 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             <h2 class="primary-head">OrderCloud Stories</h2>
         </div>
     </div>
-    <div class="row three-column hidden-xs ">
+    <div class="row three-column hidden-xs text-center">
         <div class="col-md-4 col-sm-4">
             <img src="assets/images/papa_johns.png" class="img-responsive" alt=""  />
             <h3>Papa John's</h3>
@@ -79,8 +79,8 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             <button>Learn more</button>
         </div>
         <div class="col-md-4 col-sm-4">
-            <img src="assets/images/staples.png" class="img-responsive" alt=""  />
-            <h3>Staples</h3>
+            <img src="assets/images/turtle-wax-logo.png" style="max-height: 81px;" class="img-responsive"  />
+            <h3>Turtle Wax</h3>
             <span>400+ custom storefonts. In the Cloud.</span>
             <p>Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. </p>
             <button>Learn more</button>
@@ -105,11 +105,6 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
                 </div>
             </uib-slide>
         </uib-carousel>
-    </div>
-    <div class="row text-center">
-        <div class="col-md-12 more-stories">
-            <span><a href="#">Read More Stories</a></span>
-        </div>
     </div>
 </div>
 <div class="home-common third-wrap">
@@ -146,21 +141,21 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             </div>
             <div>
             </div>
-            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()">
+            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()" ng-hide="ordercloud_registration.$submitted && ordercloud_registration.$valid">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" />
+                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" disable-validation-message="" />
                 </div>
                 <div class="form-group">
-                    <input type="test" class="form-control" name="emailfield" ng-model="home.info.email" required blacklist placeholder="Email Address" />
+                    <input type="test" class="form-control" name="emailfield" ng-model="home.info.email" required blacklist placeholder="Email Address" disable-validation-message="" />
                 </div>
                 <button type="submit" ng-disabled="ordercloud_registration.$invalid" class="">Request Info</button>
-                <span ng-show="home.submission">Thank you for requesting more information. Stay tuned!!</span><br />
-                <div class="form-group">
-                    <span class="helper-text" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !home.submission">
-                        Your name and email are required and please use a valid company email address.
-                    </span>
-                </div>
+                <span class="help-block" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !ordercloud_registration.$submitted">
+                    Your name and email are required and please use a valid company email address.
+                </span>
             </form>
+            <div ng-show="ordercloud_registration.$submitted && ordercloud_registration.$valid">
+                Thank you for requesting more information. Stay tuned!!
+            </div>
         </div>
     </div>
     <div class="row footer-navigation hidden-xs">
@@ -191,7 +186,7 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
         <div class="col-md-3 col-sm-3">
             <span class="find-out-more">FIND OUT MORE ABOUT</span>
             <div class="four51_logo"></div>
-            <span class="span-alt">Lorem ipsum dolor sit amet, consectetur adipiscing elit</span>
+            <span class="span-alt">Four51 powers B2B eCommerce for thousands of businesses and millions of users worldwide</span>
             <button class="click-here">CLICK HERE</button>
         </div>
     </div>

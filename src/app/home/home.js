@@ -64,7 +64,7 @@ function HomeController( $resource ) {
             id:'spot2'
         },
         {
-            image:'assets/images/a2.png',
+            image:'assets/images/IntegrateEverythingimg.jpg',
             title:'Integrate Everything.',
             description:"OrderCloud's REST API has your back. Integrate CRM, ERP, Tax, Analytics and more.",
             buttonTitle:'watch video'

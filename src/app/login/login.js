@@ -40,4 +40,14 @@ function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdm
 				$exceptionHandler( ex );
 			});
 	};
+
+	vm.resetpassword = function() {
+		DevCenter.RequestResetPassword(vm.credentials.Username)
+			.then(function() {
+				vm.toggleForgotPassword = false;
+			}).catch(function(ex) {
+				$exceptionHandler(ex);
+			}
+		);
+	};
 }

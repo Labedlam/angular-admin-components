@@ -12,6 +12,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		SaveGroupAccess: _saveGroupAccess,
 		DeleteGroupAccess: _deleteGroupAccess,
 		AcceptGroupAccess: _acceptGroupAccess,
+		RequestResetPassword: _requestResetPassword,
 		Users: {
 			List: _usersList
 		},
@@ -79,6 +80,10 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	//DEV GROUP ADMIN ONLY
 	function _acceptGroupAccess(accessID) {
 		return $resource(apiurl + '/v1/devcenter/acceptAccess', {}, {DevGroupAccessSave: {method: 'POST', params: {accessID:accessID}, headers:{Authorization: DevAuth.GetToken()}}}).DevGroupAccessSave().$promise;
+	}
+
+	function _requestResetPassword(accessID) {
+		return $resource(apiurl + '/v1/devcenter/forgottenpasswordlink').save({ "UsernameOrEmail" : accessID }).$promise;
 	}
 
 	//USERS

@@ -1,27 +1,44 @@
 <main id="Login">
-	<div>
-		<div class="text-center" ui-sref="base.home">
-			<ordercloud-logo data-width="300px" data-height="200px" data-color="#FFFFFF" data-icon="true"></ordercloud-logo>
-		</div>
-		<div class="panel panel-default">
-			<form name="LoginForm" class="panel-body" ng-submit="login.submit()">
-				<h3 class="text-center">Log in to your account</h3>
-				<div class="form-group placeholder-label">
-					<label for="Username">Username or Email Address</label>
-					<input type="text" placeholder="Username or Email Address" class="form-control" id="Username" ng-model="login.credentials.Username" required/>
+	<div ng-switch="login.toggleForgotPassword">
+		<div ng-switch-when="false">
+			<div class="text-center" ui-sref="base.home">
+				<ordercloud-logo data-width="300px" data-height="200px" data-color="#FFFFFF" data-icon="true"></ordercloud-logo>
+			</div>
+			<div class="panel panel-default">
+				<form name="LoginForm" class="panel-body" ng-submit="login.submit()">
+					<h3 class="text-center">Log in to your account</h3>
+					<div class="form-group placeholder-label">
+						<label for="Username">Username or Email Address</label>
+						<input type="text" placeholder="Username or Email Address" class="form-control" id="Username" ng-model="login.credentials.Username" required/>
+					</div>
+					<div class="form-group placeholder-label">
+						<label for="Password">Password</label>
+						<input type="password" placeholder="Password" class="form-control" id="Password" ng-model="login.credentials.Password" required/>
+					</div>
+					<button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="LoginForm.$invalid">Log In</button>
+				</form>
+				<div class="panel-footer text-center">
+					New to OrderCloud? <a class="btn btn-link" href="" ui-sref="register">Sign Up</a>
 				</div>
-				<div class="form-group placeholder-label">
-					<label for="Password">Password</label>
-					<input type="password" placeholder="Password" class="form-control" id="Password" ng-model="login.credentials.Password" required/>
-				</div>
-				<button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="LoginForm.$invalid">Log In</button>
-			</form>
-			<div class="panel-footer text-center">
-				New to OrderCloud? <a class="btn btn-link" href="" ui-sref="register">Sign Up</a>
+			</div>
+			<div class="text-center">
+				<a class="btn btn-link text-white" ng-click="login.toggleForgotPassword = true">Forgot Password?</a>
 			</div>
 		</div>
-		<div class="text-center">
-			<a class="btn btn-link text-white">Forgot Password?</a>
+		<div ng-switch-when="true">
+			<form name="ForgotPasswordForm" ng-submit="">
+				<div class="form-group placeholder-label">
+					<label for="Username">Email Address</label>
+					<input type="text" placeholder="Email Address" class="form-control" id="Username" ng-model="login.credentials.Username" required/>
+					<p class="help-block text-white">
+						Please provide the email associated with your Dev Center account.
+					</p>
+				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-default" ng-click="login.toggleForgotPassword = false">Cancel</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </main>

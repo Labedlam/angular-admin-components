@@ -64,18 +64,21 @@
 								<a href="" ng-click="instances.selectedInstance.addNewGroup = true"><i class="fa fa-plus-circle"></i> Share this instance with another group</a>
 							</li>
 						</ul>
-						<form name="ordercloud_addGroupToInstanceForm" ng-if="instances.selectedInstance.addNewGroup">
-							<div class="form-group input-group">
-								<input id="DevGroupSearch" type="text" placeholder="Find a group..." aria-label="Find a group" ng-model="instances.groupSearchTerm" class="form-control"
-									   autocomplete="off"
-									   typeahead-template-url="common/group.result.tpl.html"
-									   uib-typeahead="group as group.Name for group in instances.searchDevGroups($viewValue)"
-									   typeahead-on-select="instances.shareAccess($item)"/>
+						<div ng-if="instances.selectedInstance.addNewGroup">
+							<form name="ordercloud_addGroupToInstanceForm" >
+								<div class="form-group input-group">
+									<input id="DevGroupSearch" type="text" placeholder="Find a group..." aria-label="Find a group" ng-model="instances.groupSearchTerm" class="form-control"
+										   autocomplete="off"
+										   typeahead-template-url="common/group.result.tpl.html"
+										   uib-typeahead="group as group.Name for group in instances.searchDevGroups($viewValue)"
+										   typeahead-on-select="instances.shareAccess($item)"/>
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="instances.selectedInstance.addNewGroup = false">Cancel</button>
 							</span>
-							</div>
-						</form>
+								</div>
+							</form>
+						</div>
+
 					</div>
 				</div>
 				<div class="well well-lg text-center" ng-if="!instances.selectedInstance">

@@ -579,9 +579,8 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	}
 
 	function setBuyerID() {
-		BuyerID.Set(vm.buyerIDinput).then(function() {
-			vm.buyerID = vm.buyerIDinput;
-		})
+		BuyerID.Set(vm.buyerIDinput);
+		vm.buyerID = vm.buyerIDinput;
 	}
 
 	function setMaxLines(editor) {

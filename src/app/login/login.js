@@ -43,8 +43,11 @@ function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdm
 
 	vm.resetpassword = function() {
 		DevCenter.RequestResetPassword(vm.credentials.Username)
-				.then(function() {
-					vm.toggleForgotPassword = false;
-				});
+			.then(function() {
+				vm.toggleForgotPassword = false;
+			}).catch(function(ex) {
+				$exceptionHandler(ex);
+			}
+		);
 	};
 }

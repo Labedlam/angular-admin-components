@@ -103,25 +103,19 @@
 					<button class="btn btn-primary btn-block" ng-click="class.Execute()">Run</button>
 				</div>
 				<div class="script-nav">
-					<div class="script-selector">
-						<div class="selector-prefix">
-							SCRIPT
-						</div>
-						<div class="selector-choice">
-							{{class.current.ActiveScriptName}}
-						</div>
-						<div class="selector-icon">
-							<a ng-click="class.showScriptSelector = !class.showScriptSelector" href><i class="fa" ng-class="{'fa-chevron-down': !class.showScriptSelector, 'fa-chevron-up': class.showScriptSelector}"></i></a>
-						</div>
-						<div class="selector-dropdown" ng-init="class.showScriptSelector = false" ng-show="class.showScriptSelector">
-							<div class="script-option" ng-repeat="script in class.current.ScriptModels.Scripts" ng-click="class.activeScriptFn(script.Title)">
-								<h4>{{script.Name}}</h4>
-								<span><em>{{script.Description}}</em></span>
-							</div>
-							<div class="box-pointer"></div>
-						</div>
+					<div uib-dropdown on-toggle="class.scriptNavToggle(open)">
+						<button class="btn btn-dark btn-block" uib-dropdown-toggle >
+							SCRIPT | <span class="text-info">{{class.current.ActiveScriptName}}</span> <i class="fa" ng-class="{'fa-chevron-down': !class.showScriptNav, 'fa-chevron-up': class.showScriptNav}"></i>
+						</button>
+						<ul uib-dropdown-menu>
+							<li ng-class="{active:class.current.ActiveScript == script.Title}" ng-repeat="script in class.current.ScriptModels.Scripts">
+								<a href="" ng-click="class.activeScriptFn(script.Title)">
+									<p class="lead">{{script.Name}}</p>
+									<p class="text-muted">{{script.Description}}</p>
+								</a>
+							</li>
+						</ul>
 					</div>
-
 				</div>
 				<div style="font-size: 1.1em" id="ScriptInput" class="code-block"
 					 ng-repeat="script in class.current.ScriptModels.Scripts" ng-class="{ActiveCodeBlock: script.Title == class.current.ActiveScript}"

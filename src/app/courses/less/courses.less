@@ -570,48 +570,36 @@
 		width: 20%;
 		z-index: 100000;
 	  }
-	  & > .script-nav {
-		padding: 10px;
-		.script-selector {
-		  position: relative;
-		  display: flex;
-		  flex-direction: row;
-		  width: 100%;
-		  background-color: @gray-lighter;
-		  .selector-prefix {
-			padding: 2px 10px;
-			margin: 6px 0;
-			color: @gray-light;
-			border-right: 1px solid @gray-light;
+	  > .script-nav {
+		padding:10px;
+		.dropdown-toggle {
+		  text-align:left;
+		  i.fa {
+			float:right;
 		  }
-		  .selector-choice {
-			padding: 8px 10px;
-			flex: 1;
+		}
+		.dropdown-menu {
+		  background-color:fade(@console-log-bg, 95);
+		  border:none;
+		  > li:not(.active):hover > a {
+			background-color:@console-log-bg;
 		  }
-		  .selector-icon {
-			padding: 8px 10px;
+		  > li > a {
+			transition:background-color 200ms ease-in-out;
+			color:lighten(@console-log-bg, 70);
 		  }
-		  .selector-dropdown {
-			position: absolute;
-			top: 57px;
-			left: 0;
-			right: 0;
-			background-color: @gray-lighter;
-			z-index: 10000;
-			.box-pointer {
-			  position: absolute;
-			  z-index: 500;
-			  top: -16px;
-			  right: 0;
-			  width: 0;
-			  height: 0;
-			  border-left: 16px solid transparent;
-			  border-right: 16px solid transparent;
-			  border-bottom: 16px solid @gray-lighter;
-			  background-color: transparent;
+		  > li.active > a {
+			background-color:fade(lighten(@console-log-bg, 10), 95);
+		  }
+		  right:0;
+		  p {
+			margin:0;
+		  }
+		  .active {
+			p {
+			  color:white;
 			}
 		  }
-
 		}
 	  }
 	  & > #ScriptInput {
@@ -629,6 +617,11 @@
 	  display: inherit;
 	}
   }
+}
+
+// Danger and error appear as red
+.btn-dark {
+  .button-variant(lighten(@console-log-bg, 70); lighten(@console-log-bg, 15); lighten(@console-log-bg, 10));
 }
 
 #ClassLoading {

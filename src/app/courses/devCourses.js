@@ -419,6 +419,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 
 	vm.setBuyerID = setBuyerID;
 	vm.setMaxLines = setMaxLines;
+	vm.scriptNavToggle = scriptNavToggle;
 	vm.activeScriptFn = activeScriptFn;
 	vm.SelectResponse = SelectResponse;
 	vm.nextClass = nextClass;
@@ -603,6 +604,10 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	function setBuyerID() {
 		BuyerID.Set(vm.buyerIDinput);
 		vm.buyerID = vm.buyerIDinput;
+	}
+
+	function scriptNavToggle(status) {
+		vm.showScriptNav = status;
 	}
 
 	function setMaxLines(editor) {

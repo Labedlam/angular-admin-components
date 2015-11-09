@@ -159,10 +159,11 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
     return service;
 }
 
-function DcAdmin($resource, environment, devapiurl) {
+function DcAdmin($resource, environment, devapiurl, $cookies) {
     var service = {
         Register: _register,
-        Authenticate: _authenticate
+        Authenticate: _authenticate,
+        IsAdmin: _isAdmin
     };
 
     function _register(newUser) {
@@ -171,6 +172,10 @@ function DcAdmin($resource, environment, devapiurl) {
 
     function _authenticate(userHash) {
         return $resource(devapiurl + '/authenticate', {UserHash:userHash}, {call: {method: 'POST', headers: {'environment': environment}}}).call().$promise
+    }
+
+    function _isAdmin() {
+        return $resource(devapiurl + '/admin/isadmin', {}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call().$promise
     }
 
     return service

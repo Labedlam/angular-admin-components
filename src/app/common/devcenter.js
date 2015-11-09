@@ -13,6 +13,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 		DeleteGroupAccess: _deleteGroupAccess,
 		AcceptGroupAccess: _acceptGroupAccess,
 		RequestResetPassword: _requestResetPassword,
+		ResetPassword: _resetPassword,
 		Users: {
 			List: _usersList
 		},
@@ -84,6 +85,10 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 
 	function _requestResetPassword(accessID) {
 		return $resource(apiurl + '/v1/devcenter/forgottenpasswordlink').save({ "UsernameOrEmail" : accessID }).$promise;
+	}
+
+	function _resetPassword(password, token) {
+		return $resource(apiurl + '/v1/devcenter/resetpassword', {}, {ResetPassword: {method: 'POST', headers:{Authorization: 'Bearer ' + token}}}).ResetPassword({Password: password}).$promise;
 	}
 
 	//USERS

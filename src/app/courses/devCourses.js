@@ -172,21 +172,15 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controllerAs: 'class',
 			//data: {limitAccess:true},
 			resolve: {
+				SelectedBuyerID: function(BuyerID) {
+					return BuyerID.Get();
+				},
 				SelectedClass: function(ClassSvc, $stateParams) {
 					console.log($stateParams);
 					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid);
 				},
 				OcVars: function (DcUserSvc) {
 					return DcUserSvc.getOcVars();
-				},
-				OcContext: function(DcUserSvc) {
-					return DcUserSvc.getContext();
-				},
-				ContextOptions: function(DevCenter, Underscore) {
-					return DevCenter.Me.GetAccess(1, 100)
-						.then(function(data) {
-							return Underscore.filter(data.Items, {Accepted: true});
-						});
 				}
 			}
 		})
@@ -235,14 +229,6 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 			maxLines:100
 		});
 	}
-
-	if (!BuyerID.Get()) {
-		BuyerID.Set('__NONE_SET__');
-	} else {
-		vm.buyerID = BuyerID.Get();
-		vm.BuyerSet = true;
-	}
-
 
 	function checkEditMode() {
 		if (vm.current.EditMode) {
@@ -413,54 +399,32 @@ function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 		})
 }
 
-function DevClassController( $scope, $state, $injector, Auth, Underscore,
-							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, OcContext,
-							 ContextOptions, DcUsers, DevCenter, Me, BuyerID, $filter,
-							 $sce, $localForage, $cookies, $timeout, $exceptionHandler ){
+function DevClassController( $scope, $state, $injector, Underscore,
+							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars,
+							 DcUsers, $filter, SelectedBuyerID, BuyerID,
+							 $sce, $exceptionHandler ){
 	var vm = this;
 	vm.current = SelectedClass;
-	vm.contextOptions = ContextOptions;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
-	//vm.user.context = OcContext.toJSON();
 	vm.alert = {};
 	vm.Responses = [];
 	vm.classComplete = false;
+	vm.buyerID = SelectedBuyerID;
+	vm.buyerIDinput = vm.buyerID;
 
+	vm.setBuyerID = setBuyerID;
 	vm.setMaxLines = setMaxLines;
 	vm.activeScriptFn = activeScriptFn;
 	vm.SelectResponse = SelectResponse;
 	vm.nextClass = nextClass;
 	vm.Execute = Execute;
-	vm.setContext = setContext;
-	vm.clearContext = clearContext;
 	vm.renderHtml = renderHtml;
 	vm.removeExistingVar = removeExistingVar;
 	vm.editExistingVar = editExistingVar;
 	vm.saveNewVar = saveNewVar;
 
 	var requestSuccessHit = false;
-
-	if (!BuyerID.Get()) {
-		BuyerID.Set('__NONE_SET__');
-	} else {
-		vm.buyerID = BuyerID.Get();
-		vm.BuyerSet = true;
-	}
-
-
-/*	$localForage.getItem('context-user')
-		.then(function(data) {
-			if (data && data.ID != vm.user.context.ID) {
-				vm.context = vm.user.context;
-				vm.ContextName = vm.user.context.CompanyName;
-				setContext()
-			}
-			 else if (data) {
-				vm.context = data;
-				vm.ContextName = data.CompanyName;
-			}
-		});*/
 
 
 	vm.openRequestCount = 0;
@@ -540,13 +504,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 			})
 	});
 
-	Me.Get()
-		.then(function(data) {
-			vm.contextUser = data;
-		}, function(reason) {
-			console.log(reason);
-		});
-
 	if (SelectedClass.Interactive) {
 		$scope.$on('event:requestSuccess', function(event, c) {
 			if (vm.turnOnLog) {
@@ -602,19 +559,16 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		}
 	}
 
-/*	$scope.$watch(function() {
-		return vm.ContextName;
-	}, function(newVal) {
-		if (!newVal) {
-			return
-		} else {
-			vm.context = Underscore.where(vm.contextOptions, {CompanyName: newVal})[0];
-		}
-	});*/
-
 	function renderHtml(html) {
 		return $sce.trustAsHtml(html);
 	}
+
+	function setBuyerID() {
+		BuyerID.Set(vm.buyerIDinput).then(function() {
+			vm.buyerID = vm.buyerIDinput;
+		})
+	}
+
 	function setMaxLines(editor) {
 		editor.setOptions({
 			maxLines:100
@@ -742,44 +696,6 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	}
 
-	function setContext(context) {
-		DevCenter.AccessToken(vm.context.ID)
-			.then(function(data) {
-				DcUsers.SetUserContext(vm.context);
-				$localForage.setItem('context-user', vm.context);
-				Auth.SetToken(data['access_token']);
-				vm.contextSet = true;
-				Me.Get()
-					.then(function(data) {
-						vm.contextUser = data;
-					}, function(reason) {
-						console.log(reason);
-					});
-				if (vm.buyerID) {
-					BuyerID.Set(vm.buyerID);
-					vm.BuyerSet = true;
-				}
-				vm.confirmContextSet = true;
-				$timeout(function() {
-					vm.confirmContextSet = false;
-				}, 2000)
-			}, function(reason) {
-				vm.contextError = true;
-				vm.contextErrorMsg = reason;
-			});
-
-
-	}
-	function clearContext() {
-		vm.contextSet = false;
-		Auth.RemoveToken();
-		$localForage.removeItem('context-user');
-		vm.contextUser = null;
-		vm.context = null;
-		vm.ContextName = "";
-		$cookies.remove('DevCenter.buyerID');
-		vm.buyerID = "";
-	}
 	function findNextCourseID() {
 		Courses.List('developer').then(function(data) {
 			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);

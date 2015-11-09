@@ -57,50 +57,57 @@
 				</div>
 			</div>
 			<div class="icon-divider pull-right"></div>
-			<div class="nav navbar-nav navbar-right dropup btm-nav-icon app-context" uib-dropdown on-toggle="class.contextDropupToggle(open)" auto-close="outsideClick">
-				<a href uib-dropdown-toggle popover-placement="top" uib-popover-template="class.contextPopoverTemplate" popover-trigger="none" popover-is-open="!class.contextUser && !class.contextDropupOpen && class.current.Interactive"><i class="fa fa-user" ng-class="{contextSet: class.contextUser}"></i></a>
-				<div class="dropup dropup-content" uib-dropdown-menu aria-labelledby="context-btn">
-					<div class="icon-container">
-						<i class="fa fa-group" ></i>
-					</div>
-					<div class="dropup-title">
-						App Context Definition
-					</div>
-					<form>
-						<div class="form-group">
-							<select type="text" class="form-control" placeholder="clientID" ng-model="class.ContextName">
-								<option ng-repeat="item in class.contextOptions">{{item.CompanyName}}</option>
-							</select>
-						</div>
-						<div class="col-xs-12 dropup-subtitle">
-							ClientID
-						</div>
-						<div class="col-xs-12 dropup-subvalue">
-							{{class.context.ClientID}}
-						</div>
-						<div class="col-xs-12 dropup-subtitle">
-							UserName
-						</div>
-						<div class="col-xs-12 dropup-subvalue">
-							{{class.context.UserName}}
-						</div>
-						<div class="divider"></div>
-						<div class="col-xs-12 form-group buyer-input">
-							<label>BuyerID</label>
-							<input class="form-control" type="text" ng-model="class.buyerID">
-						</div>
-						<div class="col-xs-12">
-							<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.setContext()">Set Context</button>
-							<button class="btn btn-danger btn-block pull-left" ng-click="class.clearContext()">Clear Context</button>
-						</div>
+			<form name="BuyerIDSelectionForm" ng-submit="class.setBuyerID()" class="navbar-form navbar-right">
+				<label class="text-white">Active Buyer ID : </label>
 
-					</form>
-					<div class="dropup-knob"></div>
+				<div class="form-group input-group">
+					<input type="text" class="form-control" ng-model="class.buyerIDinput" placeholder="Buyer ID" >
+					<span class="input-group-btn">
+						<button type="submit" class="btn btn-success">Set</button>
+
+					</span>
 				</div>
-			</div>
-			<div class="nav navbar-nav navbar-right btm-nav-icon" ng-show="class.confirmContextSet">
-				<i class="fa fa-check-circle fa-2x" style="padding-top: 5px; color: green;"></i>
-			</div>
+			</form>			<!--<div class="nav navbar-nav navbar-right dropup btm-nav-icon app-context" uib-dropdown on-toggle="class.contextDropupToggle(open)" auto-close="outsideClick">-->
+				<!--<a href uib-dropdown-toggle popover-placement="top" uib-popover-template="class.contextPopoverTemplate" popover-trigger="none" popover-is-open="!class.contextUser && !class.contextDropupOpen && class.current.Interactive"><i class="fa fa-user" ng-class="{contextSet: class.contextUser}"></i></a>-->
+				<!--<div class="dropup dropup-content" uib-dropdown-menu aria-labelledby="context-btn">-->
+					<!--<div class="icon-container">-->
+						<!--<i class="fa fa-group" ></i>-->
+					<!--</div>-->
+					<!--<div class="dropup-title">-->
+						<!--App Context Definition-->
+					<!--</div>-->
+					<!--<form>-->
+						<!--<div class="form-group">-->
+							<!--<select type="text" class="form-control" placeholder="clientID" ng-model="class.ContextName">-->
+								<!--<option ng-repeat="item in class.contextOptions">{{item.CompanyName}}</option>-->
+							<!--</select>-->
+						<!--</div>-->
+						<!--<div class="col-xs-12 dropup-subtitle">-->
+							<!--ClientID-->
+						<!--</div>-->
+						<!--<div class="col-xs-12 dropup-subvalue">-->
+							<!--{{class.context.ClientID}}-->
+						<!--</div>-->
+						<!--<div class="col-xs-12 dropup-subtitle">-->
+							<!--UserName-->
+						<!--</div>-->
+						<!--<div class="col-xs-12 dropup-subvalue">-->
+							<!--{{class.context.UserName}}-->
+						<!--</div>-->
+						<!--<div class="divider"></div>-->
+						<!--<div class="col-xs-12 form-group buyer-input">-->
+							<!--<label>BuyerID</label>-->
+							<!--<input class="form-control" type="text" ng-model="class.buyerID">-->
+						<!--</div>-->
+						<!--<div class="col-xs-12">-->
+							<!--<button type="submit" class="btn btn-info btn-block pull-right" ng-click="class.setContext()">Set Context</button>-->
+							<!--<button class="btn btn-danger btn-block pull-left" ng-click="class.clearContext()">Clear Context</button>-->
+						<!--</div>-->
+
+					<!--</form>-->
+					<!--<div class="dropup-knob"></div>-->
+				<!--</div>-->
+			<!--</div>-->
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a ng-hide="class.current.Interactive" href="" ng-click="class.nextClass()">Next Class</a>

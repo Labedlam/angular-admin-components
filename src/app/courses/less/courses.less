@@ -252,13 +252,13 @@
   nav {
 	background-color: darken(@gray-darker, 5);
   }
-  .navbar-brand {
-	padding: 15px 15px;
-  }
-  .navbar-fixed-bottom {
+  //.navbar-brand {
+	//padding: 15px 15px;
+  //}
+/*  .navbar-fixed-bottom {
 	height: 51px;
 	min-height: 51px;
-  }
+  }*/
   &:not(.interactive) {
 	max-height:~'calc(100vh - 111px)';
 	overflow-y:auto;
@@ -267,26 +267,6 @@
 	header.jumbotron {
 	  padding:15px;
 	}
-  }
-  .context-user {
-	padding: 15px;
-	cursor: default;
-	font-size: 1.1em;
-	color: @alert-danger-text;
-  }
-  .fa-user {
-	color: @alert-danger-text;
-  }
-  .fa-user.contextSet {
-	color: @alert-success-text;
-  }
-  .container-fluid {
-	margin-right: 12px;
-  }
-  .icon-divider {
-	margin: 17px 15px 0 0;
-	padding: 10px 10px 10px 0;
-	border-right: 1px solid @gray-light;
   }
   .btm-nav-icon {
 	padding: 6px 10px 6px 6px;
@@ -531,12 +511,17 @@
 	}
 	#CourseContent,
 	#InteractiveUI {
-	  height:~'calc(100vh - 111px)';
+	  min-height:calc(~"100vh - "@navbar-height*2);
+	  max-height:calc(~"100vh - "@navbar-height*2);
 	}
 	#CourseContent {
 	  max-width:400px;
 	  min-width: 300px;
 	  overflow-y:auto;
+	  #ClassRequirements,
+	  .course-title {
+		flex:1 0 auto;
+	  }
 	}
 	#InteractiveUI {
 	  position:relative;

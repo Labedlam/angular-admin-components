@@ -99,7 +99,7 @@ function DevGroupsConfig( $stateProvider ) {
 		})
 }
 
-function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, CurrentUser, DevCenter) {
+function DevGroupsListController($exceptionHandler, $state, AcceptedGroupsList, PendingGroupsList, CurrentUser, DevCenter) {
 	var vm = this;
 	vm.searchTerm = null;
 
@@ -114,12 +114,15 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 
 	vm.acceptInvite = function(scope) {
 		DevCenter.Group.SaveMemberAssignment(scope.group.ID, {
-			UserID: CurrentUser.ID,
-			Accepted: true,
-			GroupAdmin: false
-		}).then(function() {
-			$state.reload()
-		})
+				UserID: CurrentUser.ID,
+				Accepted: true,
+				GroupAdmin: false
+			}).then(function() {
+				$state.reload()
+			})
+			.catch(function(ex) {
+			$exceptionHandler(ex);
+		});
 	};
 
 	vm.leaveGroup = function(scope) {
@@ -127,6 +130,9 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 			.then(function() {
 				$state.reload();
 			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
 	};
 
 	vm.declineInvite = function(scope) {
@@ -134,10 +140,13 @@ function DevGroupsListController($state, AcceptedGroupsList, PendingGroupsList, 
 			.then(function() {
 				$state.reload();
 			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
 	}
 }
 
-function DevGroupCreateController($state, DevCenter, CurrentUser) {
+function DevGroupCreateController($exceptionHandler, $state, DevCenter, CurrentUser) {
 	var vm = this;
 	vm.newGroup = {
 		Name: null,
@@ -146,31 +155,41 @@ function DevGroupCreateController($state, DevCenter, CurrentUser) {
 
 	vm.submit = function() {
 		if (CurrentUser.TrialDateStart) vm.newGroup.Private = true;
-		DevCenter.Group.Create(vm.newGroup).then(function(data){
-			$state.go('base.groupsList');
-			//TODO: Success Page for Group Created
-		})
+		DevCenter.Group.Create(vm.newGroup)
+			.then(function(data){
+				$state.go('base.groupsList');
+				//TODO: Success Page for Group Created
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			})
 	}
 }
 
-function DevGroupEditController($state, DevCenter, SelectedGroup) {
+function DevGroupEditController($exceptionHandler, $state, DevCenter, SelectedGroup) {
 	var vm = this;
 	vm.model = SelectedGroup;
 
 	vm.submit = function() {
-		DevCenter.Group.Update(vm.model.ID, vm.model).then(function(data) {
-			$state.go('base.groupDetail', {groupID:vm.model.ID});
-		})
+		DevCenter.Group.Update(vm.model.ID, vm.model)
+			.then(function(data) {
+				$state.go('base.groupDetail', {groupID:vm.model.ID});
+			}).catch(function(ex) {
+				$exceptionHandler(ex);
+			})
 	};
 
 	vm.deleteGroup = function() {
-		DevCenter.Group.Delete(vm.model.ID).then(function(data) {
-			$state.go('base.groupsList');
-		});
+		DevCenter.Group.Delete(vm.model.ID)
+			.then(function(data) {
+				$state.go('base.groupsList');
+			}).catch(function(ex) {
+				$exceptionHandler(ex);
+			});
 	}
 }
 
-function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCenter, SelectedGroup, GroupMembers, AcceptedGroupInstances, PendingGroupInstances) {
+function DevGroupDetailController($exceptionHandler, $state, $timeout, Underscore, DevAuth, DevCenter, SelectedGroup, GroupMembers, AcceptedGroupInstances, PendingGroupInstances) {
 	var vm = this,
 		selectedAccess,
 		selectedUser;
@@ -210,6 +229,8 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 			GroupAdmin: false
 		}).then(function() {
 			$state.reload();
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 
@@ -217,6 +238,9 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 		DevCenter.Group.DeleteMemberAssignment(vm.model.ID, scope.member.ID)
 			.then(function() {
 				$state.reload();
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
 			});
 	};
 
@@ -227,6 +251,8 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 			GroupAdmin: true
 		}).then(function() {
 			$state.reload();
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 
@@ -237,6 +263,8 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 			GroupAdmin: false
 		}).then(function() {
 			$state.reload();
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 
@@ -262,6 +290,8 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 		selectedAccess.DevGroupID = vm.model.ID;
 		DevCenter.AccessToken(selectedAccess.ClientID, selectedAccess.UserID).then(function(data) {
 			DevCenter.SaveGroupAccess(selectedAccess, ('Bearer ' + data['access_token']))
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 
@@ -269,12 +299,16 @@ function DevGroupDetailController($state, $timeout, Underscore, DevAuth, DevCent
 		DevCenter.AcceptGroupAccess(scope.instance.ID).then(function() {
 			vm.instances.push(scope.instance);
 			vm.pendingInstances.splice(scope.$index, 1);
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 
 	vm.declineInstance = function(scope) {
 		DevCenter.DeleteGroupAccess(scope.instance.ID, DevAuth.GetToken()).then(function() {
 			vm.pendingInstances.splice(scope.$index, 1);
+		}).catch(function(ex) {
+			$exceptionHandler(ex);
 		})
 	};
 

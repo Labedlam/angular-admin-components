@@ -49,7 +49,6 @@ form[name = 'ordercloud_registration'] span.help-block {
         font-weight: 400;
         text-shadow:none;
         font-family: lato;
-        text-transform: capitalize;
         margin: 0;
     }
     button {
@@ -86,7 +85,6 @@ form[name = 'ordercloud_registration'] span.help-block {
             font-weight: 400;
             text-shadow:none;
             font-family: lato;
-            text-transform: capitalize;
             margin: 15px 0;
         }
         button {
@@ -299,19 +297,23 @@ form[name = 'ordercloud_registration'] span.help-block {
         margin-right: 10px;
         min-width:230px;
     }
-    button {
-        border: none;
-        background: #fff;
+    .button {
+        border: 1px solid #fff;
+        background: transparent;
         height: 40px;
-        color: #3590ce;
+        color: #fff;
         font-family: lato;
         text-transform: uppercase;
         font-weight: 700;
-        padding: 0 30px;
+        padding: 10px 30px;
         font-size: 12px;
         border-radius: 2px;
+        text-decoration: none;
     }
-    button:hover {
+    .button:hover {
+        background: rgba(255,255,255,0.6);
+    }
+    .button:hover {
         background: rgba(255,255,255,0.6);
     }
     .form-inline {
@@ -362,21 +364,19 @@ form[name = 'ordercloud_registration'] span.help-block {
         color: #fff;
         margin: 0;
     }
-    button.click-here {
+    .button.click-here {
         border: 1px solid #fff;
         background: transparent;
         color: #fff;
-        padding: 0 24px;
+        padding: 5px 30px;
         margin: 10px 0;
-        height: 30px;
-        line-height: 30px;
         font-size: 10px;
     }
-    button.click-here:hover {
+    .button.click-here:hover {
         border: 1px solid rgba(255,255,255,0.6);
     }
-    button.click-here:focus {
-        border:1px solid #fff;
+    .button.click-here:focus {
+        border:1px solid #fff
     }
     p {
         .fa {
@@ -393,8 +393,8 @@ form[name = 'ordercloud_registration'] span.help-block {
         .fa-youtube-play:hover {
             color: #e12b28;
         }
-        .fa-google-plus:hover {
-            color: #e12b28;
+        .fa-linkedin:hover {
+            color: #f2f2f2;
         }
     }
     span.span-alt {

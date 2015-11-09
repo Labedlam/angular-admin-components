@@ -19,6 +19,7 @@ function LoginConfig( $stateProvider ) {
 
 function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdmin, DevCenter, DevAuth, Auth ) {
 	var vm = this;
+	vm.toggleForgotPassword = false;
 
 	vm.submit = function() {
 		DevCenter.Login( vm.credentials )
@@ -38,5 +39,12 @@ function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdm
 			}).catch(function( ex ) {
 				$exceptionHandler( ex );
 			});
+	};
+
+	vm.resetpassword = function() {
+		DevCenter.RequestResetPassword(vm.credentials.Username)
+				.then(function() {
+					vm.toggleForgotPassword = false;
+				});
 	};
 }

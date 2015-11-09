@@ -17,7 +17,15 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 	$httpProvider.interceptors.push(function($q, $rootScope) {
 		return {
 			'request': function(config) {
-				$rootScope.$broadcast('event:requestSuccess', config);
+				var broadcast = true;
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
+					if (config.url.indexOf(each) > -1) {
+						broadcast = false;
+					}
+				});
+				if (broadcast) {
+					$rootScope.$broadcast('event:requestSuccess', config);
+				}
 				return config;
 			},
 			'requestError': function(rejection) {
@@ -25,12 +33,20 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				return $q.reject(rejection);
 			},
 			'response': function(response) {
-				$rootScope.$broadcast('event:responseSuccess', response);
+				var broadcast = true;
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
+					if (response.config.url.indexOf(each) > -1) {
+						broadcast = false;
+					}
+				});
+				if (broadcast) {
+					$rootScope.$broadcast('event:responseSuccess', response);
+				}
 				return response;
 			},
 			'responseError': function(rejection) {
 				var reject = false;
-				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit'].forEach(function(each) {
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
 					if (rejection.config.url.indexOf(each) > -1) {
 						reject = true;
 					}
@@ -335,7 +351,7 @@ function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 function DevClassController( $scope, $state, $injector, Auth, Underscore,
 							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars, OcContext,
 							 ContextOptions, DcUsers, DevCenter, Me, BuyerID, $filter,
-							 $sce, $localForage, $cookies, $timeout ){
+							 $sce, $localForage, $cookies, $timeout, $exceptionHandler ){
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.contextOptions = ContextOptions;
@@ -357,6 +373,8 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	vm.removeExistingVar = removeExistingVar;
 	vm.editExistingVar = editExistingVar;
 	vm.saveNewVar = saveNewVar;
+
+	var requestSuccessHit = false;
 
 	if (!BuyerID.Get()) {
 		BuyerID.Set('__NONE_SET__');
@@ -467,6 +485,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		$scope.$on('event:requestSuccess', function(event, c) {
 			if (vm.turnOnLog) {
 				vm.openRequestCount += 1;
+				vm.loading = true;
 			}
 		});
 
@@ -479,8 +498,14 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					vm.SelectedResponse = response;
 					console.log(response);
 					addMethodCount(response);
-					checkIfObjectCreated(c);
+					if ( !requestSuccessHit ) {
+						checkIfObjectCreated(c);
+						requestSuccessHit = true;
+					}
 					vm.openRequestCount -= 1;
+					if (vm.openRequestCount == 0) {
+						vm.loading = false;
+					}
 				}
 			}
 		});
@@ -494,6 +519,9 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				vm.Responses.push(response);
 				vm.SelectedResponse = response;
 				vm.openRequestCount -= 1;
+				if (vm.openRequestCount == 0) {
+					vm.loading = false;
+				}
 			}
 		});
 	}
@@ -562,29 +590,42 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 			})
 		} else {
 			var currentScript = Underscore.where(vm.current.ScriptModels.Scripts, {Title: vm.current.ActiveScript})[0];
-			if (!currentScript.Disable) {
-				fullScript = currentScript.Model;
-			} else {
-				fullScript = null;
-			}
+			fullScript = currentScript.Model;
 		}
-
-
-		if (fullScript) {
+		var Disabled = currentScript.Disable;
+		var ActiveTrue = checkIfActiveSet(fullScript);
+		if (!Disabled && ActiveTrue) {
 			var injectString = "";
 			angular.forEach(vm.current.Dependencies, function(d) {
 				injectString += 'var ' + d + ' = injector.get("' + d + '");'
 			});
 			vm.stringExecute = fullScript;
-			var ex = new Function("injector", injectString + fullScript);
-			ex($injector);
-			console.log('hit');
+			var execute = new Function("injector", injectString + fullScript);
+			execute($injector);
 		} else {
-			vm.consoleMessage = 'script is not executable';
+			if (!ActiveTrue) {
+				$exceptionHandler({data: {error: "Active must be set to true"}});
+			}
+			if (Disabled) {
+				$exceptionHandler({data: {error: "Script is not executable"}});
+			}
 		}
 
 	}
 
+	function checkIfActiveSet(curScript) {
+		if (curScript.indexOf("Active") > -1) {
+			var breakScript = curScript.slice(curScript.indexOf("Active") + 8, -1);
+			var active = breakScript.split(" ")[0];
+			if (active.indexOf('false') > -1) {
+				return false;
+			} else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+	}
 	function checkIfObjectCreated(c) {
 		if (c.config.url.indexOf("apiclients") > -1 && vm.stringExecute.indexOf('.Create') > -1) {
 			DcUsers.SaveOcVar({
@@ -597,9 +638,11 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 					})
 			})
 		} else if (vm.stringExecute.indexOf('.Create') > -1) {
-			console.log('hit bad spot');
 			var name = parseDependency(vm.stringExecute) + 'ID';
 			var val = parseIdValue(vm.stringExecute);
+			if (name == 'CategorieID') {
+				name = 'CategoryID'
+			}
 			DcUsers.SaveOcVar({
 				key: name,
 				val: val
@@ -614,6 +657,10 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 
 	function parseDependency(string) {
 		var end = string.indexOf('.Create');
+		var asEnd = string.indexOf('.As().Create');
+		if (asEnd > -1) {
+			end = asEnd;
+		}
 		var newString = string.slice(0, end);
 		var splitUp  = newString.split("\n");
 		console.log(splitUp);

@@ -57,14 +57,14 @@ function HomeController( $resource ) {
             buttonTitle:'watch video'
         },
         {
-            image:'assets/images/a3.jpg',
+            image:'assets/images/configureDeployQuickly.jpg',
             title:'Create, Configure and Deploy Quickly.',
             description:'Rest APIs give 100% access to our data model ',
             buttonTitle:'Learn More',
             id:'spot2'
         },
         {
-            image:'assets/images/a2.png',
+            image:'assets/images/IntegrateEverythingimg.jpg',
             title:'Integrate Everything.',
             description:"OrderCloud's REST API has your back. Integrate CRM, ERP, Tax, Analytics and more.",
             buttonTitle:'watch video'
@@ -99,8 +99,8 @@ function HomeController( $resource ) {
     button:'Learn More'
   },
     {
-    image:'assets/images/staples.png',
-    title:'Staples',
+    image:'assets/images/turtle-wax-logo.png',
+    title:'Turtle Wax',
     description:'15000+ orders a month? No problem',
     text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
     button:'Learn More'

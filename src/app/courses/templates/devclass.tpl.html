@@ -2,7 +2,7 @@
 	<nav class="navbar navbar-inverse navbar-fixed-bottom">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand">{{course.current.Name}} Course</a>
+				<a class="navbar-brand" ui-sref="^"><i class="fa fa-arrow-left"></i> {{course.current.Name}} Course</a>
 			</div>
 			<div class="nav navbar-nav navbar-right dropup btm-nav-icon" id="SavedIds" dropdown auto-close="outsideClick">
 				<a href dropdown-toggle><i class="fa fa-bookmark-o"></i></a>
@@ -80,10 +80,10 @@
 			<div class="course-title dc-header"><div  ng-class="{'container':!class.current.Interactive}"><h2>{{class.current.Name}}</h2></div></div>
 			<div class="reading-content" compile="class.current.TemplateUrl"></div>
 			<div ng-show="class.current.Interactive" id="ClassRequirements">
-				<div ng-init="class.goalsCollapse = true" class="heading">
-					<a href class="pull-right" ng-click="class.goalsCollapse = !class.goalsCollapse"><i class="fa" ng-class="{'fa-chevron-up': class.goalsCollapse, 'fa-chevron-down': !class.goalsCollapse }"></i></a>
+				<div ng-init="class.goalsCollapse = true" class="heading" ng-click="class.goalsCollapse = !class.goalsCollapse">
+					<a href class="pull-right"><i class="fa" ng-class="{'fa-angle-up': class.goalsCollapse, 'fa-angle-down': !class.goalsCollapse }"></i></a>
 					<h4 class="title">
-						Successful Requests to Complete
+						Class progress
 					</h4>
 
 				</div>

@@ -19,12 +19,14 @@ function HomeController( $resource ) {
 	var vm = this;
 	vm.tabs = [
     { title:'DEVELOPERS', 
-    image:'assets/images/help.png',
+    image:'assets/images/OC_Images_onComputer.png',
     content:'Shortened development time driven by component based development. Code, configure, and optimize your project using OrderCloud Dev Center. Bring your development projects to market quickly.', 
     description1:'OrderCloud documentation and courses get developers on track and building on our platform effectively.',
     description2:'Integration access to hundreds of 3rd party platforms for ERP, CRM, CMS, Analytics, Tax, PIM and more.'
  },
-        { title:'BUSINESS OWNER', image:'assets/images/business.png', content:['second tab content', 'second tab content','second tab content','second tab content'] }
+        { title:'BUSINESS OWNER',
+            image:'assets/images/OC_Images_ManWorking.png',
+            content:['second tab content', 'second tab content','second tab content','second tab content'] }
   ];
 
     vm.info = {
@@ -96,21 +98,18 @@ function HomeController( $resource ) {
     title:'Papa johns',
     description:'15000+ orders a month? No problem',
     text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
-    button:'Learn More'
   },
     {
     image:'assets/images/turtle-wax-logo.png',
     title:'Turtle Wax',
     description:'15000+ orders a month? No problem',
     text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
-    button:'Learn More'
   },
     {
     image:'assets/images/Burroughs_logo.png',
     title:'Burroughs',
     description:'15000+ orders a month? No problem',
     text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
-    button:'Learn More'
   }
   ]
 }

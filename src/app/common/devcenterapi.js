@@ -113,7 +113,9 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
         SaveClassProgress: _saveClassProgress,
         GetClassProgress: _getClassProgress,
         SetUserContext: _setUserContext,
-        GetUserContext: _getUserContext
+        GetUserContext: _getUserContext,
+        GetClassLevelProgress: _getClassLevelProgress,
+        SetClassLevelProgress: _setClassLevelProgress
     };
 
     function _get() {
@@ -155,20 +157,22 @@ function DcUsers ($q, $resource, devapiurl, $cookies, environment) {
     function _getUserContext() {
         return $resource(devapiurl + '/users/saved-states/context', {}, {call: {method: 'GET', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call().$promise
     }
+    function _getClassLevelProgress(classid) {
+        return $resource(devapiurl + '/users/class-progress/:classid', {classid: classid}, {call: {method: 'GET', isArray: true, headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call().$promise
+    }
+    function _setClassLevelProgress(classid, progress) {
+        return $resource(devapiurl + '/users/class-progress/:classid', {classid: classid}, {call: {method: 'POST', headers: {'dc-token': $cookies.get('dc-token'), 'environment': environment}}}).call(progress).$promise
+    }
 
     return service;
 }
 
 function DcAdmin($resource, environment, devapiurl, $cookies) {
     var service = {
-        Register: _register,
         Authenticate: _authenticate,
         IsAdmin: _isAdmin
     };
 
-    function _register(newUser) {
-        return $resource(devapiurl + '/admin/registeruser', {}, {call: {method: 'POST', headers: {'environment': environment}}}).call(newUser).$promise
-    }
 
     function _authenticate(userHash) {
         return $resource(devapiurl + '/authenticate', {UserHash:userHash}, {call: {method: 'POST', headers: {'environment': environment}}}).call().$promise

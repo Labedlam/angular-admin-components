@@ -179,11 +179,13 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 					return BuyerID.Get();
 				},
 				SelectedClass: function(ClassSvc, $stateParams) {
-					console.log($stateParams);
 					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid);
 				},
 				OcVars: function (DcUserSvc) {
 					return DcUserSvc.getOcVars();
+				},
+				ClassSteps: function (DcUsers, $stateParams) {
+					return DcUsers.GetClassLevelProgress($stateParams.classid);
 				}
 			}
 		})
@@ -281,7 +283,7 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 					vm.confirmSave = false;
 					vm.classUpdated = true;
 				}, function(error) {
-					console.log(error);
+					return angular.noop();
 				})
 		} else {
 			Classes.Update($stateParams.courseid, $stateParams.classid, vm.current)
@@ -289,19 +291,17 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 					vm.confirmSave = false;
 					vm.classUpdated = true;
 				}, function(error) {
-					console.log(error);
+					return angular.noop();
 				})
 		}
 
 	}
 
 	function moveScript(direction, listOrder) {
-		console.log(listOrder);
 		var curScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder});
 		var upScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder - 1});
 		var downScriptIndex = Underscore.findIndex(vm.current.ScriptModels.Scripts, {ListOrder: listOrder + 1});
 
-		console.log(curScriptIndex);
 
 		if (direction == 'up') {
 			vm.current.ScriptModels.Scripts[curScriptIndex].ListOrder -= 1;
@@ -404,12 +404,13 @@ function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
 
 function DevClassController( $scope, $state, $injector, Underscore,
 							 ClassSvc, Courses, SelectedCourse, SelectedClass, OcVars,
-							 DcUsers, $filter, SelectedBuyerID, BuyerID,
-							 $sce, $exceptionHandler ){
+							 DcUsers, ClassSteps, $filter, SelectedBuyerID, BuyerID,
+							 $sce, $exceptionHandler, $stateParams ){
 	var vm = this;
 	vm.current = SelectedClass;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
+	vm.user.classSteps = ClassSteps;
 	vm.alert = {};
 	vm.Responses = [];
 	vm.classComplete = false;
@@ -440,9 +441,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 
 	function varReplace() {
 		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
-			console.log(vm.user.savedVars);
 			angular.forEach(vm.user.savedVars, function(ocVar) {
-				console.log(ocVar);
 				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val);
 				var split = script.Model.split("\n");
 				var finalSplit = [];
@@ -504,6 +503,27 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		varReplace();
 	}
 
+	function checkClassStepProgress() {
+		angular.forEach(vm.current.Assert, function(assertion) {
+			angular.forEach(vm.user.classSteps, function(step) {
+				console.log(step.Method);
+				if (step.Method == assertion.Method) {
+					console.log('hit');
+					assertion.Successes = step.Count;
+				}
+			})
+		});
+		var pass = true;
+		angular.forEach(vm.current.Assert, function(assertion) {
+			if (assertion.AmountNeeded > assertion.Successes || !assertion.Successes) {
+				console.log(assertion);
+				pass = false;
+			}
+		});
+		vm.classComplete = pass;
+	}
+	checkClassStepProgress();
+
 	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example
 
 		ClassSvc.getDocs(method)
@@ -537,7 +557,6 @@ function DevClassController( $scope, $state, $injector, Underscore,
 					response.data = $filter('json')(response.data);
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
-					console.log(response);
 					addMethodCount(response);
 					if ( !requestSuccessHit ) {
 						checkIfObjectCreated(c);
@@ -582,9 +601,8 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	}
 
 	function setBuyerID() {
-		BuyerID.Set(vm.buyerIDinput).then(function() {
-			vm.buyerID = vm.buyerIDinput;
-		})
+		BuyerID.Set(vm.buyerIDinput);
+		vm.buyerID = vm.buyerIDinput;
 	}
 
 	function setMaxLines(editor) {
@@ -604,10 +622,8 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		vm.turnOnLog = false;
 		DcUsers.SaveClassProgress(vm.current.ID);
 		if (nextClassID) {
-			console.log(nextClassID);
 			$state.go('.', {classid: nextClassID})
 		} else if(nextCourseID) {
-			console.log(nextCourseID);
 			$state.go('^', {courseid: nextCourseID})
 		} else {
 			$state.go('base.devcourses');
@@ -701,8 +717,6 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		}
 		var newString = string.slice(0, end);
 		var splitUp  = newString.split("\n");
-		console.log(splitUp);
-		console.log(splitUp.length);
 		return splitUp[splitUp.length - 1].slice(splitUp[splitUp.length -1] -1, -1);
 	}
 	function parseIdValue(string) {
@@ -756,18 +770,17 @@ function DevClassController( $scope, $state, $injector, Underscore,
 							}
 
 						});
-						console.log(docEpSplit, newEpSplit);
 						if (Underscore.difference(docEpSplit, newEpSplit).length == 0 && Underscore.difference(newEpSplit, docEpSplit).length == 0) {
-							console.log('hello');
 							angular.forEach(vm.current.Assert, function(assertion) {
-								console.log(svcKey, mtdKey, assertion.Method);
 								if (svcKey + '.' + mtdKey == assertion.Method) {
 									if (assertion.Successes) {
 										assertion.Successes += 1;
+
 									}
 									else {
 										assertion.Successes = 1;
 									}
+									DcUsers.SetClassLevelProgress($stateParams.classid, {Method: svcKey + "." + mtdKey, Count: assertion.Successes});
 									checkAssertions();
 								}
 							})
@@ -790,10 +803,8 @@ function DevClassController( $scope, $state, $injector, Underscore,
 						vm.viewVarAdd = false;
 						varReplace();
 					}, function(err) {
-						console.log(err);
 					})
 			}, function(err) {
-				console.log(err);
 			})
 	}
 	function removeExistingVar(varHash) {
@@ -804,10 +815,10 @@ function DevClassController( $scope, $state, $injector, Underscore,
 						vm.user.savedVars = vars;
 						varReplace();
 					}, function(err) {
-						console.log(err);
+						return angular.noop();
 					})
 			}, function(err) {
-				console.log(err);
+				return angular.noop();
 			})
 	}
 	function editExistingVar(varHash, existingVar) {
@@ -818,10 +829,10 @@ function DevClassController( $scope, $state, $injector, Underscore,
 						vm.user.savedVars = vars;
 						varReplace();
 					}, function(err) {
-						console.log(err);
+						return angular.noop();
 					})
 			}, function(err) {
-				console.log(err);
+				return angular.noop();
 			})
 	}
 
@@ -839,7 +850,6 @@ function DevCoursesAdminController(AdminCoursesList, Underscore, $scope, $cookie
 	for (var i = 0; i < vm.coursesList.length; i++) {
 		vm.coursesList[i] = vm.coursesList[i].toJSON();
 		delete vm.coursesList[i]["CourseProgress"];
-		console.log(vm.coursesList[i]);
 	}
 	vm.changeCourseOrder = changeCourseOrder;
 	vm.filterCourseList = filterCourseList;
@@ -855,7 +865,7 @@ function DevCoursesAdminController(AdminCoursesList, Underscore, $scope, $cookie
 		return vm.editSelected;
 	}, function(newVal, oldVal) {
 		if (!newVal) {
-			return
+			return angular.noop();
 		} else {
 			$cookies.put('course_focus', newVal);
 			vm.selectedCourseIndex = Underscore.findIndex(vm.coursesList, {Name: newVal});
@@ -1063,7 +1073,6 @@ function DcUserService(DcUsers, $q) {
 		var d = $q.defer();
 		DcUsers.GetUserContext()
 			.then(function(data) {
-				console.log(data);
 				d.resolve(data);
 			}, function(error) {
 				d.reject(error);

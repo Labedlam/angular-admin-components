@@ -83,7 +83,7 @@ function HomeController( $resource ) {
             image:'assets/images/world-class.jpg',
             title:'World Class Scalability & Security',
             description:'99% uptime across all experiences. PCI DSS and SSAE 16 Type || compliance',
-            buttonTitle:'Learn More'
+            buttonTitle:'watch video'
         },
         {
             image:'assets/images/b3.png',

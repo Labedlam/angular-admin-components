@@ -24,7 +24,7 @@ function AccountConfig( $stateProvider ) {
         })
 }
 
-function AccountService( $q, $uibModal, DevCenter ) {
+function AccountService( $q, $uibModal, DevCenter, Auth, DevAuth ) {
     var service = {
         Update: _update,
         ChangePassword: _changePassword
@@ -78,8 +78,7 @@ function AccountService( $q, $uibModal, DevCenter ) {
         };
 
         function changePassword() {
-            currentUser.Password = currentUser.NewPassword;
-            DevCenter.Me.Update(currentUser)
+            DevCenter.ResetPassword(currentUser.NewPassword, DevAuth.GetToken())
                 .then(function() {
                     deferred.resolve();
                 })
@@ -90,6 +89,7 @@ function AccountService( $q, $uibModal, DevCenter ) {
 
         DevCenter.Login(checkPasswordCredentials).then(
             function() {
+                Auth.RemoveToken();
                 changePassword();
             }).catch(function( ex ) {
                 deferred.reject(ex);
@@ -138,13 +138,17 @@ function ConfirmPasswordController( $uibModalInstance ) {
     };
 }
 
-function ChangePasswordController( $state, $exceptionHandler, CurrentUser ) {
+function ChangePasswordController( toastr, $state, AccountService, $exceptionHandler, CurrentUser ) {
     var vm = this;
     vm.currentUser = CurrentUser;
 
     vm.changePassword = function() {
         AccountService.ChangePassword(vm.currentUser)
             .then(function() {
+                vm.currentUser.CurrentPassword = null;
+                vm.currentUser.NewPassword = null;
+                vm.currentUser.ConfirmPassword = null;
+                toastr.success('Your password was successfully changed.', 'Success!');
                 $state.go('base.account');
             })
             .catch(function(ex) {

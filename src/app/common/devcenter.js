@@ -88,7 +88,7 @@ function DevCenterFactory($resource, $state, apiurl, authurl, ocscope, devcenter
 	}
 
 	function _resetPassword(password, token) {
-		return $resource(apiurl + '/v1/devcenter/resetpassword', {}, {ResetPassword: {method: 'POST', headers:{Authorization: 'Bearer ' + token}}}).ResetPassword({Password: password}).$promise;
+		return $resource(apiurl + '/v1/devcenter/resetpassword', {}, {ResetPassword: {method: 'POST', headers:{Authorization: token}}}).ResetPassword({Password: password}).$promise;
 	}
 
 	//USERS

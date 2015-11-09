@@ -67,7 +67,7 @@ function PasswordResetController($exceptionHandler, $stateParams, DevCenter) {
 	var vm = this;
 	vm.success = false;
 	vm.submit = function() {
-		DevCenter.ResetPassword(vm.newPassword, $stateParams.token).then(function() {
+		DevCenter.ResetPassword(vm.newPassword, 'Bearer ' + $stateParams.token).then(function() {
 			vm.success = true;
 		}).catch(function(ex) {
 			$exceptionHandler(ex);

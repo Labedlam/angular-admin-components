@@ -19,7 +19,7 @@
     <div class="row text-center">
         <div class="col-md-12">
             <p class="primary-head">Elegant, powerful, and easy to use cloud-based platform</p>
-            <p class="normal-head">Create, configure and customize B2B eCommerce sites faster, easier and at lower cost. Solve complex order management challenges quickly by leveraging our cloud-based platform.</p>
+            <p class="normal-head">Create, configure & customize B2B eCommerce sites faster, easier & at lower cost. Solve complex order management challenges quickly by leveraging our cloud-based platform.</p>
         </div>
     </div>
     <div class="row four-column">
@@ -103,29 +103,26 @@
         </uib-carousel>
     </div>
 </div>
-<div  ng-repeat="tab in home.tabs">
-    <div class="home-common third-wrap"  ng-style="{'backgroundImage': 'url(\'' + tab.image + '\')'}">
-        <div class="row text-center">
-            <div class="col-md-12">
-                <h2 class="primary-head">How can OrderCloud help you?</h2>
+<uib-tabset >
+    <uib-tab ng-repeat="tab in home.tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
+        <div  ng-style="{'backgroundImage': 'url(\'' + tab.image + '\')'}">
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <h2 class="primary-head">How can OrderCloud help you?</h2>
+                </div>
             </div>
-        </div>
-        <div class="row text-center tab-navigation">
-            <div class="col-md-12">
-                <uib-tabset >
-                    <uib-tab heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
-                            <!--<img src="{{tab.image}}" alt="" />-->
-                        <div class="col-md-12 " >
-                            <div class="tab-content"><p>{{tab.content}}</p></div>
-                            <div class="tab-description"><p>{{tab.description1}}</p>
+            <div class="row text-center tab-navigation">
+                <div class="col-md-12">
+                    <div class="col-md-12 " >
+                        <div class="tab-content"><p>{{tab.content}}</p></div>
+                        <div class="tab-description"><p>{{tab.description1}}</p>
                             <p>{{tab.description2}}</p></div>
-                        </div>
-                    </uib-tab>
-                </uib-tabset>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </uib-tab>
+</uib-tabset>
 <div class="footer">
     <div class="row text-center">
         <div class="col-md-12">

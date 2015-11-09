@@ -24,22 +24,19 @@
     </div>
     <div class="row four-column">
         <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Inline_Editors.svg" alt=""  />
-            <h3>Inline Editors</h3>
-    <span>Component Based Development
-Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</span>
-        </div>
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Live_Preview.svg" alt=""  />
-            <h3>Live Preview</h3>
-    <span>Rapid Development Tools
-Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</span>
+            <img src="assets/images/Inline_Editors.svg" alt=""/>
+            <h3>Component Based Development</h3>
+    <span>Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</span>
         </div>
         <div class="col-md-3 col-sm-3">
             <img src="assets/images/Package_manager.svg" alt=""  />
-            <h3>Package Manager</h3>
-    <span>Extendable Data Model
-Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</span>
+            <h3>Rapid Development Tools</h3>
+    <span>Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</span>
+        </div>
+        <div class="col-md-3 col-sm-3">
+            <img src="assets/images/Live_Preview.svg" alt=""  />
+            <h3>Extendable Data Model</h3>
+    <span>Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</span>
         </div>
         <div class="col-md-3 col-sm-3">
             <img src="assets/images/cloud.svg" alt=""  />
@@ -70,63 +67,62 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             <h2 class="primary-head">OrderCloud Stories</h2>
         </div>
     </div>
-    <div class="row three-column hidden-xs text-center">
+    <div class="row three-column hidden-xs text-center  storieImages">
         <div class="col-md-4 col-sm-4">
             <img src="assets/images/papa_johns.png" class="img-responsive" alt=""  />
             <h3>Papa John's</h3>
             <span>15,000+ orders a month? No problem.</span>
             <p>Papa John's, founded in 1985, has grown to over 20,700 employees who operate and franchise more than 4,000 delivery and carryout pizza restaurants worldwide. In order to systematize and make these franchisees more efficient, they were in need of a serious operational makeover.</p>
-            <button href="http://public.four51.com/papa-johns-case-study">Learn more</button>
+            <a class="buttonStories" href="http://public.four51.com/papa-johns-case-study"> Learn more</a>
         </div>
         <div class="col-md-4 col-sm-4">
-            <img src="assets/images/turtle-wax-logo.png" style="max-height: 81px;" class="img-responsive"  />
+            <img src="assets/images/turtle-wax-logo.png" class="img-responsive"  />
             <h3>Turtle Wax</h3>
             <span>400+ custom storefonts. In the Cloud.</span>
-            <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products. </p>
-            <button href="http://451.yourdevsite.com/turtle-wax-case-study">Learn more</button>
+            <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it's success, Turtle Wax had a problem. </p>
+            <a class="buttonStories" href="http://451.yourdevsite.com/turtle-wax-case-study">Learn more</a>
         </div>
         <div class="col-md-4 col-sm-4">
             <img src="assets/images/burroughs_logo.png" class="img-responsive" alt=""  />
             <h3>Burroughs</h3>
             <span>Massive Cost Savings? You bet.</span>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip </p>
-            <button>Learn more</button>
+            <p>Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.</p>
+            <a class="buttonStories" href="http://public.four51.com/burroughs-case-study">Learn more</a>
         </div>
     </div>
     <div class="cloud-stories-mobile visible-xs">
         <uib-carousel interval="home.myInterval" no-wrap="home.noWrapSlides">
             <uib-slide ng-repeat="slide in home.mobileslides" active="slide.active">
                 <div class="mobile-carousel">
-                    <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
+                    <img ng-src="{{slide.image}}" style="margin:auto; max-height: 81px;" class="img-responsive">
                     <h3>{{slide.title}}</h3>
                     <span>{{slide.description}}</span>
                     <p>{{slide.text}}</p>
-                    <button>{{slide.button}}</button>
                 </div>
             </uib-slide>
         </uib-carousel>
     </div>
 </div>
-<div class="home-common third-wrap">
-    <div class="row text-center">
-        <div class="col-md-12">
-            <h2 class="primary-head">How can OrderCloud help you?</h2>
+<div  ng-repeat="tab in home.tabs">
+    <div class="home-common third-wrap"  ng-style="{'backgroundImage': 'url(\'' + tab.image + '\')'}">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h2 class="primary-head">How can OrderCloud help you?</h2>
+            </div>
         </div>
-    </div>
-    <div class="row text-center tab-navigation">
-        <div class="col-md-12">
-            <uib-tabset>
-                <uib-tab ng-repeat="tab in home.tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
-                    <div class="col-md-5 tabpanel-one">
-                        <img src="{{tab.image}}" alt="" />
-                    </div>
-                    <div class="col-md-7 tabpanel-two">
-                        <div class="tab-content"><p>{{tab.content}}</p></div>
-                        <div class="tab-description"><p>{{tab.description1}}</p>
+        <div class="row text-center tab-navigation">
+            <div class="col-md-12">
+                <uib-tabset >
+                    <uib-tab heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
+                            <!--<img src="{{tab.image}}" alt="" />-->
+                        <div class="col-md-12 " >
+                            <div class="tab-content"><p>{{tab.content}}</p></div>
+                            <div class="tab-description"><p>{{tab.description1}}</p>
                             <p>{{tab.description2}}</p></div>
-                    </div>
-                </uib-tab>
-            </uib-tabset>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+            </div>
         </div>
     </div>
 </div>

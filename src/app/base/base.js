@@ -47,7 +47,7 @@ function BaseController( CurrentUser ) {
 	vm.resourcesDropdown = [
 		{
 			Display: 'Courses',
-			Description: 'Train yourself to use the OrderCloud Platform',
+			Description: 'Train yourself to use the OrderCloud Platform through a series of interactive Courses. New courses are added frequently so be sure to check back later for new material!',
 			StateRef: 'base.devcourses'
 		},
 		{

@@ -4,9 +4,9 @@
             <h2>Getting Started</h2>
             <hr/>
             <p>
-                This guide is geared towards developers who want to get up and running with the OrderCloud API and start
+                This guide is geared toward developers who want to get up and running with the OrderCloud API and start
                 creating their first application with the OrderCloud Seed repository. While your development environment
-                is up to you, Four51's IDE of choice is <a target="_blank" href="https://www.jetbrains.com/webstorm/"><b>WebStorm</b></a> and works well with all of the tools below.
+                is up to you, Four51's IDE of choice is <a target="_blank" href="https://www.jetbrains.com/webstorm/"><b>WebStorm</b></a>, which works well with all of the tools below.
             </p>
         </div>
     </header>
@@ -18,82 +18,81 @@
             of these libraries to get started, only to install them.
         </p>
         <blockquote class="alert-info">
-            <p class="lead">Four51's IDE of choice is <a target="_blank" href="https://www.jetbrains.com/webstorm/"><b>WebStorm</b></a> and works well with all of the tools below.</p>
+            <p class="lead">Four51's IDE of choice is <a target="_blank" href="https://www.jetbrains.com/webstorm/"><b>WebStorm</b></a>, which works well with all of the tools below.</p>
         </blockquote>
-        <h4><b>Installing <a href="https://nodejs.org/en/" target="_blank">Node</a> and <a href="https://www.npmjs.com/" target="_blank">NPM</a></b></h4>
+        <h4><b>Installing <a href="https://nodejs.org/en/" target="_blank">Node.js</a> and <a href="https://www.npmjs.com/" target="_blank">NPM</a></b></h4>
         <ol>
             <li>
-                Follow the link above to the Node home page. This page should display green download buttons specific
-                for the OS you are currently using. At the time of writing this guide Node has two versions available, a
+                Follow the link above to the Node.js home page. This page should display green download buttons specific
+                for the OS you are currently using. At the time of writing this guide Node.js has two versions available, a
                 long term support (LTS) version 4.2.2 and a staple version of 5.0.0. Either version should be fine for
-                working with our application. Click on the appropriate button to begin downloading Node.
+                working with our application. Click on the appropriate button to begin downloading Node.js.
             </li>
             <li>
-                After the application as finished downloading, click on the downloaded file and walk though the
+                After the application has finished downloading, click on the downloaded file and walk though the
                 installation guide. All the defaults should be fine.
             </li>
             <li>
-                The installation of node should take care of installing npm as well. If you want to verify the install
+                The Node.js installer should take care of installing NPM as well. If you want to verify the install,
                 open up a terminal or command prompt window and type <code>node --version</code> and your current version
-                of node should read out. You can do the same check with npm by typing <code>npm --version</code>. If there
-                was no error during your installation but these commands do not work you may need to add node and/or npm
+                of Node.js should be returned. You can do the same check with NPM by typing <code>npm --version</code>. If there
+                was no error during your installation but these commands do not work, you may need to add node and/or npm
                 to your environment variables.
             </li>
         </ol>
         <h4><b>Installing <a href="http://bower.io/" target="_blank">Bower</a></b></h4>
         <p>
-            The seed uses Bower to add functionality from other code libraries to the code you are developing. Examples
-            of things included in the seed through Bower are AngularJS, Bootstrap, and the OrderCloud-Angular-SDK.
+            The seed uses Bower to add 3rd-party code libraries to your application. Examples
+            include AngularJS, Bootstrap, and the OrderCloud AngularJS SDK.
         </p>
         <p>
             To install Bower, just run <code>npm install -g bower</code>.
         </p>
         <p>
-            Make sure you don't forget the "-g", this is telling npm to install the package globally so it will be available
+            Make sure you don't forget the "-g", this is telling NPM to install the package globally so it will be available
             to you for all future projects.
         </p>
         <h4><b>Installing <a href="http://gulpjs.com/" target="_blank">Gulp 4.0</a></b></h4>
         <p>
-            The seed relies on Gulp for its automation tests when setting up the app. It uses the 4.0 version of Gulp
-            which at the time of writing this guide has not been officially released, but fear not! Now that you have npm
-            installed installing Gulp will be a breeze. Add you need is to open up your terminal and type one line:
+            The seed relies on Gulp for its automated build/test process. It uses the 4.0 version of Gulp
+            which at the time of writing this guide has not been officially released, but fear not! NPM makes installing
+            this version a breeze:
         </p>
         <p><code>
             npm -g install "gulpjs/gulp-cli#4.0"
         </code></p>
         <p>
-            Again make sure you include the "-g". Now with all the third party stuff installed you are finally ready to get the
-            OrderCloud Seed code.
+            Again make sure you include the "-g". Now that you have all the third party stuff installed, 
+            you are finally ready to get the OrderCloud Seed code.
         </p>
         <h3 class="page-header">Getting the Seed</h3>
         <p>
-            Four51's code is available online through GitHub. If you don't have a GitHub account yet you are going to need
-            to <a href="https://github.com/join" target="_blank">create one</a>, don't worry it is free.
+            The OrderCloud Seed is freely available on GitHub. If you don't have a GitHub account yet you are going to need
+            to <a href="https://github.com/join" target="_blank">create one</a>. (Don't worry, it's free.)
         </p>
         <p>
-            To access the OrderCloud seed through GitHub you can use the URL provided here: <a href="https://github.com/Four51/OrderCloud-Seed-AngularJS" target="_blank">OrderCloud-Seed-AngularJS</a>, or search GitHub
-            for OrderCloud-Seed-AngularJS. Make sure that the code you are downloading is under the Four51 GitHub user.
+            The OrderCloud Seed repository is located here: <a href="https://github.com/Four51/OrderCloud-Seed-AngularJS" target="_blank">https://github.com/Four51/OrderCloud-Seed-AngularJS</a>.
         </p>
         <p>
-            There many options for interfacing with GitHub including the GitHub desktop and SourceTree. You can look up
-            these tools on your own. For this guide we will just be assuming that you downloaded the zipped version of the
-            app from GitHub and have unzipped the directory.
+            Learning Git and GitHub is beyond the scope of this guide, but <a href="https://help.github.com/articles/good-resources-for-learning-git-and-github/" target="_blank">GitHub provides a wealth of
+            resources</a> to help you get up to speed. The remainder of this guide will assume that you have successfully
+            pulled a copy of the OrderCloud Seed repository to a local directory.
         </p>
         <h3 class="page-header">Final Steps</h3>
-        <p>Its the home stretch. Just a few more things to do and your app will be up and running.</p>
+        <p>It's the home stretch. Just a few more things to do and your app will be up and running.</p>
         <p>
             To ensure your setup works, build your application and then run it with the following commands:
         </p>
         <p><code>gulp build</code></p>
         <p><code>gulp watch</code></p>
         <p>
-            The built files are placed in the <code>build/</code> directory by default. Add the <code>watch</code> should open the application on a localhost on port 8000.
+            The built files are placed in the <code>build/</code> directory by default. <code>watch</code> should open the application on localhost, port 8000.
         </p>
         <p>
             <code>watch</code> actually starts a few other processes in the background to help you develop your application. Using
-            <code>browser-sync</code> and some built in gulp functions the app is now watching for changes in your source directory.
-            Should you make any changes to your html or js files the app should automatically reload your application
-            with the appropriate changes. Also if you make any changes to your style sheets (less or css) the app will
+            <code>browser-sync</code> and some built in Gulp functions, the app is now watching for changes in your source directory.
+            If you make any changes to your html or js files, the app should automatically reload your application
+            with the appropriate changes. And if you make any changes to your style sheets (CSS or LESS) the app will
             rebuild those changes and inject them directly into the application, without reloading the entire page!
         </p>
         <p>
@@ -103,11 +102,13 @@
         <p>
             This will concatenate and minify your sources and place them by default into the <code>compile/</code> directory. There
             will only be three files (excluding assets): <code>index.html</code>, <code>OrderCloud.js</code>, and <code>OrderCloud.css</code>. All of the
-            vendor dependencies like AngularJS styles and the OrderCloud-SDK itself have been added to them for
-            super-easy deploying. If you use any assets (<code>src/assets/</code>) then they will be copied to <code>compile/</code> as is.
+            vendor dependencies like AngularJS styles and the OrderCloud SDK will have been merged into those files for
+            super-easy deploying. If your application includes any assets (images, etc. under <code>src/assets/</code>),
+            those will be copied to <code>compile/</code> as is.
         </p>
         <p>
-            Lastly, a complete build is always available by simply running the default task, which runs <code>build</code> and then <code>compile</code>:
+            Lastly, a complete build is always available by simply running the default task, which runs <code>build</code> 
+            and then <code>compile</code>:
         </p>
         <p><code>gulp</code></p>
         <hr/>

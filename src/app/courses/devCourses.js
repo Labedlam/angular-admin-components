@@ -429,6 +429,8 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	vm.editExistingVar = editExistingVar;
 	vm.saveNewVar = saveNewVar;
 
+	vm.viewVarAdd = false;
+
 	var requestSuccessHit = false;
 
 

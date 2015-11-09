@@ -19,25 +19,29 @@
 			</div>
 		</div>
 	</div>
-	<div class="row" ng-show="viewVarAdd">
-		<div class="col-xs-6">
-			<div class="form-group input-group">
+	<div  ng-init="class.viewVarAdd = false" ng-switch="class.viewVarAdd">
+		<div class="row" ng-switch-when="true">
+			<div class="col-xs-6">
+				<div class="form-group input-group">
 			<span class="input-group-btn">
-				<button class="btn btn-default" ng-click="viewVarAdd = false; class.user.newVar = {};"><i class="fa fa-remove text-danger"></i></button>
+				<button class="btn btn-default" ng-click="class.viewVarAdd = false; class.user.newVar = {};"><i class="fa fa-remove text-danger"></i></button>
 			</span>
-				<input placeholder="Key" class="form-control" ng-model="class.user.newVar.key">
+					<input placeholder="Key" class="form-control" ng-model="class.user.newVar.key">
+				</div>
 			</div>
-		</div>
-		<div class="col-xs-6">
-			<div class="form-group input-group">
-				<input placeholder="Value" class="form-control" ng-model="class.user.newVar.val">
+			<div class="col-xs-6">
+				<div class="form-group input-group">
+					<input placeholder="Value" class="form-control" ng-model="class.user.newVar.val">
 			<span class="input-group-btn">
 				<button class="btn btn-success" ng-click="class.saveNewVar(class.user.newVar)"><i class="fa fa-check"></i></button>
 			</span>
+				</div>
 			</div>
 		</div>
+		<div class="text-center" ng-switch-when="false">
+			<button ng-click="class.viewVarAdd = !class.viewVarAdd" class="btn btn-block btn-success"><i class="fa fa-plus-circle"></i> New Variable</button>
+		</div>
 	</div>
-	<div class="text-center">
-		<button ng-init="viewVarAdd = false" ng-click="viewVarAdd = !viewVarAdd" ng-show="!viewVarAdd" class="btn btn-block btn-success"><i class="fa fa-plus-circle"></i> New Variable</button>
-	</div>
+
+
 </div>

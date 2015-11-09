@@ -1,0 +1,43 @@
+<div>
+	<h4 class="text-center">VARIABLES</h4>
+	<div class="row" ng-init="var.editMode = false" ng-repeat="var in class.user.savedVars">
+		<div class="col-xs-6">
+			<div class="form-group input-group">
+			<span class="input-group-btn">
+				<button class="btn btn-default" ng-click="class.removeExistingVar(var.hash)"><i class="fa fa-remove text-danger"></i></button>
+			</span>
+				<input placeholder="Key" class="form-control" ng-model="var.key" ng-disabled="!var.editMode">
+			</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="form-group input-group">
+				<input placeholder="Value" class="form-control" ng-model="var.val" ng-disabled="!var.editMode">
+			<span class="input-group-btn">
+				<button ng-if="!var.editMode" class="btn btn-default" ng-click="class.toggleEdit(var)"><i class="fa fa-edit"></i></button>
+				<button ng-if="var.editMode" class="btn btn-success" ng-click="class.editExistingVar(var.hash, var)"><i class="fa fa-check"></i></button>
+			</span>
+			</div>
+		</div>
+	</div>
+	<div class="row" ng-show="viewVarAdd">
+		<div class="col-xs-6">
+			<div class="form-group input-group">
+			<span class="input-group-btn">
+				<button class="btn btn-default" ng-click="viewVarAdd = false; class.user.newVar = {};"><i class="fa fa-remove text-danger"></i></button>
+			</span>
+				<input placeholder="Key" class="form-control" ng-model="class.user.newVar.key">
+			</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="form-group input-group">
+				<input placeholder="Value" class="form-control" ng-model="class.user.newVar.val">
+			<span class="input-group-btn">
+				<button class="btn btn-success" ng-click="class.saveNewVar(class.user.newVar)"><i class="fa fa-check"></i></button>
+			</span>
+			</div>
+		</div>
+	</div>
+	<div class="text-center">
+		<button ng-init="viewVarAdd = false" ng-click="viewVarAdd = !viewVarAdd" ng-show="!viewVarAdd" class="btn btn-block btn-success"><i class="fa fa-plus-circle"></i> New Variable</button>
+	</div>
+</div>

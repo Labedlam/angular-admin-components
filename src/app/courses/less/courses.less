@@ -619,10 +619,23 @@
   }
 }
 
-// Danger and error appear as red
 .btn-dark {
   .button-variant(lighten(@console-log-bg, 70); lighten(@console-log-bg, 15); lighten(@console-log-bg, 10));
 }
+
+.variables-popover {
+  .popover {
+	max-width:none;
+	width:400px;
+	h4 {
+	  font-family:@body-font;
+	  font-weight:100;
+
+	  color: @four51-blue;
+	}
+  }
+}
+
 
 #ClassLoading {
   z-index: 100000;

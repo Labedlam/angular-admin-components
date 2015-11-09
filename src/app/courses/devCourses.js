@@ -432,6 +432,10 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	var requestSuccessHit = false;
 
 
+	vm.toggleEdit = function(variable) {
+		variable.editMode = !variable.editMode;
+	}
+
 	vm.openRequestCount = 0;
 	vm.docs = {};
 	vm.classIndex = SelectedCourse.Classes.indexOf(vm.current.ID);

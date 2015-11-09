@@ -5,6 +5,7 @@ angular.module('orderCloud')
     .constant('apiurl', 'https://testapi.ordercloud.io')
     .constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858')
     .constant('environment', 'test');
+    .constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 */
 
  angular.module('orderCloud')
@@ -12,4 +13,5 @@ angular.module('orderCloud')
     .constant('apiurl', 'http://core.four51.com:9002')
     .constant('integrationurl', 'http://core.four51.com:9004')
     .constant('devcenterClientID', '6d60154e-8a55-4bd2-93aa-494444e69996') //Local
-    .constant('environment', 'local');
+    .constant('environment', 'local')
+    .constant('devapiurl', 'https://devcenterapi-test.herokuapp.com');

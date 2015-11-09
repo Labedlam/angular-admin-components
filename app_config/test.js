@@ -4,4 +4,5 @@ angular.module('orderCloud')
     .constant('apiurl', 'https://testapi.ordercloud.io')
     .constant('integrationurl', 'https://testintegrations.ordercloud.io')
     .constant('devcenterClientID', '1aa9ed77-64f0-498d-adfa-8b430d7a7858')
-    .constant('environment', 'test');
+    .constant('environment', 'test')
+    .constant('devapiurl', 'https://devcenterapi-test.herokuapp.com');

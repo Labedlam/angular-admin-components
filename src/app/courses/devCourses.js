@@ -7,6 +7,7 @@ angular.module( 'orderCloud' )
 	.controller( 'DevClassCtrl', DevClassController )
 	.controller( 'DevClassEditCtrl', DevClassEditController)
 	.controller( 'LearningCtrl', LearningController)
+	.controller( 'ContextSelectionModalCtrl', ContextSelectionModalController)
 	.factory( 'ClassSvc', ClassService )
 	.factory( 'CourseSvc', CourseService )
 	.factory( 'DcUserSvc', DcUserService )
@@ -97,6 +98,68 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				},
 				ClassesList: function($q, $stateParams, ClassSvc) {
 					return ClassSvc.listClasses($stateParams.courseid, {Name: 1, Description: 1, ID: 1, Active: 1});
+				},
+				CurrentContext: function($q, $uibModal, DevCenter, DcUserSvc, DcUsers) {
+					var deferred = $q.defer();
+
+					DcUserSvc.getContext()
+						.then(function(context) {
+							if (context && context.ID) {
+								deferred.resolve();
+							} else {
+								var modalInstance = $uibModal.open({
+									backdrop:'static',
+									animation: true,
+									templateUrl: 'courses/templates/contextSelection.modal.tpl.html',
+									controller: 'ContextSelectionModalCtrl',
+									controllerAs: 'contextSelect',
+									resolve: {
+										AvailableInstances: function($q, Underscore, DevCenter) {
+											var deferred = $q.defer();
+											DevCenter.Me.GetAccess().then(function(data) {
+												var results = [];
+												angular.forEach(data.Items, function(instance) {
+													var existingResult = Underscore.where(results, {ClientID: instance.ClientID, UserID: instance.UserID, Claims: instance.Claims})[0];
+													if (existingResult) {
+														var existingIndex = results.indexOf(existingResult);
+														results[existingIndex].DevGroups.push({
+															AccessID: instance.ID,
+															ID: instance.DevGroupID,
+															Name: instance.DevGroupName
+														});
+													} else if (instance.Accepted) {
+														instance.DevGroups = [
+															{
+																AccessID: instance.ID,
+																ID: instance.DevGroupID,
+																Name: instance.DevGroupName
+															}
+														];
+														delete instance.ID;
+														delete instance.DevGroupID;
+														delete instance.DevGroupName;
+														results.push(instance);
+													}
+												});
+												deferred.resolve(results);
+											});
+											return deferred.promise;
+										}
+									}
+								});
+
+								modalInstance.result.then(function(context) {
+									DcUsers.SetUserContext(context).then(function() {
+										DevCenter.AccessToken(context.ID).then(function() {
+											deferred.resolve();
+										});
+									});
+								});
+							}
+						});
+
+
+					return deferred.promise;
 				}
 			}
 		})
@@ -357,7 +420,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 	vm.contextOptions = ContextOptions;
 	vm.user = {};
 	vm.user.savedVars = OcVars;
-	vm.user.context = OcContext.toJSON();
+	//vm.user.context = OcContext.toJSON();
 	vm.alert = {};
 	vm.Responses = [];
 	vm.classComplete = false;
@@ -383,9 +446,10 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		vm.BuyerSet = true;
 	}
 
-	$localForage.getItem('context-user')
+
+/*	$localForage.getItem('context-user')
 		.then(function(data) {
-			if (data.ID != vm.user.context.ID) {
+			if (data && data.ID != vm.user.context.ID) {
 				vm.context = vm.user.context;
 				vm.ContextName = vm.user.context.CompanyName;
 				setContext()
@@ -394,7 +458,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 				vm.context = data;
 				vm.ContextName = data.CompanyName;
 			}
-		});
+		});*/
 
 
 	vm.openRequestCount = 0;
@@ -536,7 +600,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		}
 	}
 
-	$scope.$watch(function() {
+/*	$scope.$watch(function() {
 		return vm.ContextName;
 	}, function(newVal) {
 		if (!newVal) {
@@ -544,7 +608,7 @@ function DevClassController( $scope, $state, $injector, Auth, Underscore,
 		} else {
 			vm.context = Underscore.where(vm.contextOptions, {CompanyName: newVal})[0];
 		}
-	});
+	});*/
 
 	function renderHtml(html) {
 		return $sce.trustAsHtml(html);
@@ -1076,4 +1140,12 @@ function DcUserService(DcUsers, $q) {
 	return service
 }
 
-
+function ContextSelectionModalController($uibModalInstance, AvailableInstances) {
+	var vm = this;
+	vm.AvailableContexts = AvailableInstances;
+	vm.submit = function(context) {
+		context.ID = context.DevGroups[0].AccessID;
+		delete context.DevGroups;
+		$uibModalInstance.close(context);
+	}
+}

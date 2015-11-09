@@ -29,7 +29,7 @@
             </div>
             <button type="submit" class="btn btn-primary" ng-disabled="ProfileUpdateForm.$invalid || ProfileUpdateForm.$pristine">Save Changes</button>
             <button type="button" class="btn btn-default" ng-disabled="ProfileUpdateForm.$pristine" ng-click="account.resetForm(ProfileUpdateForm)">Revert Changes</button>
-            <button type="button" class="btn btn-default" ui-sref="base.changePassword">Change Password</button>
+            <button type="button" class="btn btn-default" ui-sref="base.changePassword"><i class="fa fa-cogs"></i> Change Password</button>
         </form>
     </div>
     <blockquote class="alert-danger" ng-if="account.profile.Expired">

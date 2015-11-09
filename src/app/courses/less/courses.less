@@ -1,3 +1,7 @@
+#ContextSelectModal {
+  padding:15px;
+}
+
 .learning-container {
   background-color: @gray-lighter;
   .container {
@@ -551,19 +555,6 @@
 		#ResponseBody {
 		  background-color: @gray-darker;
 		}
-		#ClassLoading {
-		  z-index: 1000000;
-		  width: 100%;
-		  position: absolute;
-		  bottom: 5px;
-		  display: flex;
-		  flex-flow: row nowrap;
-		  justify-content: center;
-		  .class-loading-icon i {
-			font-size: 3em;
-			color: @four51-orange;
-		  }
-		}
 		.response-alert {
 		  position: absolute;
 		  right: 15px;
@@ -650,6 +641,25 @@
 	.code-block.ActiveCodeBlock {
 	  display: inherit;
 	}
+  }
+}
+
+#ClassLoading {
+  z-index: 100000;
+  width: 100%;
+  position: fixed;
+  left:0;
+  right:0;
+  top:@navbar-height;
+  background-color:rgba(0,0,0,0.5);
+  bottom:0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items:center;
+  .class-loading-icon i {
+	font-size: 3em;
+	color: @four51-orange;
   }
 }
 

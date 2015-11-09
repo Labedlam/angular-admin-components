@@ -1,0 +1,23 @@
+<div id="ContextSelectModal">
+	<p>Courses require an OrderCloud instance to work against. Select a context from the list below to continue.</p>
+	<form name="contextFilterForm">
+		<div class="form-group">
+			<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="contextSelect.contextSearchTerm"/>
+		</div>
+	</form>
+	<div class="well well-lg text-center" ng-if="!(contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm).length">
+		<p class="lead"><i class="fa fa-search"></i> We couldn't find a context that matches your search.</p>
+	</div>
+	<ul class="list-group" ng-if="(contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm).length">
+		<li class="list-group-item context-list-item" ng-repeat="context in contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm" ng-class="{active:contextSelect.ActiveContext == context, selected: contextSelect.SelectedContext == context}">
+			<div class="context-info">
+				<b>{{context.CompanyName}}</b> <br/>
+				<small class="text-muted">{{context.ClientID}}</small>
+			</div>
+			<div class="context-claims">
+				<span class="text-muted"><i class="fa fa-lock"></i> {{context.Claims}}</span>
+			</div>
+			<button class="btn btn-success" ng-click="contextSelect.submit(context)">Activate</button>
+		</li>
+	</ul>
+</div>

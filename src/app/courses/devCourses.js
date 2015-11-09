@@ -99,7 +99,7 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 				ClassesList: function($q, $stateParams, ClassSvc) {
 					return ClassSvc.listClasses($stateParams.courseid, {Name: 1, Description: 1, ID: 1, Active: 1});
 				},
-				CurrentContext: function($q, $uibModal, DevCenter, DcUserSvc, DcUsers) {
+				CurrentContext: function($q, $state, $uibModal, DevCenter, DcUserSvc, DcUsers) {
 					var deferred = $q.defer();
 
 					DcUserSvc.getContext()
@@ -122,7 +122,7 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 												var results = [];
 												angular.forEach(data.Items, function(instance) {
 													var existingResult = Underscore.where(results, {ClientID: instance.ClientID, UserID: instance.UserID, Claims: instance.Claims})[0];
-													if (existingResult) {
+													if (existingResult  && instance.Accepted) {
 														var existingIndex = results.indexOf(existingResult);
 														results[existingIndex].DevGroups.push({
 															AccessID: instance.ID,
@@ -156,6 +156,9 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 											deferred.resolve();
 										});
 									});
+								},
+								function(stateRef) {
+									$state.go(stateRef);
 								});
 							}
 						});
@@ -1080,5 +1083,9 @@ function ContextSelectionModalController($uibModalInstance, AvailableInstances) 
 		context.ID = context.DevGroups[0].AccessID;
 		delete context.DevGroups;
 		$uibModalInstance.close(context);
-	}
+	};
+
+	vm.goToInstances = function() {
+		$uibModalInstance.dismiss('base.newInstance');
+	};
 }

@@ -31,32 +31,21 @@
 					</div>
 				</div>
 				<div class="col-sm-8">
-					<form name="addNewMemberForm" ng-submit="" ng-if="devGroupDetail.activeTab == 'Members' && devGroupDetail.model.GroupAdmin">
-						<div class="form-group input-group">
-							<input id="DevUserSearch" class="form-control" type="search" placeholder="Invite a new member..."
-								   autocomplete="off"
-								   ng-model="devGroupDetail.userSearchTerm"
-								   typeahead-template-url="common/user.result.tpl.html"
-								   uib-typeahead="user as user.Username for user in devGroupDetail.searchDevUsers($viewValue)"
-								   typeahead-on-select="devGroupDetail.selectDevUser($item)"/>
+					<div ng-if="devGroupDetail.activeTab == 'Members' && devGroupDetail.model.GroupAdmin">
+						<form name="addNewMemberForm" ng-submit="">
+							<div class="form-group input-group">
+								<input id="DevUserSearch" class="form-control" type="search" placeholder="Invite a new member..."
+									   autocomplete="off"
+									   ng-model="devGroupDetail.userSearchTerm"
+									   typeahead-template-url="common/user.result.tpl.html"
+									   uib-typeahead="user as user.Username for user in devGroupDetail.searchDevUsers($viewValue)"
+									   typeahead-on-select="devGroupDetail.selectDevUser($item)"/>
 							<span class="input-group-btn">
 								<button class="btn btn-primary" ng-click="devGroupDetail.inviteDevUser()"><i class="fa fa-send"></i> Send Invite</button>
 							</span>
-						</div>
-					</form>
-<!--					<form name="addNewInstanceForm" ng-submit="" ng-show="devGroupDetail.activeTab == 'Instances'">
-						<div class="form-group input-group">
-							<input id="DevAccessSearch" class="form-control" type="search" placeholder="Find an instance..."
-								   autocomplete="off"
-								   ng-model="devGroupDetail.accessSearchTerm"
-								   typeahead-template-url="common/access.result.tpl.html"
-								   uib-typeahead="access as access.AppName for access in devGroupDetail.searchAccess($viewValue)"
-								   typeahead-on-select="devGroupDetail.selectAccess($item)"/>
-							<span class="input-group-btn">
-								<button class="btn btn-primary" ng-click="devGroupDetail.grantAccess()"><i class="fa fa-check"></i> Grant Access</button>
-							</span>
-						</div>
-					</form>-->
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 			<div id="GroupMembers" ng-show="devGroupDetail.activeTab == 'Members'">

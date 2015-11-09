@@ -5,8 +5,11 @@
 			<input type="text" class="form-control" aria-label="Find an instance" placeholder="Find an instance..." ng-model="contextSelect.contextSearchTerm"/>
 		</div>
 	</form>
-	<div class="well well-lg text-center" ng-if="!(contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm).length">
+	<div class="well well-lg text-center" ng-if="!(contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm).length && contextSelect.contextSearchTerm">
 		<p class="lead"><i class="fa fa-search"></i> We couldn't find a context that matches your search.</p>
+	</div>
+	<div class="well well-lg text-center" ng-if="!contextSelect.AvailableContexts.length && !contextSelect.contextSearchTerm">
+		<p class="lead"><i class="fa fa-search"></i> You do not have any instances to choose from.  <a href="" ng-click="contextSelect.goToInstances()">Create one now</a>.</p>
 	</div>
 	<ul class="list-group" ng-if="(contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm).length">
 		<li class="list-group-item context-list-item" ng-repeat="context in contextSelect.AvailableContexts | filter:contextSelect.contextSearchTerm" ng-class="{active:contextSelect.ActiveContext == context, selected: contextSelect.SelectedContext == context}">

@@ -24,7 +24,7 @@
 						</div>
 					</div>
 					<div class="panel-footer" ng-class="{'not-started': course.CourseProgress.Meta.PercentDone == 0}">
-						<uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="info">{{course.CourseProgress.Meta.Count}} of {{course.CourseProgress.Meta.TotalClasses}}</uib-progressbar>
+						<uib-progressbar value="course.CourseProgress.Meta.PercentDone" max="1" type="info">{{(course.CourseProgress.Meta.Count / course.CourseProgress.Meta.TotalClasses)*100 + '%'}}</uib-progressbar>
 					</div>
 				</article>
 			</div>

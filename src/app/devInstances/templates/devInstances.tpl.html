@@ -18,10 +18,10 @@
 			</div>
 		</div>
 		<hr/>
-		<div class="well well-lg text-center" ng-if="!instances.list.length">
+		<div class="well well-lg text-center" ng-if="!instances.list.length && !instances.searchTerm">
 			<p class="lead">You are not in a group that has access to an instance.  <a href="" ui-sref="base.newInstance">Create a new instance</a> using one of your groups.</p>
 		</div>
-		<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length">
+		<div class="well well-lg text-center" ng-if="!(instances.list | filter:instances.searchTerm).length && instances.searchTerm">
 			<p class="lead"><i class="fa fa-search"></i> We couldn't find an instance that matches your search</p>
 		</div>
 		<div class="row" ng-if="instances.list.length && (instances.list | filter:instances.searchTerm).length">

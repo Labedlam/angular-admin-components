@@ -10,9 +10,11 @@
 <div id="DevGroupList" class="container" ng-if="base.currentUser.CreateGroups || devGroups.acceptedList.length || devGroups.pendingList.length">
 	<div class="row">
 		<div class="col-sm-5">
-			<form novalidate autocomplete="off" ng-show="devGroups.activeTab == 'accepted'">
-				<input type="search" class="form-control" ng-model="devGroups.searchTerm" aria-label="Find a group" placeholder="Find a group..."/>
-			</form>
+			<div ng-show="devGroups.activeTab == 'accepted'">
+				<form name="GroupSearchForm" novalidate autocomplete="off">
+					<input type="search" class="form-control" ng-model="devGroups.searchTerm" aria-label="Find a group" placeholder="Find a group..."/>
+				</form>
+			</div>
 		</div>
 		<div class="col-sm-7 text-right">
 			<div class="btn-group">

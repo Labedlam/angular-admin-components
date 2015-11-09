@@ -76,7 +76,7 @@ function HomeController( $resource ) {
         {
             image:'assets/images/Github_Banner.jpg',
             title:'GitHub',
-            description:'GitHub Enterprise supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire',
+            description:'GitHub supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire platform.',
             buttonTitle:'watch video'
         },
         {

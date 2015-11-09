@@ -26,9 +26,7 @@ angular.module( 'orderCloud', [
 	//Constants needed for the OrderCloud AngularJS SDK
 	.constant('ocscope', 'FullAccess')
 	.constant('appname', 'DevCenter')
-	.constant('devapiurl', 'https://devcenterapi.herokuapp.com')
 	.constant('disquspublickey', 'O8x1eymZ0SEPXjSGgJWXoWciSmvk25lGGzOYbEoYVuTysw2Du7Bm9ntbFw42WfR6')
-	//.constant('devapiurl', 'http://localhost:55555')
 
 ;
 function Security( $rootScope, $state, DevAuth, Me ) {

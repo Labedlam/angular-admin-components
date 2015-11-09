@@ -62,9 +62,15 @@ function DocsConfig( $stateProvider ) {
 function DocsController( Outline ) {
 	var vm = this;
 	vm.outline = Outline;
+	vm.setMaxLines = function(editor) {
+		editor.setOptions({
+			maxLines:100
+		});
+	};
 	vm.ReadmeScripts = [
 		"{\n\t\"Meta\": {\n\t\t\"Page\": 1,\n\t\t\"PageSize\": 20,\n\t\t\"TotalCount\": 25,\n\t\t\"TotalPages\": 2,\n\t\t\"ItemRange\": [1,20]\n\t},\n\t\"Items\": [\"...\"]\n}",
-		"[{\n\t\"ErrorCode\": \"FirstNameRequired\",\n\t\"Message\": \"First Name is required.\"\n},\n{\n\t\"ErrorCode\": \"LastNameRequired\",\n\t\"Message\": \"Last Name is required.\"\n}]"
+		"[{\n\t\"ErrorCode\": \"FirstNameRequired\",\n\t\"Message\": \"First Name is required.\"\n},\n{\n\t\"ErrorCode\": \"LastNameRequired\",\n\t\"Message\": \"Last Name is required.\"\n}]",
+		"{\n\txp: {\n\t\t\"CustomProperty\": \"Value of property\",\n\t\t\"Nested\": {\n\t\t\t\"Object\": \"Complexity supported\"\n\t\t}\n\t}\n}"
 	];
 }
 

@@ -30,28 +30,27 @@
 	The JSON object can be as complex and deeply nested as necessary. Additionally, the xp property is available for filtering, sorting and searching
 	in all pagination.
 </p>
-<pre><code>
-	{
-		xp:
-		{
-			"CustomProperty": "Value of property",
-			"Nested":
-			{
-				"Object": "Complexity supported"
-			}
-		}
-	}
-</code></pre>
-<h3 class="page-header">Error Handling</h3>
-<p>For all unsuccessful requests, we attempt to return the <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">most appropriate HTTP status in the 400 range</a>. Only when something goes terribly wrong on our end will you get a 500 response. And so long as our platform is responding (i.e. returing anything in the 4xx range or 500), you can count on the response body taking a standard shape:</p>
-<div  readonly ui-ace="{
+<div class="rounded-corners" readonly ui-ace="{
 		onLoad: docs.setMaxLines,
 		useWrapMode : true,
 		theme:'twilight',
 		mode: 'json',
 		tabSize: '4',
 		useSoftTabs: true,
-		showPrintMargin: false
+		showPrintMargin: false,
+		showGutter:false
+	}" ng-model="docs.ReadmeScripts[2]"></div>
+<h3 class="page-header">Error Handling</h3>
+<p>For all unsuccessful requests, we attempt to return the <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_Client_Error">most appropriate HTTP status in the 400 range</a>. Only when something goes terribly wrong on our end will you get a 500 response. And so long as our platform is responding (i.e. returing anything in the 4xx range or 500), you can count on the response body taking a standard shape:</p>
+<div class="rounded-corners" readonly ui-ace="{
+		onLoad: docs.setMaxLines,
+		useWrapMode : true,
+		theme:'twilight',
+		mode: 'json',
+		tabSize: '4',
+		useSoftTabs: true,
+		showPrintMargin: false,
+		showGutter:false
 	}" ng-model="docs.ReadmeScripts[1]"></div>
 
 
@@ -112,14 +111,15 @@
 
 <h4>Response Body</h4>
 <p>Responses for most list endpoints contain an object wrapping an <code>Items</code> array, which contains the actual "things", and a <code>Meta</code> object containing useful count/paging metadata.</p>
-<div  readonly ui-ace="{
+<div class="rounded-corners" readonly ui-ace="{
 		onLoad: docs.setMaxLines,
 		useWrapMode : true,
 		theme:'twilight',
 		mode: 'json',
 		tabSize: '4',
 		useSoftTabs: true,
-		showPrintMargin: false
+		showPrintMargin: false,
+		showGutter:false
 	}" ng-model="docs.ReadmeScripts[0]"></div>
 <br/>
 

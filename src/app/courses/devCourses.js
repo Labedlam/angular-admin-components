@@ -105,7 +105,9 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 					DcUserSvc.getContext()
 						.then(function(context) {
 							if (context && context.ID) {
-								deferred.resolve();
+								DevCenter.AccessToken(context.ID).then(function() {
+									deferred.resolve();
+								});
 							} else {
 								var modalInstance = $uibModal.open({
 									backdrop:'static',

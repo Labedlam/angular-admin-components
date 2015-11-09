@@ -42,7 +42,7 @@ function LoginController( $exceptionHandler, $rootScope, $cookies, $state, DcAdm
 	};
 
 	vm.resetpassword = function() {
-		DevCenter.ResetPassword(vm.credentials.Username)
+		DevCenter.RequestResetPassword(vm.credentials.Username)
 				.then(function() {
 					vm.toggleForgotPassword = false;
 				});

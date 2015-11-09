@@ -35,4 +35,8 @@
 <p>Headers: <code>{Content-Type: 'application/json', Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'}</code></p>
 
 <h3 class="page-header">Claims</h3>
-<p>OrderCloud has various claims available for limiting access to certain API resources.</p>
+<p>OrderCloud has the following claims available for limiting access to certain API resources. Always strive to use a combination of claims rather than giving everyone <code>FullAcess</code>; otherwise, clever users may alter or view sensitive data.<br/></p>
+    <code ng-repeat="claim in docs.outline.Claims">{{claim}}<br/></code>
+<hr/>
+<p>Need another claim? Please give us some feedback on the <a href="" ui-sref="base.support">Support page</a>. We're happy add any claims needed for building secure OrderCloud applications.</p>
+<hr/>

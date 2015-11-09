@@ -24,22 +24,19 @@
     </div>
     <div class="row four-column">
         <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Inline_Editors.svg" alt=""  />
+            <img src="assets/images/Inline_Editors.svg" alt=""/>
             <h3>Component Based Development</h3>
-    <span>
-Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</span>
-        </div>
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Live_Preview.svg" alt=""  />
-            <h3>Rapid Development Tools</h3>
-    <span>
-Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</span>
+    <span>Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</span>
         </div>
         <div class="col-md-3 col-sm-3">
             <img src="assets/images/Package_manager.svg" alt=""  />
+            <h3>Rapid Development Tools</h3>
+    <span>Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</span>
+        </div>
+        <div class="col-md-3 col-sm-3">
+            <img src="assets/images/Live_Preview.svg" alt=""  />
             <h3>Extendable Data Model</h3>
-    <span>
-Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</span>
+    <span>Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</span>
         </div>
         <div class="col-md-3 col-sm-3">
             <img src="assets/images/cloud.svg" alt=""  />
@@ -70,7 +67,7 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             <h2 class="primary-head">OrderCloud Stories</h2>
         </div>
     </div>
-    <div class="row three-column hidden-xs text-center">
+    <div class="row three-column hidden-xs text-center  storieImages">
         <div class="col-md-4 col-sm-4">
             <img src="assets/images/papa_johns.png" class="img-responsive" alt=""  />
             <h3>Papa John's</h3>
@@ -79,10 +76,10 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
             <a class="buttonStories" href="http://public.four51.com/papa-johns-case-study"> Learn more</a>
         </div>
         <div class="col-md-4 col-sm-4">
-            <img src="assets/images/turtle-wax-logo.png" style="max-height: 81px;" class="img-responsive"  />
+            <img src="assets/images/turtle-wax-logo.png" class="img-responsive"  />
             <h3>Turtle Wax</h3>
             <span>400+ custom storefonts. In the Cloud.</span>
-            <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products. </p>
+            <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it's success, Turtle Wax had a problem. </p>
             <a class="buttonStories" href="http://451.yourdevsite.com/turtle-wax-case-study">Learn more</a>
         </div>
         <div class="col-md-4 col-sm-4">
@@ -97,7 +94,7 @@ Built on 16 years solving complex eCommerce and order management challenges. Fea
         <uib-carousel interval="home.myInterval" no-wrap="home.noWrapSlides">
             <uib-slide ng-repeat="slide in home.mobileslides" active="slide.active">
                 <div class="mobile-carousel">
-                    <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
+                    <img ng-src="{{slide.image}}" style="margin:auto; max-height: 81px;" class="img-responsive">
                     <h3>{{slide.title}}</h3>
                     <span>{{slide.description}}</span>
                     <p>{{slide.text}}</p>

@@ -592,7 +592,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 			console.log(nextCourseID);
 			$state.go('^', {courseid: nextCourseID})
 		} else {
-			$state.go('base.courses');
+			$state.go('base.devcourses');
 		}
 	}
 	function Execute() {
@@ -700,7 +700,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		Courses.List('developer').then(function(data) {
 			var currentCourseIndex = data.indexOf(Underscore.where(data, {ID:SelectedCourse.ID})[0]);
 			if (currentCourseIndex < data.length) {
-				nextCourseID = data[currentCourseIndex + 1].ID;
+				nextCourseID = data[currentCourseIndex + 1] ? data[currentCourseIndex + 1].ID : null;
 			}
 		})
 	}

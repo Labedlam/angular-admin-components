@@ -102,14 +102,14 @@ function HomeController( $resource ) {
     {
     image:'assets/images/turtle-wax-logo.png',
     title:'Turtle Wax',
-    description:'15000+ orders a month? No problem',
-    text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
+    description:'400+ custom storefonts. In the Cloud.',
+    text:'Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it\'s success, Turtle Wax had a problem.',
   },
     {
     image:'assets/images/Burroughs_logo.png',
     title:'Burroughs',
-    description:'15000+ orders a month? No problem',
-    text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
+    description:'Massive Cost Savings? You bet.',
+    text:'Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.',
   }
   ]
 }

@@ -483,8 +483,9 @@
 	#ClassRequirements {
 	  color: white;
 	  padding: 5px 10px;
-	  background-color: @four51-navy;
-	  a > i {
+	  background-repeat:no-repeat;
+	  background-size:100% calc(100vw);
+	  background-image: radial-gradient(at center center, darken(@four51-blue, 25) 0%, darken(@four51-blue, 25) 60%, darken(@four51-blue, 35) 100%); /* W3C */	  a > i {
 		color: white;
 		font-size: 1.5em;
 	  }
@@ -521,6 +522,7 @@
 	  #ClassRequirements,
 	  .course-title {
 		flex:1 0 auto;
+		margin:0;
 	  }
 	}
 	#InteractiveUI {

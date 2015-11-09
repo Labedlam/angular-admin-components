@@ -551,6 +551,19 @@
 		#ResponseBody {
 		  background-color: @gray-darker;
 		}
+		#ClassLoading {
+		  z-index: 1000000;
+		  width: 100%;
+		  position: absolute;
+		  bottom: 5px;
+		  display: flex;
+		  flex-flow: row nowrap;
+		  justify-content: center;
+		  .class-loading-icon i {
+			font-size: 3em;
+			color: @four51-orange;
+		  }
+		}
 		.response-alert {
 		  position: absolute;
 		  right: 15px;

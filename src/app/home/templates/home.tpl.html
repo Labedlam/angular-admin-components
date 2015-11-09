@@ -103,6 +103,20 @@
         </uib-carousel>
     </div>
 </div>
+<div class="text-center">
+    <div class="btn-group">
+        <button class="btn btn-default" >DEVELOPERS</button>
+        <button class="btn btn-default" >BUSINESS OWNERS</button>
+    </div>
+</div>
+<div ng-switch="true">
+    <div ng-switch-when="true">
+merp
+    </div>
+    <div ng-switch-when="false">
+derp
+    </div>
+</div>
 <uib-tabset >
     <uib-tab ng-repeat="tab in home.tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
         <div  ng-style="{'backgroundImage': 'url(\'' + tab.image + '\')'}">

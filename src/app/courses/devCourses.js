@@ -440,11 +440,25 @@ function DevClassController( $scope, $state, $injector, Underscore,
 			console.log(vm.user.savedVars);
 			angular.forEach(vm.user.savedVars, function(ocVar) {
 				console.log(ocVar);
-				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val)
+				script.Model = script.Model.replace('{' + ocVar.key + '}', ocVar.val);
+				var split = script.Model.split("\n");
+				var finalSplit = [];
+				angular.forEach(split, function(each) {
+					var newEach = each;
+					if (each.trim().indexOf(ocVar.key) == 0) {
+						if (each.indexOf('"') > -1) {
+							newEach = each.indexOf(',') > -1 ? "  " + ocVar.key + ': "' + ocVar.val + '",' : "  " + ocVar.key + ': "' + ocVar.val + '"';
+						}
+					}
+
+					finalSplit.push(newEach);
+				});
+				var final = finalSplit.join('\n');
+				script.Model = final;
+				//script.Model = script.Model.replace(' ' + ocVar.key + ': "…"', '"' + ocVar.val + '"');
 			})
 		})
 	}
-	varReplace();
 
 	function stringReplace() {
 		angular.forEach(vm.current.ScriptModels.Scripts, function(script) {
@@ -484,6 +498,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 			});
 
 		});
+		varReplace();
 	}
 
 	angular.forEach(vm.current.ClassMethods, function(method) { //sets docs and replaces model string constant with request example

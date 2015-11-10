@@ -11,6 +11,11 @@ form[name = 'ordercloud_registration'] span.help-block {
 .home-carousel, .home-alt-carousel {
     overflow: hidden;
 }
+
+.home-carousel .carousel-inner {
+    max-height:~'calc(100vh - 50px)';
+}
+
 .home-carousel .carousel-control.left, .home-alt-carousel .carousel-control.left, .home-carousel .carousel-control.right, .home-alt-carousel .carousel-control.right {
     background-image: none;
 }
@@ -27,7 +32,7 @@ form[name = 'ordercloud_registration'] span.help-block {
 }
 .home-carousel {
     .carousel-caption {
-        top:35%;
+        top:25%;
     }
 }
 .order-cloud-carousel {
@@ -71,20 +76,18 @@ form[name = 'ordercloud_registration'] span.help-block {
         left: 60%;
         text-align: left;
         width: 400px;
-        h4 {
+        h3 {
             color:#fff;
             font-size: 25px;
             font-weight: 700;
             text-shadow:none;
-            font-family: lato;
             margin: 14px 0;
         }
         p {
             color:#fff;
-            font-size: 16px;
+            font-size: 1.2em;
             font-weight: 400;
             text-shadow:none;
-            font-family: lato;
             margin: 15px 0;
         }
         button {
@@ -92,7 +95,6 @@ form[name = 'ordercloud_registration'] span.help-block {
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
-            font-family: lato;
             color: #fff;
             text-transform: uppercase;
         }

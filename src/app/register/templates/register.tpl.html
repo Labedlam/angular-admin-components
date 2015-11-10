@@ -1,4 +1,9 @@
 <main id="Register">
+	<div id="ClassLoading" ng-show="register.loading">
+		<div class="class-loading-icon">
+			<i class="fa fa-spinner fa-pulse"></i>
+		</div>
+	</div>
 	<div class="container" ng-if="register.successMessage">
 		<blockquote>
 			<p class="lead"><b>Almost Done...</b><br/>{{register.successMessage}}</p>

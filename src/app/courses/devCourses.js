@@ -431,8 +431,6 @@ function DevClassController( $scope, $state, $injector, Underscore,
 
 	vm.viewVarAdd = false;
 
-	var requestSuccessHit = false;
-
 
 	vm.toggleEdit = function(variable) {
 		variable.editMode = !variable.editMode;
@@ -513,9 +511,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	function checkClassStepProgress() {
 		angular.forEach(vm.current.Assert, function(assertion) {
 			angular.forEach(vm.user.classSteps, function(step) {
-				console.log(step.Method);
 				if (step.Method == assertion.Method) {
-					console.log('hit');
 					assertion.Successes = step.Count;
 				}
 			})
@@ -523,7 +519,6 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		var pass = true;
 		angular.forEach(vm.current.Assert, function(assertion) {
 			if (assertion.AmountNeeded > assertion.Successes || !assertion.Successes) {
-				console.log(assertion);
 				pass = false;
 			}
 		});
@@ -565,10 +560,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 					vm.Responses.push(response);
 					vm.SelectedResponse = response;
 					addMethodCount(response);
-					if ( !requestSuccessHit ) {
-						checkIfObjectCreated(c);
-						requestSuccessHit = true;
-					}
+					checkIfObjectCreated(c);
 					vm.openRequestCount -= 1;
 					if (vm.openRequestCount == 0) {
 						vm.loading = false;
@@ -707,6 +699,9 @@ function DevClassController( $scope, $state, $injector, Underscore,
 			var val = parseIdValue(vm.stringExecute);
 			if (name == 'CategorieID') {
 				name = 'CategoryID'
+			}
+			if (name == 'AddresseID') {
+				name = "AddressID"
 			}
 			DcUsers.SaveOcVar({
 				key: name,

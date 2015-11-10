@@ -61,7 +61,7 @@ function ErrorHandling( $provide ) {
 	};
 }
 
-function AppCtrl( $state, DevAuth, Auth, $cookies, $ocMedia ) {
+function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 	var vm = this;
 	vm.logout = function() {
 		$cookies.remove('dc-token');
@@ -70,5 +70,5 @@ function AppCtrl( $state, DevAuth, Auth, $cookies, $ocMedia ) {
 		$state.go('base.home',{}, {reload:true});
 	};
 	vm.$state = $state;
-	vm.$media = $ocMedia;
+	//vm.$media = $ocMedia;
 }

@@ -1,4 +1,4 @@
-angular.module('orderCloud.media', [])
+angular.module('orderCloud')
 	.factory('$ocMedia', mdMediaFactory)
 	.constant('MEDIA', MEDIA_CONSTANT)
 	.constant('MEDIA_PRIORITY', MEDIA_PRIORITY_CONSTANT);

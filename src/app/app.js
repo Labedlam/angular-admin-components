@@ -9,7 +9,6 @@ angular.module( 'orderCloud', [
 	'ui.router',
 	'ui.bootstrap',
 	'orderCloud.sdk',
-	'orderCloud.media',
 	'markdown',
 	'ui.ace',
 	'angular-jwt',

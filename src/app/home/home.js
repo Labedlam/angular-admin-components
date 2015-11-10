@@ -91,7 +91,7 @@ function HomeController( $resource, $window ) {
             image:'assets/images/papa_johns.png',
             title:'Papa johns',
             description:'15000+ orders a month? No problem',
-            text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
+            text:'Papa John\'s, founded in 1985, has grown to over 20,700 employees who operate and franchise more than 4,000 delivery and carryout pizza restaurants worldwide. In order to systematize and make these franchisees more efficient, they were in need of a serious operational makeover.',
         },
         {
             image:'assets/images/turtle-wax-logo.png',

@@ -56,7 +56,7 @@
 				<div class="script-nav">
 					<div uib-dropdown on-toggle="class.scriptNavToggle(open)">
 						<button class="btn btn-dark btn-block" uib-dropdown-toggle >
-							SCRIPT | <span class="text-info">{{class.current.ActiveScriptName}}</span> <i class="fa" ng-class="{'fa-chevron-down': !class.showScriptNav, 'fa-chevron-up': class.showScriptNav}"></i>
+							<i class="fa" ng-class="{'fa-chevron-down': !class.showScriptNav, 'fa-chevron-up': class.showScriptNav}"></i>SCRIPT | <span class="text-info">{{class.current.ActiveScriptName}}</span>
 						</button>
 						<ul uib-dropdown-menu>
 							<li ng-class="{active:class.current.ActiveScript == script.Title}" ng-repeat="script in class.current.ScriptModels.Scripts">

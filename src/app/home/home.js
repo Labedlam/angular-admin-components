@@ -1,33 +1,33 @@
 angular.module( 'orderCloud' )
 
-	.config( HomeConfig )
-	.controller( 'HomeCtrl', HomeController )
+    .config( HomeConfig )
+    .controller( 'HomeCtrl', HomeController )
 
 ;
 
 function HomeConfig( $stateProvider ) {
-	$stateProvider
-		.state( 'base.home', {
-			url: '/home',
-			templateUrl:'home/templates/home.tpl.html',
-			controller:'HomeCtrl',
-			controllerAs: 'home'
-		})
+    $stateProvider
+        .state( 'base.home', {
+            url: '/home',
+            templateUrl:'home/templates/home.tpl.html',
+            controller:'HomeCtrl',
+            controllerAs: 'home'
+        })
 }
 
-function HomeController( $resource ) {
-	var vm = this;
-	vm.tabs = [
-    { title:'DEVELOPERS', 
-    image:'assets/images/OC_Images_onComputer.png',
-    content:'Shortened development time driven by component based development. Code, configure, and optimize your project using OrderCloud Dev Center. Bring your development projects to market quickly.', 
-    description1:'OrderCloud documentation and courses get developers on track and building on our platform effectively.',
-    description2:'Integration access to hundreds of 3rd party platforms for ERP, CRM, CMS, Analytics, Tax, PIM and more.'
- },
+function HomeController( $resource, $window ) {
+    var vm = this;
+    vm.tabs = [
+        { title:'DEVELOPERS',
+            image:'assets/images/OC_Images_onComputer.png',
+            content:'Shortened development time driven by component based development. Code, configure, and optimize your project using OrderCloud Dev Center. Bring your development projects to market quickly.',
+            description1:'OrderCloud documentation and courses get developers on track and building on our platform effectively.',
+            description2:'Integration access to hundreds of 3rd party platforms for ERP, CRM, CMS, Analytics, Tax, PIM and more.'
+        },
         { title:'BUSINESS OWNER',
             image:'assets/images/OC_Images_ManWorking.png',
             content:['second tab content', 'second tab content','second tab content','second tab content'] }
-  ];
+    ];
 
     vm.info = {
         "name": "",
@@ -46,7 +46,7 @@ function HomeController( $resource ) {
     };
 
     function successPardot(data) {
-        vm.submission = true;
+        $window.location.href = 'http://public.four51.com/dev-center-thanks';
     }
 
     vm.myInterval = 5000;
@@ -71,7 +71,7 @@ function HomeController( $resource ) {
             description:"OrderCloud's REST API has your back. Integrate CRM, ERP, Tax, Analytics and more.",
             buttonTitle:'watch video'
         }
-  ]
+    ]
     vm.slides2 = [
         {
             image:'assets/images/Github_Banner.jpg',
@@ -92,24 +92,24 @@ function HomeController( $resource ) {
             buttonTitle:'watch video'
         }
     ]
-  vm.mobileslides = [
-  {
-    image:'assets/images/papa_johns.png',
-    title:'Papa johns',
-    description:'15000+ orders a month? No problem',
-    text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
-  },
-    {
-    image:'assets/images/turtle-wax-logo.png',
-    title:'Turtle Wax',
-    description:'400+ custom storefronts. In the Cloud.',
-    text:'Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it\'s success, Turtle Wax had a problem.',
-  },
-    {
-    image:'assets/images/Burroughs_logo.png',
-    title:'Burroughs',
-    description:'Massive Cost Savings? You bet.',
-    text:'Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.',
-  }
-  ]
+    vm.mobileslides = [
+        {
+            image:'assets/images/papa_johns.png',
+            title:'Papa johns',
+            description:'15000+ orders a month? No problem',
+            text:'Staples needed to empower each corporate customer with a unique brand and product set. With OrderCloud they drive over 20,000 fully automated monthly orders online and via mobile. ',
+        },
+        {
+            image:'assets/images/turtle-wax-logo.png',
+            title:'Turtle Wax',
+            description:'400+ custom storefonts. In the Cloud.',
+            text:'Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it\'s success, Turtle Wax had a problem.',
+        },
+        {
+            image:'assets/images/Burroughs_logo.png',
+            title:'Burroughs',
+            description:'Massive Cost Savings? You bet.',
+            text:'Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.',
+        }
+    ]
 }

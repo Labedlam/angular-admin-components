@@ -96,7 +96,7 @@ function HomeController( $resource, $window ) {
         {
             image:'assets/images/turtle-wax-logo.png',
             title:'Turtle Wax',
-            description:'400+ custom storefonts. In the Cloud.',
+            description:'Eliminate fax and manual order entry. In the Cloud.',
             text:'Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it\'s success, Turtle Wax had a problem.',
         },
         {

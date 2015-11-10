@@ -96,22 +96,15 @@ gulp.task('c_m:js', function() {
             config.build + 'vendor/ui-ace.js',
             config.build + 'src/templates-app.js',
             config.build + 'src/app/app.js',
+            config.build + 'src/app/config.js',
             config.build + 'src/app/**/*.module.js',
             config.build + 'src/**/*.js',
-            '!' + config.build + 'src/**/*.spec.js',
-            '!' + config.build + 'vendor/ordercloud-angular-sdk.js'])
+            '!' + config.build + 'src/**/*.spec.js'])
         .pipe(concat('app.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(config.temp));
+        .pipe(gulp.dest(config.compile + 'assets'));
 });
 
-gulp.task('c_sdk:js', function() {
-    return gulp
-        .src([config.temp + 'app.js',
-            config.build + 'vendor/ordercloud-angular-sdk.js'])
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest(config.compile + 'assets'))
-})
 
 gulp.task('c_c:js', function(){
     return del(config.compile + '**/*.js');
@@ -125,4 +118,4 @@ gulp.task('build:js_bower', gulp.series('b_c:js_bower', 'b_m:js_bower'));
 gulp.task('build:templateCache', gulp.series('b_c:templateCache', 'b_m:templateCache'));
 
 //Master Script Compile Tasks
-gulp.task('compile:js', gulp.series(gulp.parallel('c_c:js', 'build:js_bower', 'build:js', 'build:templateCache'), 'c_m:js', 'c_sdk:js'));
+

@@ -34,7 +34,7 @@ function AboutController($sce, $resource) {
 	};
 
 	function successPardot(data) {
-		vm.submission = true;
+		$window.location.href = 'http://public.four51.com/dev-center-thanks';
 	}
 
 	vm.config = {

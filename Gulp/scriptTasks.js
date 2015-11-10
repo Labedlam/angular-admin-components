@@ -101,7 +101,7 @@ gulp.task('c_m:js', function() {
             config.build + 'src/**/*.js',
             '!' + config.build + 'src/**/*.spec.js'])
         .pipe(concat('app.js'))
-        .pipe(uglify())
+        .pipe(uglify({mangle:false}))
         .pipe(gulp.dest(config.compile + 'assets'));
 });
 
@@ -109,8 +109,6 @@ gulp.task('c_m:js', function() {
 gulp.task('c_c:js', function(){
     return del(config.compile + '**/*.js');
 });
-
-
 
 //Master Script Build Tasks
 gulp.task('build:js', gulp.series('b_c:js', 'b_m:js'));

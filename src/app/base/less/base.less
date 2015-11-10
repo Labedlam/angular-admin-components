@@ -9,6 +9,9 @@
 	  text-transform: uppercase;
 	}
 	& > li > span {
+	  @media(max-width:@screen-xs-max) {
+		display:none;
+	  }
 	  color:@navbar-default-link-color;
 	  padding-top:@navbar-padding-vertical;
 	  padding-bottom:@navbar-padding-vertical;

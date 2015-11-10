@@ -60,9 +60,28 @@ gulp.task('build_qa', gulp.series(
     gulp.parallel('build:js_bower', 'build:js', 'build:templateCache', 'build:styles', 'build:assets', 'qa_config'),
     'build:inject'));
 //Major Project Compile Tasks
+
+gulp.task('compile:js', gulp.series('c_c:js', 'c_m:js'));
+
+gulp.task('compile_prod', gulp.series(
+    'build_prod',
+    gulp.parallel('compile:js', 'compile:assets', 'compile:css'),
+    'compile:inject'
+));
+gulp.task('compile_test', gulp.series(
+    'build_test',
+    gulp.parallel('compile:js', 'compile:assets', 'compile:css'),
+    'compile:inject'
+));
+gulp.task('compile_qa', gulp.series(
+    'build_qa',
+    gulp.parallel('compile:js', 'compile:assets', 'compile:css'),
+    'compile:inject'
+));
+
 gulp.task('compile', gulp.series(
     'build_prod',
     gulp.parallel('compile:js', 'compile:assets', 'compile:css'),
     'compile:inject'));
 
-gulp.task('default', gulp.series('compile'));
+gulp.task('default', gulp.series('compile_prod'));

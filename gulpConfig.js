@@ -75,10 +75,12 @@ module.exports = {
 			'vendor/ace-builds/src/worker-javascript.js',
 			'vendor/ace-builds/src/worker-html.js',
 			'vendor/crypto-js/crypto-js.js',
-			'vendor/angular-auto-validate/dist/jcs-auto-validate.js'
+			'vendor/angular-auto-validate/dist/jcs-auto-validate.js',
+			'vendor/waypoints/lib/noframework.waypoints.js'
 		],
 		exclude_js: [
-			'!vendor/ordercloud-angular-sdk/dist/ordercloud-angular-sdk.min.js'
+			'!vendor/ordercloud-angular-sdk/dist/ordercloud-angular-sdk.min.js',
+			'!vendor/waypoints/lib/noframework.waypoints.min.js'
 		]
 	}
 };

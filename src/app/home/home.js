@@ -74,12 +74,6 @@ function HomeController( $resource, $window ) {
     ]
     vm.slides2 = [
         {
-            image:'assets/images/Github_Banner.jpg',
-            title:'GitHub',
-            description:'GitHub supports apps and services to customize your development environment. Leverage OrderCloud with GitHub to help you work more efficiently across the entire platform.',
-            buttonTitle:'watch video'
-        },
-        {
             image:'assets/images/world-class.jpg',
             title:'World Class Scalability & Security',
             description:'99% uptime across all experiences. PCI DSS and SSAE 16 Type || compliance',

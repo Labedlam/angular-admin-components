@@ -200,10 +200,7 @@ form[name = 'ordercloud_registration'] span.help-block {
     background-color: #ffffff;
     .well{
         background-color: #ffffff;
-        min-height: 320px!important;
-    }
-    p {
-        min-height:180px;
+
     }
 }
 
@@ -932,19 +929,47 @@ width: 297px;
     }}
 
     .cloud-stories-mobile .carousel-inner img{
-        @media (max-width: 767px){min-height: auto;
-    }}
+        @media (max-width: 767px){
+            min-height: 0;
+        }
+    }
 
     .home-alt-carousel .carousel-inner, .home-alt-carousel .carousel-inner img{
        @media (max-width:767px){
          min-height:300px;
+           width:300%;
        }   
     }
 
+    .home-alt-carousel .carousel-inner .item:nth-of-type(2) {
+        .carousel-caption {
+            @media(min-width:@screen-md-min) and (max-width:@screen-md-max) {
+                top:15%;
+            }
+        }
+    }
+
     .home-alt-carousel .carousel-caption{
+
+        @media(max-width:@screen-sm-max) {
+            h3,p {
+                text-shadow: 0 0 10px #000;
+            }
+            width:80vw;
+            background-color:rgba(0,0,0,0.5);
+            padding:15px;
+            top:5%;
+            left:9vw;
+        }
       @media (max-width:767px){
-         width:400px;
-         left:15%;
+         //width:400px;
+          width:30%;
+          left:1%;
+          h3,p {
+              text-shadow: 0 0 10px #000;
+          }
+          background-color:rgba(0,0,0,0.5);
+          padding:15px;
        }
     }
 

@@ -9,6 +9,7 @@ angular.module( 'orderCloud', [
 	'ui.router',
 	'ui.bootstrap',
 	'orderCloud.sdk',
+	'orderCloud.media',
 	'markdown',
 	'ui.ace',
 	'angular-jwt',
@@ -61,7 +62,7 @@ function ErrorHandling( $provide ) {
 	};
 }
 
-function AppCtrl( $state, DevAuth, Auth, $cookies ) {
+function AppCtrl( $state, DevAuth, Auth, $cookies, $ocMedia ) {
 	var vm = this;
 	vm.logout = function() {
 		$cookies.remove('dc-token');
@@ -70,4 +71,5 @@ function AppCtrl( $state, DevAuth, Auth, $cookies ) {
 		$state.go('base.home',{}, {reload:true});
 	};
 	vm.$state = $state;
+	vm.$media = $ocMedia;
 }

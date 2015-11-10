@@ -4,11 +4,14 @@ angular.module('orderCloud')
 
 function ordercloudLogo() {
 	var obj = {
+		scope: {
+			icon: '='
+		},
 		templateUrl: 'common/ordercloud-logo.tpl.html',
 		replace:true,
 		link: function(scope, element, attrs) {
 			scope.OrderCloudLogo = {
-				'Icon': attrs.icon ? true : false,
+				'Icon': scope.icon,
 				'maxHeight':attrs.height,
 				'fillColor': attrs.color,
 				'width': attrs.width

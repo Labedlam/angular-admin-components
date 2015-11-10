@@ -54,7 +54,7 @@ function HomeController( $resource ) {
     vm.slides = [
         {
             image:'assets/images/bluerImage.jpg',
-            title:'OrderCloud',
+            title:"OrderCloud",
             description:'one platform. infinite possibilities.',
             buttonTitle:'watch video'
         },

@@ -6,7 +6,8 @@
                 <uib-slide ng-repeat="slide in home.slides">
                     <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
                     <div class="carousel-caption order-cloud-carousel">
-                        <h4>{{slide.title}}</h4>
+                        <div ng-hide="slide.title == 'OrderCloud'"><h4>{{slide.title}}</h4></div>
+                        <div ng-show="slide.title == 'OrderCloud'"><h4>{{slide.title}}<sup>TM</sup></h4></div>
                         <p>{{slide.description}}</p>
                         <a class="button btn" href="https://www.youtube.com/watch?v=h3_Mrss0WEk&feature=youtu.be">{{slide.buttonTitle}}</a>
                     </div>

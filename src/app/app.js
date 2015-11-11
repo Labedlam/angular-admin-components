@@ -1,6 +1,4 @@
 angular.module( 'orderCloud', [
-	"com.2fdevs.videogular",
-	"com.2fdevs.videogular.plugins.controls",
 	'templates-app',
 	'ngSanitize',
 	'ngAnimate',

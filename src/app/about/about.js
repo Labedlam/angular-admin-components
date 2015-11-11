@@ -14,9 +14,9 @@ function AboutConfig( $stateProvider ) {
 		});
 }
 
-function AboutController($sce, $resource) {
+function AboutController( ) {
 	var vm = this;
-
+/*
 	vm.info = {
 		"name": "",
 		"email": ""
@@ -35,8 +35,8 @@ function AboutController($sce, $resource) {
 
 	function successPardot(data) {
 		$window.location.href = 'http://public.four51.com/dev-center-thanks';
-	}
-
+	}*/
+/*
 	vm.config = {
 				preload: "none",
 				sources: [
@@ -53,5 +53,5 @@ function AboutController($sce, $resource) {
 						autoHideTime: 5000
 					}
 				}
-			};
+			};*/
 }

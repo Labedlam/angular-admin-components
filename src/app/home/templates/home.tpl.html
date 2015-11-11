@@ -1,217 +1,166 @@
-
-<div class="home-carousel cropped-carousel">
-    <div>
-        <div>
-            <uib-carousel interval="home.myInterval" no-wrap="home.noWrapSlides" active="2">
-                <uib-slide ng-repeat="slide in home.slides">
-                    <img ng-src="{{slide.image}}" style="margin:auto;" class="img-responsive">
-                    <div class="carousel-caption order-cloud-carousel">
-                        <div ng-hide="slide.title == 'OrderCloud'"><h4>{{slide.title}}</h4></div>
-                        <div ng-show="slide.title == 'OrderCloud'"><h4>{{slide.title}}<sup>TM</sup></h4></div>
-                        <p>{{slide.description}}</p>
-                        <div ng-show="slide.buttonTitle == 'Learn More'"><a class="button btn" href="https://four51.leadpages.co/leadbox/146f1c9f3f72a2%3A14a01b56f346dc/5631725669449728/">{{slide.buttonTitle}}</a><script data-leadbox="146f1c9f3f72a2:14a01b56f346dc" data-url="https://four51.leadpages.co/leadbox/146f1c9f3f72a2%3A14a01b56f346dc/5631725669449728/" data-config="%7B%7D" type="text/javascript" src="https://four51.leadpages.co/leadbox-926.js"></script></div>
-                        <div ng-hide="slide.buttonTitle == 'Learn More'"><a class="button btn" href="https://www.youtube.com/watch?v=h3_Mrss0WEk&feature=youtu.be">{{slide.buttonTitle}}</a></div>
+<article id="HomePage">
+    <section id="Carousel-1">
+        <uib-carousel interval="home.carouselInterval" no-wrap="false" active="2">
+            <uib-slide ng-repeat="slide in home.slides1">
+                <div class="carousel-slide" ng-style="{'backgroundImage': 'url(\'' + slide.image + '\')'}">
+                    <div class="carousel-slide-content">
+                        <h2 ng-bind="slide.title"></h2>
+                        <p class="lead" ng-bind="slide.description"></p>
+                        <button class="btn btn-lg btn-primary" ng-if="slide.button.action" ng-click="slide.button.action()">{{slide.button.title}}</button>
+                        <a class="btn btn-lg btn-primary" ng-if="slide.button.link" href="{{slide.button.link}}">{{slide.button.title}}</a>
+                        <button class="btn btn-lg btn-primary" ng-if="slide.button.stateRef" ui-sref="{{slide.button.stateRef}}">{{slide.button.title}}</button>
+                        <div ng-if="slide.button.title == 'REQUEST A DEMO'">
+                            <script data-leadbox="146f1c9f3f72a2:14a01b56f346dc" data-url="https://four51.leadpages.co/leadbox/146f1c9f3f72a2%3A14a01b56f346dc/5631725669449728/" data-config="%7B%7D" type="text/javascript" src="https://four51.leadpages.co/leadbox-926.js"></script>
+                        </div>
+                        <script></script>
                     </div>
-                </uib-slide>
-            </uib-carousel>
-        </div>
-    </div>
-</div>
-<div class="home-common first-wrap">
-    <div class="row text-center">
-        <div class="col-md-12">
-            <p class="primary-head">Elegant, powerful, and easy to use cloud-based platform</p>
-            <p class="normal-head">Create, configure & customize B2B eCommerce sites faster, easier & at lower cost. Solve complex order management challenges quickly by leveraging our cloud-based platform.</p>
-        </div>
-    </div>
-    <div class="row four-column">
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Inline_Editors.svg" alt=""/>
-            <h3>Component Based Development</h3>
-    <span>Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</span>
-        </div>
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Package_manager.svg" alt=""  />
-            <h3>Rapid Development Tools</h3>
-    <span>Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</span>
-        </div>
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/Live_Preview.svg" alt=""  />
-            <h3>Extendable Data Model</h3>
-    <span>Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</span>
-        </div>
-        <div class="col-md-3 col-sm-3">
-            <img src="assets/images/cloud.svg" alt=""  />
-            <h3>Development Made Easy</h3>
-            <span>Developers can create custom code, debug the code, check it into a common source code repository and deploy it to the test, staging or production environments.  </span>
-        </div>
-    </div>
-</div>
-<div class="home-alt-carousel">
-    <div>
-        <div>
-            <uib-carousel interval="home.myInterval" no-wrap="home.noWrapSlides">
-                <uib-slide ng-repeat="slide in home.slides2" active="slide.active">
-                    <img ng-src="{{slide.image}}" style="margin:auto;">
-                    <div class="carousel-caption">
-                        <h3>{{slide.title}}</h3>
-                        <p>{{slide.description}}</p>
-                        <!--<button>{{slide.buttonTitle}}</button>-->
-                    </div>
-                </uib-slide>
-            </uib-carousel>
-        </div>
-    </div>
-</div>
-<div class="home-common second-wrap">
-    <div class="row text-center">
-        <div class="col-md-12">
-            <h2 class="primary-head">OrderCloud Stories</h2>
-        </div>
-    </div>
-    <div class="row  hidden-xs text-center  storieImages">
-        <div class="col-md-4 col-sm-4 ">
-            <div class="well text-center">
-            <img src="assets/images/papa_johns.png" class="img-responsive storieImages" alt=""  />
-            <h3>Papa John's</h3>
-            <span><strong>15,000+ orders a month? No problem.</strong></span>
-            <p>Papa John's, founded in 1985, has grown to over 20,700 employees who operate and franchise more than 4,000 delivery and carryout pizza restaurants worldwide. In order to systematize and make these franchisees more efficient, they were in need of a serious operational makeover.</p>
-            <a class="buttonStories" href="http://public.four51.com/papa-johns-case-study"> Learn more</a>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-4 ">
-            <div class="well text-center">
-            <img src="assets/images/turtle-wax-logo.png" class="img-responsive storieImages"  />
-            <h3>Turtle Wax</h3>
-            <span><strong>Eliminate fax and manual order entry. In the Cloud.</strong></span>
-            <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it's success, Turtle Wax had a problem. </p>
-            <a class="buttonStories" target="_blank" href="http://451.yourdevsite.com/turtle-wax-case-study">Learn more</a>
-                </div>
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <div class="well text-center">
-            <img src="assets/images/burroughs_logo.png" class="img-responsive storieImages" alt=""  />
-            <h3>Burroughs</h3>
-            <span><strong>Massive Cost Savings? You bet.</strong></span>
-            <p>Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.</p>
-            <a class="buttonStories" href="http://public.four51.com/burroughs-case-study">Learn more</a>
-            </div>
-        </div>
-    </div>
-    <div class="cloud-stories-mobile visible-xs">
-        <uib-carousel interval="home.myInterval" no-wrap="home.noWrapSlides">
-            <uib-slide ng-repeat="slide in home.mobileslides" active="slide.active">
-                <div class="mobile-carousel">
-                    <img ng-src="{{slide.image}}" style="margin:auto; max-height: 81px;" class="img-responsive">
-                    <h3>{{slide.title}}</h3>
-                    <span>{{slide.description}}</span>
-                    <p>{{slide.text}}</p>
                 </div>
             </uib-slide>
         </uib-carousel>
-    </div>
-</div>
-<!--<div class="text-center">-->
-    <!--<div class="btn-group">-->
-        <!--<button class="btn btn-default" >DEVELOPERS</button>-->
-        <!--<button class="btn btn-default" >BUSINESS OWNERS</button>-->
-    <!--</div>-->
-<!--</div>-->
-<!--<div ng-switch="true">-->
-    <!--<div ng-switch-when="true">-->
-<!--merp-->
-    <!--</div>-->
-    <!--<div ng-switch-when="false">-->
-<!--derp-->
-    <!--</div>-->
-<!--</div>-->
-<!--<uib-tabset >-->
-    <!--<uib-tab ng-repeat="tab in home.tabs" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">-->
-        <!--<div  ng-style="{'backgroundImage': 'url(\'' + tab.image + '\')'}">-->
-            <!--<div class="row text-center">-->
-                <!--<div class="col-md-12">-->
-                    <!--<h2 class="primary-head">How can OrderCloud help you?</h2>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="row text-center tab-navigation">-->
-                <!--<div class="col-md-12">-->
-                    <!--<div class="col-md-12 " >-->
-                        <!--<div class="tab-content"><p>{{tab.content}}</p></div>-->
-                        <!--<div class="tab-description"><p>{{tab.description1}}</p>-->
-                            <!--<p>{{tab.description2}}</p></div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</uib-tab>-->
-<!--</uib-tabset>-->
-<div class="footer">
-    <div class="row text-center">
-        <div class="col-md-12">
-            <p class="footer-head hidden-xs">Four51 powers B2B eCommerce for thousands of businesses and millions of users worldwide.</p>
-            <div class="visible-xs mobile-footer-head">
-                <h3>Four51 powers B2B eCommerce</h3>
-                <h3>for thousands of businesses</h3>
-                <h3>and millions of users worldwide.</h3>
-            </div>
-            <div>
-            </div>
-            <form class="form-inline" name="ordercloud_registration" ng-submit="home.submit()" ng-hide="ordercloud_registration.$submitted && ordercloud_registration.$valid">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="namefield" ng-model="home.info.name" required placeholder="Name" disable-validation-message="" />
+    </section>
+    <section id="OrderCloudBlurbs">
+        <div class="container">
+            <h2 class="text-center">Elegant, powerful, and easy to use cloud-based platform</h2>
+            <p class="lead text-center">
+                Create, configure & customize B2B eCommerce sites faster, easier & at lower cost. Solve complex order management challenges quickly by leveraging our cloud-based platform.
+            </p>
+            <hr/>
+            <div class="row">
+                <div class="col-sm-6 col-md-3">
+                    <figure>
+                        <img src="assets/images/Inline_Editors.svg" alt=""/>
+                    </figure>
+                    <h4>Component Based Development</h4>
+                    <p>Get to your custom solution faster by leveraging our core acceleration components. Best practices, your way.</p>
                 </div>
-                <div class="form-group">
-                    <input type="test" class="form-control" name="emailfield" ng-model="home.info.email" required blacklist placeholder="Email Address" disable-validation-message="" />
+                <div class="col-sm-6 col-md-3">
+                    <figure>
+                        <img src="assets/images/Package_manager.svg" alt=""  />
+                    </figure>
+                    <h4>Rapid Development Tools</h4>
+                    <p>Leverage seeds, SDK's, Documentation and Courses to build on OrderCloud quickly.</p>
                 </div>
-                <button type="submit" ng-disabled="ordercloud_registration.$invalid" class="">Request Info</button>
-                <span class="help-block" ng-show="ordercloud_registration.$invalid && ordercloud_registration.emailfield.$touched && !ordercloud_registration.$submitted">
-                    Your name and email are required and please use a valid company email address.
-                </span>
-            </form>
-            <div ng-show="ordercloud_registration.$submitted && ordercloud_registration.$valid">
-                Thank you for requesting more information. Stay tuned!!
+                <div class="col-sm-6 col-md-3">
+                    <figure>
+                        <img src="assets/images/Live_Preview.svg" alt=""  />
+                    </figure>
+                    <h4>Extendable Data Model</h4>
+                    <p>Built on 16 years solving complex eCommerce and order management challenges. Feature rich and robust.</p>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <figure>
+                        <img src="assets/images/cloud.svg" alt=""  />
+                    </figure>
+                    <h4>Development Made Easy</h4>
+                    <p>Developers can create custom code, debug the code, check it into a common source code repository and deploy it to the test, staging or production environments.  </p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row footer-navigation hidden-xs ">
-        <div class="col-md-3 col-sm-3">
-            <span>Resources</span>
-            <ul>
-                <li><a ui-sref="base.seed">Angular Seed</a></li>
-                <li><a ui-sref="base.sdk">Angular SDK</a></li>
-            </ul>
+    </section>
+    <section id="Carousel-2">
+        <uib-carousel interval="home.carouselInterval" no-wrap="false">
+            <uib-slide ng-repeat="slide in home.slides2" active="slide.active">
+                <div class="carousel-slide" ng-style="{'backgroundImage': 'url(\'' + slide.image + '\')'}">
+                    <div class="carousel-slide-content">
+                        <h3 ng-bind="slide.title"></h3>
+                        <p>{{slide.description}}</p>
+                    </div>
+                </div>
+            </uib-slide>
+        </uib-carousel>
+    </section>
+    <section id="OrderCloudStories">
+        <div class="container hidden-sm hidden-xs">
+            <h2 class="text-center"><b>OrderCloud Stories</b></h2>
+            <div class="row hidden-xs">
+                <div class="col-md-4">
+                    <div class="ordercloud-story">
+                        <figure>
+                            <img src="assets/images/papa_johns.png" class="img-responsive" alt=""  />
+                        </figure>
+                        <h3>Papa John's</h3>
+                        <p class="lead"><strong>15,000+ orders a month? No problem.</strong></p>
+                        <p>Papa John's, founded in 1985, has grown to over 20,700 employees who operate and franchise more than 4,000 delivery and carryout pizza restaurants worldwide. In order to systematize and make these franchisees more efficient, they were in need of a serious operational makeover.</p>
+                        <a class="btn btn-primary" href="http://public.four51.com/papa-johns-dev"> Learn more</a>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="ordercloud-story">
+                        <figure>
+                            <img src="assets/images/turtle-wax-logo.png" class="img-responsive"  />
+                        </figure>
+                        <h3>Turtle Wax</h3>
+                        <p class="lead"><strong>Eliminate fax and manual order entry. <br/> In the Cloud.</strong></p>
+                        <p>Turtle Wax is a world leader in car care with sales in over 90 countries. Founded more than 70 years ago, the company is recognized for its continuous innovation in manufacturing appearance and performance car care products.But despite it's success, Turtle Wax had a problem. </p>
+                        <a class="btn btn-primary" target="_blank" href="http://public.four51.com/turtle-wax-dev">Learn more</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="ordercloud-story">
+                        <figure>
+                            <img src="assets/images/burroughs_logo.png" class="img-responsive" alt=""  />
+                        </figure>
+                        <h3>Burroughs</h3>
+                        <p class="lead"><strong>Massive Cost Savings? You bet.</strong></p>
+                        <p>Burroughs Payment Systems was looking for a solution to support worldwide sales of Burroughs image-processing technology through their network of resellers.</p>
+                        <a class="btn btn-primary" href="http://public.four51.com/burroughs-dev">Learn more</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3 col-sm-3">
-            <ul>
-                <li><a ui-sref="base.components">Components Overview</a></li>
-                <li><a ui-sref="base.integrations">Integrations Overview</a></li>
-            </ul>
+        <div id="Carousel-3" class="visible-xs visible-sm">
+            <uib-carousel interval="home.carouselInterval" no-wrap="false">
+                <uib-slide ng-repeat="slide in home.mobileslides" active="slide.active">
+                    <div class="ordercloud-story">
+                        <figure>
+                            <img ng-src="{{slide.image}}" class="img-responsive">
+                        </figure>
+                        <h3>{{slide.title}}</h3>
+                        <p class="lead"><b>{{slide.description}}</b></p>
+                        <p>{{slide.text}}</p>
+                        <a class="btn btn-primary" target="_blank" href="{{slide.link}}">Learn More</a>
+                    </div>
+                </uib-slide>
+            </uib-carousel>
         </div>
-        <div class="col-md-3 social-icons col-sm-3">
-            <span>Social</span>
-            <p><a href="https://twitter.com/ordercloudapi"><i class="fa fa-twitter"></i></a> <a href="https://www.facebook.com/Four51/"><i class="fa fa-facebook"></i></a></p>
-            <p><a href="https://www.youtube.com/channel/UCYWvk0ccQetjEYjW8pa_QkA"><i class="fa fa-youtube-play"></i></a> <a href="https://www.linkedin.com/company/four51"><i class="fa fa-linkedin"></i></a></p>
+    </section>
+</article>
+<footer id="OrderCloudFooter">
+    <div class="container">
+        <h4 class="text-center"><b>Four51 powers B2B eCommerce for thousands of businesses and millions of users worldwide.</b></h4>
+        <div class="row">
+            <div class="col-sm-4" id="Resources">
+                <p class="lead">Resources</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a class="text-white" href="" ui-sref="base.seed">AngularJS Seed</a><br/>
+                        <a class="text-white" href="" ui-sref="base.sdk">AngularJS SDK</a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="text-white" href="" ui-sref="base.components">Components Overview</a><br/>
+                        <a class="text-white" href="" ui-sref="base.integrations">Integrations Overview</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="Social">
+                <p class="lead">Social</p>
+                <a target="_blank" href="https://twitter.com/Four51inc"><i class="fa fa-twitter"></i></a>
+                <a target="_blank" href="https://www.facebook.com/Four51/"><i class="fa fa-facebook"></i></a>
+                <a target="_blank" href="https://www.youtube.com/channel/UCYWvk0ccQetjEYjW8pa_QkA"><i class="fa fa-youtube-play"></i></a>
+                <a target="_blank" href="https://www.linkedin.com/company/four51"><i class="fa fa-linkedin"></i></a>
+            </div>
+            <div class="col-sm-4" id="Four51">
+                <p class="lead">Find more about</p>
+                <figure>
+                    <img class="img-responsive" src="/assets/images/four51.png" alt=""/>
+                </figure>
+                <a class="btn btn-sm btn-link" href="http://public.four51.com/"> CLICK HERE</a>
+            </div>
         </div>
-        <div class="col-md-3 col-sm-3">
-            <span class="find-out-more">FIND OUT MORE ABOUT</span>
-            <div class="four51_logo"></div>
-            <span class="span-alt"></span>
-            <a class="button click-here" href="http://public.four51.com/"> CLICK HERE</a>
+        <div class="text-center">
+            <a class="" ui-sref="base.home"><ordercloud-logo data-width="275px" data-height="60px" data-color="#FFFFFF"></ordercloud-logo></a>
+            <small class="text-white">Copyright@Four51, Inc.2015 400N 1st Avenue, Suite 200, Minneapolis, MN 55401</small>
         </div>
     </div>
-    <div class="mobile-social-icons visible-xs">
-        <p>social</p>
-        <span><a href="https://twitter.com/Four51inc"><i class="fa fa-twitter"></i></a></span>
-        <span><a href="https://www.facebook.com/Four51/"><i class="fa fa-facebook"></i></a></span>
-        <span><a href="https://www.youtube.com/channel/UCYWvk0ccQetjEYjW8pa_QkA"><i class="fa fa-youtube-play"></i></a></span>
-        <span><a href="https://www.linkedin.com/company/four51"><i class="fa fa-linkedin"></i></a></span>
-    </div>
-    <div class="row text-center footer-bottom">
-        <div class="col-md-12 "><a class="" ui-sref="base.home"><ordercloud-logo data-width="275px" data-height="60px" data-color="#FFFFFF"></ordercloud-logo></a></div>
-        <span>Copyright@Four51, Inc.2015 400N 1st Avenue, Suite 200, Minneapolis, MN 55401</span>
-    </div>
-    <div class="row text-center footer-mobile-bottom visible-xs">
-        <p>FIND OUT MORE ABOUT FOUR51</p>
-        <a class="button click-here" href="http://public.four51.com/"> CLICK HERE</a>
-    </div>
-</div>
+</footer>

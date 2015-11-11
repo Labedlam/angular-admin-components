@@ -19,7 +19,7 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 		return {
 			'request': function(config) {
 				var broadcast = true;
-				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555', 'v1/registration'].forEach(function(each) {
 					if (config.url.indexOf(each) > -1) {
 						broadcast = false;
 					}
@@ -35,7 +35,7 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			},
 			'response': function(response) {
 				var broadcast = true;
-				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555', 'v1/registration'].forEach(function(each) {
 					if (response.config.url.indexOf(each) > -1) {
 						broadcast = false;
 					}
@@ -47,7 +47,7 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			},
 			'responseError': function(rejection) {
 				var reject = false;
-				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555'].forEach(function(each) {
+				['.html','/docs','devcenter/','devcenterapi', 'oauth', 'jitterbit', 'localhost:55555', 'v1/registration'].forEach(function(each) {
 					if (rejection.config.url.indexOf(each) > -1) {
 						reject = true;
 					}
@@ -434,7 +434,7 @@ function DevClassController( $scope, $state, $injector, Underscore,
 
 	vm.toggleEdit = function(variable) {
 		variable.editMode = !variable.editMode;
-	}
+	};
 
 	vm.openRequestCount = 0;
 	vm.docs = {};

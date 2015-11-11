@@ -22,3 +22,21 @@
     margin-bottom:@panel-body-padding*2;
   }
 }
+
+#RegisterLoading {
+  z-index: 100000;
+  width: 100%;
+  position: fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items:center;
+  .class-loading-icon i {
+    font-size: 3em;
+    color: @four51-orange;
+  }
+}

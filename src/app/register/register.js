@@ -29,7 +29,7 @@ function RegisterConfig( $stateProvider ) {
 		})
 }
 
-function RegisterController( $exceptionHandler, $resource, DevCenter) {
+function RegisterController( $exceptionHandler, $resource, DevCenter, environment) {
 	var vm = this;
 
 	vm.newUserInfo = null;
@@ -48,7 +48,8 @@ function RegisterController( $exceptionHandler, $resource, DevCenter) {
 			.then(function(userInfo) {
 				vm.loading = false;
 				vm.successMessage = 'Thank you for registering, ' + userInfo.FirstName + ' ' + userInfo.LastName + '! Check your inbox and validate your email address.';
-				$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
+				if (environment == 'prod') {
+					$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
 						"first_name": vm.information.FirstName,
 						"last_name": vm.information.LastName,
 						"email": vm.information.Email,
@@ -56,6 +57,8 @@ function RegisterController( $exceptionHandler, $resource, DevCenter) {
 						"company": vm.information.CompanyName,
 						"created_by": "Devcenter"
 					});
+				}
+
 			})
 			.catch(function(ex) {
 				vm.loading = false;

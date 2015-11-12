@@ -17,6 +17,7 @@ angular.module( 'orderCloud', [
 ])
 
 	.run( Security )
+    .run( PardotTracking )
 	.config( Routing )
 	.config( ErrorHandling )
 	.controller( 'AppCtrl', AppCtrl )
@@ -27,6 +28,20 @@ angular.module( 'orderCloud', [
 	.constant('disquspublickey', 'O8x1eymZ0SEPXjSGgJWXoWciSmvk25lGGzOYbEoYVuTysw2Du7Bm9ntbFw42WfR6')
 
 ;
+
+function PardotTracking($rootScope, $location, environment) {
+    if (environment === 'prod') {
+        $rootScope.$on('$stateChangeSuccess', function(event, newState) {
+            if (window.piTracker === undefined) {
+                angular.noop();
+            }
+            else {
+                window.piTracker($location.absUrl());
+            }
+        });
+    }
+}
+
 function Security( $rootScope, $state, DevAuth, Me ) {
 	$rootScope.$on('$stateChangeStart', function(e, to) {
 		/*TODO: make the '$stateChangeStart event' accept a function so users can control the redirect from each state's declaration.*/

@@ -7,7 +7,7 @@ before_script:
 - npm install --quiet -g "gulpjs/gulp-cli#4.0" karma bower
 - npm install
 - bower install
-script: gulp build
+script: gulp build_test
 deploy:
   provider: s3
   access_key_id: AKIAJJAIUMS4RHS55K4A

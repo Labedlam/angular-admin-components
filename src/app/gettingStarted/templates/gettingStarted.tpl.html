@@ -85,6 +85,28 @@
             resources</a> to help you get up to speed. The remainder of this guide will assume that you have successfully
             pulled a copy of the OrderCloud Seed repository to a local directory.
         </p>
+        <h3 class="page-header">Configuring Your Seed</h3>
+        <p>
+            Look in your seed for a folder called <code>app.js</code>. It should be located at the following path:
+            <code>src/app/app.js</code>. You should see the code shown in below in this file:
+        </p>
+        <div class="rounded-corners" readonly ui-ace="{
+                onLoad: gettingstarted.setMaxLines,
+                useWrapMode : true,
+                theme:'twilight',
+                mode: 'javascript',
+                tabSize: '4',
+                useSoftTabs: true,
+                showPrintMargin: false,
+                showGutter:false
+        }" ng-model="gettingstarted.configuration_sample"></div>
+        <p>
+            There are a couple of things you are going to need to change to get up and running. You will need to overwrite
+            the <code>clientid</code> constant value with the client id value provided with the instance you created through
+            dev center. While developing your app we recommend you keep your environment paths for the API set to the test
+            environment, but when you release your final version you will need to change these paths to the production API paths.
+            To get the production paths simply remove the word "test" from both the <code>authurl</code> and <code>apiurl</code> variables.
+        </p>
         <h3 class="page-header">Final Steps</h3>
         <p>It's the home stretch. Just a few more things to do and your app will be up and running.</p>
         <p>

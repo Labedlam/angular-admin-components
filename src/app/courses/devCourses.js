@@ -719,14 +719,15 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	}
 
 	function parseDependency(string) {
-		var end = string.indexOf('.Create');
-		var asEnd = string.indexOf('.As().Create');
-		if (asEnd > -1) {
-			end = asEnd;
-		}
+
 		var commentIndex = string.indexOf("*/");
 		commentIndex = commentIndex == -1 ? 0 : commentIndex;
 		var newString = string.slice(commentIndex, -1);
+		var end = newString.indexOf('.Create');
+		var asEnd = newString.indexOf('.As().Create');
+		if (asEnd > -1) {
+			end = asEnd;
+		}
 		newString = newString.slice(0, end);
 		var splitUp  = newString.split("\n");
 		return splitUp[splitUp.length - 1].slice(splitUp[splitUp.length -1] -1, -1);

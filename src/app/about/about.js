@@ -2,6 +2,7 @@ angular.module( 'orderCloud' )
 
 	.config( AboutConfig )
 	.controller( 'AboutCtrl', AboutController )
+	.controller( 'DemoRequestCtrl', DemoRequestController )
 ;
 
 function AboutConfig( $stateProvider ) {
@@ -14,44 +15,35 @@ function AboutConfig( $stateProvider ) {
 		});
 }
 
-function AboutController( ) {
+function AboutController( $uibModal ) {
 	var vm = this;
-/*
+
+/*	vm.requestDemo = function() {
+		$uibModal.open({
+			animation: true,
+			templateUrl: 'common/demoRequestModal.tpl.html',
+			controller: 'DemoRequestCtrl',
+			controllerAs: 'demoRequest'
+		});
+	}*/
+}
+
+function DemoRequestController($uibModalInstance, $resource) {
+	var vm = this;
+
 	vm.info = {
-		"name": "",
-		"email": ""
+		"first_name": null,
+		"last_name": null,
+		"phone": null,
+		"company": null,
+		"email": null
 	};
 
 	vm.submit = function() {
-		$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
-			"first_name": vm.info.name,
-			"last_name": null,
-			"created_by": "MoreInfo",
-			"phone": null,
-			"company": null,
-			"email": vm.info.email
-		}).$promise.then(successPardot);
+		vm.info.created_by = 'DemoRequest';
+		$resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot(vm.info).$promise.then(function() {
+				$uibModalInstance.close();
+			});
 	};
 
-	function successPardot(data) {
-		$window.location.href = 'http://public.four51.com/dev-center-thanks';
-	}*/
-/*
-	vm.config = {
-				preload: "none",
-				sources: [
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
-					{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
-				],
-				theme: {
-					url: "http://www.videogular.com/styles/themes/default/latest/videogular.css"
-				},
-				plugins: {
-					controls: {
-						autoHide: true,
-						autoHideTime: 5000
-					}
-				}
-			};*/
 }

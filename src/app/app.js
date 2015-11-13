@@ -15,7 +15,6 @@ angular.module( 'orderCloud', [
 	'angulartics.google.tagmanager',
 	'jcs-autoValidate'
 ])
-
 	.run( Security )
     .run( PardotTracking )
 	.config( Routing )

@@ -18,40 +18,6 @@ function HomeConfig( $stateProvider ) {
 
 function HomeController( $uibModal ) {
     var vm = this;
-/*    vm.tabs = [
-        { title:'DEVELOPERS',
-            image:'assets/images/OC_Images_onComputer.png',
-            content:'Shortened development time driven by component based development. Code, configure, and optimize your project using OrderCloud Dev Center. Bring your development projects to market quickly.',
-            description1:'OrderCloud documentation and courses get developers on track and building on our platform effectively.',
-            description2:'Integration access to hundreds of 3rd party platforms for ERP, CRM, CMS, Analytics, Tax, PIM and more.'
-        },
-        { title:'BUSINESS OWNER',
-            image:'assets/images/OC_Images_ManWorking.png',
-            content:['second tab content', 'second tab content','second tab content','second tab content'] }
-    ];*/
-
-/*
-    vm.info = {
-        "name": "",
-        "email": ""
-    };
-
-    vm.submit = function() {
-        $resource("https://four51trial104401.jitterbit.net/Four51Dev/v1/pardotprospects",{},{ pardot: { method: 'POST', headers:{ Authorization: 'Basic Rm91cjUxSml0dGVyYml0OkYwdXI1MUoxdHQzcmIxdA==' }}}).pardot({
-            "first_name": vm.info.name,
-            "last_name": null,
-            "created_by": "MoreInfo",
-            "phone": null,
-            "company": null,
-            "email": vm.info.email
-        }).$promise.then(successPardot);
-    };
-
-    function successPardot(data) {
-        $window.location.href = 'http://public.four51.com/dev-center-thanks';
-    }
-*/
-
     function openVideoModal() {
         $uibModal.open({
             animation: true,
@@ -77,8 +43,9 @@ function HomeController( $uibModal ) {
             title:'Create, Configure and Deploy Quickly.',
             description:'Our data model is 100% accessible through the API.',
             button: {
-                title: 'REQUEST A DEMO',
-                link: 'https://four51.leadpages.co/leadbox/146f1c9f3f72a2%3A14a01b56f346dc/5631725669449728/'
+                title: 'VIEW DOCS',
+                stateRef: 'base.docs'
+                //link: 'https://four51.leadpages.co/leadbox/146f1c9f3f72a2%3A14a01b56f346dc/5631725669449728/'
             }
         },
         {

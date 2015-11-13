@@ -43,6 +43,7 @@ function BaseConfig( $stateProvider ) {
 
 function BaseController( CurrentUser ) {
 	var vm = this;
+
 	vm.currentUser = CurrentUser;
 	vm.resourcesDropdown = [
 		{

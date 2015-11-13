@@ -671,6 +671,9 @@ function DevClassController( $scope, $state, $injector, Underscore,
 	}
 
 	function checkIfActiveSet(curScript) {
+		var commentIndex = curScript.indexOf("*/");
+		commentIndex = commentIndex == -1 ? 0 : commentIndex;
+		curScript = curScript.slice(commentIndex, -1);
 		if (curScript.indexOf("Active") > -1) {
 			var breakScript = curScript.slice(curScript.indexOf("Active") + 8, -1);
 			var active = breakScript.split(" ")[0];
@@ -721,13 +724,19 @@ function DevClassController( $scope, $state, $injector, Underscore,
 		if (asEnd > -1) {
 			end = asEnd;
 		}
-		var newString = string.slice(0, end);
+		var commentIndex = string.indexOf("*/");
+		commentIndex = commentIndex == -1 ? 0 : commentIndex;
+		var newString = string.slice(commentIndex, -1);
+		newString = newString.slice(0, end);
 		var splitUp  = newString.split("\n");
 		return splitUp[splitUp.length - 1].slice(splitUp[splitUp.length -1] -1, -1);
 	}
 	function parseIdValue(string) {
-		var start = string.indexOf("ID:") + 2;
-		var newString = string.slice(start);
+		var commentIndex = string.indexOf("*/");
+		commentIndex = commentIndex == -1 ? 0 : commentIndex;
+		var newString = string.slice(commentIndex, -1);
+		var start = newString.indexOf("ID:") + 2;
+		newString = newString.slice(start);
 		var splitUp = newString.split("\n");
 		var splitFinal = splitUp[0].split('"');
 		return splitFinal[1];

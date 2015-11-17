@@ -70,8 +70,21 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controller:'DevCoursesCtrl',
 			controllerAs: 'courses',
 			resolve: {
-				CoursesList: function(CourseSvc) {
-					return CourseSvc.listCourses('developer');
+				CoursesList: function(CourseSvc, DcAdmin, DcUserSvc) {
+					return DcAdmin.IsAdmin()
+						.then(function(data) {
+							if (data.admin && DcUserSvc.GetAdminSetting()) {
+								return CourseSvc.listCourses('developer', true);
+							} else {
+								return CourseSvc.listCourses('developer');
+							}
+						})
+				},
+				IsAdmin: function(DcAdmin) {
+					return DcAdmin.IsAdmin()
+						.then(function(data) {
+							return data.admin;
+						});
 				}
 			}
 		})
@@ -91,7 +104,6 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			templateUrl:'courses/templates/devcourse.tpl.html',
 			controller:'DevCourseCtrl',
 			controllerAs: 'course',
-			//data: {limitAccess:true},
 			resolve: {
 				SelectedCourse: function($stateParams, CourseSvc) {
 					return CourseSvc.getCourse($stateParams.courseid, 'developer');
@@ -196,8 +208,10 @@ function CoursesConfig( $stateProvider, $httpProvider ) {
 			controllerAs: 'class',
 			data: {limitAccess:true},
 			resolve: {
-				EditClass: function(ClassSvc, $stateParams) {
-					return ClassSvc.getClass($stateParams.courseid, $stateParams.classid, {Administrator: true});
+				EditClass: function(ClassSvc, $stateParams, IsAdmin) {
+					if (IsAdmin) {
+						return ClassSvc.getClass($stateParams.courseid, $stateParams.classid);
+					}
 				}
 			}
 		})
@@ -379,16 +393,60 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 
 }
 
-function DevCoursesController( CoursesList, DcUsers ) {
+function DevCoursesController( CoursesList, CourseSvc, DcUsers, IsAdmin, DcUserSvc ) {
 	var vm = this;
 	vm.list = CoursesList;
+	vm.toggleAdmin = toggleAdmin;
 
 	vm.list.forEach(function(each) {
 		DcUsers.GetCourseProgress(each.ID)
 			.then(function(data) {
 				each.CourseProgress = data.toJSON();
 			})
-	})
+	});
+
+	if (IsAdmin) {
+		vm.Admin = true;
+		vm.adminSetting = DcUserSvc.GetAdminSetting();
+		if (vm.adminSetting) {
+			vm.OppositeAdminSetting = 'Off';
+		} else {
+			vm.OppositeAdminSetting = 'On';
+		}
+	} else {
+		vm.Admin = false;
+	}
+
+	function toggleAdmin() {
+		DcUserSvc.ToggleAdmin();
+		vm.adminSetting = DcUserSvc.GetAdminSetting();
+		if (vm.adminSetting) {
+			vm.OppositeAdminSetting = 'Off';
+			CourseSvc.listCourses('developer', true)
+				.then(function(data) {
+					vm.list = data;
+					vm.list.forEach(function(each) {
+						DcUsers.GetCourseProgress(each.ID)
+							.then(function(data) {
+								each.CourseProgress = data.toJSON();
+							})
+					});
+				})
+		} else {
+			vm.OppositeAdminSetting = 'On';
+			CourseSvc.listCourses('developer')
+				.then(function(data) {
+					vm.list = data;
+					vm.list.forEach(function(each) {
+						DcUsers.GetCourseProgress(each.ID)
+							.then(function(data) {
+								each.CourseProgress = data.toJSON();
+							})
+					});
+				})
+		}
+	}
+
 }
 
 function DevCourseController( SelectedCourse, ClassesList, DcUsers) {
@@ -1052,10 +1110,10 @@ function CourseService(Courses, $q) {
 		return d.promise;
 	}
 
-	function _listCourses(courseType, adminPage) {
+	function _listCourses(courseType, isAdmin) {
 		var d = $q.defer();
 		//
-		Courses.List(courseType, adminPage)
+		Courses.List(courseType, isAdmin)
 			.then(function(data) {
 				d.resolve(data);
 			}, function(err) {
@@ -1071,8 +1129,18 @@ function CourseService(Courses, $q) {
 function DcUserService(DcUsers, $q) {
 	var service = {
 		getOcVars: _getOcVars,
-		getContext: _getContext
+		getContext: _getContext,
+		ToggleAdmin: _toggleAdmin,
+		GetAdminSetting: _getAdminSetting
 	};
+	var _adminOn = false;
+
+	function _toggleAdmin() {
+		_adminOn = !_adminOn;
+	}
+	function _getAdminSetting() {
+		return _adminOn;
+	}
 
 	function _getOcVars() {
 		var d = $q.defer();

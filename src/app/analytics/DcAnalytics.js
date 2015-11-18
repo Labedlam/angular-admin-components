@@ -10,11 +10,14 @@ function AnalyticsConfig( $stateProvider, $httpProvider ) {
             controller:'DcAnalyticsCtrl',
             controllerAs: 'analytics',
             resolve: {
-                Admin: function(DcAdmin, $q) {
+                Admin: function(DcAdmin, $q, $exceptionHandler) {
                     var deferred = $q.defer();
                     DcAdmin.IsAdmin()
                         .then(function(data) {
                             data.admin ? deferred.resolve() : deferred.reject();
+                            if (!data.admin) {
+                                $exceptionHandler({data: {error: "You must be an Admin User to access this page"}})
+                            }
                         });
                     return deferred.promise;
                 }

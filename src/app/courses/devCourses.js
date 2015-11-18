@@ -393,7 +393,7 @@ function DevClassEditController (EditClass, ClassSvc, Classes, $stateParams, Und
 
 }
 
-function DevCoursesController( CoursesList, CourseSvc, DcUsers, IsAdmin, DcUserSvc ) {
+function DevCoursesController( CoursesList, CourseSvc, DcUsers, IsAdmin, DcUserSvc, $location, $scope, $state ) {
 	var vm = this;
 	vm.list = CoursesList;
 	vm.toggleAdmin = toggleAdmin;
@@ -403,6 +403,16 @@ function DevCoursesController( CoursesList, CourseSvc, DcUsers, IsAdmin, DcUserS
 			.then(function(data) {
 				each.CourseProgress = data.toJSON();
 			})
+	});
+
+
+	$scope.$watch(function() {
+		return $location.absUrl();
+	}, function(newVal, oldVal) {
+		var newValSplit = newVal.split("/");
+		if (newVal != oldVal && newValSplit[newValSplit.length -1] == 'developer') {
+			$state.reload();
+		}
 	});
 
 	if (IsAdmin) {

@@ -50,10 +50,17 @@ function RegistrationController($state, $stateParams, $exceptionHandler, toastr,
     };
 
     vm.login = function() {
+        var tempUserToken = angular.copy(OrderCloud.Auth.ReadToken());
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
                 OrderCloud.Auth.SetToken(data['access_token']);
-                $state.go('home', {}, {reload: true});
+                OrderCloud.Orders.TransferTempUserOrder(tempUserToken)
+                    .then(function(data) {
+                        console.log(data);
+                    })
+                    .finally(function() {
+                        $state.go('home', {}, {reload: true});
+                    });
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);

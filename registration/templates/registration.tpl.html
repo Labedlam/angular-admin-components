@@ -46,16 +46,8 @@
                         <input id="userPasswordConfirmInput" type="password" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$" pattern-err-type="customPassword"  class="form-control" ng-model="registration.PasswordConfirm" confirmpassword="{{registration.user.Password}}" required/>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6 form-group">
-                        <label for="userTermsAcceptedCheckbox">
-                            <input id="userTermsAcceptedCheckbox" type="checkbox" ng-model="registration.TermsAccepted" required/>
-                            Terms & Conditions
-                        </label>
-                    </div>
-                </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary" ng-disabled="RegistrationForm.$invalid">Save</button>
+                    <button type="submit" class="btn btn-primary" ng-disabled="RegistrationForm.$invalid">Submit</button>
                 </div>
             </form>
         </div>

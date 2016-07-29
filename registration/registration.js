@@ -16,7 +16,7 @@ function RegistrationConfig($stateProvider) {
     ;
 }
 
-function RegistrationController($stateParams) {
+function RegistrationController($state, $stateParams, $exceptionHandler, toastr, OrderCloud, LoginService) {
     var vm = this;
     vm.user = {Active: true};
     vm.credentials = {
@@ -37,18 +37,54 @@ function RegistrationController($stateParams) {
     };
 
     vm.register = function() {
-
+        vm.user.TermsAccepted = new Date();
+        OrderCloud.Me.CreateFromTempUser(vm.user, OrderCloud.Auth.ReadToken())
+            .then(function(token) {
+                OrderCloud.Auth.SetToken(token.access_token);
+                $state.go('home', {}, {reload: true});
+                toastr.success('Registration Successful', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
     };
 
     vm.login = function() {
-
+        OrderCloud.Auth.GetToken(vm.credentials)
+            .then(function(data) {
+                OrderCloud.Auth.SetToken(data['access_token']);
+                $state.go('home', {}, {reload: true});
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+            });
     };
 
     vm.forgotPassword = function() {
-
+        LoginService.SendVerificationCode(vm.credentials.Email)
+            .then(function() {
+                vm.setForm('verificationCodeSuccess');
+                vm.credentials.Email = null;
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+            });
     };
 
     vm.resetPassword = function() {
-
+        LoginService.ResetPassword(vm.credentials, vm.token)
+            .then(function() {
+                vm.setForm('resetSuccess');
+                vm.token = null;
+                vm.credentials.ResetUsername = null;
+                vm.credentials.NewPassword = null;
+                vm.credentials.ConfirmPassword = null;
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+                vm.credentials.ResetUsername = null;
+                vm.credentials.NewPassword = null;
+                vm.credentials.ConfirmPassword = null;
+            });
     };
 }

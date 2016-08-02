@@ -1,45 +1,43 @@
-angular.module( 'orderCloud' )
-
-    .config( SpecsConfig )
-    .controller( 'SpecsCtrl', SpecsController )
-    .controller( 'SpecEditCtrl', SpecEditController )
-    .controller( 'SpecCreateCtrl', SpecCreateController )
-    .controller( 'SpecAssignCtrl', SpecAssignController )
-
+angular.module('orderCloud')
+    .config(SpecsConfig)
+    .controller('SpecsCtrl', SpecsController)
+    .controller('SpecEditCtrl', SpecEditController)
+    .controller('SpecCreateCtrl', SpecCreateController)
+    .controller('SpecAssignCtrl', SpecAssignController)
 ;
 
-function SpecsConfig( $stateProvider ) {
+function SpecsConfig($stateProvider) {
     $stateProvider
-        .state( 'specs', {
+        .state('specs', {
             parent: 'base',
             views: {
                 '': {
-                    templateUrl:'specs/templates/specs.tpl.html',
-                    controller:'SpecsCtrl',
+                    templateUrl: 'specs/templates/specs.tpl.html',
+                    controller: 'SpecsCtrl',
                     controllerAs: 'specs'
                 },
                 'filters@specs': {
-                    templateUrl:'specs/templates/specs.filters.tpl.html'
+                    templateUrl: 'specs/templates/specs.filters.tpl.html'
                 },
                 'list@specs': {
-                    templateUrl:'specs/templates/specs.list.tpl.html'
+                    templateUrl: 'specs/templates/specs.list.tpl.html'
                 }
             },
             url: '/specs?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Specs'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                SpecList: function(OrderCloud,Parameters) {
-                    return OrderCloud.Specs.List( Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
+                SpecList: function(OrderCloud, Parameters) {
+                    return OrderCloud.Specs.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state( 'specs.edit', {
+        .state('specs.edit', {
             url: '/:specid/edit',
-            templateUrl:'specs/templates/specEdit.tpl.html',
-            controller:'SpecEditCtrl',
+            templateUrl: 'specs/templates/specEdit.tpl.html',
+            controller: 'SpecEditCtrl',
             controllerAs: 'specEdit',
             resolve: {
                 SelectedSpec: function($stateParams, OrderCloud) {
@@ -47,10 +45,10 @@ function SpecsConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'specs.create', {
+        .state('specs.create', {
             url: '/create',
-            templateUrl:'specs/templates/specCreate.tpl.html',
-            controller:'SpecCreateCtrl',
+            templateUrl: 'specs/templates/specCreate.tpl.html',
+            controller: 'SpecCreateCtrl',
             controllerAs: 'specCreate'
         })
         .state('specs.assign', {
@@ -59,25 +57,25 @@ function SpecsConfig( $stateProvider ) {
             controller: 'SpecAssignCtrl',
             controllerAs: 'specAssign',
             resolve: {
-                ProductList: function (OrderCloud) {
+                ProductList: function(OrderCloud) {
                     return OrderCloud.Products.List(null, 1, 20);
                 },
-                ProductAssignments: function ($stateParams, OrderCloud) {
+                ProductAssignments: function($stateParams, OrderCloud) {
                     return OrderCloud.Specs.ListProductAssignments($stateParams.specid);
                 },
-                SelectedSpec: function ($stateParams, OrderCloud) {
+                SelectedSpec: function($stateParams, OrderCloud) {
                     return OrderCloud.Specs.Get($stateParams.specid);
                 }
             }
         })
+    ;
 }
 
-function SpecsController( $state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, SpecList ) {
+function SpecsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, SpecList) {
     var vm = this;
     vm.list = SpecList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
 
     //Check if filters are applied
     vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -140,16 +138,15 @@ function SpecsController( $state, $ocMedia, OrderCloud, OrderCloudParameters, Pa
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Specs.List( Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Specs.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
             });
     };
-
 }
 
-function SpecEditController( $exceptionHandler, $state, Underscore, OrderCloud, SelectedSpec, toastr ) {
+function SpecEditController($exceptionHandler, $state, Underscore, toastr, OrderCloud, SelectedSpec) {
     var vm = this,
         specid = angular.copy(SelectedSpec.ID);
     vm.specName = angular.copy(SelectedSpec.Name);
@@ -163,7 +160,6 @@ function SpecEditController( $exceptionHandler, $state, Underscore, OrderCloud, 
         if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.overwrite = true;
             toastr.warning('There is already a spec option with that ID, select Update Spec Option to continue', 'Warning');
-
         }
 
         if (!Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
@@ -172,26 +168,21 @@ function SpecEditController( $exceptionHandler, $state, Underscore, OrderCloud, 
                 vm.spec.DefaultOptionID = vm.Option.ID;
             }
             OrderCloud.Specs.CreateOption(specid, vm.Option)
-                .then(function () {
+                .then(function() {
                     vm.Option = null;
-                })
+                });
         }
-
     };
 
-    vm.updateSpecOpt = function () {
-
+    vm.updateSpecOpt = function() {
         var specOptIndex;
 
         if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
-
-            angular.forEach(vm.Options, function (option, index) {
+            angular.forEach(vm.Options, function(option, index) {
                 if (option.ID == vm.Option.ID) {
-
                     specOptIndex = index;
                 }
             });
-
 
             vm.Options.splice(specOptIndex, 1);
             vm.Options.push(vm.Option);
@@ -199,35 +190,29 @@ function SpecEditController( $exceptionHandler, $state, Underscore, OrderCloud, 
                 vm.spec.DefaultOptionID = vm.Option.ID;
             }
             OrderCloud.Specs.UpdateOption(specid, vm.Option.ID, vm.Option)
-                .then(function () {
+                .then(function() {
                     vm.Option = null;
                     vm.overwrite = false;
-                })
+                });
         } else {
             vm.addSpecOpt();
-
-
         }
     };
-
-
 
     vm.deleteSpecOpt = function($index) {
         if (vm.spec.DefaultOptionID == vm.spec.Options[$index].ID) {
             vm.spec.DefaultOptionID = null;
         }
         OrderCloud.Specs.DeleteOption(specid, vm.spec.Options[$index].ID)
-            .then(function(){
+            .then(function() {
                 vm.Options.splice($index, 1);
             });
-
-
     };
 
     vm.Submit = function() {
         OrderCloud.Specs.Update(specid, vm.spec)
             .then(function() {
-                $state.go('specs', {}, {reload:true});
+                $state.go('specs', {}, {reload: true});
                 toastr.success('Spec Updated', 'Success');
             })
             .catch(function(ex) {
@@ -238,15 +223,15 @@ function SpecEditController( $exceptionHandler, $state, Underscore, OrderCloud, 
     vm.Delete = function() {
         OrderCloud.Specs.Delete(specid)
             .then(function() {
-                $state.go('specs', {}, {reload:true})
+                $state.go('specs', {}, {reload: true})
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }
 
-function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Underscore, toastr) {
+function SpecCreateController($exceptionHandler, $q, $state, toastr, Underscore, OrderCloud) {
     var vm = this;
     vm.spec = {};
     vm.Options = [];
@@ -257,7 +242,6 @@ function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Unders
         if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.overwrite = true;
             toastr.warning('There is already a spec option with that ID, select Update Spec Option to continue', 'Warning');
-
         }
         if (!Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.Options.push(vm.Option);
@@ -269,19 +253,15 @@ function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Unders
         }
     };
 
-    vm.updateSpecOpt = function () {
-
+    vm.updateSpecOpt = function() {
         var specOptIndex;
 
         if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
-
-            angular.forEach(vm.Options, function (option, index) {
+            angular.forEach(vm.Options, function(option, index) {
                 if (option.ID == vm.Option.ID) {
-
                     specOptIndex = index;
                 }
             });
-
 
             vm.Options.splice(specOptIndex, 1);
             vm.Options.push(vm.Option);
@@ -290,11 +270,8 @@ function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Unders
             }
             vm.Option = null;
             vm.overwrite = false;
-
         } else {
             vm.addSpecOpt();
-
-
         }
     };
 
@@ -315,7 +292,7 @@ function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Unders
                 });
                 $q.all(queue).then(function() {
                     dfd.resolve();
-                    if(DefaultOptionID != null){
+                    if (DefaultOptionID != null) {
                         OrderCloud.Specs.Patch(spec.ID, {DefaultOptionID: DefaultOptionID})
                     }
                     $state.go('specs', {}, {reload: true});
@@ -326,9 +303,9 @@ function SpecCreateController( $exceptionHandler, $q, $state, OrderCloud, Unders
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }
-function SpecAssignController($scope, OrderCloud, Assignments, Paging, ProductList, ProductAssignments, SelectedSpec, toastr) {
+function SpecAssignController($scope, toastr, OrderCloud, Assignments, Paging, ProductList, ProductAssignments, SelectedSpec) {
     var vm = this;
     vm.Spec = SelectedSpec;
     vm.list = ProductList;
@@ -336,10 +313,10 @@ function SpecAssignController($scope, OrderCloud, Assignments, Paging, ProductLi
     vm.saveAssignments = SaveAssignment;
     vm.pagingfunction = PagingFunction;
 
-    $scope.$watchCollection(function(){
+    $scope.$watchCollection(function() {
         return vm.list;
-    }, function(){
-        Paging.setSelected(vm.list.Items, vm.assignments.Items, 'ProductID')
+    }, function() {
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'ProductID')
     });
 
     function SaveFunc(ItemID) {
@@ -355,7 +332,7 @@ function SpecAssignController($scope, OrderCloud, Assignments, Paging, ProductLi
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.saveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'ProductID');
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'ProductID');
     }
 
     function AssignmentFunc() {
@@ -363,6 +340,6 @@ function SpecAssignController($scope, OrderCloud, Assignments, Paging, ProductLi
     }
 
     function PagingFunction() {
-        return Paging.paging(vm.list, 'Products', vm.assignments, AssignmentFunc);
+        return Paging.Paging(vm.list, 'Products', vm.assignments, AssignmentFunc);
     }
 }

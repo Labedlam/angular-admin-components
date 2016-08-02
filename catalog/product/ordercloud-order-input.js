@@ -1,8 +1,6 @@
 angular.module('orderCloud')
-
     .controller('OrderInputCtrl', OrderInputController)
     .directive('ordercloudOrderInput', OrderCloudOrderInputDirective)
-
 ;
 
 function OrderCloudOrderInputDirective() {
@@ -18,7 +16,7 @@ function OrderCloudOrderInputDirective() {
     };
 }
 
-function OrderInputController($state, $scope, $rootScope, OrderCloud, LineItemHelpers, Underscore, CurrentOrder) {
+function OrderInputController($state, $scope, $rootScope, Underscore, OrderCloud, LineItemHelpers, CurrentOrder) {
     var vm = this;
     vm.currentState = $state.current.name;
     vm.price = null;

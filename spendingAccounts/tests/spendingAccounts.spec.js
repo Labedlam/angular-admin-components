@@ -26,7 +26,7 @@ describe('Component: SpendingAccounts', function() {
             state = $state.get('spendingAccounts');
             spyOn(oc.SpendingAccounts, 'List').and.returnValue(null);
         }));
-        it('should resolve SpendingAccountList', inject(function ($injector) {
+        it('should resolve SpendingAccountList', inject(function($injector) {
             $injector.invoke(state.resolve.SpendingAccountList);
             expect(oc.SpendingAccounts.List).toHaveBeenCalledWith(null, null, null, null, null, {'RedemptionCode': '!*'});
         }));
@@ -38,9 +38,9 @@ describe('Component: SpendingAccounts', function() {
             state = $state.get('spendingAccounts.edit');
             spyOn(oc.SpendingAccounts, 'Get').and.returnValue(null);
         }));
-        it('should resolve SelectedSpendingAccount', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedSpendingAccount', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedSpendingAccount);
-            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingAccountid);
+            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingaccountid);
         }));
     });
 
@@ -52,17 +52,17 @@ describe('Component: SpendingAccounts', function() {
             spyOn(oc.SpendingAccounts, 'ListAssignments').and.returnValue(null);
             spyOn(oc.SpendingAccounts, 'Get').and.returnValue(null);
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignedUserGroups', inject(function ($injector, $stateParams) {
+        it('should resolve AssignedUserGroups', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedUserGroups);
-            expect(oc.SpendingAccounts.ListAssignments).toHaveBeenCalledWith($stateParams.spendingAccountid, null, null, 'Group');
+            expect(oc.SpendingAccounts.ListAssignments).toHaveBeenCalledWith($stateParams.spendingaccountid, null, null, 'Group');
         }));
-        it('should resolve SelectedSpendingAccount', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedSpendingAccount', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedSpendingAccount);
-            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingAccountid);
+            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingaccountid);
         }));
     });
 
@@ -74,17 +74,17 @@ describe('Component: SpendingAccounts', function() {
             spyOn(oc.SpendingAccounts, 'Get').and.returnValue(null);
             spyOn(oc.SpendingAccounts, 'ListAssignments').and.returnValue(null);
         }));
-        it('should resolve UserList', inject(function ($injector) {
+        it('should resolve UserList', inject(function($injector) {
             $injector.invoke(state.resolve.UserList);
             expect(oc.Users.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignedUsers', inject(function ($injector, $stateParams) {
+        it('should resolve AssignedUsers', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedUsers);
-            expect(oc.SpendingAccounts.ListAssignments).toHaveBeenCalledWith($stateParams.spendingAccountid, null, null, 'User');
+            expect(oc.SpendingAccounts.ListAssignments).toHaveBeenCalledWith($stateParams.spendingaccountid, null, null, 'User');
         }));
-        it('should resolve SelectedSpendingAccount', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedSpendingAccount', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedSpendingAccount);
-            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingAccountid);
+            expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith($stateParams.spendingaccountid);
         }));
     });
 
@@ -112,7 +112,7 @@ describe('Component: SpendingAccounts', function() {
                 expect(oc.SpendingAccounts.Update).toHaveBeenCalledWith(spendingAccountEditCtrl.spendingAccountID, spendingAccountEditCtrl.spendingAccount);
             });
             it ('should enter the spendingAccounts state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload: true});
             }));
         });
 
@@ -128,7 +128,7 @@ describe('Component: SpendingAccounts', function() {
                 expect(oc.SpendingAccounts.Delete).toHaveBeenCalledWith(spendingAccount.ID);
             });
             it ('should enter the spendingAccounts state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload: true});
             }));
         });
     });
@@ -155,7 +155,7 @@ describe('Component: SpendingAccounts', function() {
                 expect(oc.SpendingAccounts.Create).toHaveBeenCalledWith(spendingAccountCreateCtrl.spendingAccount);
             });
             it ('should enter the spendingAccounts state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('spendingAccounts', {}, {reload: true});
             }));
         });
     });
@@ -175,17 +175,17 @@ describe('Component: SpendingAccounts', function() {
 
         describe('SaveAssignments', function() {
             beforeEach(inject(function(SpendingAccountAssignment) {
-                spyOn(SpendingAccountAssignment, 'saveAssignments').and.returnValue(null);
+                spyOn(SpendingAccountAssignment, 'SaveAssignments').and.returnValue(null);
                 spendingAccountAssignGroupCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(SpendingAccountAssignment) {
-                expect(SpendingAccountAssignment.saveAssignments).toHaveBeenCalled();
+                expect(SpendingAccountAssignment.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
         describe('pagingfunction', function() {
             beforeEach(inject(function(SpendingAccountAssignment) {
-                spyOn(SpendingAccountAssignment, 'paging').and.returnValue(null);
+                spyOn(SpendingAccountAssignment, 'Paging').and.returnValue(null);
                 spendingAccountAssignGroupCtrl.list = {
                     Meta: {
                         Page: 1,
@@ -203,7 +203,7 @@ describe('Component: SpendingAccounts', function() {
                 spendingAccountAssignGroupCtrl.pagingfunction();
             }));
             it ('should call the SpendingAccountAssignment paging method', inject(function(SpendingAccountAssignment) {
-                expect(SpendingAccountAssignment.paging).toHaveBeenCalledWith(spendingAccountAssignGroupCtrl.spendingAccount.ID, spendingAccountAssignGroupCtrl.list, spendingAccountAssignGroupCtrl.assignments);
+                expect(SpendingAccountAssignment.Paging).toHaveBeenCalledWith(spendingAccountAssignGroupCtrl.spendingAccount.ID, spendingAccountAssignGroupCtrl.list, spendingAccountAssignGroupCtrl.assignments);
             }));
         });
     });
@@ -222,17 +222,17 @@ describe('Component: SpendingAccounts', function() {
 
         describe('SaveAssignments', function() {
             beforeEach(inject(function(SpendingAccountAssignment) {
-                spyOn(SpendingAccountAssignment, 'saveAssignments').and.returnValue(null);
+                spyOn(SpendingAccountAssignment, 'SaveAssignments').and.returnValue(null);
                 spendingAccountAssignUserCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(SpendingAccountAssignment) {
-                expect(SpendingAccountAssignment.saveAssignments).toHaveBeenCalled();
+                expect(SpendingAccountAssignment.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
         describe('pagingfunction', function() {
             beforeEach(inject(function(SpendingAccountAssignment) {
-                spyOn(SpendingAccountAssignment, 'paging').and.returnValue(null);
+                spyOn(SpendingAccountAssignment, 'Paging').and.returnValue(null);
                 spendingAccountAssignUserCtrl.list = {
                     Meta: {
                         Page: 1,
@@ -250,37 +250,37 @@ describe('Component: SpendingAccounts', function() {
                 spendingAccountAssignUserCtrl.pagingfunction();
             }));
             it ('should call the SpendingAccountAssignment paging method', inject(function(SpendingAccountAssignment) {
-                expect(SpendingAccountAssignment.paging).toHaveBeenCalledWith(spendingAccountAssignUserCtrl.spendingAccount.ID, spendingAccountAssignUserCtrl.list, spendingAccountAssignUserCtrl.assignments, 'User');
+                expect(SpendingAccountAssignment.Paging).toHaveBeenCalledWith(spendingAccountAssignUserCtrl.spendingAccount.ID, spendingAccountAssignUserCtrl.list, spendingAccountAssignUserCtrl.assignments, 'User');
             }));
         });
     });
 
-    describe('Factory: SpendingAccountAssignment', function(){
+    describe('Factory: SpendingAccountAssignment', function() {
        var spendingAccountAssignment, sampleList, assignments;
-        beforeEach(inject(function(SpendingAccountAssignment, Assignments, $state){
+        beforeEach(inject(function(SpendingAccountAssignment, Assignments, $state) {
             spendingAccountAssignment = SpendingAccountAssignment;
             sampleList = [{ID: 1, selected: true}, {ID: 2, selected: false}, {ID: 3}];
             assignments = Assignments;
             spyOn($state, 'reload').and.returnValue(true);
         }));
         it('getAssigned should return a list of IDs', function() {
-            var result = assignments.getAssigned(sampleList, 'ID');
+            var result = assignments.GetAssigned(sampleList, 'ID');
             expect(result).toEqual([1, 2, 3]);
         });
         it('getSelected should return a list of IDs that also have selected set to true', function() {
-            var result = assignments.getSelected(sampleList, 'ID');
+            var result = assignments.GetSelected(sampleList, 'ID');
             expect(result).toEqual([1]);
         });
         it('getUnselected should return a list of IDs where selected is false or undefined', function() {
-            var result = assignments.getUnselected(sampleList, 'ID');
+            var result = assignments.GetUnselected(sampleList, 'ID');
             expect(result).toEqual([2, 3]);
         });
         it('getToAssign should return a list of IDs that are different between the two lists', function() {
-            var result = assignments.getToAssign(sampleList, [], 'ID');
+            var result = assignments.GetToAssign(sampleList, [], 'ID');
             expect(result).toEqual([1]);
         });
         it('getToDelete should return a list of IDs that are the same between the two lists', function() {
-            var result = assignments.getToDelete(sampleList, [{ID: 2}], 'ID');
+            var result = assignments.GetToDelete(sampleList, [{ID: 2}], 'ID');
             expect(result).toEqual([2]);
         });
 
@@ -298,7 +298,7 @@ describe('Component: SpendingAccounts', function() {
                 deleteFunc = function() {
                     deleteCount++;
                 };
-                assignments.saveAssignments(
+                assignments.SaveAssignments(
                     [{ID: 1, selected: true}, {ID: 2, selected: true}, {ID: 3, selected: false}, {ID: 4, selected: false}],
                     [{ID: 3}, {ID: 4}],
                     saveFunc, deleteFunc, 'ID');

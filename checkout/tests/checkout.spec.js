@@ -6,7 +6,7 @@ describe('Component: Checkout', function() {
         order;
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
-    beforeEach(inject(function ($q, $rootScope, OrderCloud) {
+    beforeEach(inject(function($q, $rootScope, OrderCloud) {
         q = $q;
         oc = OrderCloud;
         scope = $rootScope.$new();
@@ -25,9 +25,9 @@ describe('Component: Checkout', function() {
         };
     }));
 
-    describe('State: checkout', function () {
+    describe('State: checkout', function() {
         var state;
-        beforeEach(inject(function ($state, CurrentOrder, OrderShippingAddress) {
+        beforeEach(inject(function($state, CurrentOrder, OrderShippingAddress) {
             state = $state.get('checkout');
             var defer = q.defer();
             defer.resolve();
@@ -35,37 +35,37 @@ describe('Component: Checkout', function() {
             spyOn(OrderShippingAddress, 'Get').and.returnValue(defer.promise);
             spyOn(oc.Me, 'ListAddresses').and.returnValue(defer.promise);
         }));
-        it('should resolve Order', inject(function ($injector, CurrentOrder) {
+        it('should resolve Order', inject(function($injector, CurrentOrder) {
             $injector.invoke(state.resolve.Order);
             expect(CurrentOrder.Get).toHaveBeenCalled();
         }));
-        it('should resolve OrderShipAddress', inject(function ($injector, OrderShippingAddress) {
+        it('should resolve OrderShipAddress', inject(function($injector, OrderShippingAddress) {
             $injector.invoke(state.resolve.OrderShipAddress);
             expect(OrderShippingAddress.Get).toHaveBeenCalled();
         }));
-        it('should resolve ShippingAddresses', inject(function ($injector) {
+        it('should resolve ShippingAddresses', inject(function($injector) {
             $injector.invoke(state.resolve.ShippingAddresses);
             expect(oc.Me.ListAddresses).toHaveBeenCalled();
         }));
     });
 
-    describe('State: orderReview', function () {
+    describe('State: orderReview', function() {
         var state;
-        beforeEach(inject(function ($state) {
+        beforeEach(inject(function($state) {
             state = $state.get('orderReview');
             var defer = q.defer();
             defer.resolve();
             spyOn(oc.Orders, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve SubmittedOrder', inject(function ($injector, $stateParams) {
+        it('should resolve SubmittedOrder', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SubmittedOrder);
             expect(oc.Orders.Get).toHaveBeenCalledWith($stateParams.orderid);
         }));
     });
 
-    describe('Controller: OrderConfirmationCtrl', function () {
+    describe('Controller: OrderConfirmationCtrl', function() {
         var orderConfirmationCtrl;
-        beforeEach(inject(function ($state, $controller) {
+        beforeEach(inject(function($state, $controller) {
             orderConfirmationCtrl = $controller('OrderConfirmationCtrl', {
                 $scope: scope,
                 Order: order
@@ -73,8 +73,8 @@ describe('Component: Checkout', function() {
             spyOn($state, 'go').and.returnValue(true);
         }));
 
-        describe('submitOrder', function () {
-            beforeEach(inject(function (CurrentOrder) {
+        describe('submitOrder', function() {
+            beforeEach(inject(function(CurrentOrder) {
                 orderConfirmationCtrl.currentOrder = order;
                 var defer = q.defer();
                 defer.resolve(order);
@@ -83,21 +83,21 @@ describe('Component: Checkout', function() {
                 orderConfirmationCtrl.submitOrder();
                 scope.$digest();
             }));
-            it('should call the Orders Submit method', function () {
+            it('should call the Orders Submit method', function() {
                 expect(oc.Orders.Submit).toHaveBeenCalledWith(orderConfirmationCtrl.currentOrder.ID);
             });
-            it('should call the CurrentOrder Remove method', inject(function (CurrentOrder) {
+            it('should call the CurrentOrder Remove method', inject(function(CurrentOrder) {
                 expect(CurrentOrder.Remove).toHaveBeenCalled();
             }));
-            it('should enter the orderReview state', inject(function ($state) {
+            it('should enter the orderReview state', inject(function($state) {
                 expect($state.go).toHaveBeenCalledWith('orderReview', {orderid: orderConfirmationCtrl.currentOrder.ID});
             }));
         });
     });
 
-    describe('Controller: OrderReviewCtrl', function () {
+    describe('Controller: OrderReviewCtrl', function() {
         var orderReviewCtrl;
-        beforeEach(inject(function ($state, $controller, LineItemHelpers) {
+        beforeEach(inject(function($state, $controller, LineItemHelpers) {
             var defer = q.defer();
             var lidefer = q.defer();
             lidefer.resolve({
@@ -133,20 +133,20 @@ describe('Component: Checkout', function() {
             expect(oc.LineItems.List).toHaveBeenCalledWith(orderReviewCtrl.submittedOrder.ID);
         });
 
-        describe('print', function () {
-            beforeEach(inject(function () {
+        describe('print', function() {
+            beforeEach(inject(function() {
                 spyOn(window, 'print').and.returnValue(null);
                 orderReviewCtrl.print();
             }));
-            it('should call the window.print method', inject(function () {
+            it('should call the window.print method', inject(function() {
                 expect(window.print).toHaveBeenCalled();
             }));
         });
     });
 
-    describe('Controller: CheckoutLineItemsCtrl', function () {
+    describe('Controller: CheckoutLineItemsCtrl', function() {
         var checkoutLICtrl;
-        beforeEach(inject(function ($state, $controller) {
+        beforeEach(inject(function($state, $controller) {
             checkoutLICtrl = $controller('CheckoutLineItemsCtrl', {
                 $scope: scope
             });
@@ -183,9 +183,9 @@ describe('Component: Checkout', function() {
         });
     });
 
-    describe('Controller: ConfirmationLineItemsCtrl', function () {
+    describe('Controller: ConfirmationLineItemsCtrl', function() {
         var confirmationLICtrl;
-        beforeEach(inject(function ($state, $controller) {
+        beforeEach(inject(function($state, $controller) {
             confirmationLICtrl = $controller('CheckoutLineItemsCtrl', {
                 $scope: scope
             });

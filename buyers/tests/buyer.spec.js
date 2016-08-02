@@ -22,7 +22,7 @@ describe('Component: Buyers', function() {
             state = $state.get('buyers');
             spyOn(oc.Buyers, 'List').and.returnValue(null);
         }));
-        it('should resolve BuyerList', inject(function ($injector) {
+        it('should resolve BuyerList', inject(function($injector) {
             $injector.invoke(state.resolve.BuyerList);
             expect(oc.Buyers.List).toHaveBeenCalled();
         }));
@@ -36,7 +36,7 @@ describe('Component: Buyers', function() {
             defer.resolve();
             spyOn(oc.Buyers, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve SelectedBuyer', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedBuyer', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedBuyer);
             expect(oc.Buyers.Get).toHaveBeenCalledWith($stateParams.buyerid);
         }));
@@ -65,7 +65,7 @@ describe('Component: Buyers', function() {
                 expect(oc.Buyers.Update).toHaveBeenCalledWith(buyerEditCtrl.buyer);
             });
             it ('should enter the buyers state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload: true});
             }));
         });
     });
@@ -92,7 +92,7 @@ describe('Component: Buyers', function() {
                 expect(oc.Buyers.Create).toHaveBeenCalledWith(buyer);
             });
             it ('should enter the buyers state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload: true});
             }));
         });
     });

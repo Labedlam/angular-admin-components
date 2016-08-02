@@ -22,7 +22,7 @@ describe('Component: CostCenters', function() {
             state = $state.get('costCenters');
             spyOn(oc.CostCenters, 'List').and.returnValue(null);
         }));
-        it('should resolve CostCenterList', inject(function ($injector) {
+        it('should resolve CostCenterList', inject(function($injector) {
             $injector.invoke(state.resolve.CostCenterList);
             expect(oc.CostCenters.List).toHaveBeenCalled();
         }));
@@ -36,9 +36,9 @@ describe('Component: CostCenters', function() {
             defer.resolve();
             spyOn(oc.CostCenters, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve SelectedCostCenter', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedCostCenter', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedCostCenter);
-            expect(oc.CostCenters.Get).toHaveBeenCalledWith($stateParams.costCenterid);
+            expect(oc.CostCenters.Get).toHaveBeenCalledWith($stateParams.costcenterid);
         }));
     });
 
@@ -53,21 +53,21 @@ describe('Component: CostCenters', function() {
             defer.resolve();
             spyOn(oc.CostCenters, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve Buyer', inject(function ($injector) {
+        it('should resolve Buyer', inject(function($injector) {
             $injector.invoke(state.resolve.Buyer);
             expect(oc.Buyers.Get).toHaveBeenCalled();
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignmentsList', inject(function ($injector, $stateParams) {
+        it('should resolve AssignmentsList', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedUserGroups);
-            expect(oc.CostCenters.ListAssignments).toHaveBeenCalledWith($stateParams.costCenterid);
+            expect(oc.CostCenters.ListAssignments).toHaveBeenCalledWith($stateParams.costcenterid);
         }));
-        it('should resolve SelectedCostCenter', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedCostCenter', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedCostCenter);
-            expect(oc.CostCenters.Get).toHaveBeenCalledWith($stateParams.costCenterid);
+            expect(oc.CostCenters.Get).toHaveBeenCalledWith($stateParams.costcenterid);
         }));
     });
 
@@ -95,7 +95,7 @@ describe('Component: CostCenters', function() {
                 expect(oc.CostCenters.Update).toHaveBeenCalledWith(costCenterEditCtrl.costCenterID, costCenterEditCtrl.costCenter);
             });
             it ('should enter the costCenters state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload: true});
             }));
         });
 
@@ -111,7 +111,7 @@ describe('Component: CostCenters', function() {
                 expect(oc.CostCenters.Delete).toHaveBeenCalledWith(costCenter.ID);
             });
             it ('should enter the costCenters state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload: true});
             }));
         });
     });
@@ -138,7 +138,7 @@ describe('Component: CostCenters', function() {
                 expect(oc.CostCenters.Create).toHaveBeenCalledWith(costCenter);
             });
             it ('should enter the costCenters state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('costCenters', {}, {reload: true});
             }));
         });
     });
@@ -159,21 +159,21 @@ describe('Component: CostCenters', function() {
             beforeEach(inject(function(Assignments) {
                 var defer = q.defer();
                 defer.resolve();
-                spyOn(Assignments, 'saveAssignments').and.returnValue(defer.promise);
+                spyOn(Assignments, 'SaveAssignments').and.returnValue(defer.promise);
                 costCenterAssignCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.saveAssignments).toHaveBeenCalled();
+                expect(Assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 costCenterAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
-                expect(Paging.paging).toHaveBeenCalled();
+                expect(Paging.Paging).toHaveBeenCalled();
             }));
         });
     });

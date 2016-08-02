@@ -1,8 +1,6 @@
 angular.module('orderCloud')
-
     .config(CategoryConfig)
     .controller('CategoryCtrl', CategoryController)
-
 ;
 
 function CategoryConfig($stateProvider) {
@@ -13,10 +11,10 @@ function CategoryConfig($stateProvider) {
             controller: 'CategoryCtrl',
             controllerAs: 'category',
             resolve: {
-                CategoryList: function(OrderCloud, $stateParams) {
+                CategoryList: function($stateParams, OrderCloud) {
                     return OrderCloud.Me.ListSubcategories(null, null, null, null, null, null, $stateParams.categoryid);
                 },
-                ProductList: function(OrderCloud, $stateParams) {
+                ProductList: function($stateParams, OrderCloud) {
                     return OrderCloud.Me.ListProducts(null, null, null, null, null, null, $stateParams.categoryid);
 
                 }
@@ -28,7 +26,8 @@ function CategoryController($rootScope, CategoryList, ProductList) {
     var vm = this;
     vm.categories = CategoryList;
     vm.products = ProductList;
+
     $rootScope.$on('OC:FacetsUpdated', function(e, productList) {
         productList ? vm.products = productList : vm.products = ProductList;
-    })
+    });
 }

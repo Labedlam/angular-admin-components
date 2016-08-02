@@ -23,7 +23,7 @@
     <div class="row" style="margin-top:15px;" uib-collapse="!creditCards.showFilters">
         <div class="col-md-6 col-lg-4">
             <div class="form-group" ng-if="application.$ocMedia('max-width:767px')">
-                <label>Sorty By:</label>
+                <label>Sort By:</label>
                 <div ng-class="{'input-group':creditCards.sortSelection}">
                     <select placeholder="Sort" class="form-control" ng-model="creditCards.sortSelection" ng-change="creditCards.updateSort()">
                         <option value="">None</option>
@@ -91,8 +91,8 @@
                 <td data-title="PartialAccountNumber">{{card.CardType}}</td>
                 <td data-title="ExpirationDate">{{card.ExpirationDate | date:'shortDate'}}</td>
                 <td class="actions-cell">
-                    <button ui-sref=".edit({creditCardid:card.ID})" class="btn btn-default btn-sm">Edit</button>
-                    <button ui-sref=".assign({creditCardid:card.ID})" class="btn btn-default btn-sm">Assign</button>
+                    <button ui-sref=".edit({creditcardid:card.ID})" class="btn btn-default btn-sm">Edit</button>
+                    <button ui-sref=".assign({creditcardid:card.ID})" class="btn btn-default btn-sm">Assign</button>
                 </td>
             </tr>
             </tbody>

@@ -1,39 +1,37 @@
-angular.module( 'orderCloud' )
-
-    .config( CategoriesConfig )
-    .controller( 'CategoriesCtrl', CategoriesController )
-    .controller( 'CategoryEditCtrl', CategoryEditController )
-    .controller( 'CategoryCreateCtrl', CategoryCreateController )
-    .controller( 'CategoryTreeCtrl', CategoryTreeController )
-    .controller( 'CategoryAssignPartyCtrl', CategoryAssignPartyController )
-    .controller( 'CategoryAssignProductCtrl', CategoryAssignProductController )
-    .factory( 'CategoryTreeService', CategoryTreeService )
-    .directive( 'categoryNode', CategoryNode )
-    .directive( 'categoryTree', CategoryTree )
-
+angular.module('orderCloud')
+    .config(CategoriesConfig)
+    .controller('CategoriesCtrl', CategoriesController)
+    .controller('CategoryEditCtrl', CategoryEditController)
+    .controller('CategoryCreateCtrl', CategoryCreateController)
+    .controller('CategoryTreeCtrl', CategoryTreeController)
+    .controller('CategoryAssignPartyCtrl', CategoryAssignPartyController)
+    .controller('CategoryAssignProductCtrl', CategoryAssignProductController)
+    .factory('CategoryTreeService', CategoryTreeService)
+    .directive('categoryNode', CategoryNode)
+    .directive('categoryTree', CategoryTree)
 ;
 
-function CategoriesConfig( $stateProvider ) {
+function CategoriesConfig($stateProvider) {
     $stateProvider
-        .state( 'categories', {
+        .state('categories', {
             parent: 'base',
-            templateUrl:'categories/templates/categories.tpl.html',
-            controller:'CategoriesCtrl',
+            templateUrl: 'categories/templates/categories.tpl.html',
+            controller: 'CategoriesCtrl',
             controllerAs: 'categories',
             url: '/categories?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Categories'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
                 CategoryList: function(OrderCloud, Parameters) {
                     var parameters = angular.copy(Parameters);
-                    parameters.depth ='all';
+                    parameters.depth = 'all';
                     return OrderCloud.Categories.List(parameters.search, parameters.page, parameters.pageSize || 12, parameters.searchOn, parameters.sortBy, parameters.filters, parameters.parentID, parameters.depth);
                 }
             }
         })
-        .state( 'categories.tree', {
+        .state('categories.tree', {
             url: '/tree',
             templateUrl: 'categories/templates/categoryTree.tpl.html',
             controller: 'CategoryTreeCtrl',
@@ -44,10 +42,10 @@ function CategoriesConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'categories.edit', {
+        .state('categories.edit', {
             url: '/:categoryid/edit',
-            templateUrl:'categories/templates/categoryEdit.tpl.html',
-            controller:'CategoryEditCtrl',
+            templateUrl: 'categories/templates/categoryEdit.tpl.html',
+            controller: 'CategoryEditCtrl',
             controllerAs: 'categoryEdit',
             resolve: {
                 SelectedCategory: function($stateParams, $state, OrderCloud) {
@@ -57,13 +55,13 @@ function CategoriesConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'categories.create', {
+        .state('categories.create', {
             url: '/create',
-            templateUrl:'categories/templates/categoryCreate.tpl.html',
-            controller:'CategoryCreateCtrl',
+            templateUrl: 'categories/templates/categoryCreate.tpl.html',
+            controller: 'CategoryCreateCtrl',
             controllerAs: 'categoryCreate'
         })
-        .state( 'categories.assignParty', {
+        .state('categories.assignParty', {
             url: '/:categoryid/assign/party',
             templateUrl: 'categories/templates/categoryAssignParty.tpl.html',
             controller: 'CategoryAssignPartyCtrl',
@@ -82,7 +80,7 @@ function CategoriesConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'categories.assignProduct', {
+        .state('categories.assignProduct', {
             url: '/:categoryid/assign/product',
             templateUrl: 'categories/templates/categoryAssignProduct.tpl.html',
             controller: 'CategoryAssignProductCtrl',
@@ -103,7 +101,7 @@ function CategoriesConfig( $stateProvider ) {
         });
 }
 
-function CategoriesController( $state, $ocMedia, OrderCloud, OrderCloudParameters, CategoryList, TrackSearch, Parameters ) {
+function CategoriesController($state, $ocMedia, OrderCloud, OrderCloudParameters, CategoryList, Parameters) {
     var vm = this;
     vm.list = CategoryList;
     vm.parameters = Parameters;
@@ -170,7 +168,7 @@ function CategoriesController( $state, $ocMedia, OrderCloud, OrderCloudParameter
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Products.List( Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Products.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -178,7 +176,7 @@ function CategoriesController( $state, $ocMedia, OrderCloud, OrderCloudParameter
     };
 }
 
-function CategoryEditController( $exceptionHandler, $state, OrderCloud, SelectedCategory, toastr ) {
+function CategoryEditController($exceptionHandler, $state, $q, toastr, OrderCloud, SelectedCategory) {
     var vm = this,
         categoryID = SelectedCategory.ID;
     vm.categoryName = SelectedCategory.Name;
@@ -187,7 +185,7 @@ function CategoryEditController( $exceptionHandler, $state, OrderCloud, Selected
     vm.Submit = function() {
         OrderCloud.Categories.Update(categoryID, vm.category)
             .then(function() {
-                $state.go('categories', {}, {reload:true});
+                $state.go('categories', {}, {reload: true});
                 toastr.success('Category Updated', 'Success');
             })
             .catch(function(ex) {
@@ -195,19 +193,28 @@ function CategoryEditController( $exceptionHandler, $state, OrderCloud, Selected
             });
     };
 
+    vm.typeAhead = function(searchTerm) {
+        var defd = $q.defer();
+        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, null, 'all')
+            .then(function(data) {
+                defd.resolve(data.Items)
+            });
+        return defd.promise
+    };
+
     vm.Delete = function() {
         OrderCloud.Categories.Delete(SelectedCategory.ID)
             .then(function() {
-                $state.go('categories', {}, {reload:true});
+                $state.go('categories', {}, {reload: true});
                 toastr.success('Category Deleted', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
 }
 
-function CategoryCreateController($exceptionHandler,$state, OrderCloud, toastr) {
+function CategoryCreateController($exceptionHandler, $state, $q, toastr, OrderCloud) {
     var vm = this;
     vm.category = {};
 
@@ -217,13 +224,22 @@ function CategoryCreateController($exceptionHandler,$state, OrderCloud, toastr) 
         }
         OrderCloud.Categories.Create(vm.category)
             .then(function() {
-                $state.go('categories', {}, {reload:true});
+                $state.go('categories', {}, {reload: true});
                 toastr.success('Category Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
+
+    vm.typeAhead = function(searchTerm) {
+        var defd = $q.defer();
+        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, null, 'all')
+            .then(function(data) {
+                defd.resolve(data.Items)
+            });
+        return defd.promise
+    };
 }
 
 function CategoryTreeController(Tree, CategoryTreeService) {
@@ -237,7 +253,7 @@ function CategoryTreeController(Tree, CategoryTreeService) {
     };
 }
 
-function CategoryAssignPartyController($scope, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory, toastr) {
+function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory) {
     var vm = this;
     vm.Category = SelectedCategory;
     vm.list = UserGroupList;
@@ -245,10 +261,10 @@ function CategoryAssignPartyController($scope, OrderCloud, Assignments, Paging, 
     vm.saveAssignments = SaveAssignment;
     vm.pagingfunction = PagingFunction;
 
-    $scope.$watchCollection(function(){
+    $scope.$watchCollection(function() {
         return vm.list;
-    }, function(){
-        Paging.setSelected(vm.list.Items, vm.assignments.Items, 'UserGroupID')
+    }, function() {
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'UserGroupID');
     });
 
     function SaveFunc(ItemID) {
@@ -265,7 +281,7 @@ function CategoryAssignPartyController($scope, OrderCloud, Assignments, Paging, 
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.saveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc);
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc);
     }
 
     function AssignmentFunc() {
@@ -273,11 +289,11 @@ function CategoryAssignPartyController($scope, OrderCloud, Assignments, Paging, 
     }
 
     function PagingFunction() {
-        return Paging.paging(vm.list, 'UserGroups', vm.assignments, AssignmentFunc);
+        return Paging.Paging(vm.list, 'UserGroups', vm.assignments, AssignmentFunc);
     }
 }
 
-function CategoryAssignProductController($scope, OrderCloud, Assignments, Paging, ProductList, ProductAssignments, SelectedCategory, toastr) {
+function CategoryAssignProductController($scope, toastr, OrderCloud, Assignments, Paging, ProductList, ProductAssignments, SelectedCategory) {
     var vm = this;
     vm.Category = SelectedCategory;
     vm.list = ProductList;
@@ -285,10 +301,10 @@ function CategoryAssignProductController($scope, OrderCloud, Assignments, Paging
     vm.saveAssignments = SaveAssignment;
     vm.pagingfunction = PagingFunction;
 
-    $scope.$watchCollection(function(){
+    $scope.$watchCollection(function() {
         return vm.list;
-    }, function(){
-        Paging.setSelected(vm.list.Items, vm.assignments.Items, 'ProductID')
+    }, function() {
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'ProductID');
     });
 
     function SaveFunc(ItemID) {
@@ -304,7 +320,7 @@ function CategoryAssignProductController($scope, OrderCloud, Assignments, Paging
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.saveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'ProductID');
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'ProductID');
     }
 
     function AssignmentFunc() {
@@ -312,7 +328,7 @@ function CategoryAssignProductController($scope, OrderCloud, Assignments, Paging
     }
 
     function PagingFunction() {
-        return Paging.paging(vm.list, 'Products', vm.assignments, AssignmentFunc);
+        return Paging.Paging(vm.list, 'Products', vm.assignments, AssignmentFunc);
     }
 }
 
@@ -355,12 +371,12 @@ function CategoryTreeService($q, Underscore, OrderCloud) {
         var deferred = $q.defer();
         OrderCloud.Categories.List(null, 1, 100, null, null, null, null, 'all')
             .then(function(list) {
-            angular.forEach(Underscore.where(list.Items, { ParentID: null}), function(node) {
+            angular.forEach(Underscore.where(list.Items, {ParentID: null}), function(node) {
                 tree.push(getnode(node));
             });
 
             function getnode(node) {
-                var children = Underscore.where(list.Items, { ParentID: node.ID});
+                var children = Underscore.where(list.Items, {ParentID: node.ID});
                 if (children.length > 0) {
                     node.children = children;
                     angular.forEach(children, function(child) {

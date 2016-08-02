@@ -1,4 +1,4 @@
-describe('Component: Catalog Product', function(){
+describe('Component: Catalog Product', function() {
     var scope,
         q,
         oc,
@@ -9,15 +9,15 @@ describe('Component: Catalog Product', function(){
         productResolve,
         specListResolve
         ;
-    beforeEach(module(function($provide){
+    beforeEach(module(function($provide) {
         $provide.value('Order', {ID: mockOrderID})
     }));
-    beforeEach(module(function($provide){
+    beforeEach(module(function($provide) {
         $provide.value('LineItem', {ProductID:mockProductID})
     }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
-    beforeEach(inject(function($q, $rootScope, OrderCloud, $localForage){
+    beforeEach(inject(function($q, $rootScope, OrderCloud, $localForage) {
         scope = $rootScope.$new();
         q = $q;
         oc = OrderCloud;
@@ -29,18 +29,18 @@ describe('Component: Catalog Product', function(){
             "Name": "MockProductName",
             "Description": "mockDescription"
         };
-        productResolve = {product1:'fakeProduct1'};
+        productResolve = {product1: 'fakeProduct1'};
         specListResolve = 'fakeSpeclist';
     }));
-    describe('Configuration: ProductConfig', function(){
+    describe('Configuration: ProductConfig', function() {
         var state,
             stateParams,
             mockSpecProductAssignment,
             mockSpecsGet
             ;
-        describe('State: catalog.product', function(){
-            beforeEach(inject(function($stateParams, $state){
-                state = $state.get('catalog.product',{},{reload:true});
+        describe('State: catalog.product', function() {
+            beforeEach(inject(function($stateParams, $state) {
+                state = $state.get('catalog.product', {}, {reload: true});
                 stateParams = $stateParams;
                 stateParams.productid= mockProductID;
                 mockSpecProductAssignment = {
@@ -67,22 +67,22 @@ describe('Component: Catalog Product', function(){
                 spyOn(oc.Specs,'ListProductAssignments').and.returnValue(productAssignmentDefer.promise);
                 spyOn(oc.Specs, 'Get').and.returnValue(specDefer.promise)
             }));
-            it('should resolve Product', inject(function($injector){
+            it('should resolve Product', inject(function($injector) {
                 $injector.invoke(state.resolve.Product);
                 expect(oc.Me.GetProduct).toHaveBeenCalledWith(mockProductID);
             }));
-            it('should resolve SpecList', inject(function($injector){
+            it('should resolve SpecList', inject(function($injector) {
                 $injector.invoke(state.resolve.SpecList);
                 expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null, mockProductID);
                 scope.$digest();
                 expect(oc.Specs.Get).toHaveBeenCalledWith("SpecAssignmentID123");
             }));
         });
-        describe('State: catalog.lineitem', function(){
+        describe('State: catalog.lineitem', function() {
             var state,
                 stateParams
                 ;
-            beforeEach(inject(function($stateParams, $state){
+            beforeEach(inject(function($stateParams, $state) {
                 state = $state.get('catalog.lineitem');
                 stateParams = $stateParams;
                 stateParams.lineitemid = 'mockLineItemID';
@@ -97,15 +97,15 @@ describe('Component: Catalog Product', function(){
                 spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(productAssignmentDefer.promise);
                 spyOn(oc.Specs, 'Get').and.returnValue(specDefer.promise);
             }));
-            it('should resolve LineItem', inject(function($injector){
+            it('should resolve LineItem', inject(function($injector) {
                 $injector.invoke(state.resolve.LineItem);
                 expect(oc.LineItems.Get).toHaveBeenCalledWith(mockOrderID, 'mockLineItemID');
             }));
-            it('should resolve LI_Product', inject(function($injector){
+            it('should resolve LI_Product', inject(function($injector) {
                 $injector.invoke(state.resolve.LI_Product);
                 expect(oc.Me.GetProduct).toHaveBeenCalledWith('MockProductID123');
             }));
-            it('should resolve LI_SpecList', inject(function($injector){
+            it('should resolve LI_SpecList', inject(function($injector) {
                 $injector.invoke(state.resolve.LI_SpecList);
                 expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null, 'MockProductID123');
                 scope.$digest();
@@ -113,7 +113,7 @@ describe('Component: Catalog Product', function(){
             }))
         })
     });
-    describe('Directive: OCSpecForm', function(){
+    describe('Directive: OCSpecForm', function() {
         var element;
         beforeEach(inject(function($compile) {
             scope.mockProd = mockProduct;
@@ -124,7 +124,7 @@ describe('Component: Catalog Product', function(){
             expect(element.isolateScope().product).toEqual(mockProduct);
         });
     });
-    describe('Directive: SpecSelection', function(){
+    describe('Directive: SpecSelection', function() {
         var element
             ;
         beforeEach(inject(function($compile) {
@@ -138,7 +138,7 @@ describe('Component: Catalog Product', function(){
         it('should initialize the isolate scope', function() {
             expect(element.isolateScope().spec).toEqual({"ID": "SpecsID12345", "OptionID": "mockOptionID"});
         });
-        it('should call Specs GetOption method if Spec OptionID changes', function(){
+        it('should call Specs GetOption method if Spec OptionID changes', function() {
             scope.mockSpecs = {"ID": "SpecsID12345", "OptionID": 1};
             scope.$digest();
             expect(oc.Specs.GetOption).toHaveBeenCalledWith('SpecsID12345', 'mockOptionID');
@@ -146,7 +146,7 @@ describe('Component: Catalog Product', function(){
             expect(oc.Specs.GetOption.calls.count()).toEqual(2);
         });
     });
-    describe('Directive: OCAddToOrder', function(){
+    describe('Directive: OCAddToOrder', function() {
         var element
             ;
         beforeEach(inject(function($compile) {
@@ -159,14 +159,14 @@ describe('Component: Catalog Product', function(){
             expect(element.isolateScope().formname).toBe("mockName");
         });
     });
-    describe('Controller: ProductCtrl', function(){
+    describe('Controller: ProductCtrl', function() {
         var productCtrl,
             addToOrder
             ;
-        beforeEach(inject(function(AddToOrder, $controller, Order){
+        beforeEach(inject(function(AddToOrder, $controller, Order) {
             addToOrder = AddToOrder;
             order = Order;
-            productCtrl = $controller('ProductCtrl',{
+            productCtrl = $controller('ProductCtrl', {
                 Product:productResolve,
                 SpecList:specListResolve,
                 AddToOrder:addToOrder,
@@ -174,14 +174,14 @@ describe('Component: Catalog Product', function(){
             });
             spyOn(AddToOrder,'Add');
         }));
-        describe('addToCart', function(){
-            it('should call AddToOrder Add method', function(){
+        describe('addToCart', function() {
+            it('should call AddToOrder Add method', function() {
                 productCtrl.addToCart(mockProduct);
                 expect(addToOrder.Add).toHaveBeenCalledWith(mockProduct);
             })
         })
     });
-    describe('Controller: LineItemEditCtrl', function(){
+    describe('Controller: LineItemEditCtrl', function() {
         var lineItemEditCtrl,
             state,
             underscore,
@@ -190,7 +190,7 @@ describe('Component: Catalog Product', function(){
             LI_ProductResolve,
             LI_SpecListResolve
             ;
-        beforeEach(inject(function(Underscore, LineItemHelpers, $controller, $state){
+        beforeEach(inject(function(Underscore, LineItemHelpers, $controller, $state) {
             LI_SpecListResolve = [
                 {
                     "ID": "SpecID1",
@@ -216,13 +216,13 @@ describe('Component: Catalog Product', function(){
                 }]
             };
             LI_ProductResolve = {
-                Product:'FakeProduct',
-                Quantity:3
+                Product: 'FakeProduct',
+                Quantity: 3
             };
             state = $state;
             underscore = Underscore;
             LIHelpers = LineItemHelpers;
-            lineItemEditCtrl = $controller('LineItemEditCtrl',{
+            lineItemEditCtrl = $controller('LineItemEditCtrl', {
                 $state:state,
                 Underscore:underscore,
                 LineItem:LineItemResolve,
@@ -238,14 +238,14 @@ describe('Component: Catalog Product', function(){
             spyOn(state, 'go');
             lineItemEditCtrl.UpdateLineItem();
         }));
-        describe('UpdateLineItem', function(){
-            it('should call LineItemHelpers SpecConvert method', function(){
+        describe('UpdateLineItem', function() {
+            it('should call LineItemHelpers SpecConvert method', function() {
                 expect(LIHelpers.SpecConvert).toHaveBeenCalled();
             });
-            it('should call LineItems Patch method', function(){
+            it('should call LineItems Patch method', function() {
                 expect(oc.LineItems.Patch).toHaveBeenCalled();
             });
-            it('should take user to cart once line items have been updated', function(){
+            it('should take user to cart once line items have been updated', function() {
                 expect(oc.LineItems.Patch).toHaveBeenCalled();
                 scope.$digest();
                 expect(state.go).toHaveBeenCalledWith('cart');

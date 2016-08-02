@@ -10,14 +10,14 @@ angular.module('orderCloud')
     .controller('ConfirmationLineItemsCtrl', ConfirmationLineItemsController)
     //.factory('TaxService', TaxService)
     //toggle isMultipleAddressShipping if you do not wish to allow line items to ship to multiple addresses
-    .constant('isMultipleAddressShipping', true);
+    .constant('isMultipleAddressShipping', true)
 ;
 
 function checkoutConfig($stateProvider) {
 	$stateProvider
 		.state('checkout', {
 			parent: 'base',
-            //data: {componentName: 'Checkout'},
+            data: {componentName: 'Checkout'},
 			url: '/checkout',
 			templateUrl: 'checkout/templates/checkout.tpl.html',
 			controller: 'CheckoutCtrl',
@@ -49,11 +49,11 @@ function checkoutConfig($stateProvider) {
                         });
                     return dfd.promise;
                 },
-                ShippingAddresses: function($q, OrderCloud, Underscore) {
+                ShippingAddresses: function($q, Underscore, OrderCloud) {
                     var dfd = $q.defer();
                     OrderCloud.Me.ListAddresses()
                         .then(function(data) {
-                            dfd.resolve(Underscore.where(data.Items, {Shipping:true}));
+                            dfd.resolve(Underscore.where(data.Items, {Shipping: true}));
                         });
                     return dfd.promise;
                 },
@@ -66,12 +66,12 @@ function checkoutConfig($stateProvider) {
                                 OrderCloud.Payments.Create(Order.ID, {})
                                     .then(function(p) {
                                         deferred.resolve({Items: [p]});
-                                    })
+                                    });
                             }
                             else {
                                 deferred.resolve(data);
                             }
-                        })
+                        });
 
                     return deferred.promise;
                 }
@@ -89,17 +89,16 @@ function checkoutConfig($stateProvider) {
         })
 		.state('orderReview', {
             parent: 'base',
-            //data: {componentName: 'Checkout'},
 			url: '/order/:orderid/review',
             templateUrl: 'checkout/templates/review.tpl.html',
             controller: 'OrderReviewCtrl',
             controllerAs: 'orderReview',
             resolve: {
-                SubmittedOrder: function($q, OrderCloud, $stateParams, $state, toastr) {
+                SubmittedOrder: function($q, $stateParams, $state, toastr, OrderCloud) {
                     var dfd = $q.defer();
                     OrderCloud.Orders.Get($stateParams.orderid)
-                        .then(function(order){
-                            if(order.Status == 'Unsubmitted') {
+                        .then(function(order) {
+                            if (order.Status == 'Unsubmitted') {
                                 $state.go('checkout.shipping')
                                     .then(function() {
                                         toastr.error('You cannot review an Unsubmitted Order', 'Error');
@@ -112,26 +111,26 @@ function checkoutConfig($stateProvider) {
                 }
 			}
 		})
-
+    ;
 }
 
 function CheckoutService() {
     var lineItems = [];
     return {
-        StoreLineItems: StoreLineItems,
-        GetLineItems: GetLineItems
+        StoreLineItems: _storeLineItems,
+        GetLineItems: _getLineItems
     };
 
-    function StoreLineItems(items) {
+    function _storeLineItems(items) {
         lineItems = items;
     }
 
-    function GetLineItems() {
+    function _getLineItems() {
         return lineItems;
     }
 }
 
-function CheckoutController($state, $rootScope, toastr, Order, OrderCloud, ShippingAddresses, OrderShipAddress, OrderShippingAddress, CheckoutService, OrderPayments) {
+function CheckoutController($state, $rootScope, toastr, OrderCloud, CheckoutService, Order, ShippingAddresses, OrderShipAddress, OrderShippingAddress, OrderPayments) {
     var vm = this;
     vm.currentOrder = Order;
     vm.currentOrder.ShippingAddressID = OrderShipAddress ? OrderShipAddress.ID : null;
@@ -140,19 +139,19 @@ function CheckoutController($state, $rootScope, toastr, Order, OrderCloud, Shipp
     vm.isMultipleAddressShipping = true;
     vm.currentOrderPayments = OrderPayments.Items;
 
-    vm.orderIsValid = function(){
+    vm.orderIsValid = function() {
         var orderPaymentsTotal = 0;
         var validPaymentMethods = false;
         angular.forEach(vm.currentOrderPayments, function(payment) {
             orderPaymentsTotal += payment.Amount;
-            if((payment.Type == 'SpendingAccount' && payment.SpendingAccountID != null) || (payment.Type == 'CreditCard' && payment.CreditCardID != null) || payment.Type == 'PurchaseOrder') {
+            if ((payment.Type == 'SpendingAccount' && payment.SpendingAccountID != null) || (payment.Type == 'CreditCard' && payment.CreditCardID != null) || payment.Type == 'PurchaseOrder') {
                 validPaymentMethods = true;
             }
             else {
                 validPaymentMethods = false;
             }
         });
-        if(orderPaymentsTotal === vm.currentOrder.Subtotal && validPaymentMethods && vm.currentOrder.BillingAddress && vm.currentOrder.BillingAddress.ID != null) {
+        if (orderPaymentsTotal === vm.currentOrder.Subtotal && validPaymentMethods && vm.currentOrder.BillingAddress && vm.currentOrder.BillingAddress.ID != null) {
             return true;
         }
         else {
@@ -204,86 +203,83 @@ function CheckoutController($state, $rootScope, toastr, Order, OrderCloud, Shipp
             toastr.error('Please select a shipping address for all line items');
         }
     };
-
 }
 
-function OrderConfirmationController($rootScope, Order, CurrentOrder, OrderCloud, $state, isMultipleAddressShipping, $exceptionHandler, OrderPayments, toastr) {
+function OrderConfirmationController($rootScope, $state, toastr, OrderCloud, Order, CurrentOrder, isMultipleAddressShipping, OrderPayments) {
     var vm = this;
 
     vm.currentOrder = Order;
     vm.isMultipleAddressShipping = isMultipleAddressShipping;
     vm.orderPayments = OrderPayments.Items;
 
-    angular.forEach(vm.orderPayments, function(payment, index){
-        if(payment.Type === 'CreditCard' && payment.CreditCardID) {
+    angular.forEach(vm.orderPayments, function(payment, index) {
+        if (payment.Type === 'CreditCard' && payment.CreditCardID) {
             OrderCloud.CreditCards.Get(payment.CreditCardID)
-                .then(function(cc){
+                .then(function(cc) {
                     vm.orderPayments[index].creditCardDetails = cc;
                 })
-                .catch(function(ex){
+                .catch(function(ex) {
                     toastr.error(ex, 'Error');
-                })
+                });
         }
-        if(payment.Type === 'SpendingAccount' && payment.SpendingAccountID) {
+        if (payment.Type === 'SpendingAccount' && payment.SpendingAccountID) {
             OrderCloud.SpendingAccounts.Get(payment.SpendingAccountID)
-                .then(function(sa){
+                .then(function(sa) {
                     vm.orderPayments[index].spendingAccountDetails = sa;
                 })
-                .catch(function(ex){
+                .catch(function(ex) {
                     toastr.error(ex, 'Error');
-                })
+                });
         }
     });
 
     vm.submitOrder = function() {
         OrderCloud.Orders.Submit(vm.currentOrder.ID)
-                    .then(function(order){
-                        CurrentOrder.Remove()
-                            .then(function(){
-                                $state.go('orderReview', {orderid: order.ID});
-                                toastr.success('Your order has been submitted', 'Success');
-                                $rootScope.$broadcast('OC:RemoveOrder');
-                            })
+            .then(function(order) {
+                CurrentOrder.Remove()
+                    .then(function() {
+                        $state.go('orderReview', {orderid: order.ID});
+                        toastr.success('Your order has been submitted', 'Success');
+                        $rootScope.$broadcast('OC:RemoveOrder');
                     })
+            })
             .catch(function(ex) {
-                toastr.error("Your order did not submit successfully.", 'Error');
-                //$exceptionHandler(ex);
+                toastr.error('Your order did not submit successfully.', 'Error');
             });
-    }
+    };
 }
 
-function OrderReviewController(SubmittedOrder, isMultipleAddressShipping, OrderCloud, $q, LineItemHelpers, toastr) {
+function OrderReviewController($q, toastr, OrderCloud, LineItemHelpers, SubmittedOrder, isMultipleAddressShipping) {
 	var vm = this;
     vm.submittedOrder = SubmittedOrder;
     vm.isMultipleAddressShipping = isMultipleAddressShipping;
 
     OrderCloud.Payments.List(vm.submittedOrder.ID)
-        .then(function(data){
+        .then(function(data) {
             vm.orderPayments = data.Items;
         })
-        .then(function(){
-            angular.forEach(vm.orderPayments, function(payment, index){
-                if(payment.Type === 'CreditCard' && payment.CreditCardID) {
+        .then(function() {
+            angular.forEach(vm.orderPayments, function(payment, index) {
+                if (payment.Type === 'CreditCard' && payment.CreditCardID) {
                     OrderCloud.CreditCards.Get(payment.CreditCardID)
-                        .then(function(cc){
+                        .then(function(cc) {
                             vm.orderPayments[index].creditCardDetails = cc;
                         })
-                        .catch(function(ex){
+                        .catch(function(ex) {
                             toastr.error(ex, 'Error');
                         })
                 }
-                if(payment.Type === 'SpendingAccount' && payment.SpendingAccountID) {
+                if (payment.Type === 'SpendingAccount' && payment.SpendingAccountID) {
                     OrderCloud.SpendingAccounts.Get(payment.SpendingAccountID)
-                        .then(function(sa){
+                        .then(function(sa) {
                             vm.orderPayments[index].spendingAccountDetails = sa;
                         })
-                        .catch(function(ex){
+                        .catch(function(ex) {
                             toastr.error(ex, 'Error');
                         })
                 }
             });
         });
-
 
     var dfd = $q.defer();
     var queue = [];
@@ -311,29 +307,27 @@ function OrderReviewController(SubmittedOrder, isMultipleAddressShipping, OrderC
         window.print();
     };
 
-    vm.addToFavorites = function(){
+    vm.addToFavorites = function() {
         //TODO: Refactor when SDK allows us to patch null
-        if(!SubmittedOrder.xp) {
+        if (!SubmittedOrder.xp) {
             SubmittedOrder.xp ={}
         }
         SubmittedOrder.xp.favorite = true;
 
         OrderCloud.Orders.Update(SubmittedOrder.ID, SubmittedOrder)
-            .then(function(){
+            .then(function() {
                 toastr.success("Your order has been added to Favorites! You can now easily find your order in 'Order History'", 'Success')
             })
-            .catch(function(){
+            .catch(function() {
                 toastr.error('There was a problem adding this order to your Favorites', 'Error');
             });
     };
-    vm.removeFromFavorites = function(){
+
+    vm.removeFromFavorites = function() {
         delete SubmittedOrder.xp.favorite;
-        OrderCloud.Orders.Patch(SubmittedOrder.ID, {"xp": null} );
-        toastr.success("Your order has been removed from Favorites", 'Success')
-    }
-
-
-
+        OrderCloud.Orders.Patch(SubmittedOrder.ID, {xp: null});
+        toastr.success('Your order has been removed from Favorites', 'Success')
+    };
 }
 
 function CheckoutLineItemsListDirective() {
@@ -348,7 +342,7 @@ function CheckoutLineItemsListDirective() {
     };
 }
 
-function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineItemHelpers, Underscore, CheckoutService, CurrentOrder, toastr) {
+function CheckoutLineItemsController($rootScope, $scope, $q, Underscore, toastr, OrderCloud, LineItemHelpers, CheckoutService, CurrentOrder) {
     var vm = this;
     vm.lineItems = {};
     vm.UpdateQuantity = LineItemHelpers.UpdateQuantity;
@@ -361,11 +355,11 @@ function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineIte
         //vm.calculatingTax = true;
         Underscore.where(vm.lineItems.Items, {ID: LineItemID})[0].ShippingAddress = address;
         //TaxService.Calculate($scope.order.ID)
-        //    .then(function (taxData) {
-        //        if(taxData.calculatedTaxSummary){
+        //    .then(function(taxData) {
+        //        if (taxData.calculatedTaxSummary) {
         //            vm.taxInformation = taxData.calculatedTaxSummary.totalTax;
         //            CurrentOrder.Get()
-        //                .then(function(order){
+        //                .then(function(order) {
         //                    order.xp = {taxInfo: vm.taxInformation};
         //                    OrderCloud.Orders.Update(order.ID, order);
         //                })
@@ -375,7 +369,7 @@ function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineIte
         //            vm.calculatingTax = false;
         //            vm.taxInformation = 0;
         //            CurrentOrder.Get()
-        //                .then(function(order){
+        //                .then(function(order) {
         //                    order.xp = {taxInfo: vm.taxInformation};
         //                    OrderCloud.Orders.Update(order.ID, order);
         //                })
@@ -390,11 +384,11 @@ function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineIte
             li.ShippingAddressID = address.ID;
             li.ShippingAddress = address;
         //    TaxService.Calculate($scope.order.ID)
-        //        .then(function (taxData) {
-        //            if(taxData.calculatedTaxSummary){
+        //        .then(function(taxData) {
+        //            if (taxData.calculatedTaxSummary) {
         //                vm.taxInformation = taxData.calculatedTaxSummary.totalTax;
         //                CurrentOrder.Get()
-        //                    .then(function(order){
+        //                    .then(function(order) {
         //                        order.xp = {taxInfo: vm.taxInformation};
         //                        OrderCloud.Orders.Update(order.ID, order);
         //                    })
@@ -404,7 +398,7 @@ function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineIte
         //                vm.calculatingTax = false;
         //                vm.taxInformation = 0;
         //                CurrentOrder.Get()
-        //                    .then(function(order){
+        //                    .then(function(order) {
         //                        order.xp = {taxInfo: vm.taxInformation};
         //                        OrderCloud.Orders.Update(order.ID, order);
         //                    })
@@ -451,9 +445,9 @@ function CheckoutLineItemsController($rootScope, $scope, $q, OrderCloud, LineIte
 //            accessToken: OrderCloud.Auth.ReadToken(),
 //            buyerID: OrderCloud.BuyerID.Get()
 //        };
-//        return $http.post('https://Four51TRIAL104401.jitterbit.net/Four51OnPrem/v1/CalculateTax', requestObject).then(function (taxInfo) {
+//        return $http.post('https://Four51TRIAL104401.jitterbit.net/Four51OnPrem/v1/CalculateTax', requestObject).then(function(taxInfo) {
 //            return taxInfo.data;
-//        }).catch(function (err) {
+//        }).catch(function(err) {
 //            $exceptionHandler(err);
 //        });
 //    }
@@ -497,5 +491,5 @@ function ConfirmationLineItemsController($scope, $q, OrderCloud, LineItemHelpers
             return dfd.promise;
         }
         else return null;
-    }
+    };
 }

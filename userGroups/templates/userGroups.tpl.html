@@ -28,7 +28,7 @@
     <div class="row" style="margin-top:15px;" uib-collapse="!userGroups.showFilters">
         <div class="col-md-6 col-lg-4">
             <div class="form-group" ng-if="application.$ocMedia('max-width:767px')">
-                <label>Sorty By:</label>
+                <label>Sort By:</label>
                 <div ng-class="{'input-group':userGroups.sortSelection}">
                     <select placeholder="Sort" class="form-control" ng-model="userGroups.sortSelection"
                             ng-change="userGroups.updateSort()">
@@ -86,8 +86,8 @@
                 <td data-title="Name">{{userGroup.Name}}</td>
                 <td data-title="Description">{{userGroup.Description}}</td>
                 <td class="actions-cell">
-                    <button ui-sref=".edit({userGroupid:userGroup.ID})" class="btn btn-default btn-sm">Edit</button>
-                    <button ui-sref=".assign({userGroupid:userGroup.ID})" class="btn btn-default btn-sm">Assign</button>
+                    <button ui-sref=".edit({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Edit</button>
+                    <button ui-sref=".assign({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Assign</button>
                 </td>
             </tr>
             </tbody>

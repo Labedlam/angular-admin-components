@@ -1,25 +1,24 @@
-angular.module( 'orderCloud' )
-
-    .config( AdminUsersConfig )
-    .controller( 'AdminUsersCtrl', AdminUsersController )
-    .controller( 'AdminUserEditCtrl', AdminUserEditController )
-    .controller( 'AdminUserCreateCtrl', AdminUserCreateController )
+angular.module('orderCloud')
+    .config(AdminUsersConfig)
+    .controller('AdminUsersCtrl', AdminUsersController)
+    .controller('AdminUserEditCtrl', AdminUserEditController)
+    .controller('AdminUserCreateCtrl', AdminUserCreateController)
 ;
 
-function AdminUsersConfig( $stateProvider ) {
+function AdminUsersConfig($stateProvider) {
     $stateProvider
-        .state( 'adminUsers', {
+        .state('adminUsers', {
             parent: 'base',
-            templateUrl:'adminUsers/templates/adminUsers.tpl.html',
-            controller:'AdminUsersCtrl',
+            templateUrl: 'adminUsers/templates/adminUsers.tpl.html',
+            controller: 'AdminUsersCtrl',
             controllerAs: 'adminUsers',
-            url: '/adminUsers?search&page&pageSize&searchOn&sortBy&filters',
+            url: '/adminusers?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Admin Users'},
             resolve : {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                AdminUsersList: function( OrderCloud, Parameters, $state ) {
+                AdminUsersList: function(OrderCloud, Parameters, $state) {
                     return OrderCloud.AdminUsers.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
                         .then(function(data) {
                             if (data.Items.length == 1 && Parameters.search) {
@@ -31,34 +30,34 @@ function AdminUsersConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'adminUsers.edit', {
+        .state('adminUsers.edit', {
             url: '/:adminuserid/edit',
-            templateUrl:'adminUsers/templates/adminUserEdit.tpl.html',
-            controller:'AdminUserEditCtrl',
+            templateUrl: 'adminUsers/templates/adminUserEdit.tpl.html',
+            controller: 'AdminUserEditCtrl',
             controllerAs: 'adminUserEdit',
             resolve: {
                 SelectedAdminUser: function($stateParams, OrderCloud) {
                     return OrderCloud.AdminUsers.Get($stateParams.adminuserid);
                 },
-                SecurityProfilesAvailable : function(OrderCloud){
+                SecurityProfilesAvailable : function(OrderCloud) {
                     return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
-        .state( 'adminUsers.create', {
+        .state('adminUsers.create', {
             url: '/create',
-            templateUrl:'adminUsers/templates/adminUserCreate.tpl.html',
-            controller:'AdminUserCreateCtrl',
+            templateUrl: 'adminUsers/templates/adminUserCreate.tpl.html',
+            controller: 'AdminUserCreateCtrl',
             controllerAs: 'adminUserCreate',
             resolve: {
-                SecurityProfilesAvailable : function(OrderCloud){
+                SecurityProfilesAvailable: function(OrderCloud) {
                    return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
 }
 
-function AdminUsersController( $state, $ocMedia, OrderCloudParameters, AdminUsersList,OrderCloud, Parameters ) {
+function AdminUsersController($state, $ocMedia, OrderCloud, OrderCloudParameters, AdminUsersList, Parameters) {
     var vm = this;
     vm.list = AdminUsersList;
     vm.parameters = Parameters;
@@ -131,21 +130,21 @@ function AdminUsersController( $state, $ocMedia, OrderCloudParameters, AdminUser
     };
 }
 
-function AdminUserEditController( $exceptionHandler, $state, OrderCloud, SelectedAdminUser, toastr, SecurityProfilesAvailable ) {
+function AdminUserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedAdminUser, SecurityProfilesAvailable) {
     var vm = this,
         adminuserid = SelectedAdminUser.ID;
     vm.adminUserName = SelectedAdminUser.Username;
     vm.adminUser = SelectedAdminUser;
     vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
 
-    if(vm.adminUser.TermsAccepted != null) {
+    if (vm.adminUser.TermsAccepted != null) {
         vm.TermsAccepted = true;
     }
 
     vm.Submit = function() {
         OrderCloud.AdminUsers.Update(adminuserid, vm.adminUser)
             .then(function() {
-                $state.go('adminUsers', {}, {reload:true});
+                $state.go('adminUsers', {}, {reload: true});
                 toastr.success('User Updated', 'Success');
             })
             .catch(function(ex) {
@@ -156,30 +155,29 @@ function AdminUserEditController( $exceptionHandler, $state, OrderCloud, Selecte
     vm.Delete = function() {
         OrderCloud.AdminUsers.Delete(adminuserid)
             .then(function() {
-                $state.go('adminUsers', {}, {reload:true});
+                $state.go('adminUsers', {}, {reload: true});
                 toastr.success('User Deleted', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }
 
-function AdminUserCreateController( $exceptionHandler, $state, OrderCloud, toastr, SecurityProfilesAvailable ) {
+function AdminUserCreateController($exceptionHandler, $state, toastr, OrderCloud, SecurityProfilesAvailable) {
     var vm = this;
-    vm.adminUser = {Email:"", Password:""};
+    vm.adminUser = {Email: '', Password: ''};
     vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
 
     vm.Submit = function() {
-        var today = new Date();
-        vm.adminUser.TermsAccepted = today;
-        OrderCloud.AdminUsers.Create( vm.adminUser)
+        vm.adminUser.TermsAccepted = new Date();
+        OrderCloud.AdminUsers.Create(vm.adminUser)
             .then(function() {
-                $state.go('adminUsers', {}, {reload:true});
+                $state.go('adminUsers', {}, {reload: true});
                 toastr.success('User Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }

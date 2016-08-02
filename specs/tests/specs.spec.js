@@ -36,7 +36,7 @@ describe('Component: Specs', function() {
             state = $state.get('specs');
             spyOn(oc.Specs, 'List').and.returnValue(null);
         }));
-        it('should resolve SpecList', inject(function ($injector) {
+        it('should resolve SpecList', inject(function($injector) {
             $injector.invoke(state.resolve.SpecList);
             expect(oc.Specs.List).toHaveBeenCalled();
         }));
@@ -48,7 +48,7 @@ describe('Component: Specs', function() {
             state = $state.get('specs.edit');
             spyOn(oc.Specs, 'Get').and.returnValue(null);
         }));
-        it('should resolve SelectedSpec', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedSpec', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedSpec);
             expect(oc.Specs.Get).toHaveBeenCalledWith($stateParams.specid);
         }));
@@ -62,15 +62,15 @@ describe('Component: Specs', function() {
             spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(null);
             spyOn(oc.Specs, 'Get').and.returnValue(null);
         }));
-        it('should resolve ProductList', inject(function ($injector) {
+        it('should resolve ProductList', inject(function($injector) {
             $injector.invoke(state.resolve.ProductList);
             expect(oc.Products.List).toHaveBeenCalledWith(null, 1, 20);
         }));
-        it('should resolve ProductAssignments', inject(function ($injector, $stateParams) {
+        it('should resolve ProductAssignments', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.ProductAssignments);
             expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith($stateParams.specid);
         }));
-        it('should resolve SelectedSpec', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedSpec', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedSpec);
             expect(oc.Specs.Get).toHaveBeenCalledWith($stateParams.specid);
         }));
@@ -156,7 +156,7 @@ describe('Component: Specs', function() {
                 expect(oc.Specs.Update).toHaveBeenCalledWith(specEditCtrl.specID, specEditCtrl.spec);
             });
             it ('should enter the specs state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload: true});
             }));
         });
 
@@ -172,7 +172,7 @@ describe('Component: Specs', function() {
                 expect(oc.Specs.Delete).toHaveBeenCalledWith(spec.ID);
             });
             it ('should enter the specs state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload: true});
             }));
         });
     });
@@ -257,7 +257,7 @@ describe('Component: Specs', function() {
                 expect(oc.Specs.CreateOption).toHaveBeenCalledWith(specCreateCtrl.specID, specCreateCtrl.Options[1]);
             });
             it ('should enter the specs state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('specs', {}, {reload: true});
             }));
         });
     });
@@ -280,17 +280,17 @@ describe('Component: Specs', function() {
                 specAssignCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.saveAssignments).toHaveBeenCalled();
+                expect(Assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 specAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
-                expect(Paging.paging).toHaveBeenCalled();
+                expect(Paging.Paging).toHaveBeenCalled();
             }));
         });
     });

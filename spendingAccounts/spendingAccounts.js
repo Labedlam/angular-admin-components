@@ -1,5 +1,4 @@
 angular.module('orderCloud')
-
 	.config(SpendingAccountsConfig)
 	.controller('SpendingAccountsCtrl', SpendingAccountsController)
 	.controller('SpendingAccountEditCtrl', SpendingAccountEditController)
@@ -7,7 +6,6 @@ angular.module('orderCloud')
 	.controller('SpendingAccountAssignGroupCtrl', SpendingAccountAssignGroupController)
 	.controller('SpendingAccountAssignUserCtrl', SpendingAccountAssignUserController)
 	.factory('SpendingAccountAssignment', SpendingAccountAssignment)
-
 ;
 
 function SpendingAccountsConfig($stateProvider) {
@@ -17,13 +15,13 @@ function SpendingAccountsConfig($stateProvider) {
 			templateUrl: 'spendingAccounts/templates/spendingAccounts.tpl.html',
 			controller: 'SpendingAccountsCtrl',
 			controllerAs: 'spendingAccounts',
-			url: '/spendingAccounts?search&page&pageSize&searchOn&sortBy&filters',
+			url: '/spendingaccounts?search&page&pageSize&searchOn&sortBy&filters',
 			data: {componentName: 'Spending Accounts'},
 			resolve: {
-				Parameters: function ($stateParams, OrderCloudParameters) {
+				Parameters: function($stateParams, OrderCloudParameters) {
 					return OrderCloudParameters.Get($stateParams);
 				},
-				SpendingAccountList: function (OrderCloud, Parameters) {
+				SpendingAccountList: function(OrderCloud, Parameters) {
 					var parameters = angular.copy(Parameters);
 					parameters.filters ? parameters.filters.RedemptionCode = '!*' : parameters.filters = {RedemptionCode: '!*'};
 					return OrderCloud.SpendingAccounts.List(parameters.search, parameters.page, parameters.pageSize || 12, parameters.searchOn, parameters.sortBy, parameters.filters);
@@ -31,15 +29,15 @@ function SpendingAccountsConfig($stateProvider) {
 			}
 		})
 		.state('spendingAccounts.edit', {
-			url: '/:spendingAccountid/edit',
+			url: '/:spendingaccountid/edit',
 			templateUrl: 'spendingAccounts/templates/spendingAccountEdit.tpl.html',
 			controller: 'SpendingAccountEditCtrl',
 			controllerAs: 'spendingAccountEdit',
 			resolve: {
-				SelectedSpendingAccount: function ($q, $stateParams, OrderCloud) {
+				SelectedSpendingAccount: function($q, $stateParams, OrderCloud) {
 					var d = $q.defer();
-					OrderCloud.SpendingAccounts.Get($stateParams.spendingAccountid)
-						.then(function (giftcard) {
+					OrderCloud.SpendingAccounts.Get($stateParams.spendingaccountid)
+						.then(function(giftcard) {
 							if (giftcard.StartDate != null)
 								giftcard.StartDate = new Date(giftcard.StartDate);
 							if (giftcard.EndDate != null)
@@ -58,39 +56,40 @@ function SpendingAccountsConfig($stateProvider) {
 			controllerAs: 'spendingAccountCreate'
 		})
 		.state('spendingAccounts.assignGroup', {
-			url: '/:spendingAccountid/assign',
+			url: '/:spendingaccountid/assign',
 			templateUrl: 'spendingAccounts/templates/spendingAccountAssignGroup.tpl.html',
 			controller: 'SpendingAccountAssignGroupCtrl',
 			controllerAs: 'spendingAccountAssignGroup',
 			resolve: {
-				UserGroupList: function (OrderCloud) {
+				UserGroupList: function(OrderCloud) {
 					return OrderCloud.UserGroups.List();
 				},
-				AssignedUserGroups: function ($stateParams, OrderCloud) {
-					return OrderCloud.SpendingAccounts.ListAssignments($stateParams.spendingAccountid, null, null, 'Group');
+				AssignedUserGroups: function($stateParams, OrderCloud) {
+					return OrderCloud.SpendingAccounts.ListAssignments($stateParams.spendingaccountid, null, null, 'Group');
 				},
-				SelectedSpendingAccount: function ($stateParams, OrderCloud) {
-					return OrderCloud.SpendingAccounts.Get($stateParams.spendingAccountid);
+				SelectedSpendingAccount: function($stateParams, OrderCloud) {
+					return OrderCloud.SpendingAccounts.Get($stateParams.spendingaccountid);
 				}
 			}
 		})
 		.state('spendingAccounts.assignUser', {
-			url: '/:spendingAccountid/assign/user',
+			url: '/:spendingaccountid/assign/user',
 			templateUrl: 'spendingAccounts/templates/spendingAccountAssignUser.tpl.html',
 			controller: 'SpendingAccountAssignUserCtrl',
 			controllerAs: 'spendingAccountAssignUser',
 			resolve: {
-				UserList: function (OrderCloud) {
+				UserList: function(OrderCloud) {
 					return OrderCloud.Users.List();
 				},
-				AssignedUsers: function ($stateParams, OrderCloud) {
-					return OrderCloud.SpendingAccounts.ListAssignments($stateParams.spendingAccountid, null, null, 'User');
+				AssignedUsers: function($stateParams, OrderCloud) {
+					return OrderCloud.SpendingAccounts.ListAssignments($stateParams.spendingaccountid, null, null, 'User');
 				},
-				SelectedSpendingAccount: function ($stateParams, OrderCloud) {
-					return OrderCloud.SpendingAccounts.Get($stateParams.spendingAccountid);
+				SelectedSpendingAccount: function($stateParams, OrderCloud) {
+					return OrderCloud.SpendingAccounts.Get($stateParams.spendingaccountid);
 				}
 			}
-		});
+		})
+	;
 }
 
 function SpendingAccountsController($state, $ocMedia, OrderCloud, OrderCloudParameters, SpendingAccountList, Parameters) {
@@ -98,7 +97,6 @@ function SpendingAccountsController($state, $ocMedia, OrderCloud, OrderCloudPara
 	vm.list = SpendingAccountList;
 	vm.parameters = Parameters;
 	vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
 
 	//Check if filters are applied
 	vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -108,30 +106,30 @@ function SpendingAccountsController($state, $ocMedia, OrderCloud, OrderCloudPara
 	vm.searchResults = Parameters.search && Parameters.search.length > 0;
 
 	//Reload the state with new parameters
-	vm.filter = function (resetPage) {
+	vm.filter = function(resetPage) {
 		$state.go('.', OrderCloudParameters.Create(vm.parameters, resetPage));
 	};
 
 	//Reload the state with new search parameter & reset the page
-	vm.search = function () {
+	vm.search = function() {
 		vm.filter(true);
 	};
 
 	//Clear the search parameter, reload the state & reset the page
-	vm.clearSearch = function () {
+	vm.clearSearch = function() {
 		vm.parameters.search = null;
 		vm.filter(true);
 	};
 
 	//Clear relevant filters, reload the state & reset the page
-	vm.clearFilters = function () {
+	vm.clearFilters = function() {
 		vm.parameters.filters = null;
 		$ocMedia('max-width:767px') ? vm.parameters.sortBy = null : angular.noop(); //Clear out sort by on mobile devices
 		vm.filter(true);
 	};
 
 	//Conditionally set, reverse, remove the sortBy parameter & reload the state
-	vm.updateSort = function (value) {
+	vm.updateSort = function(value) {
 		value ? angular.noop() : value = vm.sortSelection;
 		switch (vm.parameters.sortBy) {
 			case value:
@@ -147,73 +145,74 @@ function SpendingAccountsController($state, $ocMedia, OrderCloud, OrderCloudPara
 	};
 
 	//Used on mobile devices
-	vm.reverseSort = function () {
+	vm.reverseSort = function() {
 		Parameters.sortBy.indexOf('!') == 0 ? vm.parameters.sortBy = Parameters.sortBy.split('!')[1] : vm.parameters.sortBy = '!' + Parameters.sortBy;
 		vm.filter(false);
 	};
 
 	//Reload the state with the incremented page parameter
-	vm.pageChanged = function () {
+	vm.pageChanged = function() {
 		$state.go('.', {page: vm.list.Meta.Page});
 	};
 
 	//Load the next page of results with all of the same parameters
-	vm.loadMore = function () {
+	vm.loadMore = function() {
 		var parameters = angular.copy(Parameters);
 		parameters.filters ? parameters.filters.RedemptionCode = '!*' : parameters.filters = {RedemptionCode: '!*'};
-		return OrderCloud.SpendingAccounts.List(parameters.search, vm.list.Meta.Page + 1, parameters.pageSize || vm.list.Meta.PageSize, parameters.searchOn, parameters.sortBy, parameters.filters).then(function (data) {
-			vm.list.Items = vm.list.Items.concat(data.Items);
-			vm.list.Meta = data.Meta;
-		});
+		return OrderCloud.SpendingAccounts.List(parameters.search, vm.list.Meta.Page + 1, parameters.pageSize || vm.list.Meta.PageSize, parameters.searchOn, parameters.sortBy, parameters.filters)
+				.then(function(data) {
+					vm.list.Items = vm.list.Items.concat(data.Items);
+					vm.list.Meta = data.Meta;
+				});
 	};
 }
 
-function SpendingAccountEditController($exceptionHandler, $state, OrderCloud, SelectedSpendingAccount, toastr) {
+function SpendingAccountEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedSpendingAccount) {
 	var vm = this,
 		spendingaccountid = SelectedSpendingAccount.ID;
 	vm.spendingAccountName = SelectedSpendingAccount.Name;
 	vm.spendingAccount = SelectedSpendingAccount;
 
-	vm.Submit = function () {
+	vm.Submit = function() {
 		OrderCloud.SpendingAccounts.Update(spendingaccountid, vm.spendingAccount)
-			.then(function () {
+			.then(function() {
 				$state.go('spendingAccounts', {}, {reload: true});
 				toastr.success('Spending Account Updated', 'Success');
 			})
-			.catch(function (ex) {
+			.catch(function(ex) {
 				$exceptionHandler(ex)
 			});
 	};
 
-	vm.Delete = function () {
+	vm.Delete = function() {
 		OrderCloud.SpendingAccounts.Delete(spendingaccountid)
-			.then(function () {
+			.then(function() {
 				$state.go('spendingAccounts', {}, {reload: true});
 				toastr.success('Spending Account Deleted', 'Success');
 			})
-			.catch(function (ex) {
+			.catch(function(ex) {
 				$exceptionHandler(ex)
 			});
-	}
+	};
 }
 
-function SpendingAccountCreateController($exceptionHandler, $state, OrderCloud, toastr) {
+function SpendingAccountCreateController($exceptionHandler, $state, toastr, OrderCloud) {
 	var vm = this;
 	vm.spendingAccount = {};
 
-	vm.Submit = function () {
+	vm.Submit = function() {
 		OrderCloud.SpendingAccounts.Create(vm.spendingAccount)
-			.then(function () {
+			.then(function() {
 				$state.go('spendingAccounts', {}, {reload: true});
 				toastr.success('Spending Account Created', 'Success');
 			})
-			.catch(function (ex) {
+			.catch(function(ex) {
 				$exceptionHandler(ex)
 			});
-	}
+	};
 }
 
-function SpendingAccountAssignGroupController($scope, UserGroupList, AssignedUserGroups, SelectedSpendingAccount, SpendingAccountAssignment, toastr) {
+function SpendingAccountAssignGroupController($scope, toastr, UserGroupList, AssignedUserGroups, SelectedSpendingAccount, SpendingAccountAssignment) {
 	var vm = this;
 	vm.list = UserGroupList;
 	vm.assignments = AssignedUserGroups;
@@ -221,23 +220,23 @@ function SpendingAccountAssignGroupController($scope, UserGroupList, AssignedUse
 	vm.pagingfunction = PagingFunction;
 	vm.saveAssignments = SaveAssignments;
 
-	$scope.$watchCollection(function () {
+	$scope.$watchCollection(function() {
 		return vm.list;
-	}, function () {
-		SpendingAccountAssignment.setSelected(vm.list.Items, vm.assignments.Items);
+	}, function() {
+		SpendingAccountAssignment.SetSelected(vm.list.Items, vm.assignments.Items);
 	});
 
 	function SaveAssignments() {
 		toastr.success('Assignment Updated', 'Success');
-		return SpendingAccountAssignment.saveAssignments(vm.spendingAccount.ID, vm.list.Items, vm.assignments.Items);
+		return SpendingAccountAssignment.SaveAssignments(vm.spendingAccount.ID, vm.list.Items, vm.assignments.Items);
 	}
 
 	function PagingFunction() {
-		return SpendingAccountAssignment.paging(vm.spendingAccount.ID, vm.list, vm.assignments);
+		return SpendingAccountAssignment.Paging(vm.spendingAccount.ID, vm.list, vm.assignments);
 	}
 }
 
-function SpendingAccountAssignUserController($scope, UserList, AssignedUsers, SelectedSpendingAccount, SpendingAccountAssignment, Paging, toastr) {
+function SpendingAccountAssignUserController($scope, toastr, Paging, UserList, AssignedUsers, SelectedSpendingAccount, SpendingAccountAssignment) {
 	var vm = this;
 	vm.list = UserList;
 	vm.assignments = AssignedUsers;
@@ -245,47 +244,47 @@ function SpendingAccountAssignUserController($scope, UserList, AssignedUsers, Se
 	vm.pagingfunction = PagingFunction;
 	vm.saveAssignments = SaveAssignments;
 
-	$scope.$watchCollection(function () {
+	$scope.$watchCollection(function() {
 		return vm.list;
-	}, function () {
-		Paging.setSelected(vm.list.Items, vm.assignments.Items, 'UserID')
+	}, function() {
+		Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'UserID');
 	});
 
-	$scope.$watchCollection(function () {
+	$scope.$watchCollection(function() {
 		return vm.list;
-	}, function () {
-		SpendingAccountAssignment.setSelected(vm.list.Items, vm.assignments.Items, 'User');
+	}, function() {
+		SpendingAccountAssignment.SetSelected(vm.list.Items, vm.assignments.Items, 'User');
 	});
 
 	function SaveAssignments() {
 		toastr.success('Assignment Updated', 'Success');
-		return SpendingAccountAssignment.saveAssignments(vm.spendingAccount.ID, vm.list.Items, vm.assignments.Items, 'User');
+		return SpendingAccountAssignment.SaveAssignments(vm.spendingAccount.ID, vm.list.Items, vm.assignments.Items, 'User');
 	}
 
 	function PagingFunction() {
-		return SpendingAccountAssignment.paging(vm.spendingAccount.ID, vm.list, vm.assignments, 'User');
+		return SpendingAccountAssignment.Paging(vm.spendingAccount.ID, vm.list, vm.assignments, 'User');
 	}
 }
 
 function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud, Assignments) {
 	return {
-		saveAssignments: SaveAssignments,
-		setSelected: SetSelected,
-		paging: Paging
+		SaveAssignments: _saveAssignments,
+		SetSelected: _setSelected,
+		Paging: _paging
 	};
 
-	function SaveAssignments(SpendingAccountID, List, AssignmentList, Party) {
+	function _saveAssignments(SpendingAccountID, List, AssignmentList, Party) {
 		var PartyID = (Party === 'User') ? 'UserID' : 'UserGroupID';
 		var assigned = Underscore.pluck(AssignmentList, PartyID);
 		var selected = Underscore.pluck(Underscore.where(List, {selected: true}), 'ID');
-		var toAdd = Assignments.getToAssign(List, AssignmentList, PartyID);
+		var toAdd = Assignments.GetToAssign(List, AssignmentList, PartyID);
 		var toUpdate = Underscore.intersection(selected, assigned);
-		var toDelete = Assignments.getToDelete(List, AssignmentList, PartyID);
+		var toDelete = Assignments.GetToDelete(List, AssignmentList, PartyID);
 		var queue = [];
 		var dfd = $q.defer();
-		angular.forEach(List, function (item) {
+		angular.forEach(List, function(item) {
 			if (toAdd.indexOf(item.ID) > -1) {
-				SaveAndUpdate(queue, SpendingAccountID, item, Party);
+				saveAndUpdate(queue, SpendingAccountID, item, Party);
 			}
 			else if (toUpdate.indexOf(item.ID) > -1) {
 				var AssignmentObject;
@@ -296,24 +295,24 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 					AssignmentObject = Underscore.where(AssignmentList, {UserGroupID: item.ID})[0]; //should be only one
 				}
 				if (AssignmentObject.AllowExceed !== item.allowExceed) {
-					SaveAndUpdate(queue, SpendingAccountID, item, Party);
+					saveAndUpdate(queue, SpendingAccountID, item, Party);
 				}
 			}
 		});
-		angular.forEach(toDelete, function (itemID) {
+		angular.forEach(toDelete, function(itemID) {
 			if (Party === 'User') {
 				queue.push(OrderCloud.SpendingAccounts.DeleteAssignment(SpendingAccountID, itemID, null));
 			}
 			else queue.push(OrderCloud.SpendingAccounts.DeleteAssignment(SpendingAccountID, null, itemID));
 		});
-		$q.all(queue).then(function () {
+		$q.all(queue).then(function() {
 			dfd.resolve();
 			$state.reload($state.current);
 		});
 		return dfd.promise;
 	}
 
-	function SaveAndUpdate(queue, SpendingAccountID, item, Party) {
+	function saveAndUpdate(queue, SpendingAccountID, item, Party) {
 		var assignment = {
 			SpendingAccountID: SpendingAccountID,
 			UserID: null,
@@ -327,11 +326,11 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 		queue.push(OrderCloud.SpendingAccounts.SaveAssignment(assignment));
 	}
 
-	function SetSelected(List, AssignmentList, Party) {
+	function _setSelected(List, AssignmentList, Party) {
 		var PartyID = (Party === 'User') ? 'UserID' : 'UserGroupID';
-		var assigned = Assignments.getAssigned(AssignmentList, PartyID);
+		var assigned = Assignments.GetAssigned(AssignmentList, PartyID);
 		var exceed = Underscore.pluck(Underscore.where(AssignmentList, {AllowExceed: true}), PartyID);
-		angular.forEach(List, function (item) {
+		angular.forEach(List, function(item) {
 			if (assigned.indexOf(item.ID) > -1) {
 				item.selected = true;
 				if (exceed.indexOf(item.ID) > -1) {
@@ -341,7 +340,7 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 		});
 	}
 
-	function Paging(SpendingAccountID, OrderCloud, ListObjects, AssignmentObjects, Party) {
+	function _paging(SpendingAccountID, OrderCloud, ListObjects, AssignmentObjects, Party) {
 		var ServiceName = (Party === 'User') ? 'Users' : 'UserGroups';
 		var Level = (Party === 'User') ? 'User' : 'Group';
 		var Service = $injector.get(ServiceName);
@@ -352,7 +351,7 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 			if (AssignmentObjects.Meta.Page < AssignmentObjects.Meta.TotalPages) {
 				queue.push(OrderCloud.SpendingAccounts.ListAssignments(SpendingAccountID, null, null, Level, AssignmentObjects.Meta.Page + 1, AssignmentObjects.Meta.PageSize));
 			}
-			$q.all(queue).then(function (results) {
+			$q.all(queue).then(function(results) {
 				dfd.resolve();
 				ListObjects.Meta = results[0].Meta;
 				ListObjects.Items = [].concat(ListObjects.Items, results[0].Items);
@@ -360,7 +359,7 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 					AssignmentObjects.Meta = results[1].Meta;
 					AssignmentObjects.Items = [].concat(AssignmentObjects.Items, results[1].Items);
 				}
-				SetSelected(ListObjects.Items, AssignmentObjects.Items, Party);
+				_setSelected(ListObjects.Items, AssignmentObjects.Items, Party);
 			});
 			return dfd.promise;
 		}

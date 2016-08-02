@@ -1,19 +1,18 @@
-angular.module( 'orderCloud' )
-
-    .config( OrdersConfig )
-    .controller( 'OrdersCtrl', OrdersController )
-    .controller( 'OrdersDetailCtrl', OrdersDetailController )
-    .controller( 'OrdersDetailLineItemCtrl', OrdersDetailLineItemController )
-    .factory( 'OrdersFactory', OrdersFactory )
+angular.module('orderCloud')
+    .config(OrdersConfig)
+    .controller('OrdersCtrl', OrdersController)
+    .controller('OrdersDetailCtrl', OrdersDetailController)
+    .controller('OrdersDetailLineItemCtrl', OrdersDetailLineItemController)
+    .factory('OrdersFactory', OrdersFactory)
     .filter('paymentmethods', paymentmethods)
 ;
 
-function OrdersConfig( $stateProvider ) {
+function OrdersConfig($stateProvider) {
     $stateProvider
-        .state( 'orders', {
+        .state('orders', {
             parent: 'base',
-            templateUrl:'orders/templates/orders.tpl.html',
-            controller:'OrdersCtrl',
+            templateUrl: 'orders/templates/orders.tpl.html',
+            controller: 'OrdersCtrl',
             controllerAs: 'orders',
             url: '/orders?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Orders'},
@@ -21,15 +20,15 @@ function OrdersConfig( $stateProvider ) {
                 UserType: function(OrderCloud) {
                     return JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).usrtype;
                 },
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                OrderList: function( OrderCloud, Parameters, UserType ) {
+                OrderList: function(OrderCloud, Parameters, UserType) {
                     return OrderCloud.Orders[UserType == 'admin' ? 'ListIncoming' : 'ListOutgoing'](Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state( 'orders.detail', {
+        .state('orders.detail', {
             url: '/:orderid',
             templateUrl: 'orders/templates/orders.detail.tpl.html',
             controller: 'OrdersDetailCtrl',
@@ -40,7 +39,7 @@ function OrdersConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'orders.detail.lineItem', {
+        .state('orders.detail.lineItem', {
             url: '/:lineitemid',
             templateUrl: 'orders/templates/orders.detail.lineItem.tpl.html',
             controller: 'OrdersDetailLineItemCtrl',
@@ -54,7 +53,7 @@ function OrdersConfig( $stateProvider ) {
     ;
 }
 
-function OrdersController( $state, $ocMedia, OrderCloudParameters, OrderCloud, UserType, OrderList, Parameters ) {
+function OrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, UserType, OrderList, Parameters) {
     var vm = this;
     vm.list = OrderList;
     vm.parameters = Parameters;
@@ -101,7 +100,7 @@ function OrdersController( $state, $ocMedia, OrderCloudParameters, OrderCloud, U
                 break;
             case '!' + value:
                 vm.parameters.sortBy = null;
-                break
+                break;
             default:
                 vm.parameters.sortBy = value;
         }
@@ -129,37 +128,38 @@ function OrdersController( $state, $ocMedia, OrderCloudParameters, OrderCloud, U
     };
 }
 
-function OrdersDetailController( SelectedOrder, toastr, OrderCloud ) {
+function OrdersDetailController(toastr, SelectedOrder, OrderCloud) {
     var vm = this;
     vm.order = SelectedOrder;
-    vm.addToFavorites = function(){
+    vm.addToFavorites = function() {
         //TODO: Refactor when SDK allows us to patch null
-        if(!SelectedOrder.xp) {
-            SelectedOrder.xp ={}
+        if (!SelectedOrder.xp) {
+            SelectedOrder.xp = {}
         }
         SelectedOrder.xp.favorite = true;
 
         OrderCloud.Orders.Update(SelectedOrder.ID, SelectedOrder)
-            .then(function(){
-                toastr.success("Your order has been added to Favorites! You can now easily find your order in 'Order History'", 'Success')
+            .then(function() {
+                toastr.success("Your order has been added to Favorites! You can now easily find your order in 'Order History'", 'Success');
             })
-            .catch(function(){
+            .catch(function() {
                 toastr.error('There was a problem adding this order to your Favorites', 'Error');
             });
     };
-    vm.removeFromFavorites = function(){
+
+    vm.removeFromFavorites = function() {
         delete SelectedOrder.xp.favorite;
-        OrderCloud.Orders.Patch(SelectedOrder.ID, {"xp": null} );
-        toastr.success("Your order has been removed from Favorites", 'Success')
-    }
+        OrderCloud.Orders.Patch(SelectedOrder.ID, {xp: null});
+        toastr.success('Your order has been removed from Favorites', 'Success')
+    };
 }
 
-function OrdersDetailLineItemController( SelectedLineItem ) {
+function OrdersDetailLineItemController(SelectedLineItem) {
     var vm = this;
     vm.lineItem = SelectedLineItem;
 }
 
-function OrdersFactory( $q, Underscore, OrderCloud ) {
+function OrdersFactory($q, Underscore, OrderCloud) {
     var service = {
         GetOrderDetails: _getOrderDetails,
         GetLineItemDetails: _getLineItemDetails,
@@ -257,16 +257,16 @@ function OrdersFactory( $q, Underscore, OrderCloud ) {
     function _searchOrders(filters, userType) {
         var deferred = $q.defer();
 
-        if(!filters.groupOrders && filters.searchingGroupOrders){
+        if (!filters.groupOrders && filters.searchingGroupOrders) {
             deferred.resolve();
-        }else{
-            if(filters.favorite){
-                OrderCloud.Orders[userType == 'admin' ? 'ListIncoming' : 'ListOutgoing']( filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, filters.sortType, { ID: filters.OrderID, Status: filters.Status, FromUserID: filters.groupOrders, xp:{favorite:filters.favorite} }, filters.FromCompanyID)
+        } else {
+            if (filters.favorite) {
+                OrderCloud.Orders[userType == 'admin' ? 'ListIncoming' : 'ListOutgoing'](filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, filters.sortType, {ID: filters.OrderID, Status: filters.Status, FromUserID: filters.groupOrders, xp:{favorite:filters.favorite} }, filters.FromCompanyID)
                     .then(function(data) {
                         deferred.resolve(data);
                     });
-            }else{
-                OrderCloud.Orders[userType == 'admin' ? 'ListIncoming' : 'ListOutgoing']( filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, filters.sortType, { ID: filters.OrderID, Status: filters.Status, FromUserID: filters.groupOrders}, filters.FromCompanyID)
+            } else {
+                OrderCloud.Orders[userType == 'admin' ? 'ListIncoming' : 'ListOutgoing'](filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, filters.sortType, {ID: filters.OrderID, Status: filters.Status, FromUserID: filters.groupOrders}, filters.FromCompanyID)
                     .then(function(data) {
                         deferred.resolve(data);
                     });
@@ -276,29 +276,29 @@ function OrdersFactory( $q, Underscore, OrderCloud ) {
         return deferred.promise;
     }
 
-    function _getGroupOrders(groupList){
+    function _getGroupOrders(groupList) {
         var userIDs =[];
         var dfd = $q.defer();
-        GetUserIDs(groupList)
-            .then(function(users){
-               angular.forEach(users, function(user){
-                   userIDs.push(user.UserID)
-               });
+        getUserIDs(groupList)
+            .then(function(users) {
+                angular.forEach(users, function(user) {
+                    userIDs.push(user.UserID)
+                });
                 dfd.resolve(userIDs.join('|'));
             });
         return dfd.promise;
 
-        function GetUserIDs(groups){
+        function getUserIDs(groups) {
             var dfd = $q.defer();
             var queue = [];
             var userList = [];
-            angular.forEach(groups, function(group){
+            angular.forEach(groups, function(group) {
                 queue.push(OrderCloud.UserGroups.ListUserAssignments(group));
             });
 
             $q.all(queue)
-                .then(function(users){
-                    angular.forEach(users, function(user){
+                .then(function(users) {
+                    angular.forEach(users, function(user) {
                        userList = userList.concat(user.Items);
                     });
 

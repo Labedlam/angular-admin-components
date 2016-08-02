@@ -73,7 +73,7 @@ describe('Component: Product Facets', function() {
             state = $state.get('productFacets')
             spyOn(oc.Products, 'List').and.returnValue(null);
         }));
-        it('should resolve ProductList', inject(function($injector){
+        it('should resolve ProductList', inject(function($injector) {
             $injector.invoke(state.resolve.ProductList);
             expect(oc.Products.List).toHaveBeenCalled();
         }));
@@ -87,11 +87,11 @@ describe('Component: Product Facets', function() {
             dfd.resolve(categoryList);
             spyOn(oc.Categories, 'ListProductAssignments').and.returnValue(dfd.promise);
         }));
-        it('should resolve Product', inject(function($injector, $stateParams){
+        it('should resolve Product', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.Product);
             expect(oc.Products.Get).toHaveBeenCalledWith($stateParams.productid);
         }));
-        it('should resolve AssignedCategories', inject(function($injector, $stateParams){
+        it('should resolve AssignedCategories', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedCategories);
             expect(oc.Categories.ListProductAssignments).toHaveBeenCalledWith(null, $stateParams.productid);
         }));
@@ -99,7 +99,7 @@ describe('Component: Product Facets', function() {
     describe('Controller: FacetedProductManageController', function() {
         var facetedProductManageCtrl;
         var facetName = 'color';
-        beforeEach(inject(function($controller){
+        beforeEach(inject(function($controller) {
             facetedProductManageCtrl = $controller('ProductFacetsManageCtrl', {
                 $scope: scope,
                 Product: product,
@@ -108,36 +108,36 @@ describe('Component: Product Facets', function() {
             facetedProductManageCtrl.newFacetValue = 'purple';
 
         }));
-        describe('setSelected', function(){
-            it('should return true', function(){
+        describe('setSelected', function() {
+            it('should return true', function() {
                expect(facetedProductManageCtrl.setSelected(assignedCategory, 'color', 'blue')).toEqual(true);
             });
-            it('should return false', function(){
+            it('should return false', function() {
                 expect(facetedProductManageCtrl.setSelected(assignedCategory, 'color', 'red')).toEqual(false);
             });
         });
-        describe('toggleSelection', function(){
-            beforeEach(function(){
+        describe('toggleSelection', function() {
+            beforeEach(function() {
                 facetedProductManageCtrl.toggleSelection(assignedCategory, 'color', 'blue');
                 facetedProductManageCtrl.toggleSelection(assignedCategory, 'color', 'red');
             });
-            it('should set selected to false',function(){
+            it('should set selected to false',function() {
                 expect(facetedProductManageCtrl.setSelected(assignedCategory, 'color', 'blue')).toEqual(false);
             });
-            it('should set selected to true',function(){
+            it('should set selected to true',function() {
                 expect(facetedProductManageCtrl.setSelected(assignedCategory, 'color', 'red')).toEqual(true);
             });
         });
-        describe('requiredFacet', function(){
-            beforeEach(function(){
+        describe('requiredFacet', function() {
+            beforeEach(function() {
                 facetedProductManageCtrl.requiredFacet(assignedCategory);
            });
-            it('should return true', function(){
+            it('should return true', function() {
                 expect(facetedProductManageCtrl.requiredFacet(assignedCategory)).toEqual(true);
             })
         });
-        describe('saveSelections', function(){
-           beforeEach(inject(function($state){
+        describe('saveSelections', function() {
+           beforeEach(inject(function($state) {
                var defer = q.defer();
                defer.resolve();
                spyOn(oc.Products, 'Update').and.returnValue(defer.promise);
@@ -145,14 +145,14 @@ describe('Component: Product Facets', function() {
                facetedProductManageCtrl.saveSelections();
                scope.$digest();
            }));
-            it('should call the Products Update method', function(){
+            it('should call the Products Update method', function() {
                expect(oc.Products.Update).toHaveBeenCalledWith(product.ID, product);
             });
-            it('should reload the state', inject(function($state){
+            it('should reload the state', inject(function($state) {
                expect($state.go).toHaveBeenCalledWith($state.current, {}, {reload: true});
             }));
         });
-        describe('addValueExisting', function(){
+        describe('addValueExisting', function() {
             beforeEach(inject(function($state) {
                 var defer = q.defer();
                 defer.resolve();
@@ -165,7 +165,7 @@ describe('Component: Product Facets', function() {
                 facetedProductManageCtrl.addValueExisting(assignedCategory, facetName);
                 scope.$digest();
             }));
-            it('should call the Products Update method and add purple to the values', function(){
+            it('should call the Products Update method and add purple to the values', function() {
                 expect(oc.Products.Update).toHaveBeenCalledWith(product.ID, product);
                 expect(product.xp.OC_Facets.TestCategory123456789.color[1]).toEqual('purple');
                 expect(product.xp.OC_Facets.TestCategory123456789.color.length).toEqual(2);

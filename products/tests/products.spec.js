@@ -28,10 +28,10 @@ describe('Component: Products', function() {
     describe('State: products', function() {
         var state;
         beforeEach(inject(function($state) {
-            state = $state.get('products', {}, {reload:true});
+            state = $state.get('products', {}, {reload: true});
             spyOn(oc.Products, 'List').and.returnValue(null);
         }));
-        it('should resolve ProductList', inject(function ($injector) {
+        it('should resolve ProductList', inject(function($injector) {
             $injector.invoke(state.resolve.ProductList);
             expect(oc.Products.List).toHaveBeenCalled();
         }));
@@ -40,10 +40,10 @@ describe('Component: Products', function() {
     describe('State: products.edit', function() {
         var state;
         beforeEach(inject(function($state) {
-            state = $state.get('products.edit', {}, {reload:true});
+            state = $state.get('products.edit', {}, {reload: true});
             spyOn(oc.Products, 'Get').and.returnValue(null);
         }));
-        it('should resolve SelectedProduct', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedProduct', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedProduct);
             expect(oc.Products.Get).toHaveBeenCalledWith($stateParams.productid);
         }));
@@ -52,15 +52,15 @@ describe('Component: Products', function() {
     describe('State: products.assignments', function() {
         var state;
         beforeEach(inject(function($state) {
-            state = $state.get('products.assignments', {}, {reload:true});
+            state = $state.get('products.assignments', {}, {reload: true});
             spyOn(oc.Products, 'ListAssignments').and.returnValue(null);
             spyOn(oc.Products, 'Get').and.returnValue(null);
         }));
-        it('should resolve Assignments', inject(function ($injector, $stateParams) {
+        it('should resolve Assignments', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.Assignments);
             expect(oc.Products.ListAssignments).toHaveBeenCalledWith($stateParams.productid);
         }));
-        it('should resolve SelectedProduct', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedProduct', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedProduct);
             expect(oc.Products.Get).toHaveBeenCalledWith($stateParams.productid);
         }));
@@ -69,15 +69,15 @@ describe('Component: Products', function() {
     describe('State: products.createAssignment', function() {
         var state;
         beforeEach(inject(function($state) {
-            state = $state.get('products.createAssignment', {}, {reload:true});
+            state = $state.get('products.createAssignment', {}, {reload: true});
             spyOn(oc.UserGroups, 'List').and.returnValue(null);
             spyOn(oc.PriceSchedules, 'List').and.returnValue(null);
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
-        it('should resolve PriceScheduleList', inject(function ($injector) {
+        it('should resolve PriceScheduleList', inject(function($injector) {
             $injector.invoke(state.resolve.PriceScheduleList);
             expect(oc.PriceSchedules.List).toHaveBeenCalled();
         }));
@@ -107,7 +107,7 @@ describe('Component: Products', function() {
                 expect(oc.Products.Update).toHaveBeenCalledWith(productEditCtrl.productID, productEditCtrl.product);
             });
             it ('should enter the products state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('products', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('products', {}, {reload: true});
             }));
         });
 
@@ -123,7 +123,7 @@ describe('Component: Products', function() {
                 expect(oc.Products.Delete).toHaveBeenCalledWith(product.ID);
             });
             it ('should enter the products state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('products', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('products', {}, {reload: true});
             }));
         });
     });
@@ -150,7 +150,7 @@ describe('Component: Products', function() {
                 expect(oc.Products.Create).toHaveBeenCalledWith(product);
             });
             it ('should enter the products state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('products', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('products', {}, {reload: true});
             }));
         });
     });

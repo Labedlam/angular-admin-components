@@ -12,6 +12,7 @@ function checkoutShippingConfig($stateProvider) {
 			controller: 'CheckoutShippingCtrl',
 			controllerAs: 'checkoutShipping'
 		})
+    ;
 }
 
 function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippingAddress) {
@@ -28,13 +29,12 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
         if (order && order.ShippingAddressID) {
             OrderShippingAddress.Set(order.ShippingAddressID);
             OrderCloud.Addresses.Get(order.ShippingAddressID)
-                .then(function(address){
+                .then(function(address) {
                     OrderCloud.Orders.Patch(order.ID, {ShippingAddressID: address.ID})
                         .then(function() {
                             $rootScope.$broadcast('OrderShippingAddressChanged', order, address);
                         });
-                })
-
+                });
         }
     }
 
@@ -57,7 +57,7 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
                                                 .then(function() {
                                                     $state.reload();
                                                 });
-                                        })
+                                        });
                                 });
                         });
                 });
@@ -71,15 +71,15 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
     }
 }
 
-function OrderShippingAddressFactory($q, $localForage, appname, OrderCloud) {
+function OrderShippingAddressFactory($q, $localForage, OrderCloud, appname) {
     var StorageName = appname + '.ShippingAddressID';
     return {
-        Get: Get,
-        Set: Set,
-        Clear: Clear
+        Get: _get,
+        Set: _set,
+        Clear: _clear
     };
 
-    function Get() {
+    function _get() {
         var dfd = $q.defer();
         $localForage.getItem(StorageName)
             .then(function(shipID) {
@@ -92,7 +92,7 @@ function OrderShippingAddressFactory($q, $localForage, appname, OrderCloud) {
                             else dfd.reject();
                         })
                         .catch(function() {
-                            Clear();
+                            _clear();
                             dfd.reject();
                         });
                 }
@@ -104,11 +104,11 @@ function OrderShippingAddressFactory($q, $localForage, appname, OrderCloud) {
         return dfd.promise;
     }
 
-    function Set(ShipAddressID) {
+    function _set(ShipAddressID) {
         $localForage.setItem(StorageName, ShipAddressID);
     }
 
-    function Clear() {
+    function _clear() {
         $localForage.removeItem(StorageName);
     }
 }

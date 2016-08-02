@@ -1,63 +1,61 @@
-angular.module( 'orderCloud' )
-
-    .config( UsersConfig )
-    .controller( 'UsersCtrl', UsersController )
-    .controller( 'UserEditCtrl', UserEditController )
-    .controller( 'UserCreateCtrl', UserCreateController )
-
+angular.module('orderCloud')
+    .config(UsersConfig)
+    .controller('UsersCtrl', UsersController)
+    .controller('UserEditCtrl', UserEditController)
+    .controller('UserCreateCtrl', UserCreateController)
 ;
 
-function UsersConfig( $stateProvider ) {
+function UsersConfig($stateProvider) {
     $stateProvider
-        .state( 'users', {
+        .state('users', {
             parent: 'base',
-            templateUrl:'users/templates/users.tpl.html',
-            controller:'UsersCtrl',
+            templateUrl: 'users/templates/users.tpl.html',
+            controller: 'UsersCtrl',
             controllerAs: 'users',
             url: '/users?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Users'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                UserList: function( OrderCloud, Parameters ) {
-                    return OrderCloud.Users.List( Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
+                UserList: function(OrderCloud, Parameters) {
+                    return OrderCloud.Users.List(null, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state( 'users.edit', {
+        .state('users.edit', {
             url: '/:userid/edit',
-            templateUrl:'users/templates/userEdit.tpl.html',
-            controller:'UserEditCtrl',
+            templateUrl: 'users/templates/userEdit.tpl.html',
+            controller: 'UserEditCtrl',
             controllerAs: 'userEdit',
             resolve: {
-                SelectedUser: function( $stateParams, OrderCloud) {
-                    return OrderCloud.Users.Get( $stateParams.userid);
+                SelectedUser: function($stateParams, OrderCloud) {
+                    return OrderCloud.Users.Get($stateParams.userid);
                 },
-                SecurityProfilesAvailable: function (OrderCloud) {
+                SecurityProfilesAvailable: function(OrderCloud) {
                     return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
-        .state( 'users.create', {
+        .state('users.create', {
             url: '/create',
             templateUrl: 'users/templates/userCreate.tpl.html',
             controller: 'UserCreateCtrl',
             controllerAs: 'userCreate',
             resolve: {
-                SecurityProfilesAvailable: function (OrderCloud) {
+                SecurityProfilesAvailable: function(OrderCloud) {
                     return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
+    ;
 }
 
-function UsersController( $state, $ocMedia, OrderCloud, OrderCloudParameters, UserList, Parameters ) {
+function UsersController($state, $ocMedia, OrderCloud, OrderCloudParameters, UserList, Parameters) {
     var vm = this;
     vm.list = UserList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
 
     //Check if filters are applied
     vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -120,22 +118,21 @@ function UsersController( $state, $ocMedia, OrderCloud, OrderCloudParameters, Us
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Users.List( Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Users.List(null, Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
             });
     };
-
 }
 
-function UserEditController( $exceptionHandler, $state, OrderCloud, SelectedUser, toastr, SecurityProfilesAvailable ) {
+function UserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedUser, SecurityProfilesAvailable) {
     var vm = this,
         userid = SelectedUser.ID;
     vm.userName = SelectedUser.Username;
     vm.user = SelectedUser;
     vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
-    if(vm.user.TermsAccepted != null) {
+    if (vm.user.TermsAccepted != null) {
         vm.TermsAccepted = true;
     }
 
@@ -144,7 +141,7 @@ function UserEditController( $exceptionHandler, $state, OrderCloud, SelectedUser
         vm.user.TermsAccepted = today;
         OrderCloud.Users.Update(userid, vm.user)
             .then(function() {
-                $state.go('users', {}, {reload:true});
+                $state.go('users', {}, {reload: true});
                 toastr.success('User Updated', 'Success');
             })
             .catch(function(ex) {
@@ -155,30 +152,29 @@ function UserEditController( $exceptionHandler, $state, OrderCloud, SelectedUser
     vm.Delete = function() {
         OrderCloud.Users.Delete(userid)
             .then(function() {
-                $state.go('users', {}, {reload:true});
+                $state.go('users', {}, {reload: true});
                 toastr.success('User Deleted', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }
 
-function UserCreateController( $exceptionHandler, $state, OrderCloud, toastr, SecurityProfilesAvailable ) {
+function UserCreateController($exceptionHandler, $state, toastr, OrderCloud, SecurityProfilesAvailable) {
     var vm = this;
-    vm.user = {Email:"", Password:""};
+    vm.user = {Email: '', Password: ''};
     vm.user.Active = false;
     vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
     vm.Submit = function() {
-        var today = new Date();
-        vm.user.TermsAccepted = today;
-        OrderCloud.Users.Create( vm.user)
+        vm.user.TermsAccepted = new Date();
+        OrderCloud.Users.Create(vm.user)
             .then(function() {
-                $state.go('users', {}, {reload:true});
+                $state.go('users', {}, {reload: true});
                 toastr.success('User Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 }

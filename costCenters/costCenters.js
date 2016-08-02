@@ -1,52 +1,51 @@
-angular.module( 'orderCloud' )
-
-    .config( CostCentersConfig )
-    .controller( 'CostCentersCtrl', CostCentersController )
-    .controller( 'CostCenterEditCtrl', CostCenterEditController )
-    .controller( 'CostCenterCreateCtrl', CostCenterCreateController )
-    .controller( 'CostCenterAssignCtrl', CostCenterAssignController )
-
+angular.module('orderCloud')
+    .config(CostCentersConfig)
+    .controller('CostCentersCtrl', CostCentersController)
+    .controller('CostCenterEditCtrl', CostCenterEditController)
+    .controller('CostCenterCreateCtrl', CostCenterCreateController)
+    .controller('CostCenterAssignCtrl', CostCenterAssignController)
 ;
 
-function CostCentersConfig( $stateProvider ) {
+function CostCentersConfig($stateProvider) {
     $stateProvider
-        .state( 'costCenters', {
+        .state('costCenters', {
             parent: 'base',
-            templateUrl:'costCenters/templates/costCenters.tpl.html',
-            controller:'CostCentersCtrl',
+            templateUrl: 'costCenters/templates/costCenters.tpl.html',
+            controller: 'CostCentersCtrl',
             controllerAs: 'costCenters',
-            url: '/costCenters?search&page&pageSize&searchOn&sortBy&filters',
+            url: '/costcenters?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Cost Centers'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                CostCentersList: function( OrderCloud, Parameters) {
+                CostCentersList: function(OrderCloud, Parameters) {
                     return OrderCloud.CostCenters.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state( 'costCenters.edit', {
-            url: '/:costCenterid/edit',
+        .state('costCenters.edit', {
+            url: '/:costcenterid/edit',
             templateUrl:'costCenters/templates/costCenterEdit.tpl.html',
             controller:'CostCenterEditCtrl',
             controllerAs: 'costCenterEdit',
             resolve: {
                 SelectedCostCenter: function($stateParams, $state, OrderCloud) {
-                    return OrderCloud.CostCenters.Get($stateParams.costCenterid).catch(function() {
-                        $state.go('^.costCenters');
-                    });
+                    return OrderCloud.CostCenters.Get($stateParams.costcenterid)
+                        .catch(function() {
+                            $state.go('^.costCenters');
+                        });
                 }
             }
         })
-        .state( 'costCenters.create', {
+        .state('costCenters.create', {
             url: '/create',
-            templateUrl:'costCenters/templates/costCenterCreate.tpl.html',
-            controller:'CostCenterCreateCtrl',
+            templateUrl: 'costCenters/templates/costCenterCreate.tpl.html',
+            controller: 'CostCenterCreateCtrl',
             controllerAs: 'costCenterCreate'
         })
-        .state( 'costCenters.assign', {
-            url: '/:costCenterid/assign',
+        .state('costCenters.assign', {
+            url: '/:costcenterid/assign',
             templateUrl: 'costCenters/templates/costCenterAssign.tpl.html',
             controller: 'CostCenterAssignCtrl',
             controllerAs: 'costCenterAssign',
@@ -58,19 +57,19 @@ function CostCentersConfig( $stateProvider ) {
                     return OrderCloud.UserGroups.List(null, 1, 20);
                 },
                 AssignedUserGroups: function($stateParams, OrderCloud) {
-                    return OrderCloud.CostCenters.ListAssignments($stateParams.costCenterid);
+                    return OrderCloud.CostCenters.ListAssignments($stateParams.costcenterid);
                 },
                 SelectedCostCenter: function($stateParams, $state, OrderCloud) {
-                    return OrderCloud.CostCenters.Get($stateParams.costCenterid).catch(function() {
+                    return OrderCloud.CostCenters.Get($stateParams.costcenterid).catch(function() {
                         $state.go('^');
                     });
                 }
             }
         })
+    ;
 }
 
-function CostCentersController( CostCentersList, TrackSearch, Parameters, $ocMedia, $state, OrderCloud, OrderCloudParameters ) {
-
+function CostCentersController($ocMedia, $state, OrderCloud, OrderCloudParameters, CostCentersList, Parameters) {
     var vm = this;
     vm.list = CostCentersList;
     vm.parameters = Parameters;
@@ -143,7 +142,7 @@ function CostCentersController( CostCentersList, TrackSearch, Parameters, $ocMed
     };
 }
 
-function CostCenterEditController( $exceptionHandler, $state, SelectedCostCenter, OrderCloud, toastr ) {
+function CostCenterEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedCostCenter) {
     var vm = this,
         costCenterid = SelectedCostCenter.ID;
     vm.costCenterName = SelectedCostCenter.Name;
@@ -152,7 +151,7 @@ function CostCenterEditController( $exceptionHandler, $state, SelectedCostCenter
     vm.Submit = function() {
         OrderCloud.CostCenters.Update(costCenterid, vm.costCenter)
             .then(function() {
-                $state.go('costCenters', {}, {reload:true});
+                $state.go('costCenters', {}, {reload: true});
                 toastr.success('Cost Center Updated', 'Success');
             })
             .catch(function(ex) {
@@ -162,34 +161,33 @@ function CostCenterEditController( $exceptionHandler, $state, SelectedCostCenter
 
     vm.Delete = function() {
         OrderCloud.CostCenters.Delete(SelectedCostCenter.ID)
-
             .then(function() {
-                $state.go('costCenters', {}, {reload:true})
+                $state.go('costCenters', {}, {reload: true});
                 toastr.success('Cost Center Deleted', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
 }
 
-function CostCenterCreateController( $exceptionHandler,$state, OrderCloud, toastr) {
+function CostCenterCreateController($exceptionHandler, $state, toastr, OrderCloud) {
     var vm = this;
     vm.costCenter = {};
 
     vm.Submit = function() {
         OrderCloud.CostCenters.Create(vm.costCenter)
             .then(function() {
-                $state.go('costCenters', {}, {reload:true})
+                $state.go('costCenters', {}, {reload: true});
                 toastr.success('Cost Center Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
 }
 
-function CostCenterAssignController($scope, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCostCenter, OrderCloud, toastr) {
+function CostCenterAssignController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCostCenter) {
     var vm = this;
     vm.CostCenter = SelectedCostCenter;
     vm.list = UserGroupList;
@@ -205,18 +203,19 @@ function CostCenterAssignController($scope, Assignments, Paging, UserGroupList, 
         });
     }
 
-    $scope.$watchCollection(function(){
+    $scope.$watchCollection(function() {
         return vm.list;
-    }, function(){
-        Paging.setSelected(vm.list.Items, vm.assignments.Items, 'UserGroupID')
+    }, function() {
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'UserGroupID')
     });
+
     function DeleteFunc(ItemID) {
         return OrderCloud.CostCenters.DeleteAssignment(vm.CostCenter.ID, null, ItemID);
     }
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.saveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc);
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc);
     }
 
     function AssignmentFunc() {
@@ -224,7 +223,6 @@ function CostCenterAssignController($scope, Assignments, Paging, UserGroupList, 
     }
 
     function PagingFunction() {
-        return Paging.paging(vm.list, 'UserGroups', vm.assignments, AssignmentFunc);
+        return Paging.Paging(vm.list, 'UserGroups', vm.assignments, AssignmentFunc);
     }
 }
-

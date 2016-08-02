@@ -55,6 +55,17 @@
         </div>
         <div class="panel-footer">
             <h4>Subtotal: <span class="text-success pull-right">{{cart.order.Subtotal | currency}}</span></h4>
+            <div ng-if="cart.promotions.Items.length">
+                <h5 ng-repeat="promotion in cart.promotions.Items">
+                    <span class="pull-right">{{promotion.Name}} ({{promotion.Amount | currency}}) <ordercloud-remove-promotion order="cart.order" promotion="promotion"></ordercloud-remove-promotion></span>
+                    <div class="clearfix"></div>
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 pull-right">
+            <ordercloud-promotion-input order="cart.order" orderpromotions="cart.promotions"></ordercloud-promotion-input>
         </div>
     </div>
     <button type="button" ui-sref="checkout" class="btn btn-lg btn-success pull-right">Checkout</button>

@@ -1,23 +1,21 @@
 angular.module('orderCloud')
-
-    .config( CategoryFacetsConfig )
-    .controller( 'CategoryFacetsCtrl', CategoryFacetsController)
-    .controller( 'CategoryFacetsManageCtrl', FacetedCategoryManageController)
-    .controller( 'CategoryFacetsModalCtrl', CategoryFacetsModalController)
-
+    .config(CategoryFacetsConfig)
+    .controller('CategoryFacetsCtrl', CategoryFacetsController)
+    .controller('CategoryFacetsManageCtrl', FacetedCategoryManageController)
+    .controller('CategoryFacetsModalCtrl', CategoryFacetsModalController)
 ;
 
-function CategoryFacetsConfig( $stateProvider ) {
+function CategoryFacetsConfig($stateProvider) {
     $stateProvider
-        .state ('categoryFacets', {
+        .state('categoryFacets', {
             parent: 'base',
-            templateUrl:'facets/categoryFacets/templates/categoryFacets.tpl.html',
-            controller:'CategoryFacetsCtrl',
+            templateUrl: 'facets/categoryFacets/templates/categoryFacets.tpl.html',
+            controller: 'CategoryFacetsCtrl',
             controllerAs: 'facetedCat',
-            url: '/categoryFacets?from&to&search&page&pageSize&searchOn&sortBy&filters',
+            url: '/categoryfacets?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Category Facets'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
                 CategoryList: function(OrderCloud, Parameters) {
@@ -25,21 +23,22 @@ function CategoryFacetsConfig( $stateProvider ) {
                 }
             }
         })
-        .state ('categoryFacets.manage', {
+        .state('categoryFacets.manage', {
             url: '/:categoryid/manage',
             templateUrl: 'facets/categoryFacets/templates/categoryFacetsManage.tpl.html',
             controller: 'CategoryFacetsManageCtrl',
             controllerAs: 'facetedCatManage',
             data: {componentName: 'Category Facets'},
             resolve: {
-                Category: function(OrderCloud, $stateParams) {
+                Category: function($stateParams, OrderCloud) {
                     return OrderCloud.Categories.Get($stateParams.categoryid);
                 }
             }
         })
+    ;
 }
 
-function CategoryFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParameters, CategoryList, TrackSearch, Parameters ) {
+function CategoryFacetsController($state, $ocMedia, OrderCloud, OrderCloudParameters, CategoryList, Parameters) {
     var vm = this;
     vm.list = CategoryList;
 
@@ -107,7 +106,7 @@ function CategoryFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParam
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Products.List( Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Products.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -115,7 +114,7 @@ function CategoryFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParam
     };
 }
 
-function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr, Underscore, $uibModal ) {
+function FacetedCategoryManageController ($state, $uibModal, toastr, Underscore, OrderCloud, Category) {
     var vm = this;
     Category.xp && Category.xp.OC_Facets ? vm.list = Category.xp.OC_Facets : vm.list = null;
     vm.category = Category;
@@ -130,7 +129,7 @@ function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr,
         });
 
         modalInstance.result.then(function(facetToSave) {
-            if(vm.category.xp == null) vm.category.xp = { OC_Facets: {}};
+            if (vm.category.xp == null) vm.category.xp = {OC_Facets: {}};
             if (vm.category.xp && !vm.category.xp.OC_Facets) vm.category.xp.OC_Facets = {};
             vm.category.xp.OC_Facets[facetToSave.facet.toLowerCase()] = {};
             vm.category.xp.OC_Facets[facetToSave.facet.toLowerCase()].Values = facetToSave.facetValues;
@@ -140,11 +139,10 @@ function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr,
                     toastr.success('Your category facet has been saved successfully');
                     $state.reload();
                 });
-        })
+        });
     };
 
-
-    vm.addValueExisting = function (facetName, index) {
+    vm.addValueExisting = function(facetName, index) {
         vm.category.xp.OC_Facets[facetName].Values.push(vm[facetName].newFacetValue.toLowerCase());
         OrderCloud.Categories.Update(vm.category.ID, vm.category)
             .then(function() {
@@ -159,22 +157,22 @@ function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr,
     };
 
     vm.toggleFacetRequired = function(facetName) {
-            vm.category.xp.OC_Facets[facetName].isRequired = !vm.category.xp.OC_Facets[facetName].isRequired;
-            OrderCloud.Categories.Update(vm.category.ID, vm.category);
+        vm.category.xp.OC_Facets[facetName].isRequired = !vm.category.xp.OC_Facets[facetName].isRequired;
+        OrderCloud.Categories.Update(vm.category.ID, vm.category);
     };
 
     vm.deleteFacet = function(facetName) {
-        if(confirm('Are you sure you want to delete this facet?')) {
-            if(Object.keys(vm.category.xp.OC_Facets).length === 1) {
+        if (confirm('Are you sure you want to delete this facet?')) {
+            if (Object.keys(vm.category.xp.OC_Facets).length === 1) {
                 delete vm.category.xp.OC_Facets;
                 OrderCloud.Categories.Update(vm.category.ID, vm.category)
-                    .then(function(){
+                    .then(function() {
                     var keyName = 'xp.OC_Facets.' + vm.category.ID + '.' + facetName;
                     var filterObj = {};
                     filterObj[keyName] = '*';
                     OrderCloud.Products.List(null, 1, 100, null,null, filterObj)
                         .then(function(matchingProds) {
-                            console.log(matchingProds)
+                            console.log(matchingProds);
                             angular.forEach(Underscore.uniq(matchingProds.Items, true, 'ID'), function(prod) {
                                 delete prod.xp.OC_Facets[vm.category.ID];
                                 OrderCloud.Products.Update(prod.ID, prod);
@@ -185,11 +183,11 @@ function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr,
             else {
                 delete vm.category.xp.OC_Facets[facetName];
                 OrderCloud.Categories.Update(vm.category.ID, vm.category)
-                    .then(function(){
+                    .then(function() {
                         var keyName = 'xp.OC_Facets.' + vm.category.ID + '.' + facetName;
                         var filterObj = {};
                         filterObj[keyName] = '*';
-                        OrderCloud.Products.List(null, 1, 100, null,null, filterObj)
+                        OrderCloud.Products.List(null, 1, 100, null, null, filterObj)
                             .then(function(matchingProds) {
                                 angular.forEach(Underscore.uniq(matchingProds.Items, true, 'ID'), function(prod) {
                                     delete prod.xp.OC_Facets[vm.category.ID][facetName];
@@ -203,7 +201,6 @@ function FacetedCategoryManageController ( $state, Category, OrderCloud, toastr,
         else {
             //do nothing
         }
-
     };
 }
 
@@ -215,10 +212,10 @@ function CategoryFacetsModalController($uibModalInstance) {
     vm.facet = null;
 
     vm.addValue = function() {
-        if(vm.facetValue != null) {
+        if (vm.facetValue != null) {
             vm.facetValues.push(vm.facetValue);
             vm.facetValue = null;
-            $( "#facetValue" ).focus();
+            $('#facetValue').focus();
         }
     };
 
@@ -226,7 +223,7 @@ function CategoryFacetsModalController($uibModalInstance) {
         vm.facetValues.splice(index, 1);
     };
 
-    vm.save = function () {
+    vm.save = function() {
         var facetToSave = {
             facet: vm.facet,
             facetValues: vm.facetValues,
@@ -235,7 +232,7 @@ function CategoryFacetsModalController($uibModalInstance) {
         $uibModalInstance.close(facetToSave);
     };
 
-    vm.cancel = function () {
+    vm.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }

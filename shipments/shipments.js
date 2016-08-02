@@ -1,23 +1,21 @@
-angular.module( 'orderCloud' )
-
-    .config( ShipmentsConfig )
-    .controller( 'ShipmentsCtrl', ShipmentsController )
-    .controller( 'ShipmentEditCtrl', ShipmentEditController )
-    .controller( 'ShipmentCreateCtrl', ShipmentCreateController )
-
+angular.module('orderCloud')
+    .config(ShipmentsConfig)
+    .controller('ShipmentsCtrl', ShipmentsController)
+    .controller('ShipmentEditCtrl', ShipmentEditController)
+    .controller('ShipmentCreateCtrl', ShipmentCreateController)
 ;
 
-function ShipmentsConfig( $stateProvider ) {
+function ShipmentsConfig($stateProvider) {
     $stateProvider
         .state('shipments', {
             parent: 'base',
-            templateUrl:'shipments/templates/shipments.tpl.html',
+            templateUrl: 'shipments/templates/shipments.tpl.html',
             controller: 'ShipmentsCtrl',
             controllerAs: 'shipments',
             url: '/shipments?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Shipments'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
                 ShipmentList: function(OrderCloud, Parameters) {
@@ -25,25 +23,25 @@ function ShipmentsConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'shipments.edit', {
+        .state('shipments.edit', {
             url: '/:shipmentid/edit',
-            templateUrl:'shipments/templates/shipmentEdit.tpl.html',
-            controller:'ShipmentEditCtrl',
+            templateUrl: 'shipments/templates/shipmentEdit.tpl.html',
+            controller: 'ShipmentEditCtrl',
             controllerAs: 'shipmentEdit',
             resolve: {
                 SelectedShipment: function($stateParams, OrderCloud) {
                     return OrderCloud.Shipments.Get($stateParams.shipmentid);
                 },
-                OrderList: function(OrderCloud,SelectedShipment) {
+                OrderList: function(OrderCloud, SelectedShipment) {
                     return OrderCloud.Orders.ListIncoming(null,null,SelectedShipment.Items[0].OrderID);
 
                 }
             }
         })
-        .state( 'shipments.create', {
+        .state('shipments.create', {
             url: '/create',
-            templateUrl:'shipments/templates/shipmentCreate.tpl.html',
-            controller:'ShipmentCreateCtrl',
+            templateUrl: 'shipments/templates/shipmentCreate.tpl.html',
+            controller: 'ShipmentCreateCtrl',
             controllerAs: 'shipmentCreate',
             resolve: {
                 OrderList: function(OrderCloud) {
@@ -51,9 +49,10 @@ function ShipmentsConfig( $stateProvider ) {
                 }
             }
         })
+    ;
 }
 
-function ShipmentsController( ShipmentList, OrderCloudParameters, OrderCloud, Parameters, $ocMedia, $state ) {
+function ShipmentsController($state, $ocMedia, OrderCloud, OrderCloudParameters, ShipmentList, Parameters) {
     var vm = this;
     vm.list = ShipmentList;
     vm.parameters = Parameters;
@@ -100,7 +99,7 @@ function ShipmentsController( ShipmentList, OrderCloudParameters, OrderCloud, Pa
                 break;
             case '!' + value:
                 vm.parameters.sortBy = null;
-                break
+                break;
             default:
                 vm.parameters.sortBy = value;
         }
@@ -126,10 +125,9 @@ function ShipmentsController( ShipmentList, OrderCloudParameters, OrderCloud, Pa
                 vm.list.Meta = data.Meta;
             });
     };
-
 }
 
-function ShipmentEditController( $exceptionHandler, $state, OrderCloud, SelectedShipment, OrderList, toastr, Parameters) {
+function ShipmentEditController($exceptionHandler, $state, OrderCloud, SelectedShipment, OrderList, toastr, Parameters) {
     var vm = this,
         shipmentid = SelectedShipment.ID;
     vm.ShipmentID = SelectedShipment.ID;
@@ -141,14 +139,14 @@ function ShipmentEditController( $exceptionHandler, $state, OrderCloud, Selected
         pagingfunction: PagingFunction,
         list: []
     };
-    if (vm.shipment.DateShipped != null){
+    if (vm.shipment.DateShipped != null) {
         vm.shipment.DateShipped = new Date(vm.shipment.DateShipped);
     }
 
     vm.goToLineItems = function(order) {
         vm.OrderSelected = order.ID;
         OrderCloud.LineItems.List(vm.OrderSelected,null, 1, 20)
-            .then(function(data){
+            .then(function(data) {
                 vm.lineitems.list = data;
                 angular.forEach(vm.lineitems.list.Items, function(li) {
                     angular.forEach(vm.shipment.Items, function(shipli) {
@@ -185,7 +183,7 @@ function ShipmentEditController( $exceptionHandler, $state, OrderCloud, Selected
 
         OrderCloud.Shipments.Update(shipmentid, vm.shipment)
             .then(function() {
-                $state.go('shipments', {}, {reload:true});
+                $state.go('shipments', {}, {reload: true});
                 toastr.success('Shipment Updated', 'Success');
             })
             .catch(function(ex) {
@@ -196,7 +194,7 @@ function ShipmentEditController( $exceptionHandler, $state, OrderCloud, Selected
     vm.Delete = function() {
         OrderCloud.Shipments.Delete(shipmentid, false)
             .then(function() {
-                $state.go('shipments', {}, {reload:true});
+                $state.go('shipments', {}, {reload: true});
                 toastr.success('Shipment Deleted', 'Success');
             })
             .catch(function(ex) {
@@ -209,7 +207,7 @@ function ShipmentEditController( $exceptionHandler, $state, OrderCloud, Selected
     }
 }
 
-function ShipmentCreateController( $exceptionHandler, $state, OrderCloud, OrderList, toastr) {
+function ShipmentCreateController($exceptionHandler, $state, OrderCloud, OrderList, toastr) {
     var vm = this;
     vm.shipment = {};
     vm.list = OrderList;
@@ -222,7 +220,7 @@ function ShipmentCreateController( $exceptionHandler, $state, OrderCloud, OrderL
     vm.goToLineItems = function(order) {
         vm.orderID=order.ID;
         OrderCloud.LineItems.List(order.ID,null, 1, 20)
-            .then(function(data){
+            .then(function(data) {
                 vm.lineitems.list = data;
                 vm.OrderSelected = true;
             })
@@ -238,13 +236,13 @@ function ShipmentCreateController( $exceptionHandler, $state, OrderCloud, OrderL
 
     vm.Submit = function() {
         angular.forEach(vm.lineitems.list.Items, function(li) {
-            if(li.addToShipment){
+            if (li.addToShipment) {
                 vm.shipment.Items.push({OrderID: vm.orderID, LineItemId: li.ID, QuantityShipped: li.QuantityShipped});
             }
         });
         OrderCloud.Shipments.Create(vm.shipment)
             .then(function() {
-                $state.go('shipments', {}, {reload:true});
+                $state.go('shipments', {}, {reload: true});
                 toastr.success('Shipment Created', 'Success');
             })
             .catch(function(ex) {

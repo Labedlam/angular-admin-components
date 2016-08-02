@@ -1,32 +1,30 @@
-angular.module( 'orderCloud' )
-
-    .config( BuyerConfig )
-    .controller( 'BuyerCtrl', BuyerController )
-    .controller( 'BuyerEditCtrl', BuyerEditController )
-    .controller( 'BuyerCreateCtrl', BuyerCreateController )
-
+angular.module('orderCloud')
+    .config(BuyerConfig)
+    .controller('BuyerCtrl', BuyerController)
+    .controller('BuyerEditCtrl', BuyerEditController)
+    .controller('BuyerCreateCtrl', BuyerCreateController)
 ;
 
-function BuyerConfig( $stateProvider ) {
+function BuyerConfig($stateProvider) {
     $stateProvider
-        .state( 'buyers', {
+        .state('buyers', {
             parent: 'base',
-            templateUrl:'buyers/templates/buyers.tpl.html',
-            controller:'BuyerCtrl',
+            templateUrl: 'buyers/templates/buyers.tpl.html',
+            controller: 'BuyerCtrl',
             controllerAs: 'buyers',
             url: '/buyers?search&page&pageSize&searchOn&sortBy',
-            data: { componentName: 'Buyers' },
+            data: {componentName: 'Buyers'},
             resolve : {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                BuyerList: function( OrderCloud, Parameters ) {
+                BuyerList: function(OrderCloud, Parameters) {
                     return OrderCloud.Buyers.List(Parameters.search, Parameters.page, Parameters.pageSize || 12/*, Parameters.searchOn, Parameters.sortBy, Parameters.filters*/);
                     //Commenting out params that don't exist yet in the API
                 }
             }
         })
-        .state( 'buyers.edit', {
+        .state('buyers.edit', {
             url: '/:buyerid/edit',
             templateUrl: 'buyers/templates/buyerEdit.tpl.html',
             controller: 'BuyerEditCtrl',
@@ -37,7 +35,7 @@ function BuyerConfig( $stateProvider ) {
                 }
             }
         })
-        .state( 'buyers.create', {
+        .state('buyers.create', {
             url: '/create',
             templateUrl: 'buyers/templates/buyerCreate.tpl.html',
             controller: 'BuyerCreateCtrl',
@@ -45,7 +43,7 @@ function BuyerConfig( $stateProvider ) {
         });
 }
 
-function BuyerController( $state, $ocMedia,BuyerList, OrderCloudParameters, OrderCloud, Parameters) {
+function BuyerController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, BuyerList) {
     var vm = this;
     vm.list = BuyerList;
     vm.parameters = Parameters;
@@ -118,7 +116,7 @@ function BuyerController( $state, $ocMedia,BuyerList, OrderCloudParameters, Orde
     };
 }
 
-function BuyerEditController($exceptionHandler, $state, SelectedBuyer, OrderCloud, toastr) {
+function BuyerEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedBuyer) {
     var vm = this;
     vm.buyer = SelectedBuyer;
     vm.buyerName = SelectedBuyer.Name;
@@ -126,26 +124,26 @@ function BuyerEditController($exceptionHandler, $state, SelectedBuyer, OrderClou
     vm.Submit = function() {
         OrderCloud.Buyers.Update(vm.buyer, SelectedBuyer.ID)
             .then(function() {
-                $state.go('buyers', {}, {reload:true});
+                $state.go('buyers', {}, {reload: true});
                 toastr.success('Buyer Updated', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
 }
 
-function BuyerCreateController($exceptionHandler, $state, OrderCloud, toastr) {
+function BuyerCreateController($exceptionHandler, $state, toastr, OrderCloud) {
     var vm = this;
 
-    vm.Submit = function () {
+    vm.Submit = function() {
         OrderCloud.Buyers.Create(vm.buyer)
             .then(function() {
-                $state.go('buyers', {}, {reload:true});
+                $state.go('buyers', {}, {reload: true});
                 toastr.success('Buyer Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
             });
-    }
+    };
 }

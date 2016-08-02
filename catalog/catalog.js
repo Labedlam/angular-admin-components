@@ -1,5 +1,4 @@
 angular.module('orderCloud')
-
     .config(CatalogConfig)
     .factory('AddToOrder', AddToOrder)
     .controller('CatalogCtrl', CatalogController)
@@ -10,7 +9,6 @@ angular.module('orderCloud')
     .directive('catalogTree', CatalogTree)
     .directive('ordercloudCatalogFacets', CatalogFacetsDirective)
     .factory('CatalogFacetsService', CatalogFacetsService)
-
 ;
 
 function CatalogConfig($stateProvider) {
@@ -48,7 +46,6 @@ function AddToOrder($q, $rootScope, Underscore, OrderCloud, CurrentOrder, LineIt
 
     function _add(product) {
         var deferred = $q.defer();
-
 
         CurrentOrder.Get()
             .then(function(order) {
@@ -99,10 +96,11 @@ function CatalogController(Catalog, Order) {
     var vm = this;
     vm.showTree = true;
     vm.currentOrder = Order;
+    vm.categories = Catalog;
+
     vm.toggleTree = function() {
         vm.showTree = !vm.showTree;
     };
-    vm.categories = Catalog;
 }
 
 function CategoryListDirective() {
@@ -127,10 +125,10 @@ function ProductListDirective() {
 
 function CatalogTreeService($q, Underscore, OrderCloud) {
     return {
-        GetCatalogTree: tree
+        GetCatalogTree: _tree
     };
 
-    function tree() {
+    function _tree() {
         var tree = [];
         var dfd = $q.defer();
         OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, 'all')
@@ -174,7 +172,6 @@ function CatalogTree($q, CatalogTreeService) {
                 });
             } else {
                 d.resolve();
-
             }
             return d.promise;
         },
@@ -199,7 +196,7 @@ function CatalogNode($compile) {
     };
 }
 
-function CatalogFacetsDirective($rootScope, $q, $stateParams, $state, Underscore, CatalogFacetsService, OrderCloud) {
+function CatalogFacetsDirective($rootScope, $q, $stateParams, $state, Underscore, OrderCloud, CatalogFacetsService) {
     return {
         restrict: 'E',
         templateUrl: 'catalog/templates/catalogFacets.tpl.html',
@@ -207,7 +204,7 @@ function CatalogFacetsDirective($rootScope, $q, $stateParams, $state, Underscore
         link: function(scope) {
             function initFacets() {
                 var dfd = $q.defer();
-                if($state.is('catalog.category') && $stateParams.categoryid) {
+                if ($state.is('catalog.category') && $stateParams.categoryid) {
                     CatalogFacetsService.GetCategoryFacets($stateParams.categoryid)
                         .then(function(data) {
                             scope.facetList = data;
@@ -225,7 +222,7 @@ function CatalogFacetsDirective($rootScope, $q, $stateParams, $state, Underscore
                         if (!n || n === o) return;
                         var filterObj = {};
                         angular.forEach(n, function(facet, facetName) {
-                            var filterKey = "xp.OC_Facets." + $stateParams.categoryid + '.' + facetName;
+                            var filterKey = 'xp.OC_Facets.' + $stateParams.categoryid + '.' + facetName;
                             var filterValue = Underscore.keys(Underscore.pick(facet, function(value, key, object) {
                                 return value;
                             })).join('|');
@@ -236,37 +233,34 @@ function CatalogFacetsDirective($rootScope, $q, $stateParams, $state, Underscore
                         });
                         if (Underscore.keys(filterObj).length) {
                             OrderCloud.Products.List(null, 1, 100, null,null, filterObj)
-                                .then(function(data){
+                                .then(function(data) {
                                     $rootScope.$broadcast('OC:FacetsUpdated', data);
-                                })
+                                });
                         } else {
                             $rootScope.$broadcast('OC:FacetsUpdated', null);
                         }
-
                     }, true)
                 });
 
-            scope.$watch(function(){
+            scope.$watch(function() {
                 return $stateParams.categoryid;
             }, function(n, o) {
                 initFacets();
             });
-
-
         }
     };
 }
 
 function CatalogFacetsService($q, OrderCloud) {
     return {
-        GetCategoryFacets: getCategoryFacets
+        GetCategoryFacets: _getCategoryFacets
     };
 
-    function getCategoryFacets(catID) {
+    function _getCategoryFacets(catID) {
         var dfd = $q.defer();
         OrderCloud.Categories.Get(catID)
-            .then(function (category){
-                if(category.xp && category.xp.OC_Facets) {
+            .then(function(category) {
+                if (category.xp && category.xp.OC_Facets) {
                     var result = {};
                     angular.forEach(category.xp.OC_Facets, function(val, key) {
                         var facetValues = {};

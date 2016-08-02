@@ -23,7 +23,7 @@
     <div class="row" style="margin-top:15px;" uib-collapse="!spendingAccounts.showFilters">
         <div class="col-md-6 col-lg-4">
             <div class="form-group" ng-if="application.$ocMedia('max-width:767px')">
-                <label>Sorty By:</label>
+                <label>Sort By:</label>
                 <div ng-class="{'input-group':spendingAccounts.sortSelection}">
                     <select placeholder="Sort" class="form-control" ng-model="spendingAccounts.sortSelection" ng-change="spendingAccounts.updateSort()">
                         <option value="">None</option>
@@ -76,7 +76,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="spendingAccount in spendingAccounts.list.Items" ui-sref="spendingAccounts.edit({spendingAccountid:spendingAccount.ID})">
+            <tr ng-repeat="spendingAccount in spendingAccounts.list.Items" ui-sref="spendingAccounts.edit({spendingaccountid:spendingAccount.ID})">
                 <th scope="row">{{spendingAccount.ID}}</th>
                 <td data-title="Name">{{spendingAccount.Name}}</td>
                 <td data-title="Balance">{{spendingAccount.Balance | currency}}</td>

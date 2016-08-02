@@ -39,13 +39,13 @@ describe('Factory: PriceBreak', function() {
             ]
         };
     }));
-    describe('setMinMax', function(){
+    describe('setMinMax', function() {
         beforeEach(inject(function(PriceBreak) {
             priceBreakService = PriceBreak;
             priceSchedule.RestrictedQuantity = true;
             priceBreakService.setMinMax(priceSchedule);
         }));
-        it('should set Min and Max Quantity', function () {
+        it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);
             expect(priceSchedule.MaxQuantity).toEqual(4);
         });
@@ -59,11 +59,11 @@ describe('Factory: PriceBreak', function() {
             priceSchedule.RestrictedQuantity = true;
             priceBreakService.addPriceBreak(priceSchedule, price, quantity);
         }));
-        it('should set Min and Max Quantity', function () {
+        it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);
             expect(priceSchedule.MaxQuantity).toEqual(5);
         });
-        it('should add a PriceBreak', function () {
+        it('should add a PriceBreak', function() {
             expect(priceSchedule.PriceBreaks.length).toEqual(5);
         });
     });
@@ -75,11 +75,11 @@ describe('Factory: PriceBreak', function() {
             priceSchedule.RestrictedQuantity = true;
             priceBreakService.deletePriceBreak(priceSchedule, index);
         }));
-        it('should set Min and Max Quantity', function () {
+        it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);
             expect(priceSchedule.MaxQuantity).toEqual(3);
         });
-        it('should delete a PriceBreak', function () {
+        it('should delete a PriceBreak', function() {
             expect(priceSchedule.PriceBreaks.length).toEqual(3);
         });
     });

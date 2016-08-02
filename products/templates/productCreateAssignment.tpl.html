@@ -104,6 +104,6 @@
 		</div>
 	</div>
 	<button type="button" class="btn btn-default" ui-sref="^.assignments({productid:productCreateAssignment.model.ProductID})">Cancel</button>
-	<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.submit()" ng-disabled="!( ((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.model.StandardPriceScheduleID.length || productCreateAssignment.model.ReplenishmentPriceScheduleID.length) )">Save Assignment</button>
+	<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.submit()" ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.model.StandardPriceScheduleID.length || productCreateAssignment.model.ReplenishmentPriceScheduleID.length))">Save Assignment</button>
 </div>
 

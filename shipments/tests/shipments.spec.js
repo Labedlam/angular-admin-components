@@ -30,7 +30,7 @@ describe('Component: Shipments', function() {
             state = $state.get('shipments');
             spyOn(oc.Shipments, 'List').and.returnValue(null);
         }));
-        it('should resolve ShipmentList', inject(function ($injector) {
+        it('should resolve ShipmentList', inject(function($injector) {
             $injector.invoke(state.resolve.ShipmentList);
             expect(oc.Shipments.List).toHaveBeenCalled();
         }));
@@ -43,11 +43,11 @@ describe('Component: Shipments', function() {
             spyOn(oc.Shipments, 'Get').and.returnValue(null);
             spyOn(oc.Orders, 'List').and.returnValue(null);
         }));
-        it('should resolve SelectedShipment', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedShipment', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedShipment);
             expect(oc.Shipments.Get).toHaveBeenCalledWith($stateParams.shipmentid);
         }));
-        it('should resolve OrderList', inject(function ($injector) {
+        it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
             expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
         }));
@@ -59,7 +59,7 @@ describe('Component: Shipments', function() {
             state = $state.get('shipments.create');
             spyOn(oc.Orders, 'List').and.returnValue(null);
         }));
-        it('should resolve OrderList', inject(function ($injector) {
+        it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
             expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
         }));
@@ -93,10 +93,10 @@ describe('Component: Shipments', function() {
                shipmentEditCtrl.OrderSelected = true;
                shipmentEditCtrl.unselectOrder();
            }));
-            it('should make OrderSelected false', inject(function () {
+            it('should make OrderSelected false', inject(function() {
                 expect(shipmentEditCtrl.OrderSelected).toEqual(false);
             }));
-            it('should empty list', inject(function () {
+            it('should empty list', inject(function() {
                 expect(shipmentEditCtrl.lineitems.list.length).toEqual(0);
             }));
         });
@@ -115,16 +115,16 @@ describe('Component: Shipments', function() {
                 shipmentEditCtrl.shipment = shipment;
                 shipmentEditCtrl.deleteLineItem(index);
             });
-            it('should call the Shipments Patch method', function () {
+            it('should call the Shipments Patch method', function() {
                 expect(oc.Shipments.Patch).toHaveBeenCalledWith(shipment.ID, {Items: shipmentEditCtrl.shipment.Items});
             });
-            it('should make addToShipment false', inject(function () {
+            it('should make addToShipment false', inject(function() {
                 expect(shipmentEditCtrl.lineitems.list.Items[0].addToShipment).toEqual(false);
             }));
-            it('should make disabled false', inject(function () {
+            it('should make disabled false', inject(function() {
                 expect(shipmentEditCtrl.lineitems.list.Items[0].disabled).toEqual(false);
             }));
-            it('should empty shipment list', inject(function () {
+            it('should empty shipment list', inject(function() {
                 expect(shipmentEditCtrl.shipment.Items.length).toEqual(0);
             }));
         });
@@ -140,7 +140,7 @@ describe('Component: Shipments', function() {
                 shipmentEditCtrl.goToLineItems(order);
                 scope.$digest();
             });
-            it('should call the LineItems List method', function () {
+            it('should call the LineItems List method', function() {
                 expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, 1, 20);
             });
         });
@@ -159,7 +159,7 @@ describe('Component: Shipments', function() {
                 expect(oc.Shipments.Update).toHaveBeenCalledWith(shipmentEditCtrl.shipmentID, shipmentEditCtrl.shipment);
             });
             it ('should enter the shipments state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload: true});
             }));
         });
 
@@ -175,7 +175,7 @@ describe('Component: Shipments', function() {
                 expect(oc.Shipments.Delete).toHaveBeenCalledWith(shipment.ID, false);
             });
             it ('should enter the shipments state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload: true});
             }));
         });
 
@@ -218,7 +218,7 @@ describe('Component: Shipments', function() {
                 shipmentCreateCtrl.goToLineItems(order);
                 scope.$digest();
             });
-            it('should call the LineItems List method', function () {
+            it('should call the LineItems List method', function() {
                 expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, 1, 20);
             });
         });
@@ -229,10 +229,10 @@ describe('Component: Shipments', function() {
                 shipmentCreateCtrl.OrderSelected = true;
                 shipmentCreateCtrl.unselectOrder();
             }));
-            it('should make OrderSelected false', inject(function () {
+            it('should make OrderSelected false', inject(function() {
                 expect(shipmentCreateCtrl.OrderSelected).toEqual(false);
             }));
-            it('should empty list', inject(function () {
+            it('should empty list', inject(function() {
                 expect(shipmentCreateCtrl.lineitems.list.length).toEqual(0);
             }));
         });
@@ -250,7 +250,7 @@ describe('Component: Shipments', function() {
                 expect(oc.Shipments.Create).toHaveBeenCalledWith(shipment);
             });
             it ('should enter the shipments state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('shipments', {}, {reload: true});
             }));
         });
     });

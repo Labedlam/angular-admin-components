@@ -22,10 +22,11 @@ function checkoutPaymentConfig($stateProvider) {
                     return OrderCloud.SpendingAccounts.List(null, null, null, null, null, {'RedemptionCode': '!*'});
                 }
 			}
-		});
+		})
+    ;
 }
 
-function CheckoutPaymentController($state, Underscore, AvailableCreditCards, AvailableSpendingAccounts, OrderCloud, toastr, OrderPayments, allowMultiplePayments, creditCardExpirationDate) {
+function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, AvailableCreditCards, AvailableSpendingAccounts, OrderPayments, allowMultiplePayments, creditCardExpirationDate) {
 	var vm = this;
     vm.allowMultiplePayments = allowMultiplePayments;
     vm.currentOrderPayments = OrderPayments.Items;
@@ -44,20 +45,7 @@ function CheckoutPaymentController($state, Underscore, AvailableCreditCards, Ava
     vm.today = new Date();
     vm.creditCards = AvailableCreditCards.Items;
     vm.spendingAccounts = AvailableSpendingAccounts.Items;
-    vm.months =[
-        '01',
-        '02',
-        '03',
-        '04',
-        '05',
-        '06',
-        '07',
-        '08',
-        '09',
-        '10',
-        '11',
-        '12'
-    ];
+    vm.months =['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     vm.years = Underscore.range(vm.today.getFullYear(), vm.today.getFullYear() + 20, 1);
     vm.expireMonth = creditCardExpirationDate.expirationMonth;
     vm.expireYear = creditCardExpirationDate.expirationYear;
@@ -98,12 +86,12 @@ function CheckoutPaymentController($state, Underscore, AvailableCreditCards, Ava
         }
         else {
             OrderCloud.Payments.Delete(order.ID, vm.currentOrderPayments[index].ID)
-                .then(function(){
+                .then(function() {
                     OrderCloud.Payments.Create(order.ID, {Type: vm.currentOrderPayments[index].Type})
                         .then(function() {
                             $state.reload();
                         });
-                })
+                });
         }
     }
 
@@ -138,7 +126,7 @@ function CheckoutPaymentController($state, Underscore, AvailableCreditCards, Ava
     }
 
     function SetCreditCard(order, index) {
-        if (vm.currentOrderPayments[index].Type === "CreditCard") {
+        if (vm.currentOrderPayments[index].Type === 'CreditCard') {
             OrderCloud.Payments.Patch(order.ID, vm.currentOrderPayments[index].ID, {CreditCardID: vm.currentOrderPayments[index].CreditCardID})
                 .then(function() {
                     $state.reload();
@@ -157,7 +145,7 @@ function CheckoutPaymentController($state, Underscore, AvailableCreditCards, Ava
                         .then(function() {
                             $state.reload();
                             toastr.error(err.data.Errors[0].Message + ' Please choose another payment method, or another spending account.', 'Error:')
-                        })
+                        });
                 });
         }
     }
@@ -181,15 +169,14 @@ function CheckoutPaymentController($state, Underscore, AvailableCreditCards, Ava
 
     function SetAmountMax(order) {
         angular.forEach(vm.currentOrderPayments, function(payment) {
-            var maxAmount = order.Total - Underscore.reduce(Underscore.pluck(vm.currentOrderPayments, 'Amount'), function(a, b) { return a + b; });
+            var maxAmount = order.Total - Underscore.reduce(Underscore.pluck(vm.currentOrderPayments, 'Amount'), function(a, b) {return a + b; });
             payment.MaxAmount = (payment.Amount + maxAmount).toString();
         });
-
     }
 
-    function SavePONumber(index,order){
+    function SavePONumber(index,order) {
         !vm.currentOrderPayments[index].xp ? vm.currentOrderPayments[index].xp = {} : vm.currentOrderPayments[index].xp;
-        if(vm.currentOrderPayments[index].Type === "PurchaseOrder"){
+        if (vm.currentOrderPayments[index].Type === "PurchaseOrder") {
             OrderCloud.Payments.Update(order.ID, vm.currentOrderPayments[index].ID, vm.currentOrderPayments[index]);
         }
     }

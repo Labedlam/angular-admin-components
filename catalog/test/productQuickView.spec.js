@@ -11,7 +11,7 @@ describe('Component: Catalog', function() {
 
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
-    beforeEach(inject(function ($q, $rootScope, OrderCloud, AddToOrder, CurrentOrder) {
+    beforeEach(inject(function($q, $rootScope, OrderCloud, AddToOrder, CurrentOrder) {
         scope = $rootScope.$new();
         q = $q;
         oc = OrderCloud;
@@ -24,9 +24,9 @@ describe('Component: Catalog', function() {
     }));
 
 
-    describe('Controller: ProductQuickViewController', function () {
+    describe('Controller: ProductQuickViewController', function() {
         var quickViewCtrl;
-        beforeEach(inject(function ($controller) {
+        beforeEach(inject(function($controller) {
             quickViewCtrl = $controller('QuickViewCtrl', {
                 $scope: scope
             });
@@ -37,16 +37,16 @@ describe('Component: Catalog', function() {
             spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(defer.promise);
             quickViewCtrl.open(fakeProduct);
         }));
-        it('Should reslove SelectedProduct and SpecList', function () {
+        it('Should reslove SelectedProduct and SpecList', function() {
             expect(oc.Me.GetProduct).toHaveBeenCalledWith(fakeProduct.ID);
             expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null,fakeProduct.ID);
         });
 
     });
 
-    describe('Controller: ProductQuickViewModalController', function () {
+    describe('Controller: ProductQuickViewModalController', function() {
         var quickViewModalCtrl;
-        beforeEach(inject(function ($controller) {
+        beforeEach(inject(function($controller) {
             quickViewModalCtrl = $controller('QuickViewModalCtrl', {
                 $scope: scope,
                 $uibModalInstance: uibModalInstance,
@@ -55,15 +55,15 @@ describe('Component: Catalog', function() {
             });
         }));
 
-        describe('addToCart', function(){
-            beforeEach(function(){
+        describe('addToCart', function() {
+            beforeEach(function() {
                 var defer = q.defer();
                 defer.resolve(fakeProduct);
                 spyOn(addToOrder, 'Add').and.returnValue(defer.promise);
                 quickViewModalCtrl.selectedProduct = fakeProduct;
                 quickViewModalCtrl.addToCart(fakeProduct);
             });
-            it('Should call Add method and pass product object', function () {
+            it('Should call Add method and pass product object', function() {
                 expect(addToOrder.Add).toHaveBeenCalledWith(fakeProduct);
             });
         });

@@ -1,49 +1,47 @@
 angular.module('orderCloud')
-
-    .config( ProductFacetsConfig )
-    .controller( 'ProductFacetsCtrl', ProductFacetsController)
-    .controller( 'ProductFacetsManageCtrl', FacetedProductManageController)
-
+    .config(ProductFacetsConfig)
+    .controller('ProductFacetsCtrl', ProductFacetsController)
+    .controller('ProductFacetsManageCtrl', FacetedProductManageController)
 ;
 
-function ProductFacetsConfig( $stateProvider ) {
+function ProductFacetsConfig($stateProvider) {
     $stateProvider
-        .state ('productFacets', {
+        .state('productFacets', {
             parent: 'base',
-            templateUrl:'facets/productFacets/templates/productFacets.tpl.html',
-            controller:'ProductFacetsCtrl',
+            templateUrl: 'facets/productFacets/templates/productFacets.tpl.html',
+            controller: 'ProductFacetsCtrl',
             controllerAs: 'facetedProd',
-            url: '/productFacets?from&to&search&page&pageSize&searchOn&sortBy&filters',
+            url: '/productfacets?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Product Facets'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                ProductList: function (OrderCloud, Parameters) {
+                ProductList: function(OrderCloud, Parameters) {
                     return OrderCloud.Products.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state ('productFacets.manage', {
+        .state('productFacets.manage', {
             url: '/:productid/manage',
             templateUrl: 'facets/productFacets/templates/productFacetsManage.tpl.html',
             controller: 'ProductFacetsManageCtrl',
             controllerAs: 'facetedProdManage',
             data: {componentName: 'Product Facets'},
             resolve: {
-                Product: function(OrderCloud, $stateParams) {
+                Product: function($stateParams, OrderCloud) {
                     return OrderCloud.Products.Get($stateParams.productid);
                 },
-                AssignedCategories: function($q, OrderCloud, $stateParams) {
+                AssignedCategories: function($q, $stateParams, OrderCloud) {
                     var dfd = $q.defer();
                     var assignedCategories = [];
                     OrderCloud.Categories.ListProductAssignments(null, $stateParams.productid)
-                        .then(function(categories){
-                            angular.forEach(categories.Items, function(cat){
+                        .then(function(categories) {
+                            angular.forEach(categories.Items, function(cat) {
                                 assignedCategories.push(OrderCloud.Categories.Get(cat.CategoryID))
                             });
                             $q.all(assignedCategories)
-                                .then(function(results){
+                                .then(function(results) {
                                     dfd.resolve(results);
                                 });
                         });
@@ -51,9 +49,10 @@ function ProductFacetsConfig( $stateProvider ) {
                 }
             }
         })
+    ;
 }
 
-function ProductFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParameters,  ProductList, Parameters ) {
+function ProductFacetsController($state, $ocMedia, OrderCloud, OrderCloudParameters,  ProductList, Parameters) {
     var vm = this;
     vm.list = ProductList;
 
@@ -121,7 +120,7 @@ function ProductFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParame
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Products.List( Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Products.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -129,16 +128,16 @@ function ProductFacetsController( $state, $ocMedia, OrderCloud, OrderCloudParame
     };
 }
 
-function FacetedProductManageController ( Product, AssignedCategories, OrderCloud, toastr, $state ) {
+function FacetedProductManageController ($state, toastr, OrderCloud, Product, AssignedCategories) {
     var vm = this;
     vm.assignedCategories = AssignedCategories;
     vm.product = Product;
-    if(vm.product.xp == null) vm.product.xp = { OC_Facets: {}};
+    if (vm.product.xp == null) vm.product.xp = {OC_Facets: {}};
     if (vm.product.xp && !vm.product.xp.OC_Facets) vm.product.xp.OC_Facets = {};
 
     vm.setSelected = function(cat, facetName, facetValue) {
         var selected = false;
-        if(vm.product.xp.OC_Facets[cat.ID] && vm.product.xp.OC_Facets[cat.ID][facetName]) {
+        if (vm.product.xp.OC_Facets[cat.ID] && vm.product.xp.OC_Facets[cat.ID][facetName]) {
             selected = vm.product.xp.OC_Facets[cat.ID][facetName].indexOf(facetValue) > -1
         }
         return selected;
@@ -147,7 +146,7 @@ function FacetedProductManageController ( Product, AssignedCategories, OrderClou
     vm.toggleSelection = function(cat, facetName, facetValue) {
         var selected = vm.setSelected(cat, facetName, facetValue);
         selected = !selected;
-        if(selected && vm.product.xp.OC_Facets[cat.ID]) {
+        if (selected && vm.product.xp.OC_Facets[cat.ID]) {
             if (vm.product.xp.OC_Facets[cat.ID][facetName]) {
                 vm.product.xp.OC_Facets[cat.ID][facetName].push(facetValue);
             } else if (!vm.product.xp.OC_Facets[cat.ID][facetName]) {
@@ -165,14 +164,14 @@ function FacetedProductManageController ( Product, AssignedCategories, OrderClou
     };
 
     vm.requiredFacet = function(cat) {
-      var disabled = false;
-      if(cat.xp && cat.xp.OC_Facets) {
-          angular.forEach((cat.xp.OC_Facets), function(facetValues, facet){
-             if(facetValues.isRequired && vm.product.xp.OC_Facets[cat.ID] && vm.product.xp.OC_Facets[cat.ID][facet] && vm.product.xp.OC_Facets[cat.ID][facet].length == 0) {
-                 disabled = true;
-             }
-          });
-      }
+        var disabled = false;
+        if (cat.xp && cat.xp.OC_Facets) {
+            angular.forEach((cat.xp.OC_Facets), function(facetValues, facet) {
+                if (facetValues.isRequired && vm.product.xp.OC_Facets[cat.ID] && vm.product.xp.OC_Facets[cat.ID][facet] && vm.product.xp.OC_Facets[cat.ID][facet].length == 0) {
+                    disabled = true;
+                }
+            });
+        }
         return disabled;
     };
 
@@ -184,19 +183,18 @@ function FacetedProductManageController ( Product, AssignedCategories, OrderClou
             });
     };
 
-
-    vm.addValueExisting = function (cat, facetName) {
+    vm.addValueExisting = function(cat, facetName) {
         cat.xp.OC_Facets[facetName].Values.push(vm.newFacetValue[facetName].toLowerCase());
         OrderCloud.Categories.Update(cat.ID, cat)
             .then(function() {
                 if (!vm.product.xp.OC_Facets) vm.product.xp.OC_Facets = {};
                 if (!vm.product.xp.OC_Facets[cat.ID]) vm.product.xp.OC_Facets[cat.ID] = {};
-                if(!vm.product.xp.OC_Facets[cat.ID][facetName]) vm.product.xp.OC_Facets[cat.ID][facetName] = [];
+                if (!vm.product.xp.OC_Facets[cat.ID][facetName]) vm.product.xp.OC_Facets[cat.ID][facetName] = [];
                 vm.product.xp.OC_Facets[cat.ID][facetName].push(vm.newFacetValue[facetName].toLowerCase());
                 OrderCloud.Products.Update(vm.product.ID, vm.product)
                     .then(function() {
                         vm.newFacetValue[facetName] = null;
-                        $state.go($state.current, {}, {reload: true})
+                        $state.go($state.current, {}, {reload: true});
                     });
             });
     };

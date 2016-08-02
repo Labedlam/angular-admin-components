@@ -25,7 +25,7 @@ describe('Component: CreditCards', function() {
             state = $state.get('creditCards');
             spyOn(oc.CreditCards, 'List').and.returnValue(null);
         }));
-        it('should resolve CreditCardList', inject(function ($injector) {
+        it('should resolve CreditCardList', inject(function($injector) {
             $injector.invoke(state.resolve.CreditCardList);
             expect(oc.CreditCards.List).toHaveBeenCalled();
         }));
@@ -37,9 +37,9 @@ describe('Component: CreditCards', function() {
             state = $state.get('creditCards.edit');
             spyOn(oc.CreditCards, 'Get').and.returnValue(null);
         }));
-        it('should resolve SelectedCreditCard', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedCreditCard', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedCreditCard);
-            expect(oc.CreditCards.Get).toHaveBeenCalledWith($stateParams.creditCardid);
+            expect(oc.CreditCards.Get).toHaveBeenCalledWith($stateParams.creditcardid);
         }));
     });
 
@@ -52,21 +52,21 @@ describe('Component: CreditCards', function() {
             spyOn(oc.CreditCards, 'ListAssignments').and.returnValue(null);
             spyOn(oc.CreditCards, 'Get').and.returnValue(null);
         }));
-        it('should resolve Buyer', inject(function ($injector) {
+        it('should resolve Buyer', inject(function($injector) {
             $injector.invoke(state.resolve.Buyer);
             expect(oc.Buyers.Get).toHaveBeenCalled();
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignmentsList', inject(function ($injector, $stateParams) {
+        it('should resolve AssignmentsList', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedUserGroups);
-            expect(oc.CreditCards.ListAssignments).toHaveBeenCalledWith($stateParams.creditCardid);
+            expect(oc.CreditCards.ListAssignments).toHaveBeenCalledWith($stateParams.creditcardid);
         }));
-        it('should resolve SelectedCreditCard', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedCreditCard', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedCreditCard);
-            expect(oc.CreditCards.Get).toHaveBeenCalledWith($stateParams.creditCardid);
+            expect(oc.CreditCards.Get).toHaveBeenCalledWith($stateParams.creditcardid);
         }));
     });
 
@@ -94,7 +94,7 @@ describe('Component: CreditCards', function() {
                 expect(oc.CreditCards.Update).toHaveBeenCalledWith(creditCardEditCtrl.creditCardID, creditCardEditCtrl.creditCard);
             });
             it ('should enter the creditCards state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload: true});
             }));
         });
 
@@ -110,7 +110,7 @@ describe('Component: CreditCards', function() {
                 expect(oc.CreditCards.Delete).toHaveBeenCalledWith(creditCard.ID);
             });
             it ('should enter the creditCards state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload: true});
             }));
         });
     });
@@ -138,7 +138,7 @@ describe('Component: CreditCards', function() {
                 expect(oc.CreditCards.Create).toHaveBeenCalledWith(creditCard);
             });
             it ('should enter the creditCards state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('creditCards', {}, {reload: true});
             }));
         });
     });
@@ -158,11 +158,11 @@ describe('Component: CreditCards', function() {
 
         describe('SaveAssignment', function() {
             beforeEach(inject(function(Assignments) {
-                spyOn(Assignments, 'saveAssignments').and.returnValue(null);
+                spyOn(Assignments, 'SaveAssignments').and.returnValue(null);
                 creditCardAssignCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.saveAssignments).toHaveBeenCalled();
+                expect(Assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
@@ -172,7 +172,7 @@ describe('Component: CreditCards', function() {
                 creditCardAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
-                expect(Paging.paging).toHaveBeenCalled();
+                expect(Paging.Paging).toHaveBeenCalled();
             }));
         });
     });

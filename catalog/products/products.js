@@ -1,8 +1,6 @@
 angular.module('orderCloud')
-
     .config(ProductListConfig)
     .controller('ProductListCtrl', ProductListController)
-
 ;
 
 function ProductListConfig($stateProvider) {
@@ -12,7 +10,8 @@ function ProductListConfig($stateProvider) {
             templateUrl: 'catalog/products/templates/products.tpl.html',
             controller: 'ProductListCtrl',
             controllerAs: 'products'
-        });
+        })
+    ;
 }
 
 function ProductListController($q, OrderCloud) {

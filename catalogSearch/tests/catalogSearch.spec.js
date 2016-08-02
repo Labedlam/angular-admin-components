@@ -1,4 +1,4 @@
-describe('Component: Catalog Search', function(){
+describe('Component: Catalog Search', function() {
     var scope,
         q,
         oc,
@@ -10,7 +10,7 @@ describe('Component: Catalog Search', function(){
         ;
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
-    beforeEach(inject(function($q,$rootScope,OrderCloud){
+    beforeEach(inject(function($q,$rootScope,OrderCloud) {
         q = $q;
         scope = $rootScope.$new();
         oc = OrderCloud;
@@ -44,10 +44,10 @@ describe('Component: Catalog Search', function(){
                 "NameType": 'Category'
             }
     }));
-    describe('State: catalogSearchResults', function(){
+    describe('State: catalogSearchResults', function() {
         var state;
-        beforeEach(inject(function($state){
-            state = $state.get('catalogSearchResults', {}, {reload:true});
+        beforeEach(inject(function($state) {
+            state = $state.get('catalogSearchResults', {}, {reload: true});
             spyOn(oc.Me, 'ListCategories');
             spyOn(oc.Me, 'ListProducts');
         }));
@@ -60,7 +60,7 @@ describe('Component: Catalog Search', function(){
             expect(oc.Me.ListProducts).toHaveBeenCalledWith($stateParams.searchTerm);
         }))
     });
-    describe('Controller: CatalogSearchController', function(){
+    describe('Controller: CatalogSearchController', function() {
         var catalogSearchCtrl;
         beforeEach(inject(function($state,$controller) {
             catalogSearchCtrl = $controller('CatalogSearchCtrl', {
@@ -68,8 +68,8 @@ describe('Component: Catalog Search', function(){
             });
             spyOn($state, 'go');
         }));
-        describe('popUpResults', function(){
-            beforeEach(function(){
+        describe('popUpResults', function() {
+            beforeEach(function() {
                 term = searchTerm;
                 catalogSearchCtrl.productData = mockProductData;
                 catalogSearchCtrl.categoryData = mockCategoryData;
@@ -78,27 +78,27 @@ describe('Component: Catalog Search', function(){
                 catalogSearchCtrl.popupResults(term);
                 scope.$digest();
             });
-            it('should call the Me.ListProducts method', function(){
+            it('should call the Me.ListProducts method', function() {
                 expect(oc.Me.ListProducts).toHaveBeenCalledWith(searchTerm, 1, 5)
             });
-            it('should call the Me.ListCategories method', function(){
+            it('should call the Me.ListCategories method', function() {
                 expect(oc.Me.ListCategories).toHaveBeenCalledWith(searchTerm, 1, 5, null, null, null, 'all')
             });
         });
-        describe('onSelect', function(){
-            it('should go to catalog.category state if $item.NameType is "Category"',inject(function($state){
+        describe('onSelect', function() {
+            it('should go to catalog.category state if $item.NameType is "Category"',inject(function($state) {
                 catalogSearchCtrl.onSelect(mockCategoryData);
                 expect($state.go).toHaveBeenCalledWith('catalog.category', {categoryid:"TestCategoryID123456789"});
             }));
-            it('should go to catalog.product state if $item.NameType is "Product"', inject(function($state){
+            it('should go to catalog.product state if $item.NameType is "Product"', inject(function($state) {
                 catalogSearchCtrl.onSelect(mockProductData);
                 expect($state.go).toHaveBeenCalledWith('catalog.product', {productid:"TestProductID123456789"})
             }));
         });
-        describe('onHardEnter', function(){
-            it('should go to CatalogSearchResults page with search term as parameter', inject(function($state){
+        describe('onHardEnter', function() {
+            it('should go to CatalogSearchResults page with search term as parameter', inject(function($state) {
                 catalogSearchCtrl.onHardEnter(searchTerm);
-                expect($state.go).toHaveBeenCalledWith('catalogSearchResults', {searchterm: searchTerm}, {reload:true})
+                expect($state.go).toHaveBeenCalledWith('catalogSearchResults', {searchterm: searchTerm}, {reload: true})
             }))
         });
     });

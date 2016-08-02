@@ -1,50 +1,49 @@
-angular.module( 'orderCloud' )
-
-    .config( PriceSchedulesConfig )
-    .controller( 'PriceSchedulesCtrl', PriceSchedulesController )
-    .controller( 'PriceScheduleEditCtrl', PriceScheduleEditController )
-    .controller( 'PriceScheduleCreateCtrl', PriceScheduleCreateController )
-
+angular.module('orderCloud')
+    .config(PriceSchedulesConfig)
+    .controller('PriceSchedulesCtrl', PriceSchedulesController)
+    .controller('PriceScheduleEditCtrl', PriceScheduleEditController)
+    .controller('PriceScheduleCreateCtrl', PriceScheduleCreateController)
 ;
 
-function PriceSchedulesConfig( $stateProvider ) {
+function PriceSchedulesConfig($stateProvider) {
     $stateProvider
-        .state( 'priceSchedules', {
+        .state('priceSchedules', {
             parent: 'base',
-            url: '/priceSchedules?search&page&pageSize&sortBy&searchOn&filters',
-            templateUrl:'priceSchedules/templates/priceSchedules.tpl.html',
-            controller:'PriceSchedulesCtrl',
+            url: '/priceschedules?search&page&pageSize&sortBy&searchOn&filters',
+            templateUrl: 'priceSchedules/templates/priceSchedules.tpl.html',
+            controller: 'PriceSchedulesCtrl',
             controllerAs: 'priceSchedules',
             data: {componentName: 'Price Schedules'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                PriceScheduleList: function( OrderCloud, Parameters ) {
+                PriceScheduleList: function(OrderCloud, Parameters) {
                     return OrderCloud.PriceSchedules.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
-        .state( 'priceSchedules.edit', {
-            url: '/:priceScheduleid/edit',
-            templateUrl:'priceSchedules/templates/priceScheduleEdit.tpl.html',
-            controller:'PriceScheduleEditCtrl',
+        .state('priceSchedules.edit', {
+            url: '/:pricescheduleid/edit',
+            templateUrl: 'priceSchedules/templates/priceScheduleEdit.tpl.html',
+            controller: 'PriceScheduleEditCtrl',
             controllerAs: 'priceScheduleEdit',
             resolve: {
                 SelectedPriceSchedule: function($stateParams, OrderCloud) {
-                    return OrderCloud.PriceSchedules.Get($stateParams.priceScheduleid);
+                    return OrderCloud.PriceSchedules.Get($stateParams.pricescheduleid);
                 }
             }
         })
-        .state( 'priceSchedules.create', {
+        .state('priceSchedules.create', {
             url: '/create',
-            templateUrl:'priceSchedules/templates/priceScheduleCreate.tpl.html',
-            controller:'PriceScheduleCreateCtrl',
+            templateUrl: 'priceSchedules/templates/priceScheduleCreate.tpl.html',
+            controller: 'PriceScheduleCreateCtrl',
             controllerAs: 'priceScheduleCreate'
         })
+    ;
 }
 
-function PriceSchedulesController($state, $ocMedia, PriceScheduleList, OrderCloudParameters, OrderCloud, Parameters ) {
+function PriceSchedulesController($state, $ocMedia, OrderCloud, OrderCloudParameters, PriceScheduleList, Parameters) {
     var vm = this;
     vm.list = PriceScheduleList;
     vm.parameters = Parameters;
@@ -89,7 +88,7 @@ function PriceSchedulesController($state, $ocMedia, PriceScheduleList, OrderClou
                 break;
             case '!' + value:
                 vm.parameters.sortBy = null;
-                break
+                break;
             default:
                 vm.parameters.sortBy = value;
         }
@@ -117,7 +116,7 @@ function PriceSchedulesController($state, $ocMedia, PriceScheduleList, OrderClou
     };
 }
 
-function PriceScheduleEditController($scope, $exceptionHandler, $state, OrderCloud, SelectedPriceSchedule, PriceBreak, toastr ) {
+function PriceScheduleEditController($scope, $exceptionHandler, $state, toastr, OrderCloud, SelectedPriceSchedule, PriceBreak) {
     var vm = this,
         priceScheduleid = angular.copy(SelectedPriceSchedule.ID);
     vm.priceScheduleName = angular.copy(SelectedPriceSchedule.Name);
@@ -125,20 +124,20 @@ function PriceScheduleEditController($scope, $exceptionHandler, $state, OrderClo
     vm.priceSchedule.MinQuantity =1;
 
     vm.addPriceBreak = function() {
-        PriceBreak.addPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
+        PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
         vm.quantity = null;
         vm.price = null;
     };
 
-    PriceBreak.addDisplayQuantity(vm.priceSchedule);
+    PriceBreak.AddDisplayQuantity(vm.priceSchedule);
 
-    vm.deletePriceBreak = PriceBreak.deletePriceBreak;
+    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
 
     vm.Submit = function() {
-        vm.priceSchedule = PriceBreak.setMinMax(vm.priceSchedule);
+        vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
         OrderCloud.PriceSchedules.Update(priceScheduleid, vm.priceSchedule)
             .then(function() {
-                $state.go('priceSchedules', {}, {reload:true});
+                $state.go('priceSchedules', {}, {reload: true});
                 toastr.success('Price Schedule Updated', 'Success');
             })
             .catch(function(ex) {
@@ -149,7 +148,7 @@ function PriceScheduleEditController($scope, $exceptionHandler, $state, OrderClo
     vm.Delete = function() {
         OrderCloud.PriceSchedules.Delete(priceScheduleid)
             .then(function() {
-                $state.go('priceSchedules', {}, {reload:true});
+                $state.go('priceSchedules', {}, {reload: true});
                 toastr.success('Price Schedule Deleted', 'Success');
             })
             .catch(function(ex) {
@@ -159,55 +158,51 @@ function PriceScheduleEditController($scope, $exceptionHandler, $state, OrderClo
 
     $scope.$watch(function() {
         return vm.priceSchedule.RestrictedQuantity;
-    },function(value){
-
-        if(vm.priceSchedule.RestrictedQuantity == true){
-            vm.priceHeader = "Total Price";
-        }else{
-            vm.priceHeader =  "Price Per Unit";
+    },function(value) {
+        if (vm.priceSchedule.RestrictedQuantity) {
+            vm.priceHeader = 'Total Price';
+        } else {
+            vm.priceHeader =  'Price Per Unit';
         }
     });
 
 }
 
-function PriceScheduleCreateController($scope, $exceptionHandler, $state, OrderCloud, PriceBreak,toastr) {
+function PriceScheduleCreateController($scope, $exceptionHandler, $state, toastr, OrderCloud, PriceBreak) {
     var vm = this;
     vm.priceSchedule = {};
     vm.priceSchedule.RestrictedQuantity = false;
-    vm.priceSchedule.PriceBreaks = new Array();
-    vm.priceSchedule.MinQuantity =1;
+    vm.priceSchedule.PriceBreaks = [];
+    vm.priceSchedule.MinQuantity = 1;
     vm.priceSchedule.OrderType = 'Standard';
 
     vm.addPriceBreak = function() {
-        PriceBreak.addPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
+        PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
         vm.quantity = null;
         vm.price = null;
     };
 
-    vm.deletePriceBreak = PriceBreak.deletePriceBreak;
+    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
 
     vm.Submit = function() {
-        vm.priceSchedule = PriceBreak.setMinMax(vm.priceSchedule);
+        vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
         OrderCloud.PriceSchedules.Create(vm.priceSchedule)
             .then(function() {
-                $state.go('priceSchedules', {}, {reload:true});
+                $state.go('priceSchedules', {}, {reload: true});
                 toastr.success('Price Schedule Created', 'Success')
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
-    }
+    };
 
     $scope.$watch(function() {
         return vm.priceSchedule.RestrictedQuantity;
-    },function(value){
-
-        if(vm.priceSchedule.RestrictedQuantity == true){
-            vm.priceHeader = "Total Price";
-        }else{
-            vm.priceHeader =  "Price Per Unit";
-            }
+    },function(value) {
+        if (vm.priceSchedule.RestrictedQuantity) {
+            vm.priceHeader = 'Total Price';
+        } else {
+            vm.priceHeader =  'Price Per Unit';
+        }
     });
-
-
 }

@@ -30,7 +30,7 @@ describe('Component: MyOrders', function() {
             state = $state.get('myOrders');
             spyOn(oc.Orders, 'List').and.returnValue(null);
         }));
-        it('should resolve OrderList', inject(function ($injector) {
+        it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
             expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
         }));
@@ -43,11 +43,11 @@ describe('Component: MyOrders', function() {
             spyOn(oc.Orders, 'Get').and.returnValue(null);
             spyOn(oc.LineItems, 'List').and.returnValue(null);
         }));
-        it('should resolve SelectedOrder', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedOrder', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedOrder);
             expect(oc.Orders.Get).toHaveBeenCalledWith($stateParams.orderid);
         }));
-        it('should resolve LineItemList', inject(function ($injector, $stateParams) {
+        it('should resolve LineItemList', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.LineItemList);
             expect(oc.LineItems.List).toHaveBeenCalledWith($stateParams.orderid);
         }));
@@ -95,7 +95,7 @@ describe('Component: MyOrders', function() {
                 expect(oc.Orders.Update).toHaveBeenCalledWith(orderEditCtrl.orderID, orderEditCtrl.order);
             });
             it ('should enter the orders state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('myOrders', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('myOrders', {}, {reload: true});
             }));
         });
 
@@ -111,7 +111,7 @@ describe('Component: MyOrders', function() {
                 expect(oc.Orders.Delete).toHaveBeenCalledWith(order.ID);
             });
             it ('should enter the orders state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('myOrders', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('myOrders', {}, {reload: true});
             }));
         });
 

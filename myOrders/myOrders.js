@@ -1,51 +1,49 @@
-angular.module( 'orderCloud' )
-
-    .config( MyOrdersConfig )
-    .controller( 'MyOrdersCtrl', MyOrdersController )
-    .controller( 'MyOrderEditCtrl', MyOrderEditController )
-    .factory( 'MyOrdersTypeAheadSearchFactory', MyOrdersTypeAheadSearchFactory )
+angular.module('orderCloud')
+    .config(MyOrdersConfig)
+    .controller('MyOrdersCtrl', MyOrdersController)
+    .controller('MyOrderEditCtrl', MyOrderEditController)
+    .factory('MyOrdersTypeAheadSearchFactory', MyOrdersTypeAheadSearchFactory)
 ;
 
-function MyOrdersConfig( $stateProvider ) {
+function MyOrdersConfig($stateProvider) {
     $stateProvider
-        .state( 'myOrders', {
+        .state('myOrders', {
             parent: 'base',
-            templateUrl:'myOrders/templates/myOrders.tpl.html',
-            controller:'MyOrdersCtrl',
+            templateUrl: 'myOrders/templates/myOrders.tpl.html',
+            controller: 'MyOrdersCtrl',
             controllerAs: 'myOrders',
             url: '/myorders?from&to&search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'My Orders'},
             resolve: {
-                Parameters: function( $stateParams, OrderCloudParameters ) {
+                Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                OrderList: function(OrderCloud,Parameters) {
+                OrderList: function(OrderCloud, Parameters) {
                     return OrderCloud.Me.ListOutgoingOrders(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters,Parameters.from, Parameters.to);
                 }
             }
         })
-        .state( 'myOrders.edit', {
+        .state('myOrders.edit', {
             url: '/:orderid/edit',
-            templateUrl:'myOrders/templates/MyorderEdit.tpl.html',
-            controller:'MyOrderEditCtrl',
+            templateUrl: 'myOrders/templates/MyorderEdit.tpl.html',
+            controller: 'MyOrderEditCtrl',
             controllerAs: 'myOrderEdit',
             resolve: {
                 SelectedOrder: function($stateParams, OrderCloud) {
                     return OrderCloud.Me.GetOrder($stateParams.orderid);
                 },
-                SelectedPayments: function($stateParams, $q, OrderCloud){
+                SelectedPayments: function($stateParams, $q, OrderCloud) {
                     var dfd = $q.defer();
                     var paymentList = {};
-
 
                     OrderCloud.Payments.List($stateParams.orderid, null, 1, 100)
                         .then(function(data) {
                             paymentList = data.Items;
                             dfd.resolve(paymentList);
-                            angular.forEach(paymentList, function(payment){
-                                if(payment.Type === 'CreditCard'){
+                            angular.forEach(paymentList, function(payment) {
+                                if (payment.Type === 'CreditCard') {
                                     OrderCloud.CreditCards.Get(payment.CreditCardID)
-                                        .then(function(cc){
+                                        .then(function(cc) {
                                             payment.creditCards = cc;
                                         })
                                 }
@@ -53,7 +51,6 @@ function MyOrdersConfig( $stateProvider ) {
                             dfd.resolve(paymentList);
                         });
                     return dfd.promise;
-
                 },
                 LineItemList: function($stateParams, OrderCloud) {
                     return OrderCloud.LineItems.List($stateParams.orderid);
@@ -63,7 +60,7 @@ function MyOrdersConfig( $stateProvider ) {
     ;
 }
 
-function MyOrdersController($state, $ocMedia, OrderCloudParameters, OrderCloud, OrderList, Parameters ) {
+function MyOrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, OrderList, Parameters) {
     var vm = this;
     vm.list = OrderList;
     vm.parameters = Parameters;
@@ -110,7 +107,7 @@ function MyOrdersController($state, $ocMedia, OrderCloudParameters, OrderCloud, 
                 break;
             case '!' + value:
                 vm.parameters.sortBy = null;
-                break
+                break;
             default:
                 vm.parameters.sortBy = value;
         }
@@ -138,15 +135,15 @@ function MyOrdersController($state, $ocMedia, OrderCloudParameters, OrderCloud, 
     };
 }
 
-function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderCloud, SelectedOrder, SelectedPayments, MyOrdersTypeAheadSearchFactory, LineItemList, toastr, OCGeography) {
+function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, OrderCloud, OCGeography, MyOrdersTypeAheadSearchFactory, SelectedOrder, SelectedPayments, LineItemList) {
     var vm = this,
         orderid = SelectedOrder.ID;
     vm.order = SelectedOrder;
     vm.orderID = SelectedOrder.ID;
     vm.list = LineItemList;
     vm.paymentList = SelectedPayments;
-    vm.states = OCGeography.states;
-    vm.countries = OCGeography.countries;
+    vm.states = OCGeography.States;
+    vm.countries = OCGeography.Countries;
 
 
     vm.pagingfunction = PagingFunction;
@@ -154,12 +151,12 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
     $scope.isCollapsedBilling = true;
     $scope.isCollapsedShipping = true;
 
-    vm.deletePayment = function(payment){
+    vm.deletePayment = function(payment) {
         OrderCloud.Payments.Delete(orderid, payment.ID)
-            .then(function(){
-                $state.go($state.current, {}, {reload:true});
+            .then(function() {
+                $state.go($state.current, {}, {reload: true});
             })
-            .catch(function(ex){
+            .catch(function(ex) {
                 $exceptionHandler(ex)
             });
     };
@@ -174,30 +171,27 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
             });
     };
 
-    vm.updateBillingAddress = function(){
+    vm.updateBillingAddress = function() {
         vm.order.BillingAddressID = null;
         vm.order.BillingAddress.ID = null;
         OrderCloud.Orders.Update(orderid, vm.order)
-            .then(function(){
+            .then(function() {
                 OrderCloud.Orders.SetBillingAddress(orderid, vm.order.BillingAddress)
                     .then(function() {
                         $state.go($state.current, {}, {reload: true});
                     });
-            })
+            });
     };
 
-    vm.updateShippingAddress = function(){
+    vm.updateShippingAddress = function() {
         OrderCloud.Orders.SetShippingAddress(orderid, vm.ShippingAddress);
-        //.then(function() {
-        //    $state.go($state.current, {}, {reload: true});
-        //});
     };
 
     vm.Submit = function() {
         var dfd = $q.defer();
         var queue = [];
         angular.forEach(vm.list.Items, function(lineitem, index) {
-            if ($scope.EditForm.PaymentInfo.LineItems['Quantity' + index].$dirty || $scope.EditForm.PaymentInfo.LineItems['UnitPrice' + index].$dirty ) {
+            if ($scope.EditForm.PaymentInfo.LineItems['Quantity' + index].$dirty || $scope.EditForm.PaymentInfo.LineItems['UnitPrice' + index].$dirty) {
                 queue.push(OrderCloud.LineItems.Update(orderid, lineitem.ID, lineitem));
             }
         });
@@ -207,7 +201,7 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
                 OrderCloud.Orders.Update(orderid, vm.order)
                     .then(function() {
                         toastr.success('Order Updated', 'Success');
-                        $state.go('myOrders', {}, {reload:true});
+                        $state.go('myOrders', {}, {reload: true});
                     })
                     .catch(function(ex) {
                         $exceptionHandler(ex)
@@ -223,7 +217,7 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
     vm.Delete = function() {
         OrderCloud.Orders.Delete(orderid)
             .then(function() {
-                $state.go('myOrders', {}, {reload:true});
+                $state.go('myOrders', {}, {reload: true});
                 toastr.success('Order Deleted', 'Success');
             })
             .catch(function(ex) {
@@ -233,12 +227,11 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
 
     function PagingFunction() {
         if (vm.list.Meta.Page < vm.list.Meta.PageSize) {
-            OrderCloud.LineItems.List(vm.order.ID, vm.list.Meta.Page + 1, vm.list.Meta.PageSize).then(
-                function(data) {
+            OrderCloud.LineItems.List(vm.order.ID, vm.list.Meta.Page + 1, vm.list.Meta.PageSize)
+                .then(function(data) {
                     vm.list.Meta = data.Meta;
                     vm.list.Items = [].concat(vm.list.Items, data.Items);
-                }
-            )
+                });
         }
     }
     vm.spendingAccountTypeAhead = MyOrdersTypeAheadSearchFactory.SpendingAccountList;
@@ -246,20 +239,20 @@ function MyOrderEditController( $scope, $q, $exceptionHandler, $state, OrderClou
     vm.billingAddressTypeAhead = MyOrdersTypeAheadSearchFactory.BillingAddressList;
 }
 
-function MyOrdersTypeAheadSearchFactory($q, OrderCloud, Underscore) {
+function MyOrdersTypeAheadSearchFactory($q, Underscore, OrderCloud) {
     return {
-        SpendingAccountList: SpendingAccountList,
-        ShippingAddressList: ShippingAddressList,
-        BillingAddressList: BillingAddressList
+        SpendingAccountList: _spendingAccountList,
+        ShippingAddressList: _shippingAddressList,
+        BillingAddressList: _billingAddressList
     };
 
-    function SpendingAccountList(term) {
+    function _spendingAccountList(term) {
         return OrderCloud.SpendingAccounts.List(term).then(function(data) {
             return data.Items;
         });
     }
 
-    function ShippingAddressList(term) {
+    function _shippingAddressList(term) {
         var dfd = $q.defer();
         var queue = [];
         queue.push(OrderCloud.Addresses.List(term));
@@ -277,7 +270,7 @@ function MyOrdersTypeAheadSearchFactory($q, OrderCloud, Underscore) {
         return dfd.promise;
     }
 
-    function BillingAddressList(term) {
+    function _billingAddressList(term) {
         var dfd = $q.defer();
         var queue = [];
         queue.push(OrderCloud.Addresses.List(term));

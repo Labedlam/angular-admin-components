@@ -23,7 +23,7 @@ describe('Component: UserGroups', function() {
             state = $state.get('userGroups');
             spyOn(oc.UserGroups, 'List').and.returnValue(null);
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
@@ -35,9 +35,9 @@ describe('Component: UserGroups', function() {
             state = $state.get('userGroups.edit');
             spyOn(oc.UserGroups, 'Get').and.returnValue(null);
         }));
-        it('should resolve SelectedUserGroup', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedUserGroup', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedUserGroup);
-            expect(oc.UserGroups.Get).toHaveBeenCalledWith($stateParams.userGroupid);
+            expect(oc.UserGroups.Get).toHaveBeenCalledWith($stateParams.usergroupid);
         }));
     });
 
@@ -49,17 +49,17 @@ describe('Component: UserGroups', function() {
             spyOn(oc.UserGroups, 'ListUserAssignments').and.returnValue(null);
             spyOn(oc.UserGroups, 'Get').and.returnValue(null);
         }));
-        it('should resolve UserList', inject(function ($injector) {
+        it('should resolve UserList', inject(function($injector) {
             $injector.invoke(state.resolve.UserList);
             expect(oc.Users.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignedUsers', inject(function ($injector, $stateParams) {
+        it('should resolve AssignedUsers', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignedUsers);
-            expect(oc.UserGroups.ListUserAssignments).toHaveBeenCalledWith($stateParams.userGroupid);
+            expect(oc.UserGroups.ListUserAssignments).toHaveBeenCalledWith($stateParams.usergroupid);
         }));
-        it('should resolve SelectedUserGroup', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedUserGroup', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedUserGroup);
-            expect(oc.UserGroups.Get).toHaveBeenCalledWith($stateParams.userGroupid);
+            expect(oc.UserGroups.Get).toHaveBeenCalledWith($stateParams.usergroupid);
         }));
     });
 
@@ -87,7 +87,7 @@ describe('Component: UserGroups', function() {
                 expect(oc.UserGroups.Update).toHaveBeenCalledWith(userGroupEditCtrl.groupID, userGroupEditCtrl.userGroup);
             });
             it ('should enter the userGroups state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('userGroups', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('userGroups', {}, {reload: true});
             }));
         });
     });
@@ -114,7 +114,7 @@ describe('Component: UserGroups', function() {
                 expect(oc.UserGroups.Create).toHaveBeenCalledWith(userGroup);
             });
             it ('should enter the userGroups state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('userGroups', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('userGroups', {}, {reload: true});
             }));
         });
     });
@@ -133,21 +133,21 @@ describe('Component: UserGroups', function() {
 
         describe('SaveAssignment', function() {
             beforeEach(inject(function(Assignments) {
-                spyOn(Assignments, 'saveAssignments').and.returnValue(null);
+                spyOn(Assignments, 'SaveAssignments').and.returnValue(null);
                 userGroupAssignCtrl.saveAssignments();
             }));
             it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.saveAssignments).toHaveBeenCalled();
+                expect(Assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 userGroupAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
-                expect(Paging.paging).toHaveBeenCalled();
+                expect(Paging.Paging).toHaveBeenCalled();
             }));
         });
     });

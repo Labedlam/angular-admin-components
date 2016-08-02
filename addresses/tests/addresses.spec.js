@@ -30,7 +30,7 @@ describe('Component: Addresses', function() {
             state = $state.get('addresses');
             spyOn(oc.Addresses, 'List').and.returnValue(null);
         }));
-        it('should resolve AddressList', inject(function ($injector) {
+        it('should resolve AddressList', inject(function($injector) {
             $injector.invoke(state.resolve.AddressList);
             expect(oc.Addresses.List).toHaveBeenCalled();
         }));
@@ -44,7 +44,7 @@ describe('Component: Addresses', function() {
             defer.resolve();
             spyOn(oc.Addresses, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve SelectedAddress', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedAddress', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedAddress);
             expect(oc.Addresses.Get).toHaveBeenCalledWith($stateParams.addressid);
         }));
@@ -60,15 +60,15 @@ describe('Component: Addresses', function() {
             defer.resolve();
             spyOn(oc.Addresses, 'Get').and.returnValue(defer.promise);
         }));
-        it('should resolve UserGroupList', inject(function ($injector) {
+        it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);
             expect(oc.UserGroups.List).toHaveBeenCalled();
         }));
-        it('should resolve AssignmentsList', inject(function ($injector, $stateParams) {
+        it('should resolve AssignmentsList', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.AssignmentsList);
             expect(oc.Addresses.ListAssignments).toHaveBeenCalledWith($stateParams.addressid);
         }));
-        it('should resolve SelectedAddress', inject(function ($injector, $stateParams) {
+        it('should resolve SelectedAddress', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedAddress);
             expect(oc.Addresses.Get).toHaveBeenCalledWith($stateParams.addressid);
         }));
@@ -98,7 +98,7 @@ describe('Component: Addresses', function() {
                 expect(oc.Addresses.Update).toHaveBeenCalledWith(addressEditCtrl.addressID, addressEditCtrl.address);
             });
             it ('should enter the addresses state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload: true});
             }));
         });
 
@@ -114,7 +114,7 @@ describe('Component: Addresses', function() {
                 expect(oc.Addresses.Delete).toHaveBeenCalledWith(address.ID, false);
             });
             it ('should enter the addresses state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload:true});
+                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload: true});
             }));
         });
     });
@@ -141,7 +141,7 @@ describe('Component: Addresses', function() {
                 expect(oc.Addresses.Create).toHaveBeenCalledWith(address);
             });
             it ('should enter the addresses state', inject(function($state) {
-                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload:true} );
+                expect($state.go).toHaveBeenCalledWith('addresses', {}, {reload: true});
             }));
         });
     });

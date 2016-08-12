@@ -221,7 +221,7 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
         if(vm.assignBuyer){
             OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel)
                 .then(function(){
-                    $state.go('securityProfiles.assignments');
+                    $state.go('securityProfiles.assignments({securityprofileid:vm..securityProfileID})');
                     toastr.success('Security Profile Assignment Created', 'Success');
                 })
                 .catch(function(ex){
@@ -236,13 +236,16 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
             })
             vm.assignmentModel.UserID = null;
             angular.forEach(vm.selectedGroups, function(userGroup){
-                vm.assignmentModel.UserGroupID;
+                vm.assignmentModel.UserGroupID = userGroup.ID;
                 assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel));
             })
             $q.all(assignmentQueue)
                 .then(function(){
-                    $state.go('securityProfiles.assignments')
+                    $state.go('securityProfile.assignments({securityprofileid:vm.securityProfileID})');
                     toastr.success('Security Profile Assignment Created', 'Success')
+                })
+                .catch(function(ex){
+                    $exceptionHandler(ex);
                 })
         }
     }

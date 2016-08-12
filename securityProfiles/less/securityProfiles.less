@@ -18,19 +18,27 @@
 				letter-spacing: 1px;
 			}
 		}
-		// .isDisabled {
-		// 	cursor: not-allowed;
-		// 	opacity:0.65;
-		// 	box-shadow:none;
-		// 	color: inherit;
-		// }
 }
 
-.derp:focus {
-	outline: none;
+.disabled {
+	cursor: not-allowed;
+	opacity:0.65;
+
+	a {
+		cursor: not-allowed;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
 }
 
-.accordion-heading_button {
+.panel-title {
+	&> div {
+		&:focus {
+			outline: none;
+		}
+	}
 	&:focus {
 		outline: none;
 	}

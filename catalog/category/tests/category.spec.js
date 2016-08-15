@@ -17,13 +17,13 @@ describe('Component: Catalog Category', function() {
             state = $state.get('catalog.category', {}, {reload: true});
             injector = $injector;
             stateParams = $stateParams;
-            spyOn(oc.Me, 'ListSubcategories');
+            spyOn(oc.Me, 'ListCategories');
             spyOn(oc.Me, 'ListProducts');
 
         }));
         it('should resolve CategoryList', function() {
             injector.invoke(state.resolve.CategoryList);
-            expect(oc.Me.ListSubcategories).toHaveBeenCalledWith(null, null, null, null, null, null, stateParams.categoryid);
+            expect(oc.Me.ListCategories).toHaveBeenCalledWith(null, null, null, null, null, {ParentID: stateParams.categoryid}, 'all');
         });
         it('should resolve ProductList', function() {
             injector.invoke(state.resolve.ProductList);

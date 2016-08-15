@@ -39,15 +39,10 @@
             <input id="userPasswordInput" type="password" pattern='^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$' pattern-err-type="customPassword" class="form-control" ng-model="adminUserEdit.adminUser.Password" required/>
         </div>
         <div class="col-sm-6 form-group">
-        <label for="securityProfile">Security Profile</label>
-        <select id="securityProfile"  class="form-control" ng-model="adminUserEdit.adminUser.SecurityProfileID" ng-options="sp.ID as sp.Name for sp in adminUserEdit.securityProfilesAvailable" required></select>
-    </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6 form-group">
             <label for="userPasswordConfirmInput">Confirm Password</label>
             <input id="userPasswordConfirmInput" type="password" pattern='^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$' pattern-err-type="customPassword" class="form-control" ng-model="adminUserEdit.PasswordConfirm" required/>
         </div>
+    </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">

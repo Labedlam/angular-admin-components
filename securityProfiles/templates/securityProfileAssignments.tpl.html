@@ -40,7 +40,7 @@
                 <i aria-hidden="true" ng-class="{'fa fa-lg fa-check active':assignment.UserGroupID}"></i>
             </td>
             <td data-title="Buyer">
-                <i aria-hidden="true" ng-class="{'fa fa-lg fa-check active':assignment.BuyerID}"></i>
+                <i aria-hidden="true" ng-class="{'fa fa-lg fa-check active':assignment.BuyerID && !assignment.UserID && !assignment.UserGroupID}"></i>
             </td>
             <td class="actions-cell">
                 <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment" tooltip-placement="left" ng-click="securityProfileAssignments.Delete(assignment.UserID, assignment.UserGroupID)"><i class="fa fa-trash"></i></button>

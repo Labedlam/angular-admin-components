@@ -74,9 +74,9 @@ function SecurityProfilesConfig($stateProvider){
 
 function SecurityProfilesController($state, $stateParams, $ocMedia, OrderCloud, OrderCloudParameters, SecurityProfilesList, Parameters){
 	var vm = this;
-	vm.list = SecurityProfilesList
+	vm.list = SecurityProfilesList;
 	vm.parameters = Parameters;
-	vm.securityProfileID = $stateParams.securityprofileid
+	vm.securityProfileID = $stateParams.securityprofileid;
 
 	//Check if filters are applied
     vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -155,9 +155,9 @@ function SecurityProfileRolesController(SelectedSecurityProfile, NonAssignedRole
 
 }
 
-function SecurityProfileAssignmentsController($state, $stateParams, $exceptionHandler, $ocMedia, toastr, OrderCloud, OrderCloudParameters, AssignmentList, Parameters){
+function SecurityProfileAssignmentsController($state, $stateParams, $exceptionHandler, toastr, OrderCloud, AssignmentList, Parameters){
 	var vm = this;
-	vm.list = AssignmentList
+	vm.list = AssignmentList;
 	vm.parameters = Parameters;
     vm.SecurityProfileID = $stateParams.securityprofileid;
 	vm.parameters = Parameters;
@@ -169,7 +169,7 @@ function SecurityProfileAssignmentsController($state, $stateParams, $exceptionHa
                 toastr.success('Security Profile Assignment Deleted', 'Success');
             })
             .catch(function(ex) {
-                toastr.error(ex, 'Error')
+                toastr.error(ex, 'Error');
                 $exceptionHandler(ex)
             });
     };
@@ -193,7 +193,7 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
     vm.assignBuyer =false;
     vm.userList = UserList;
     vm.selectedUsers =[];
-    vm.selectedGroups = []
+    vm.selectedGroups = [];
     vm.securityProfileID = $stateParams.securityprofileid;
 
     vm.assignmentModel = {
@@ -201,14 +201,14 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
         BuyerID: OrderCloud.BuyerID.Get(),
         UserID: null,
         UserGroupID: null
-    }
+    };
 
     vm.toggleSelection = function(selection, party){
         //check if selection is in selected list, remove if it is, add if it isn't
         var partyName = 'selected' + party;
-        var selectedPartyIds = Underscore.pluck(vm[partyName], 'ID')
+        var selectedPartyIds = Underscore.pluck(vm[partyName], 'ID');
 
-        var index = selectedPartyIds.indexOf(selection.ID)
+        var index = selectedPartyIds.indexOf(selection.ID);
         if(index > -1) {
             vm[partyName].splice(index, 1);
             selection.selected = false;
@@ -216,12 +216,12 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
             vm[partyName].push(selection);
             selection.selected = true;
         }
-    }
+    };
     vm.Submit = function(){
         if(vm.assignBuyer){
             OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel)
                 .then(function(){
-                    $state.go('securityProfiles.assignments({securityprofileid:vm..securityProfileID})');
+                    $state.go('securityProfiles.assignments',{securityprofileid:vm.securityProfileID});
                     toastr.success('Security Profile Assignment Created', 'Success');
                 })
                 .catch(function(ex){
@@ -233,22 +233,22 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
             angular.forEach(vm.selectedUsers, function(user){
                 vm.assignmentModel.UserID = user.ID;
                 assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel));
-            })
+            });
             vm.assignmentModel.UserID = null;
             angular.forEach(vm.selectedGroups, function(userGroup){
                 vm.assignmentModel.UserGroupID = userGroup.ID;
                 assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel));
-            })
+            });
             $q.all(assignmentQueue)
                 .then(function(){
-                    $state.go('securityProfile.assignments({securityprofileid:vm.securityProfileID})');
+                    $state.go('securityProfiles.assignments',{securityprofileid:vm.securityProfileID});
                     toastr.success('Security Profile Assignment Created', 'Success')
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex);
                 })
         }
-    }
+    };
     //watch user and user group list to remember selections upon new search
     $scope.$watchCollection(function(){
         return vm.userList;
@@ -267,7 +267,7 @@ function SecurityProfileFactory(Underscore){
     var service = {
         AvailableRoles:_availableRoles,
         SetSelected: _setSelected
-    }
+    };
 
     function _availableRoles() {
             return [
@@ -314,7 +314,7 @@ function SecurityProfileFactory(Underscore){
         }
 
     function _setSelected(ListArray, AssignmentsArray){
-        var selected = Underscore.pluck(AssignmentsArray, 'ID')
+        var selected = Underscore.pluck(AssignmentsArray, 'ID');
         angular.forEach(ListArray, function(item){
             if(selected.indexOf(item.ID) > -1){
                 item.selected = true;

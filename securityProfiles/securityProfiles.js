@@ -8,7 +8,6 @@ angular.module('orderCloud')
 
 	;
 
-
 function SecurityProfilesConfig($stateProvider){
 	$stateProvider
 	.state('securityProfiles', {
@@ -152,7 +151,6 @@ function SecurityProfileRolesController(SelectedSecurityProfile, NonAssignedRole
     vm.selectedProfile = SelectedSecurityProfile;
     vm.availableRoles = SelectedSecurityProfile.Roles;
     vm.unavailableRoles = NonAssignedRoles;
-
 }
 
 function SecurityProfileAssignmentsController($state, $stateParams, $exceptionHandler, toastr, OrderCloud, AssignmentList, Parameters){
@@ -202,7 +200,6 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
         UserID: null,
         UserGroupID: null
     };
-
     vm.toggleSelection = function(selection, party){
         //check if selection is in selected list, remove if it is, add if it isn't
         var partyName = 'selected' + party;
@@ -263,7 +260,6 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
 }
 
 function SecurityProfileFactory(Underscore){
-
     var service = {
         AvailableRoles:_availableRoles,
         SetSelected: _setSelected
@@ -321,20 +317,5 @@ function SecurityProfileFactory(Underscore){
             }
         })
     }
-
     return service;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

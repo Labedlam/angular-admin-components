@@ -2,7 +2,6 @@
    <div class="page-header">
        <h3 >Security Profiles</h3>
    </div>
-
     <!--====== SEARCH/FILTERS ======-->
     <form name="SecurityProfilesSearchForm" class="form-inline" ng-submit="securityProfiles.search()">
         <fieldset class="form-group">
@@ -40,7 +39,6 @@
             </div>
         </div>
     </div>
-
     <!--====== LIST ======-->
     <div class="no-matches" ng-if="!securityProfiles.list.Items.length">
         <b>The selected buyer does not have any Security Profiles.</b>
@@ -97,7 +95,6 @@
             </tr>
             </tbody>
         </table>
-
         <!--====== Pagination Bar ======-->
         <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && securityProfiles.list.Meta.TotalPages > 1">
             <uib-pagination boundary-links="securityProfiles.list.Meta.TotalPages > 5"

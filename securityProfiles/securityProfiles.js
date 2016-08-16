@@ -76,6 +76,8 @@ function SecurityProfilesController($state, $stateParams, $ocMedia, OrderCloud, 
 	vm.list = SecurityProfilesList;
 	vm.parameters = Parameters;
 	vm.securityProfileID = $stateParams.securityprofileid;
+    vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
+
 
 	//Check if filters are applied
     vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -138,7 +140,7 @@ function SecurityProfilesController($state, $stateParams, $ocMedia, OrderCloud, 
 
     //Use in mobile. Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.CreditCards.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize ||  vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.SecurityProfiles.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize ||  vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -228,18 +230,24 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
             var dfd = $q.defer();
             var assignmentQueue = [];
             angular.forEach(vm.selectedUsers, function(user){
-                vm.assignmentModel.UserID = user.ID;
-                assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel));
+                var userModel = angular.copy(vm.assignmentModel);
+                userModel.UserID = user.ID;
+                assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(userModel));
             });
-            vm.assignmentModel.UserID = null;
             angular.forEach(vm.selectedGroups, function(userGroup){
-                vm.assignmentModel.UserGroupID = userGroup.ID;
-                assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(vm.assignmentModel));
+                var groupModel = angular.copy(vm.assignmentModel);
+                groupModel.UserGroupID = userGroup.ID;
+                assignmentQueue.push(OrderCloud.SecurityProfiles.SaveAssignment(groupModel));
             });
             $q.all(assignmentQueue)
                 .then(function(){
-                    $state.go('securityProfiles.assignments',{securityprofileid:vm.securityProfileID});
-                    toastr.success('Security Profile Assignment Created', 'Success')
+                    if((vm.selectedUsers.length + vm.selectedGroups.length) > 1){
+                    toastr.success('Security Profile Assignments Created', 'Success');
+                    $state.go('securityProfiles.assignments',{securityprofileid:vm.securityProfileID});                        
+                    } else{
+                        toastr.success('Security Profile Assignment Created', 'Success');
+                        $state.go('securityProfiles.assignments',{securityprofileid:vm.securityProfileID});
+                    }
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex);

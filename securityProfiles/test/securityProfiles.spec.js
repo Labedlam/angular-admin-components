@@ -1,4 +1,4 @@
-fdescribe('Component: Security Profiles', function(){
+describe('Component: Security Profiles', function(){
 	var scope,
 		q,
 		oc,

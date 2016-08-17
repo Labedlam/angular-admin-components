@@ -4,6 +4,9 @@ describe('Component: Users', function() {
         today,
         user,
         oc;
+    beforeEach(module(function($provide) {
+            $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+        }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {

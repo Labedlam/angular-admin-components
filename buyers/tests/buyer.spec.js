@@ -3,6 +3,9 @@ describe('Component: Buyers', function() {
         q,
         buyer,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -18,9 +21,14 @@ describe('Component: Buyers', function() {
 
     describe('State: buyers', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('buyers');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Buyers, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve BuyerList', inject(function($injector) {
             $injector.invoke(state.resolve.BuyerList);
@@ -62,7 +70,7 @@ describe('Component: Buyers', function() {
                 scope.$digest();
             });
             it ('should call the Buyers Update method', function() {
-                expect(oc.Buyers.Update).toHaveBeenCalledWith(buyerEditCtrl.buyer);
+                expect(oc.Buyers.Update).toHaveBeenCalledWith(buyerEditCtrl.buyer, buyerEditCtrl.buyer.ID);
             });
             it ('should enter the buyers state', inject(function($state) {
                 expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload: true});

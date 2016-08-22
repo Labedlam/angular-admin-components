@@ -19,7 +19,7 @@ describe('Component: CostCenters', function() {
         oc = OrderCloud;
     }));
 
-    fdescribe('State: costCenters', function() {
+    describe('State: costCenters', function() {
         var state;
         beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('costCenters');

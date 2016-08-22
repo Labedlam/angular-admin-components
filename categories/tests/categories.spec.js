@@ -1,4 +1,4 @@
-fdescribe('Component: Categories', function() {
+describe('Component: Categories', function() {
     var scope,
         q,
         category,

@@ -45,7 +45,9 @@ describe('Component: GiftCards', function() {
         var state;
         beforeEach(inject(function($state) {
             state = $state.get('giftCards.edit');
-            spyOn(oc.SpendingAccounts, 'Get').and.returnValue(null);
+            var defer = q.defer();
+            defer.resolve();
+            spyOn(oc.SpendingAccounts, 'Get').and.returnValue(defer.promise);
         }));
         it('should resolve SelectedGiftCard', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedGiftCard);

@@ -33,7 +33,7 @@ describe('Component: GiftCards', function() {
         }));
         it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
-            expect(OrderCloudParameters).toHaveBeenCalled();
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve GiftCardList', inject(function($injector) {
             $injector.invoke(state.resolve.GiftCardList);

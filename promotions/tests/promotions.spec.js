@@ -3,6 +3,9 @@ describe('Component: Promotions', function() {
         q,
         promotion,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -20,20 +23,25 @@ describe('Component: Promotions', function() {
             EligibleExpression: "userGroup='test'",
             ValueExpression: 'order.Total/2',
             CanCombine: false,
-            xp: null
+            xp: {"OverrideEligibleExpression": true}
         };
         oc = OrderCloud;
     }));
 
     describe('State: promotions', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('promotions');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Promotions, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve PromotionList', inject(function($injector) {
             $injector.invoke(state.resolve.PromotionList);
-            expect(oc.Promotions.List).toHaveBeenCalledWith(null, null, null, null, null, null);
+            expect(oc.Promotions.List).toHaveBeenCalledWith(null, null, 12, null, null, undefined);
         }));
     });
 
@@ -41,7 +49,9 @@ describe('Component: Promotions', function() {
         var state;
         beforeEach(inject(function($state) {
             state = $state.get('promotions.edit');
-            spyOn(oc.Promotions, 'Get').and.returnValue(null);
+            var defer = q.defer();
+            defer.resolve();
+            spyOn(oc.Promotions, 'Get').and.returnValue(defer.promise);
         }));
         it('should resolve SelectedPromotion', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedPromotion);

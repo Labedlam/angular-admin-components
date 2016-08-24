@@ -34,7 +34,7 @@ describe('Component: Shipments', function() {
             spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Shipments, 'List').and.returnValue(null);
         }));
-        it('should resolve Parameters', inject(function($injector){
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
             expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
@@ -149,7 +149,7 @@ describe('Component: Shipments', function() {
                 scope.$digest();
             });
             it('should call the LineItems List method', function() {
-                expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, 1, 20);
+                expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, null, 1, 20);
             });
         });
 
@@ -227,7 +227,7 @@ describe('Component: Shipments', function() {
                 scope.$digest();
             });
             it('should call the LineItems List method', function() {
-                expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, 1, 20);
+                expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID, null, 1, 20);
             });
         });
 

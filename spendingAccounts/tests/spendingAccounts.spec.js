@@ -1,4 +1,4 @@
-fdescribe('Component: SpendingAccounts', function() {
+describe('Component: SpendingAccounts', function() {
     var scope,
         q,
         spendingAccount,

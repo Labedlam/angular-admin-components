@@ -32,7 +32,7 @@ describe('Component: MyOrders', function() {
         beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('myOrders');
             spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
-            spyOn(oc.Orders, 'List').and.returnValue(null);
+            spyOn(oc.Orders, 'ListOutgoing').and.returnValue(null);
         }));
         it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
@@ -40,7 +40,7 @@ describe('Component: MyOrders', function() {
         }));
         it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
-            expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
+            expect(oc.Orders.ListOutgoing).toHaveBeenCalledWith('incoming');
         }));
     });
 

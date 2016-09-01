@@ -32,7 +32,7 @@ describe('Component: MyOrders', function() {
         beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('myOrders');
             spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
-            spyOn(oc.Orders, 'ListOutgoing').and.returnValue(null);
+            spyOn(oc.Me, 'ListOutgoingOrders').and.returnValue(null);
         }));
         it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
@@ -40,20 +40,26 @@ describe('Component: MyOrders', function() {
         }));
         it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
-            expect(oc.Orders.ListOutgoing).toHaveBeenCalledWith('incoming');
+            expect(oc.Me.ListOutgoingOrders).toHaveBeenCalled();
         }));
     });
 
     describe('State: myOrders.edit', function() {
         var state;
         beforeEach(inject(function($state) {
+            var defer = q.defer();
             state = $state.get('myOrders.edit');
-            spyOn(oc.Orders, 'Get').and.returnValue(null);
+            spyOn(oc.Me, 'GetOrder').and.returnValue(null);
+            spyOn(oc.Payments, 'List').and.returnValue(defer.promise);
             spyOn(oc.LineItems, 'List').and.returnValue(null);
         }));
         it('should resolve SelectedOrder', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedOrder);
-            expect(oc.Orders.Get).toHaveBeenCalledWith($stateParams.orderid);
+            expect(oc.Me.GetOrder).toHaveBeenCalledWith($stateParams.orderid);
+        }));
+        it('should resolve Payments', inject(function($injector, $stateParams){
+            $injector.invoke(state.resolve.SelectedPayments);
+            expect(oc.Payments.List).toHaveBeenCalledWith($stateParams.orderid, null, 1, 100);
         }));
         it('should resolve LineItemList', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.LineItemList);
@@ -68,7 +74,8 @@ describe('Component: MyOrders', function() {
             orderEditCtrl = $controller('MyOrderEditCtrl', {
                 $scope: scope,
                 SelectedOrder: order,
-                LineItemList: []
+                LineItemList: [],
+                SelectedPayments: []
             });
             spyOn($state, 'go').and.returnValue(true);
         }));

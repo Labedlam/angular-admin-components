@@ -87,7 +87,8 @@ describe('Component: Cart', function() {
                 $scope: scope,
                 Order: fakeOrder,
                 LineItemsList: lineItemsList,
-                LineItemHelpers: lineItemHelpers
+                LineItemHelpers: lineItemHelpers,
+                PromotionsList: []
             });
             var defer = q.defer();
             defer.resolve(lineItemsList);
@@ -151,7 +152,7 @@ describe('Component: Cart', function() {
                 expect(miniCartController.LineItems).toBe(lineItemsList);
             });
             it('should call method list according to length of pages ', function() {
-                expect(oc.LineItems.List.calls.count()).toEqual(3);
+                expect(oc.LineItems.List.calls.count()).toEqual(2);
             });
             it('should call method GetProductInfo ', function() {
                 expect(lineItemHelpers.GetProductInfo).toHaveBeenCalled();

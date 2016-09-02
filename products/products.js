@@ -228,49 +228,71 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
+    vm.StandardPriceScheduleID;
+    vm.ReplenishmentPriceScheduleID;
+    vm.selectedPriceSchedules = [];
 
     vm.assignBuyer = false;
     vm.model = {
         ProductID:$stateParams.productid,
         BuyerID: OrderCloud.BuyerID.Get(),
         UserGroupID: null,
-        StandardPriceScheduleID: null,
-        ReplenishmentPriceScheduleID: null
+        PriceScheduleID: null
     };
 
     vm.toggleReplenishmentPS = function(id) {
-        vm.model.ReplenishmentPriceScheduleID == id ? vm.model.ReplenishmentPriceScheduleID = null : vm.model.ReplenishmentPriceScheduleID = id;
+        vm.ReplenishmentPriceScheduleID == id ? vm.ReplenishmentPriceScheduleID = null : vm.ReplenishmentPriceScheduleID = id;
     };
 
     vm.toggleStandardPS = function(id) {
-        vm.model.StandardPriceScheduleID == id ? vm.model.StandardPriceScheduleID = null : vm.model.StandardPriceScheduleID = id;
+        vm.StandardPriceScheduleID == id ? vm.StandardPriceScheduleID = null : vm.StandardPriceScheduleID = id;
     };
-
+    
     vm.submit = function() {
-        if (!(vm.model.StandardPriceScheduleID || vm.model.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !Underscore.where(vm.list.Items, {selected:true}).length)) return;
+        vm.ReplenishmentPriceScheduleID ? vm.selectedPriceSchedules.push(vm.ReplenishmentPriceScheduleID) : angular.noop();
+        vm.StandardPriceScheduleID ? vm.selectedPriceSchedules.push(vm.StandardPriceScheduleID) : angular.noop();
+        if (!(vm.StandardPriceScheduleID || vm.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !Underscore.where(vm.list.Items, {selected:true}).length)) return;
         if (vm.assignBuyer) {
-            OrderCloud.Products.SaveAssignment(vm.model)
-                .then(function() {
+            var assignmentQueue = [];
+            var df = $q.defer();
+            angular.forEach(vm.selectedPriceSchedules, function(priceSchedule){
+                var assignment = angular.copy(vm.model);
+                assignment.PriceScheduleID = priceSchedule;
+                assignmentQueue.push(OrderCloud.Products.SaveAssignment(assignment));
+            });
+            $q.all(assignmentQueue)
+                .then(function(){
+                    df.resolve();
                     $state.go('products.assignments', {productid:$stateParams.productid});
-                });
+                    toastr.success('Assignment Updated', 'Success');
+                })
+                .catch(function(error){
+                    $state.go('products.assignments', {productid:$stateParams.productid});
+                    toastr.error('An error occurred while trying to save your product assignment', 'Error');
+                })
+            return df.promise;
         } else {
             var assignmentQueue = [];
-            angular.forEach(Underscore.where(vm.list.Items, {selected: true}), function(group) {
-                assignmentQueue.push((function() {
-                    var df = $q.defer();
+            var df =$q.defer();
+            angular.forEach(Underscore.where(vm.list.Items, {selected: true}), function(group){
+                angular.forEach(vm.selectedPriceSchedules, function(priceSchedule){
                     var assignment = angular.copy(vm.model);
                     assignment.UserGroupID = group.ID;
-                    OrderCloud.Products.SaveAssignment(assignment)
-                        .then(function() {
-                            df.resolve();
-                        });
-                    return df.promise;
-                })());
-            });
-            $q.all(assignmentQueue).then(function() {
-                $state.go('products.assignments', {productid:$stateParams.productid});
-                toastr.success('Assignment Updated', 'Success');
-            });
+                    assignment.PriceScheduleID = priceSchedule;
+                    assignmentQueue.push(OrderCloud.Products.SaveAssignment(assignment));
+                });
+            })
+            $q.all(assignmentQueue)
+                .then(function(){
+                    df.resolve();
+                    $state.go('products.assignments', {productid:$stateParams.productid});
+                    toastr.success('Assignment Updated', 'Success');
+                })
+                .catch(function(error){
+                    $state.go('products.assignments', {productid:$stateParams.productid});
+                    toastr.error('An error occurred while trying to save your product assignment', 'Error');
+                })
+            return df.promise;
         }
     };
 }

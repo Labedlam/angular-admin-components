@@ -89,7 +89,7 @@
 		<div class="col-sm-6" ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length">
 			<h4>Standard Price Schedules</h4>
 			<ul class="list-group">
-				<li class="list-group-item" ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'} track by $index" ng-class="{active: priceSchedule.ID == productCreateAssignment.model.StandardPriceScheduleID}" ng-click="productCreateAssignment.toggleStandardPS(priceSchedule.ID)">
+				<li class="list-group-item" ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'} track by $index" ng-class="{active: priceSchedule.ID == productCreateAssignment.StandardPriceScheduleID}" ng-click="productCreateAssignment.toggleStandardPS(priceSchedule.ID)">
 					{{priceSchedule.ID}}
 				</li>
 			</ul>
@@ -97,13 +97,13 @@
 		<div class="col-sm-6" ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length">
 			<h4>Replenishment Price Schedules</h4>
 			<ul class="list-group">
-				<li class="list-group-item" ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'} track by $index" ng-class="{active: priceSchedule.ID == productCreateAssignment.model.ReplenishmentPriceScheduleID}" ng-click="productCreateAssignment.toggleReplenishmentPS(priceSchedule.ID)">
+				<li class="list-group-item" ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'} track by $index" ng-class="{active: priceSchedule.ID == productCreateAssignment.ReplenishmentPriceScheduleID}" ng-click="productCreateAssignment.toggleReplenishmentPS(priceSchedule.ID)">
 					{{priceSchedule.ID}}
 				</li>
 			</ul>
 		</div>
 	</div>
 	<button type="button" class="btn btn-default" ui-sref="^.assignments({productid:productCreateAssignment.model.ProductID})">Cancel</button>
-	<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.submit()" ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.model.StandardPriceScheduleID.length || productCreateAssignment.model.ReplenishmentPriceScheduleID.length))">Save Assignment</button>
+	<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.submit()" ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">Save Assignment</button>
 </div>
 

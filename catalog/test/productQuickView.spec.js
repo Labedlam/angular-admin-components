@@ -37,7 +37,7 @@ describe('Component: Catalog', function() {
             spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(defer.promise);
             quickViewCtrl.open(fakeProduct);
         }));
-        it('Should reslove SelectedProduct and SpecList', function() {
+        it('Should resolve SelectedProduct and SpecList', function() {
             expect(oc.Me.GetProduct).toHaveBeenCalledWith(fakeProduct.ID);
             expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null,fakeProduct.ID);
         });

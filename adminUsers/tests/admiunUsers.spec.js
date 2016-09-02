@@ -3,6 +3,9 @@ describe('Component: AdminUsers', function() {
         q,
         adminUser,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -18,6 +21,37 @@ describe('Component: AdminUsers', function() {
         };
         oc = OrderCloud;
     }));
+
+    describe('State: adminUsers', function() {
+        var state;
+        beforeEach(inject(function($state, OrderCloudParameters) {
+            state = $state.get('adminUsers');
+            var defer = q.defer();
+            defer.resolve();
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
+            spyOn(oc.AdminUsers, 'List').and.returnValue(defer.promise);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
+        }));
+        it('should resolve AdminUserList', inject(function($injector) {
+            $injector.invoke(state.resolve.AdminUsersList);
+            expect(oc.AdminUsers.List).toHaveBeenCalled();
+        }));
+    });
+
+    describe('State: adminUsers.edit', function() {
+        var state;
+        beforeEach(inject(function($state) {
+            state = $state.get('adminUsers.edit');
+            spyOn(oc.AdminUsers, 'Get').and.returnValue(null);
+        }));
+        it('should resolve AdminUserList', inject(function($injector) {
+            $injector.invoke(state.resolve.SelectedAdminUser);
+            expect(oc.AdminUsers.Get).toHaveBeenCalled();
+        }));
+    });
 
     describe('Controller: AdminUserCreateCtrl', function() {
         var adminUserCreateCtrl;

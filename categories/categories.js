@@ -27,7 +27,7 @@ function CategoriesConfig($stateProvider) {
                 CategoryList: function(OrderCloud, Parameters) {
                     var parameters = angular.copy(Parameters);
                     parameters.depth = 'all';
-                    return OrderCloud.Categories.List(parameters.search, parameters.page, parameters.pageSize || 12, parameters.searchOn, parameters.sortBy, parameters.filters, parameters.parentID, parameters.depth);
+                    return OrderCloud.Categories.List(parameters.search, parameters.page, parameters.pageSize || 12, parameters.searchOn, parameters.sortBy, parameters.filters, parameters.depth);
                 }
             }
         })
@@ -195,7 +195,7 @@ function CategoryEditController($exceptionHandler, $state, $q, toastr, OrderClou
 
     vm.typeAhead = function(searchTerm) {
         var defd = $q.defer();
-        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, null, 'all')
+        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, 'all')
             .then(function(data) {
                 defd.resolve(data.Items)
             });
@@ -234,7 +234,7 @@ function CategoryCreateController($exceptionHandler, $state, $q, toastr, OrderCl
 
     vm.typeAhead = function(searchTerm) {
         var defd = $q.defer();
-        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, null, 'all')
+        OrderCloud.Categories.List(searchTerm, 1, 100, null, null, null, 'all')
             .then(function(data) {
                 defd.resolve(data.Items)
             });
@@ -369,7 +369,7 @@ function CategoryTreeService($q, Underscore, OrderCloud) {
     function tree() {
         var tree = [];
         var deferred = $q.defer();
-        OrderCloud.Categories.List(null, 1, 100, null, null, null, null, 'all')
+        OrderCloud.Categories.List(null, 1, 100, null, null, null, 'all')
             .then(function(list) {
             angular.forEach(Underscore.where(list.Items, {ParentID: null}), function(node) {
                 tree.push(getnode(node));

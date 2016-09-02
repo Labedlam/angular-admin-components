@@ -5,6 +5,9 @@ describe('Component: Category Facets', function() {
        matchingProds,
        modalInstance,
        oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -56,13 +59,18 @@ describe('Component: Category Facets', function() {
     }));
     describe('State: categoryFacets', function() {
        var state;
-        beforeEach(inject(function($state) {
-            state = $state.get('categoryFacets')
+        beforeEach(inject(function($state, OrderCloudParameters) {
+            state = $state.get('categoryFacets');
             spyOn(oc.Categories, 'List').and.returnValue(null);
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve CategoryList', inject(function($injector) {
             $injector.invoke(state.resolve.CategoryList);
-            expect(oc.Categories.List).toHaveBeenCalledWith(null, 'all');
+            expect(oc.Categories.List).toHaveBeenCalledWith(null, null, 12, null, null, undefined);
         }));
     });
     describe('State: categoryFacets.manage', function() {

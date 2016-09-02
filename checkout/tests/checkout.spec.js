@@ -68,7 +68,10 @@ describe('Component: Checkout', function() {
         beforeEach(inject(function($state, $controller) {
             orderConfirmationCtrl = $controller('OrderConfirmationCtrl', {
                 $scope: scope,
-                Order: order
+                Order: order,
+                OrderPayments: {
+                    Items:[]
+                }
             });
             spyOn($state, 'go').and.returnValue(true);
         }));
@@ -111,6 +114,7 @@ describe('Component: Checkout', function() {
             defer.resolve(order);
             spyOn(oc.LineItems, 'List').and.returnValue(lidefer.promise);
             spyOn(LineItemHelpers, 'GetProductInfo').and.returnValue(defer.promise);
+            spyOn(oc.Payments, 'List').and.returnValue(defer.promise);
             orderReviewCtrl = $controller('OrderReviewCtrl', {
                 $scope: scope,
                 SubmittedOrder: order
@@ -131,6 +135,9 @@ describe('Component: Checkout', function() {
         }));
         it ('should call the LineItems List method', function() {
             expect(oc.LineItems.List).toHaveBeenCalledWith(orderReviewCtrl.submittedOrder.ID);
+        });
+        it ('should call the Payments List method', function(){
+           expect(oc.Payments.List).toHaveBeenCalledWith(orderReviewCtrl.submittedOrder.ID);
         });
 
         describe('print', function() {
@@ -157,7 +164,6 @@ describe('Component: Checkout', function() {
                 var defer = q.defer();
                 defer.resolve(order);
                 spyOn(oc.LineItems, 'List').and.returnValue(defer.promise);
-                spyOn(oc.LineItems, 'Get').and.returnValue(defer.promise);
                 spyOn(LineItemHelpers, 'GetProductInfo').and.returnValue(defer.promise);
                 scope.$digest();
                 checkoutLICtrl.lineItems = {
@@ -170,9 +176,6 @@ describe('Component: Checkout', function() {
                 };
                 checkoutLICtrl.pagingfunction();
             }));
-            it ('should call the LineItems Get method', function() {
-                expect(oc.LineItems.Get).toHaveBeenCalledWith(scope.order.ID);
-            });
             it ('should call the LineItemHelpers GetProductInfo method', inject(function(LineItemHelpers) {
                 scope.$digest();
                 expect(LineItemHelpers.GetProductInfo).toHaveBeenCalledWith(checkoutLICtrl.lineItems.Items);
@@ -196,7 +199,6 @@ describe('Component: Checkout', function() {
                 var defer = q.defer();
                 defer.resolve(order);
                 spyOn(oc.LineItems, 'List').and.returnValue(defer.promise);
-                spyOn(oc.LineItems, 'Get').and.returnValue(defer.promise);
                 spyOn(LineItemHelpers, 'GetProductInfo').and.returnValue(defer.promise);
                 scope.$digest();
                 confirmationLICtrl.lineItems = {
@@ -209,9 +211,6 @@ describe('Component: Checkout', function() {
                 };
                 confirmationLICtrl.pagingfunction();
             }));
-            it ('should call the LineItems Get method', function() {
-                expect(oc.LineItems.Get).toHaveBeenCalledWith(scope.order.ID);
-            });
             it ('should call the LineItemHelpers GetProductInfo method', inject(function(LineItemHelpers) {
                 scope.$digest();
                 expect(LineItemHelpers.GetProductInfo).toHaveBeenCalledWith(confirmationLICtrl.lineItems.Items);

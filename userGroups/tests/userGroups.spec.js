@@ -3,6 +3,9 @@ describe('Component: UserGroups', function() {
         q,
         userGroup,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -19,9 +22,14 @@ describe('Component: UserGroups', function() {
 
     describe('State: userGroups', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('userGroups');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.UserGroups, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve UserGroupList', inject(function($injector) {
             $injector.invoke(state.resolve.UserGroupList);

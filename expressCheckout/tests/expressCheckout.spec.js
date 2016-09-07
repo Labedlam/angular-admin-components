@@ -180,7 +180,7 @@ describe('Component: ExpressCheckout', function() {
            }));
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {BillingAddressID: expressCheckoutOrdeCtrl.currentOrder.BillingAddressID});
-            })
+            });
             it('should call the $state reload method', inject(function($state) {
                 expect($state.reload).toHaveBeenCalled();
             }));

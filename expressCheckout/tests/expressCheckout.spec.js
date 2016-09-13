@@ -198,7 +198,7 @@ describe('Component: ExpressCheckout', function() {
             }));
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {ShippingAddressID: expressCheckoutOrdeCtrl.currentOrder.ShippingAddressID});
-            })
+            });
             it('should call the $state reload method', inject(function($state) {
                 expect($state.reload).toHaveBeenCalled();
             }));
@@ -300,7 +300,7 @@ describe('Component: ExpressCheckout', function() {
             })
         });
 
-        describe('removeFromavorites', function() {
+        describe('removeFromFavorites', function() {
             beforeEach(inject(function() {
                 var defer = q.defer();
                 defer.resolve();

@@ -25,9 +25,9 @@ describe('Component: Catalog', function() {
 
 
     describe('Controller: ProductQuickViewController', function() {
-        var quickViewCtrl;
+        var ProductQuickViewCtrl;
         beforeEach(inject(function($controller) {
-            quickViewCtrl = $controller('QuickViewCtrl', {
+            ProductQuickViewCtrl = $controller('ProductQuickViewCtrl', {
                 $scope: scope
             });
             var defer = q.defer();
@@ -35,13 +35,12 @@ describe('Component: Catalog', function() {
             scope.$digest();
             spyOn(oc.Me, 'GetProduct').and.returnValue(defer.promise);
             spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(defer.promise);
-            quickViewCtrl.open(fakeProduct);
+            ProductQuickViewCtrl.open(fakeProduct);
         }));
         it('Should resolve SelectedProduct and SpecList', function() {
             expect(oc.Me.GetProduct).toHaveBeenCalledWith(fakeProduct.ID);
             expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null,fakeProduct.ID);
         });
-
     });
 
     describe('Controller: ProductQuickViewModalController', function() {

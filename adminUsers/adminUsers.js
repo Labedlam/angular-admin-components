@@ -38,9 +38,6 @@ function AdminUsersConfig($stateProvider) {
             resolve: {
                 SelectedAdminUser: function($stateParams, OrderCloud) {
                     return OrderCloud.AdminUsers.Get($stateParams.adminuserid);
-                },
-                SecurityProfilesAvailable : function(OrderCloud) {
-                    return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
@@ -48,12 +45,7 @@ function AdminUsersConfig($stateProvider) {
             url: '/create',
             templateUrl: 'adminUsers/templates/adminUserCreate.tpl.html',
             controller: 'AdminUserCreateCtrl',
-            controllerAs: 'adminUserCreate',
-            resolve: {
-                SecurityProfilesAvailable: function(OrderCloud) {
-                   return OrderCloud.SecurityProfiles.List();
-                }
-            }
+            controllerAs: 'adminUserCreate'
         })
 }
 
@@ -130,12 +122,11 @@ function AdminUsersController($state, $ocMedia, OrderCloud, OrderCloudParameters
     };
 }
 
-function AdminUserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedAdminUser, SecurityProfilesAvailable) {
+function AdminUserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedAdminUser) {
     var vm = this,
         adminuserid = SelectedAdminUser.ID;
     vm.adminUserName = SelectedAdminUser.Username;
     vm.adminUser = SelectedAdminUser;
-    vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
 
     if (vm.adminUser.TermsAccepted != null) {
         vm.TermsAccepted = true;
@@ -164,10 +155,9 @@ function AdminUserEditController($exceptionHandler, $state, toastr, OrderCloud, 
     };
 }
 
-function AdminUserCreateController($exceptionHandler, $state, toastr, OrderCloud, SecurityProfilesAvailable) {
+function AdminUserCreateController($exceptionHandler, $state, toastr, OrderCloud) {
     var vm = this;
     vm.adminUser = {Email: '', Password: ''};
-    vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
 
     vm.Submit = function() {
         vm.adminUser.TermsAccepted = new Date();

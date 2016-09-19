@@ -19,7 +19,7 @@ function UsersConfig($stateProvider) {
                     return OrderCloudParameters.Get($stateParams);
                 },
                 UserList: function(OrderCloud, Parameters) {
-                    return OrderCloud.Users.List(null, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
+                    return OrderCloud.Users.List(Parameters.userGroupID, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
@@ -31,9 +31,6 @@ function UsersConfig($stateProvider) {
             resolve: {
                 SelectedUser: function($stateParams, OrderCloud) {
                     return OrderCloud.Users.Get($stateParams.userid);
-                },
-                SecurityProfilesAvailable: function(OrderCloud) {
-                    return OrderCloud.SecurityProfiles.List();
                 }
             }
         })
@@ -41,12 +38,7 @@ function UsersConfig($stateProvider) {
             url: '/create',
             templateUrl: 'users/templates/userCreate.tpl.html',
             controller: 'UserCreateCtrl',
-            controllerAs: 'userCreate',
-            resolve: {
-                SecurityProfilesAvailable: function(OrderCloud) {
-                    return OrderCloud.SecurityProfiles.List();
-                }
-            }
+            controllerAs: 'userCreate'
         })
     ;
 }
@@ -118,7 +110,7 @@ function UsersController($state, $ocMedia, OrderCloud, OrderCloudParameters, Use
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Users.List(null, Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Users.List(Parameters.userGroupID, Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -126,12 +118,11 @@ function UsersController($state, $ocMedia, OrderCloud, OrderCloudParameters, Use
     };
 }
 
-function UserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedUser, SecurityProfilesAvailable) {
+function UserEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedUser) {
     var vm = this,
         userid = SelectedUser.ID;
     vm.userName = SelectedUser.Username;
     vm.user = SelectedUser;
-    vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
     if (vm.user.TermsAccepted != null) {
         vm.TermsAccepted = true;
     }
@@ -161,11 +152,10 @@ function UserEditController($exceptionHandler, $state, toastr, OrderCloud, Selec
     };
 }
 
-function UserCreateController($exceptionHandler, $state, toastr, OrderCloud, SecurityProfilesAvailable) {
+function UserCreateController($exceptionHandler, $state, toastr, OrderCloud) {
     var vm = this;
     vm.user = {Email: '', Password: ''};
     vm.user.Active = false;
-    vm.securityProfilesAvailable = SecurityProfilesAvailable.Items;
     vm.Submit = function() {
         vm.user.TermsAccepted = new Date();
         OrderCloud.Users.Create(vm.user)

@@ -1,4 +1,4 @@
-fdescribe('Component: Cart', function() {
+describe('Component: Cart', function() {
     var scope,
         q,
         oc,

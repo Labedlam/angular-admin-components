@@ -44,9 +44,9 @@ describe('Component: Catalog', function() {
     });
 
     describe('Controller: ProductQuickViewModalController', function() {
-        var quickViewModalCtrl;
+        var ProductQuickViewModalCtrl;
         beforeEach(inject(function($controller) {
-            quickViewModalCtrl = $controller('QuickViewModalCtrl', {
+            ProductQuickViewModalCtrl = $controller('ProductQuickViewModalCtrl', {
                 $scope: scope,
                 $uibModalInstance: uibModalInstance,
                 SelectedProduct: fakeProduct,
@@ -59,8 +59,8 @@ describe('Component: Catalog', function() {
                 var defer = q.defer();
                 defer.resolve(fakeProduct);
                 spyOn(addToOrder, 'Add').and.returnValue(defer.promise);
-                quickViewModalCtrl.selectedProduct = fakeProduct;
-                quickViewModalCtrl.addToCart(fakeProduct);
+                ProductQuickViewModalCtrl.selectedProduct = fakeProduct;
+                ProductQuickViewModalCtrl.addToCart(fakeProduct);
             });
             it('Should call Add method and pass product object', function() {
                 expect(addToOrder.Add).toHaveBeenCalledWith(fakeProduct);

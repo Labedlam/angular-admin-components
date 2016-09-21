@@ -6,17 +6,22 @@ describe('Component: Shipments', function() {
     beforeEach(module(function($provide) {
         $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
     }));
+    //beforeEach(module(function($provide){
+    //    $provide.value('SelectedShipment', {ID: "TestShipment123456789", Shipper: "USPS", DateShipped: null, Cost: 7,
+    //        Items: [{OrderID: "TestOrder123456789", LineItemId: "TestLineItem123456789", QuantityShipped: 2}]})
+    //}));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
         q = $q;
         scope = $rootScope.$new();
-        shipment = {
+        shipment =
+            {
             ID: "TestShipment123456789",
             Shipper: "USPS",
             DateShipped: null,
             Cost: 7,
-        Items: [
+            Items: [
                 {
                     OrderID: "TestOrder123456789",
                     LineItemId: "TestLineItem123456789",
@@ -49,15 +54,15 @@ describe('Component: Shipments', function() {
         beforeEach(inject(function($state) {
             state = $state.get('shipments.edit');
             spyOn(oc.Shipments, 'Get').and.returnValue(null);
-            spyOn(oc.Orders, 'List').and.returnValue(null);
+            spyOn(oc.Orders, 'ListIncoming').and.returnValue(null);
         }));
         it('should resolve SelectedShipment', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedShipment);
-            expect(oc.Shipments.Get).toHaveBeenCalledWith($stateParams.shipmentid);
+            expect(oc.Shipments.Get).toHaveBeenCalledWith($stateParams.shipment);
         }));
         it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
-            expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
+            expect(oc.Orders.ListIncoming).toHaveBeenCalledWith(shipment.Items[0].OrderID);
         }));
     });
 
@@ -65,11 +70,11 @@ describe('Component: Shipments', function() {
         var state;
         beforeEach(inject(function($state) {
             state = $state.get('shipments.create');
-            spyOn(oc.Orders, 'List').and.returnValue(null);
+            spyOn(oc.Orders, 'ListIncoming').and.returnValue(null);
         }));
         it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
-            expect(oc.Orders.List).toHaveBeenCalledWith('incoming');
+            expect(oc.Orders.ListIncoming).toHaveBeenCalled();
         }));
     });
 

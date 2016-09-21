@@ -271,24 +271,27 @@ describe('Component: Specs', function() {
     });
     
     describe('Controller: SpecAssignCtrl', function() {
-        var specAssignCtrl;
-        beforeEach(inject(function($state, $controller) {
+        var specAssignCtrl,
+            assignments;
+        beforeEach(inject(function($state, $controller, Assignments) {
+            assignments = Assignments;
             specAssignCtrl = $controller('SpecAssignCtrl', {
                 $scope: scope,
                 ProductList: [],
                 ProductAssignments: [],
-                SelectedSpec: {}
+                SelectedSpec: {},
+                Assignments: assignments
             });
             spyOn($state, 'go').and.returnValue(true);
         }));
 
         describe('SaveAssignment', function() {
-            beforeEach(inject(function(Assignments) {
-                spyOn(Assignments, 'saveAssignments').and.returnValue(null);
+            beforeEach(inject(function() {
+                spyOn(assignments, 'SaveAssignments').and.returnValue(null);
                 specAssignCtrl.saveAssignments();
             }));
-            it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.SaveAssignments).toHaveBeenCalled();
+            it ('should call the saveAssignments method', inject(function() {
+                expect(assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 

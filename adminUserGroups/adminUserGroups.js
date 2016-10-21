@@ -10,23 +10,25 @@ function AdminUserGroupsConfig($stateProvider) {
     $stateProvider
         .state('adminUserGroups', {
             parent: 'base',
-            templateURL: 'adminUserGroups/templates/adminUserGroups.tpl.html',
+            templateUrl: 'adminUserGroups/templates/adminUserGroups.tpl.html',
             controller: 'AdminUserGroupsCtrl',
             controllerAs: 'adminUserGroups',
             url: '/adminusergroups?search&page&pageSize&sortBy&searchOn&filters',
             data: {componentName: 'Admin User Groups'},
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
+                    console.log("hit");
                     return OrderCloudParameters.Get($stateParams);
                 },
                 AdminUserGroupList: function(OrderCloud, Parameters) {
+                    console.log("hit");
                     return OrderCloud.AdminUserGroups.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
         .state('adminUserGroups.edit', {
             url: '/:adminusergroupid/edit',
-            templateURL: '/adminUserGroups/templates/adminUserGroupEdit.tpl.html',
+            templateUrl: '/adminUserGroups/templates/adminUserGroupEdit.tpl.html',
             controller: 'AdminUserGroupEditCtrl',
             controllerAs: 'adminUserGroupEdit',
             resolve: {
@@ -36,14 +38,14 @@ function AdminUserGroupsConfig($stateProvider) {
             }
         })
         .state('adminUserGroups.create', {
-            url: '/:adminusergroupid/create',
-            templateURL: '/adminUserGroups/templates/adminUserGroupCreate.tpl.html',
+            url: '/create',
+            templateUrl: '/adminUserGroups/templates/adminUserGroupCreate.tpl.html',
             controller: 'AdminUserGroupCreateCtrl',
             controllerAs: 'adminUserGroupCreate'
         })
         .state('adminUserGroups.assign', {
             url: '/:adminusergroupid/assign',
-            templateURL: '/adminUserGroups/templates/adminUserGroupAssign.tpl.html',
+            templateUrl: '/adminUserGroups/templates/adminUserGroupAssign.tpl.html',
             controller: 'AdminUserGroupAssignCtrl',
             controllerAs: 'adminUserGroupAssign',
             resolve: {

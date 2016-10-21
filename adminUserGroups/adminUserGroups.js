@@ -13,7 +13,7 @@ function AdminUserGroupsConfig($stateProvider) {
             templateURL: 'adminUserGroups/templates/adminUserGroups.tpl.html',
             controller: 'AdminUserGroupsCtrl',
             controllerAs: 'adminUserGroups',
-            url: '',
+            url: '/adminusergroups?search&page&pageSize&sortBy&searchOn&filters',
             data: {componentName: 'Admin User Groups'},
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
@@ -65,6 +65,8 @@ function AdminUserGroupsController($state, $ocMedia, OrderCloud, OrderCloudParam
     var vm = this;
     vm.list = AdminUserGroupList;
     vm.parameters = Parameters;
+    vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
+
 
     //check if filters are applied:
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width: 767px') && vm.sortSelection);
@@ -158,4 +160,58 @@ function AdminUserGroupEditController($exceptionHandler, $state, toastr, OrderCl
                 $exceptionHandler(ex)
             });
     };
+}
+
+function AdminUserGroupCreateController($exceptionHandler, $state, toastr, OrderCloud) {
+    var vm = this;
+
+    vm.submit = function() {
+        OrderCloud.AdminUserGroups.Create(vm.adminUserGroup)
+            .then(function() {
+                $state.go('adminUserGroups', {}, {reload: true});
+                toastr.success('Admin User Group Created', 'Success');
+            })
+            .catch(function(ex){
+                $exceptionHandler(ex)
+            });
+    };
+}
+
+function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments, Paging, AdminUserList, AssignedAdminUsers, SelectedAdminUserGroup) {
+    var vm = this;
+    vm.adminUserGroup = SelectedAdminUserGroup;
+    vm.list = AdminUserList;
+    vm.assignments = AssignedAdminUsers;
+    vm.saveAssignments = SaveAssignment;
+    vm.pagingfunction = PagingFunction;
+
+    $scope.$watchCollection(function(){
+        return vm.list;
+    }, function(){
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'AdminUserID');
+    });
+
+    function SaveFunc(ItemID) {
+        return OrderCloud.AdminUserGroups.SaveUserAssignment ({
+            adminUserID: ItemID,
+            adminUserGroupID: vm.adminUserGroup.ID
+        });
+    }
+
+    function DeleteFunc(ItemID) {
+        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.adminUserGroupID, ItemID);
+    }
+
+    function SaveAssignment() {
+        toastr.success('Assignment Updated', 'Success');
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'AdminUserID');
+    }
+
+    function AssignmentFunc() {
+        return OrderCloud.AdminUserGroups.ListUserAssignments(vm.adminUserGroup.ID, null, vm.assignments.Meta.PageSize, 'AdminUserID');
+    }
+
+    function PagingFunction() {
+        return Paging.Paging(vm.list, 'AdminUsers', vm.assignments, AssignmentFunc);
+    }
 }

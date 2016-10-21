@@ -28,7 +28,7 @@ function AdminUserGroupsConfig($stateProvider) {
             url: '/:adminusergroupid/edit',
             templateURL: '/adminUserGroups/templates/adminUserGroupEdit.tpl.html',
             controller: 'AdminUserGroupEditCtrl',
-            controllerAs: 'adminUserGroupsEdit',
+            controllerAs: 'adminUserGroupEdit',
             resolve: {
                 SelectedAdminUserGroup: function($stateParams, OrderCloud) {
                     return OrderCloud.AdminUserGroups.Get($stateParams.adminusergroupid);
@@ -140,7 +140,7 @@ function AdminUserGroupEditController($exceptionHandler, $state, toastr, OrderCl
     vm.adminUserGroupName = SelectedAdminUserGroup.Name;
     vm.adminUserGroup = SelectedAdminUserGroup;
 
-    vm.submit = function() {
+    vm.Submit = function() {
         OrderCloud.AdminUserGroups.Update(adminGroupID, vm.adminUserGroup)
             .then(function(){
                 $state.go('adminUserGroups', {}, {reload: true});
@@ -151,7 +151,7 @@ function AdminUserGroupEditController($exceptionHandler, $state, toastr, OrderCl
             });
     };
 
-    vm.delete = function() {
+    vm.Delete = function() {
         OrderCloud.AdminUserGroups.Delete(SelectedAdminUserGroup.ID)
             .then(function(){
                 $state.go('adminUserGroups', {}, {reload: true});
@@ -165,7 +165,7 @@ function AdminUserGroupEditController($exceptionHandler, $state, toastr, OrderCl
 function AdminUserGroupCreateController($exceptionHandler, $state, toastr, OrderCloud) {
     var vm = this;
 
-    vm.submit = function() {
+    vm.Submit = function() {
         OrderCloud.AdminUserGroups.Create(vm.adminUserGroup)
             .then(function() {
                 $state.go('adminUserGroups', {}, {reload: true});

@@ -61,7 +61,7 @@ function AdminUserGroupsConfig($stateProvider) {
     ;
 }
 
-function AdminUserGroupsController($ocMedia, AdminUserGroupList, Parameters){
+function AdminUserGroupsController($state, $ocMedia, OrderCloud, OrderCloudParameters, AdminUserGroupList, Parameters){
     var vm = this;
     vm.list = AdminUserGroupList;
     vm.parameters = Parameters;
@@ -109,5 +109,53 @@ function AdminUserGroupsController($ocMedia, AdminUserGroupList, Parameters){
             default:
                 vm.parameters.sortBy = value;
         }
-    }
+        vm.filter(false);
+    };
+
+    vm.reverseSort = function() {
+        Parameters.sortBy.indexOf('!') == 0 ? vm.parameters.sortBy = Parameters.sortBy.split("!")[1] : vm.parameters.sortBy = '!' + Parameters.sortBy;
+        vm.filter(false);
+    };
+
+    //reload the state with the incremented page parameter
+    vm.pageChanged = function() {
+        $state.go('.', {page: vm.list.Meta.Page});
+    };
+
+    //load the next page of results with all the same parameters
+    vm.loadMore = function() {
+        return OrderCloud.AdminUserGroups.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+            .then(function(data) {
+                vm.list.Items = vm.list.Items.concat(data.Items);
+                vm.list.Meta = data.Meta;
+            });
+    };
+}
+
+function AdminUserGroupEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedAdminUserGroup) {
+    var vm = this,
+        adminGroupID = SelectedAdminUserGroup.ID;
+    vm.adminUserGroupName = SelectedAdminUserGroup.Name;
+    vm.adminUserGroup = SelectedAdminUserGroup;
+
+    vm.submit = function() {
+        OrderCloud.AdminUserGroups.Update(adminGroupID, vm.adminUserGroup)
+            .then(function(){
+                $state.go('adminUserGroups', {}, {reload: true});
+                toastr.success('Admin User Group Updated', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+    };
+
+    vm.delete = function() {
+        OrderCloud.AdminUserGroups.Delete(SelectedAdminUserGroup.ID)
+            .then(function(){
+                $state.go('adminUserGroups', {}, {reload: true});
+            })
+            .catch(function(ex){
+                $exceptionHandler(ex)
+            });
+    };
 }

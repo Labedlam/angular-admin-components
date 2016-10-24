@@ -191,15 +191,15 @@ function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments,
         Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'AdminUserID');
     });
 
-    function SaveFunc(ItemID) {
+    function SaveFunc(data) {
         return OrderCloud.AdminUserGroups.SaveUserAssignment ({
-            adminUserID: ItemID,
+            adminUserID: data,
             adminUserGroupID: vm.adminUserGroup.ID
         });
     }
 
-    function DeleteFunc(ItemID) {
-        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.adminUserGroupID, ItemID);
+    function DeleteFunc(data) {
+        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.adminUserGroupID, data);
     }
 
     function SaveAssignment() {

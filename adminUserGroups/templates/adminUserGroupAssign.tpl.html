@@ -25,7 +25,6 @@
             <tr ng-repeat="adminUser in adminUserGroupAssign.list.Items track by $index">
                 <td class="text-center">
                     <input name="{{'adminUserGroup_assign_' + $index}}"  type="checkbox" ng-model="adminUser.selected">
-                    <!--CHECK adminUser, may be adminuser?-->
                 </td>
                 <td>
                     {{adminUser.ID}}

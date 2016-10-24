@@ -17,11 +17,9 @@ function AdminUserGroupsConfig($stateProvider) {
             data: {componentName: 'Admin User Groups'},
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
-                    console.log("hit");
                     return OrderCloudParameters.Get($stateParams);
                 },
                 AdminUserGroupList: function(OrderCloud, Parameters) {
-                    console.log("hit");
                     return OrderCloud.AdminUserGroups.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }

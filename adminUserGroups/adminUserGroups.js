@@ -192,6 +192,7 @@ function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments,
     });
 
     function SaveFunc(data) {
+        console.log("here is data", data);
         return OrderCloud.AdminUserGroups.SaveUserAssignment ({
             adminUserID: data,
             adminUserGroupID: vm.adminUserGroup.ID

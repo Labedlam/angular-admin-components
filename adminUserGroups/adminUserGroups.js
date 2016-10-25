@@ -188,7 +188,7 @@ function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments,
     $scope.$watchCollection(function() {
         return vm.list;
     }, function() {
-        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'AdminUserID');
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'UserID');
     });
 
     function SaveFunc(ItemID) {
@@ -200,16 +200,16 @@ function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments,
     }
 
     function DeleteFunc(ItemID) {
-        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.UserGroup.ID, ItemID);
+        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.AdminUserGroup.ID, ItemID);
     }
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'AdminUserID');
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'UserID');
     }
 
     function AssignmentFunc() {
-        return OrderCloud.AdminUserGroups.ListUserAssignments(vm.AdminUserGroup.ID, null, vm.assignments.Meta.PageSize, 'AdminUserID');
+        return OrderCloud.AdminUserGroups.ListUserAssignments(vm.AdminUserGroup.ID, null, vm.assignments.Meta.PageSize, 'UserID');
     }
 
     function PagingFunction() {

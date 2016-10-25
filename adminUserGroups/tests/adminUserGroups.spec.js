@@ -1,4 +1,4 @@
-fdescribe('Component: AdminUserGroups', function(){
+describe('Component: AdminUserGroups', function(){
     var scope,
         q,
         oc,

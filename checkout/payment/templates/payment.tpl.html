@@ -13,7 +13,7 @@
         <div ng-switch-when="PurchaseOrder">
             <label for="poNumber">PO Number</label>
             <div class="input-group">
-                <input id="poNumber" class="form-control" type="text" ng-model="checkoutPayment.currentOrderPayments[this.$index].xp.PONumber"/>
+                <input id="poNumber" class="form-control" type="text" placeholder="Click '+' to add entered PO Number to order" ng-model="checkoutPayment.currentOrderPayments[this.$index].xp.PONumber"/>
                 <span class="input-group-btn"><button class="btn btn-success" ng-click="checkoutPayment.savePONumber(this.$index, checkout.currentOrder)"><i class="fa fa-plus"></i> </button></span>
             </div>
         </div>

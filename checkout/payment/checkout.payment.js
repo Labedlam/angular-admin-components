@@ -177,7 +177,10 @@ function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, Avail
     function SavePONumber(index,order) {
         !vm.currentOrderPayments[index].xp ? vm.currentOrderPayments[index].xp = {} : vm.currentOrderPayments[index].xp;
         if (vm.currentOrderPayments[index].Type === "PurchaseOrder") {
-            OrderCloud.Payments.Update(order.ID, vm.currentOrderPayments[index].ID, vm.currentOrderPayments[index]);
+            OrderCloud.Payments.Update(order.ID, vm.currentOrderPayments[index].ID, vm.currentOrderPayments[index])
+                .then(function(){
+                    toastr.success('PO Number added to Order', 'Success:');
+                })
         }
     }
 

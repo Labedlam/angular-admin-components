@@ -179,37 +179,37 @@ function AdminUserGroupCreateController($exceptionHandler, $state, toastr, Order
 
 function AdminUserGroupAssignController($scope, toastr, OrderCloud, Assignments, Paging, AdminUserList, AssignedAdminUsers, SelectedAdminUserGroup) {
     var vm = this;
-    vm.adminUserGroup = SelectedAdminUserGroup;
+    vm.AdminUserGroup = SelectedAdminUserGroup;
     vm.list = AdminUserList;
     vm.assignments = AssignedAdminUsers;
     vm.saveAssignments = SaveAssignment;
     vm.pagingfunction = PagingFunction;
 
-    $scope.$watchCollection(function(){
+    $scope.$watchCollection(function() {
         return vm.list;
-    }, function(){
-        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'UserID');
+    }, function() {
+        Paging.SetSelected(vm.list.Items, vm.assignments.Items, 'AdminUserID');
     });
 
     function SaveFunc(ItemID) {
-        console.log("here is data", ItemID);
-        return OrderCloud.AdminUserGroups.SaveUserAssignment ({
+        console.log("this is ItemID", ItemID);
+        return OrderCloud.AdminUserGroups.SaveUserAssignment({
             UserID: ItemID,
-            UserGroupID: vm.adminUserGroup.ID
+            UserGroupID: vm.AdminUserGroup.ID
         });
     }
 
     function DeleteFunc(ItemID) {
-        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.adminUserGroup.ID, ItemID);
+        return OrderCloud.AdminUserGroups.DeleteUserAssignment(vm.UserGroup.ID, ItemID);
     }
 
     function SaveAssignment() {
         toastr.success('Assignment Updated', 'Success');
-        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'UserID');
+        return Assignments.SaveAssignments(vm.list.Items, vm.assignments.Items, SaveFunc, DeleteFunc, 'AdminUserID');
     }
 
     function AssignmentFunc() {
-        return OrderCloud.AdminUserGroups.ListUserAssignments(vm.adminUserGroup.ID, null, vm.assignments.Meta.PageSize, 'UserID');
+        return OrderCloud.AdminUserGroups.ListUserAssignments(vm.AdminUserGroup.ID, null, vm.assignments.Meta.PageSize, 'AdminUserID');
     }
 
     function PagingFunction() {

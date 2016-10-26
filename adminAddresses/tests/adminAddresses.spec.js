@@ -55,10 +55,10 @@ fdescribe('Component: AdminAddresses', function(){
             expect(oc.AdminAddresses.Get).toHaveBeenCalledWith($stateParams.addressid);
         }))
     });
-    describe('Controller: AdminAddressCreateCtrl', function(){
-        var adminAddressCreateCtrl;
+    describe('Controller: AdminAddressEditCtrl', function(){
+        var adminAddressEditCtrl;
         beforeEach(inject(function($state, $controller){
-            adminAddressCreateCtrl = $controller('AdminAddressCreateCtrl', {
+            adminAddressEditCtrl = $controller('AdminAddressEditCtrl', {
                 $scope: scope,
                 SelectedAdminAddress: adminAddress
             });
@@ -67,16 +67,16 @@ fdescribe('Component: AdminAddresses', function(){
 
         describe('Submit', function(){
             beforeEach(function(){
-                adminAddressCreateCtrl.adminAddress = adminAddress;
-                adminAddressCreateCtrl.adminAddressID = "testaddress";
+                adminAddressEditCtrl.adminAddress = adminAddress;
+                adminAddressEditCtrl.adminAddressID = "TestAddress123456789";
                 var defer = q.defer();
                 defer.resolve(adminAddress);
                 spyOn(oc.AdminAddresses, 'Update').and.returnValue(defer.promise);
-                adminAddressCreateCtrl.Submit();
+                adminAddressEditCtrl.Submit();
                 scope.$digest();
             });
             it('should call the AdminAddresses Update method', function(){
-                expect(oc.AdminAddresses.Update).toHaveBeenCalledWith(adminAddressCreateCtrl.adminAddressID, adminAddressCreateCtrl.adminAddress);
+                expect(oc.AdminAddresses.Update).toHaveBeenCalledWith(adminAddressEditCtrl.adminAddressID, adminAddressEditCtrl.adminAddress);
             });
             it('should enter the adminAddresses state', inject(function($state){
                expect($state.go).toHaveBeenCalledWith('adminAddresses', {}, {reload:true});
@@ -87,7 +87,7 @@ fdescribe('Component: AdminAddresses', function(){
                var defer = q.defer();
                defer.resolve(adminAddress);
                spyOn(oc.AdminAddresses, 'Delete').and.returnValue(defer.promise);
-               adminAddressCreateCtrl.Delete();
+               adminAddressEditCtrl.Delete();
                scope.$digest();
            });
            it('should call the AdminAddresses Delete method', function(){

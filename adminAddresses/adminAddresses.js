@@ -3,7 +3,6 @@ angular.module('orderCloud')
     .controller('AdminAddressesCtrl', AdminAddressesController)
     .controller('AdminAddressEditCtrl', AdminAddressEditController)
     .controller('AdminAddressCreateCtrl', AdminAddressCreateController)
-    //.controller('AdminAddressAssignCtrl', AdminAddressesAssignController)
 ;
 
 function AdminAddressesConfig($stateProvider){
@@ -25,15 +24,15 @@ function AdminAddressesConfig($stateProvider){
             }
         })
         .state('adminAddresses.edit', {
-            url: '/:adminaddresses/edit',
+            url: '/:addressid/edit',
             templateUrl: 'adminAddresses/templates/adminAddressEdit.tpl.html',
             controller: 'AdminAddressEditCtrl',
             controllerAs: 'adminAddressEdit',
             resolve: {
                 SelectedAdminAddress: function($stateParams, $state, OrderCloud) {
                     return OrderCloud.AdminAddresses.Get($stateParams.addressid).catch(function() {
-                        $state.go('^')
-                    })
+                        //$state.go('^');
+                    });
                 }
             }
         })
@@ -44,20 +43,6 @@ function AdminAddressesConfig($stateProvider){
             controllerAs: 'adminAddressCreate'
         })
 }
-        //.state('adminAddresses.assign', {
-        //    url: '',
-        //    templateUrl: 'adminAddresses/templates/adminAddresses.assign.tpl.html',
-        //    controller: 'AdminAddressAssignCtrl',
-        //    controllerAs: 'adminAddressAssign',
-        //    resolve: {
-        //        AdminUserGroupList: function(OrderCloud) {
-        //            return OrderCloud.AdminUserGroups.List();
-        //        },
-        //        AssignmentsList: function($stateParams, OrderCloud) {
-        //            return OrderCloud.Addresses.ListAssignments($stateParams.addressid);
-        //        }
-        //    }
-        //})
 
 
 function AdminAddressesController($ocMedia, OrderCloud, OrderCloudParameters, AddressList, Parameters){
@@ -138,7 +123,7 @@ function AdminAddressesController($ocMedia, OrderCloud, OrderCloudParameters, Ad
 
 function AdminAddressEditController($exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedAdminAddress) {
     var vm = this,
-        adminAddressID = SelectedAdminAddress.ID;
+        addressID = SelectedAdminAddress.ID;
     vm.adminAddressName = SelectedAdminAddress.AddressName;
     vm.adminAddress = SelectedAdminAddress;
     vm.countries = OCGeography.Countries;
@@ -151,7 +136,7 @@ function AdminAddressEditController($exceptionHandler, $state, $scope, toastr, O
     });
 
     vm.Submit = function() {
-        OrderCloud.AdminAddresses.Update(adminAddressID, vm.adminAddress)
+        OrderCloud.AdminAddresses.Update(addressID, vm.adminAddress)
             .then(function() {
                 $state.go('adminAddresses', {}, {reload:true});
                 toastr.success('Address Updated', 'Success');
@@ -188,10 +173,10 @@ function AdminAddressCreateController($exceptionHandler, $state, $scope, toastr,
     });
 
     vm.Submit = function() {
-        OrderCloud.AdminAddresses.Update(vm.adminAddress)
+        OrderCloud.AdminAddresses.Create(vm.adminAddress)
             .then(function() {
                 $state.go('adminAddresses', {}, {reload:true});
-                toastr.success('Adddress Created', 'Success');
+                toastr.success('Address Created', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);

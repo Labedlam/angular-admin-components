@@ -5,7 +5,7 @@
     </div>
 
     <!--====== SEARCH/FILTERS ======-->
-    <form name="AdminAddressesSearchForm" class="form-inline" ng-submit="adminAddresses.search()">
+    <form name="AddressesSearchForm" class="form-inline" ng-submit="adminAddresses.search()">
         <fieldset class="form-group">
             <input type="search" placeholder="Search Addresses..." ng-model="adminAddresses.parameters.search"
                    class="form-control">
@@ -97,7 +97,7 @@
                 </td>
                 <td data-title="Phone">{{address.Phone || '---'}}</td>
                 <td class="actions-cell">
-                    <button type="button" class="btn btn-default btn-sm" ui-sref=".edit({addressid: address.ID})">Edit
+                    <button type="button" class="btn btn-default btn-sm" ui-sref=".edit({addressid: adminAddress.ID})">Edit
                     </button>
                     <!--<button type="button" class="btn btn-default btn-sm" ui-sref=".assign({addressid: address.ID})">Assign-->
                     <!--</button>-->

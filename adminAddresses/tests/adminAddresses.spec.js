@@ -1,4 +1,4 @@
-describe('Component: AdminAddresses', function(){
+fdescribe('Component: AdminAddresses', function(){
     var scope,
         q,
         adminAddress,
@@ -33,7 +33,7 @@ describe('Component: AdminAddresses', function(){
             spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.AdminAddresses, 'List').and.returnValue(null);
         }));
-        it('should resolve Parameters', inject(function($injector){
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
             expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
@@ -41,5 +41,61 @@ describe('Component: AdminAddresses', function(){
             $injector.invoke(state.resolve.AddressList);
             expect(oc.AdminAddresses.List).toHaveBeenCalled();
         }))
+    });
+    describe('State: adminAddresses.edit', function(){
+        var state;
+        beforeEach(inject(function($state){
+            state = $state.get('adminAddresses.edit');
+            var defer = q.defer();
+            defer.resolve();
+            spyOn(oc.AdminAddresses, 'Get').and.returnValue(defer.promise);
+        }));
+        it('should resolve SelectedAdminAddress', inject(function($injector, $stateParams){
+            $injector.invoke(state.resolve.SelectedAdminAddress);
+            expect(oc.AdminAddresses.Get).toHaveBeenCalledWith($stateParams.addressid);
+        }))
+    });
+    describe('Controller: AdminAddressCreateCtrl', function(){
+        var adminAddressCreateCtrl;
+        beforeEach(inject(function($state, $controller){
+            adminAddressCreateCtrl = $controller('AdminAddressCreateCtrl', {
+                $scope: scope,
+                SelectedAdminAddress: adminAddress
+            });
+            spyOn($state, 'go').and.returnValue(true);
+        }));
+
+        describe('Submit', function(){
+            beforeEach(function(){
+                adminAddressCreateCtrl.adminAddress = adminAddress;
+                adminAddressCreateCtrl.adminAddressID = "testaddress";
+                var defer = q.defer();
+                defer.resolve(adminAddress);
+                spyOn(oc.AdminAddresses, 'Update').and.returnValue(defer.promise);
+                adminAddressCreateCtrl.Submit();
+                scope.$digest();
+            });
+            it('should call the AdminAddresses Update method', function(){
+                expect(oc.AdminAddresses.Update).toHaveBeenCalledWith(adminAddressCreateCtrl.adminAddressID, adminAddressCreateCtrl.adminAddress);
+            });
+            it('should enter the adminAddresses state', inject(function($state){
+               expect($state.go).toHaveBeenCalledWith('adminAddresses', {}, {reload:true});
+            }));
+        });
+        describe('Delete', function(){
+           beforeEach(function(){
+               var defer = q.defer();
+               defer.resolve(adminAddress);
+               spyOn(oc.AdminAddresses, 'Delete').and.returnValue(defer.promise);
+               adminAddressCreateCtrl.Delete();
+               scope.$digest();
+           });
+           it('should call the AdminAddresses Delete method', function(){
+               expect(oc.AdminAddresses.Delete).toHaveBeenCalledWith(adminAddress.ID, false);
+           });
+           it('should enter the adminAddresses state', inject(function($state){
+               expect($state.go).toHaveBeenCalledWith('adminAddresses', {}, {reload: true});
+           }))
+        });
     })
 });

@@ -97,5 +97,32 @@ fdescribe('Component: AdminAddresses', function(){
                expect($state.go).toHaveBeenCalledWith('adminAddresses', {}, {reload: true});
            }))
         });
+    });
+    describe('Controller: AdminAddressCreateCtrl', function(){
+        var adminAddressCreateCtrl;
+        beforeEach(inject(function($state, $controller){
+            adminAddressCreateCtrl = $controller('AdminAddressCreateCtrl', {
+                $scope: scope
+            });
+            spyOn($state, 'go').and.returnValue(true);
+        }));
+        describe('Submit', function(){
+            beforeEach(function(){
+                adminAddressCreateCtrl.adminAddress = {
+                    Country: 'US'
+                };
+                var defer = q.defer();
+                defer.resolve(adminAddress);
+                spyOn(oc.AdminAddresses, 'Create').and.returnValue(defer.promise);
+                adminAddressCreateCtrl.Submit();
+                scope.$digest();
+            });
+            it('should call the AdminAddresses Create method', function(){
+                expect(oc.AdminAddresses.Create).toHaveBeenCalledWith(adminAddressCreateCtrl.adminAddress);
+            });
+            it('should enter the adminAddresses state', inject(function($state){
+                expect($state.go).toHaveBeenCalledWith('adminAddresses', {}, {reload:true});
+            }))
+        })
     })
 });

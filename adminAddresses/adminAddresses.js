@@ -13,7 +13,7 @@ function AdminAddressesConfig($stateProvider){
             templateUrl: 'adminAddresses/templates/adminAddresses.tpl.html',
             controller: 'AdminAddressesCtrl',
             controllerAs: 'adminAddresses',
-            url: '',
+            url: '/adminaddresses?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'AdminAddresses'},
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
@@ -25,7 +25,7 @@ function AdminAddressesConfig($stateProvider){
             }
         })
         .state('adminAddresses.edit', {
-            url: '',
+            url: '/:adminaddresses/edit',
             templateUrl: 'adminAddresses/templates/adminAddressEdit.tpl.html',
             controller: 'AdminAddressEditCtrl',
             controllerAs: 'adminAddressEdit',
@@ -38,9 +38,9 @@ function AdminAddressesConfig($stateProvider){
             }
         })
         .state('adminAddresses.create', {
-            url: '',
+            url: '/create',
             templateUrl: 'adminAddresses/templates/adminAddressCreate.tpl.html',
-            controller: 'AdminAddressCreateCrl',
+            controller: 'AdminAddressCreateCtrl',
             controllerAs: 'adminAddressCreate'
         })
 }
@@ -145,12 +145,56 @@ function AdminAddressEditController($exceptionHandler, $state, $scope, toastr, O
     vm.states = OCGeography.States;
 
     $scope.$watch(function() {
-        return vm.address.Country
+        return vm.adminAddress.Country
     }, function() {
         vm.adminAddress.State = null;
     });
 
     vm.Submit = function() {
-        OrderCloud.AdminAddresses.Update(adminAddressID, vm.adminAddress);
+        OrderCloud.AdminAddresses.Update(adminAddressID, vm.adminAddress)
+            .then(function() {
+                $state.go('adminAddresses', {}, {reload:true});
+                toastr.success('Address Updated', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+            });
+    };
+
+    vm.Delete = function() {
+        OrderCloud.AdminAddresses.Delete(SelectedAdminAddress.ID, false)
+            .then(function() {
+                $state.go('adminAddresses', {}, {reload: true});
+                toastr.success('Address Deleted', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+            });
+    };
+}
+
+function AdminAddressCreateController($exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography){
+    var vm = this;
+    vm.adminAddress = {
+        Country: 'US' // this is to default 'create' addresses to the country US
+    };
+    vm.countries = OCGeography.Countries;
+    vm.states = OCGeography.States;
+
+    $scope.$watch(function() {
+        return vm.adminAddress.Country
+    }, function() {
+        vm.adminAddress.State = null;
+    });
+
+    vm.Submit = function() {
+        OrderCloud.AdminAddresses.Update(vm.adminAddress)
+            .then(function() {
+                $state.go('adminAddresses', {}, {reload:true});
+                toastr.success('Adddress Created', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex);
+            })
     }
 }

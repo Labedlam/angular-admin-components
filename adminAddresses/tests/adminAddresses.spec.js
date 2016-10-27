@@ -1,4 +1,4 @@
-fdescribe('Component: AdminAddresses', function(){
+describe('Component: AdminAddresses', function(){
     var scope,
         q,
         adminAddress,

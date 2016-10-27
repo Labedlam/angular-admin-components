@@ -11,12 +11,12 @@
                    class="form-control">
         </fieldset>
         <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
-		<span ng-class="{'btn-group':addresses.searchResults}">
+		<span ng-class="{'btn-group':adminAddresses.searchResults}">
 			<button type="submit" class="btn btn-primary">Search</button>
 			<button ng-if="adminAddresses.searchResults" ng-click="adminAddresses.clearSearch()" type="button"
                     class="btn btn-default"><i class="fa fa-times"></i></button>
 		</span>
-		<span ng-class="{'btn-group':addresses.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
+		<span ng-class="{'btn-group':adminAddresses.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
 			<button type="button" class="btn btn-default" ng-click="adminAddresses.showFilters = !adminAddresses.showFilters"><i
                     class="fa fa-filter"></i> Filters
             </button>
@@ -88,14 +88,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="adminAddresses in adminAddresses.list.Items">
-                <th scope="row">{{adminAddresses.ID}}</th>
-                <td data-title="Name">{{adminAddresses.AddressName || '---'}}</td>
-                <td data-title="Address">{{adminAddresses.Street1 + (adminAddresses.Street2 ? (' ' + adminAddresses.Street2) : '')}} <br
-                        ng-if="application.$ocMedia('max-width:767px')"> {{adminAddresses.City + ', ' + adminAddresses.State + ' ' +
-                    adminAddresses.Zip}}
+            <tr ng-repeat="adminAddress in adminAddresses.list.Items">
+                <th scope="row">{{adminAddress.ID}}</th>
+                <td data-title="Name">{{adminAddress.AddressName || '---'}}</td>
+                <td data-title="Address">{{adminAddress.Street1 + (adminAddress.Street2 ? (' ' + adminAddress.Street2) : '')}} <br
+                        ng-if="application.$ocMedia('max-width:767px')"> {{adminAddress.City + ', ' + adminAddress.State + ' ' +
+                    adminAddress.Zip}}
                 </td>
-                <td data-title="Phone">{{address.Phone || '---'}}</td>
+                <td data-title="Phone">{{adminAddress.Phone || '---'}}</td>
                 <td class="actions-cell">
                     <button type="button" class="btn btn-default btn-sm" ui-sref=".edit({addressid: adminAddress.ID})">Edit
                     </button>

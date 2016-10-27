@@ -123,7 +123,7 @@ function AdminAddressesController($ocMedia, OrderCloud, OrderCloudParameters, Ad
 
 function AdminAddressEditController($exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedAdminAddress) {
     var vm = this,
-        adminAddressID = SelectedAdminAddress.ID;
+        addressID = SelectedAdminAddress.ID;
     vm.adminAddressName = SelectedAdminAddress.AddressName;
     vm.adminAddress = SelectedAdminAddress;
     vm.countries = OCGeography.Countries;
@@ -136,7 +136,7 @@ function AdminAddressEditController($exceptionHandler, $state, $scope, toastr, O
     });
 
     vm.Submit = function() {
-        OrderCloud.AdminAddresses.Update(adminAddressID, vm.adminAddress)
+        OrderCloud.AdminAddresses.Update(addressID, vm.adminAddress)
             .then(function() {
                 $state.go('adminAddresses', {}, {reload:true});
                 toastr.success('Address Updated', 'Success');

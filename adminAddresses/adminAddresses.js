@@ -13,7 +13,9 @@ function AdminAddressesConfig($stateProvider){
             controller: 'AdminAddressesCtrl',
             controllerAs: 'adminAddresses',
             url: '/adminaddresses?search&page&pageSize&searchOn&sortBy&filters',
-            data: {componentName: 'AdminAddresses'},
+            data: {
+                componentName: 'Admin Addresses'
+            },
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
@@ -45,7 +47,7 @@ function AdminAddressesConfig($stateProvider){
 }
 
 
-function AdminAddressesController($ocMedia, OrderCloud, OrderCloudParameters, AddressList, Parameters){
+function AdminAddressesController($state, $ocMedia, OrderCloud, OrderCloudParameters, AddressList, Parameters){
     var vm = this;
     vm.list = AddressList;
     vm.parameters = Parameters;

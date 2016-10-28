@@ -1,5 +1,5 @@
 //TODO: Fix this test to work with localforage.js
-describe('Component: ExpressCheckout', function() {
+fdescribe('Component: ExpressCheckout', function() {
     var scope,
         q,
         oc,
@@ -11,6 +11,8 @@ describe('Component: ExpressCheckout', function() {
         order;
     beforeEach(module('orderCloud', function($provide) {
         $provide.value('CurrentUser', user);
+        $provide.value('Order', order);
+        $provide.value('LineItems', {});
     }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -56,7 +58,7 @@ describe('Component: ExpressCheckout', function() {
 
     describe('State: expressCheckout', function() {
         var state;
-        beforeEach(inject(function($state, CurrentOrder) {
+        beforeEach(inject(function($state, CurrentOrder, LineItems) {
             state = $state.get('expressCheckout');
 
             var defer = q.defer();
@@ -70,6 +72,7 @@ describe('Component: ExpressCheckout', function() {
             orderdfd.resolve(order);
             spyOn(CurrentOrder, 'Get').and.returnValue(orderdfd.promise);
             spyOn(oc.Orders, 'Get').and.returnValue(orderdfd.promise);
+            spyOn(oc.LineItems, 'List').and.returnValue(orderdfd.promise);
 
 
             var paymentsdfd = q.defer();
@@ -89,6 +92,10 @@ describe('Component: ExpressCheckout', function() {
         it('should resolve CurrentUser', inject(function($injector) {
             $injector.invoke(state.resolve.CurrentUser);
             expect(oc.Me.Get).toHaveBeenCalled();
+        }));
+        it('should resolve LineItems', inject(function($injector) {
+            $injector.invoke(state.resolve.LineItems);
+            expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID);
         }));
         it('should resolve Order', inject(function($injector, CurrentOrder) {
             $injector.invoke(state.resolve.Order);
@@ -163,13 +170,18 @@ describe('Component: ExpressCheckout', function() {
                 },
                 CreditCards: CCs,
                 SpendingAccounts: {},
+                currentOrder: {},
                 ShippingAddresses: addresses,
                 BillingAddresses: addresses
             });
         }));
         describe('saveBillAddress', function() {
            beforeEach(inject(function($state) {
-               expressCheckoutOrdeCtrl.currentOrder = order;
+               //expressCheckoutOrdeCtrl.currentOrder = order;
+               expressCheckoutOrdeCtrl.currentOrder = {
+                   ShippingAddressID: addresses,
+                   BillingAddressID: addresses
+               };
                expressCheckoutOrdeCtrl.currentOrder.BillingAddressID = "TestAddress123456789";
                var dfd = q.defer();
                dfd.resolve();

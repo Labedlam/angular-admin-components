@@ -133,7 +133,7 @@ function CheckoutService() {
 function CheckoutController($state, $rootScope, toastr, OrderCloud, CheckoutService, Order, ShippingAddresses, OrderShipAddress, OrderShippingAddress, OrderPayments) {
     var vm = this;
     vm.currentOrder = Order;
-    vm.currentOrder.ShippingAddressID = OrderShipAddress ? OrderShipAddress.ID : null;
+    vm.currentOrder.ShippingAddressID =  null;
     vm.currentOrder.ShippingAddress = OrderShipAddress;
     vm.shippingAddresses = ShippingAddresses;
     vm.isMultipleAddressShipping = true;

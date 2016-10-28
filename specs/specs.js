@@ -42,6 +42,9 @@ function SpecsConfig($stateProvider) {
             resolve: {
                 SelectedSpec: function($stateParams, OrderCloud) {
                     return OrderCloud.Specs.Get($stateParams.specid);
+                },
+                SelectedOpts: function(OrderCloud, SelectedSpec){
+                    return OrderCloud.Specs.ListOptions(SelectedSpec.ID)
                 }
             }
         })
@@ -146,13 +149,13 @@ function SpecsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Par
     };
 }
 
-function SpecEditController($exceptionHandler, $state, Underscore, toastr, OrderCloud, SelectedSpec) {
+function SpecEditController($exceptionHandler, $state, Underscore, toastr, OrderCloud, SelectedSpec, SelectedOpts) {
     var vm = this,
         specid = angular.copy(SelectedSpec.ID);
     vm.specName = angular.copy(SelectedSpec.Name);
     vm.spec = SelectedSpec;
     vm.Option = {};
-    vm.Options = vm.spec.Options;
+    vm.Options = SelectedOpts.Items;
     vm.overwrite = false;
 
     vm.addSpecOpt = function() {
@@ -170,6 +173,7 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
             OrderCloud.Specs.CreateOption(specid, vm.Option)
                 .then(function() {
                     vm.Option = null;
+                    vm.DefaultOptionID = null;
                 });
         }
     };
@@ -192,18 +196,20 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
             OrderCloud.Specs.UpdateOption(specid, vm.Option.ID, vm.Option)
                 .then(function() {
                     vm.Option = null;
+                    vm.DefaultOptionID = null;
                     vm.overwrite = false;
                 });
         } else {
+            vm.overwrite = false;
             vm.addSpecOpt();
         }
     };
 
     vm.deleteSpecOpt = function($index) {
-        if (vm.spec.DefaultOptionID == vm.spec.Options[$index].ID) {
+        if (vm.spec.DefaultOptionID == vm.Options[$index].ID) {
             vm.spec.DefaultOptionID = null;
         }
-        OrderCloud.Specs.DeleteOption(specid, vm.spec.Options[$index].ID)
+        OrderCloud.Specs.DeleteOption(specid, vm.Options[$index].ID)
             .then(function() {
                 vm.Options.splice($index, 1);
             });
@@ -223,6 +229,7 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
     vm.Delete = function() {
         OrderCloud.Specs.Delete(specid)
             .then(function() {
+                toastr.success('Spec Deleted', 'Success');
                 $state.go('specs', {}, {reload: true})
             })
             .catch(function(ex) {

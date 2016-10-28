@@ -191,7 +191,7 @@ function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, Or
         var dfd = $q.defer();
         var queue = [];
         angular.forEach(vm.list.Items, function(lineitem, index) {
-            if ($scope.EditForm.PaymentInfo.LineItems['Quantity' + index].$dirty || $scope.EditForm.PaymentInfo.LineItems['UnitPrice' + index].$dirty) {
+            if ($scope.EditForm.LineItems['Quantity' + index].$dirty || $scope.EditForm.LineItems['UnitPrice' + index].$dirty) {
                 queue.push(OrderCloud.LineItems.Update(orderid, lineitem.ID, lineitem));
             }
         });

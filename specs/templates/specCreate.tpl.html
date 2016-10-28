@@ -34,8 +34,8 @@
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label for="specMUTypeInput">Markup Type</label>
-                    <select id="specMUTypeInput" class="form-control" ng-model="specCreate.Option.MarkupType">
-                        <option value="None">None</option>
+                    <select id="specMUTypeInput" class="form-control" ng-model="specCreate.Option.PriceMarkupType">
+                        <option value="">None</option>
                         <option value="AmountPerQuantity">Fixed amount per unit</option>
                         <option value="AmountTotal">Fixed amount per line</option>
                         <option value="Percentage">Percentage of line total</option>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-sm-3 form-group">
                     <label for="specMarkupInput">Markup</label>
-                    <input id="specMarkupInput" type="number" step="any" class="form-control" ng-disabled="!specCreate.Option.MarkupType || specCreate.Option.MarkupType =='None'" ng-model="specCreate.Option.Markup"/>
+                    <input id="specMarkupInput" type="number" step="any" class="form-control" ng-disabled="!specCreate.Option.PriceMarkupType || specCreate.Option.PriceMarkupType =='None'" ng-model="specCreate.Option.PriceMarkup"/>
                 </div>
             </div>
             <div class="row">

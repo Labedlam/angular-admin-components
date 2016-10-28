@@ -35,7 +35,7 @@ function CheckoutBillingController($state, $exceptionHandler, OrderCloud, Billin
                 .then(function() {
                     $state.reload();
                 })
-                .catch(function() {
+                .catch(function(ex) {
                     $exceptionHandler(ex);
                 });
         }

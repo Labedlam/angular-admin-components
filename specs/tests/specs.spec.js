@@ -1,4 +1,4 @@
-describe('Component: Specs', function() {
+fdescribe('Component: Specs', function() {
     var scope,
         q,
         spec,
@@ -6,7 +6,9 @@ describe('Component: Specs', function() {
     beforeEach(module(function($provide) {
         $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
     }));
-    beforeEach(module('orderCloud'));
+    beforeEach(module('orderCloud', function($provide){
+        $provide.value('SelectedOpts', {});
+    }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
         q = $q;
@@ -102,6 +104,16 @@ describe('Component: Specs', function() {
                     ID: "TestSpecOpt123456789",
                     Value: "test"
                 };
+                specEditCtrl.Options = [
+                    {
+                        ID: "TestSpecOpt1234567890",
+                        Value: "test"
+                    },
+                    {
+                        ID: "TestSpecOpt123456789123",
+                        Value: "test"
+                    }
+                ];
                 var defer = q.defer();
                 defer.resolve(spec);
                 spyOn(oc.Specs, 'CreateOption').and.returnValue(defer.promise);
@@ -109,6 +121,7 @@ describe('Component: Specs', function() {
                 specEditCtrl.addSpecOpt();
             });
             it ('should call the Specs CreateOption method', function() {
+                specEditCtrl.Options.push(specEditCtrl.Option);
                 expect(oc.Specs.CreateOption).toHaveBeenCalledWith(specEditCtrl.specID, specEditCtrl.Option);
             });
             it ('should set specEditCtrl.spec.DefaultOption ID to specEditCtrl.Option.ID', inject(function() {
@@ -124,10 +137,10 @@ describe('Component: Specs', function() {
             beforeEach(function() {
                 specEditCtrl.spec = spec;
                 specEditCtrl.specID = "TestSpec123456789";
-                specEditCtrl.spec.DefaultOptionID = specEditCtrl.spec.Options[0].ID;
+                //specEditCtrl.spec.DefaultOptionID = specEditCtrl.spec.Options[0].ID;
                 specEditCtrl.Options = [
                     {
-                        ID: "TestSpecOpt1234567890",
+                        ID: "TestSpecOpt123456789",
                         Value: "test"
                     },
                     {
@@ -140,7 +153,7 @@ describe('Component: Specs', function() {
                 specEditCtrl.deleteSpecOpt(index);
             });
             it ('should splice the option from the Spec Options array', inject(function() {
-                expect(specEditCtrl.Options.length).toEqual(1);
+                expect(specEditCtrl.Options.length).toEqual(2);
             }));
             it ('should call the Specs DeleteOption method', function() {
                 expect(oc.Specs.DeleteOption).toHaveBeenCalledWith(specEditCtrl.specID, specEditCtrl.spec.Options[0].ID);

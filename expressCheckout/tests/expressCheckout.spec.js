@@ -1,5 +1,5 @@
 //TODO: Fix this test to work with localforage.js
-fdescribe('Component: ExpressCheckout', function() {
+describe('Component: ExpressCheckout', function() {
     var scope,
         q,
         oc,
@@ -177,7 +177,7 @@ fdescribe('Component: ExpressCheckout', function() {
         }));
         describe('saveBillAddress', function() {
            beforeEach(inject(function($state) {
-               //expressCheckoutOrdeCtrl.currentOrder = order;
+               expressCheckoutOrdeCtrl.currentOrder = order;
                expressCheckoutOrdeCtrl.currentOrder = {
                    ShippingAddressID: addresses,
                    BillingAddressID: addresses

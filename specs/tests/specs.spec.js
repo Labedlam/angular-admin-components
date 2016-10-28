@@ -1,4 +1,4 @@
-fdescribe('Component: Specs', function() {
+describe('Component: Specs', function() {
     var scope,
         q,
         spec,
@@ -121,7 +121,6 @@ fdescribe('Component: Specs', function() {
                 specEditCtrl.addSpecOpt();
             });
             it ('should call the Specs CreateOption method', function() {
-                specEditCtrl.Options.push(specEditCtrl.Option);
                 expect(oc.Specs.CreateOption).toHaveBeenCalledWith(specEditCtrl.specID, specEditCtrl.Option);
             });
             it ('should set specEditCtrl.spec.DefaultOption ID to specEditCtrl.Option.ID', inject(function() {

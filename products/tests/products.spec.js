@@ -243,11 +243,11 @@ describe('Component: Products', function() {
                     UserGroupID: "TestUserGroup123456789",
                     StandardPriceScheduleID: "TestPriceSchedule123456789"
                 };
-                productCreateAssignmentCtrl.assignBuyer = true;
                 productCreateAssignmentCtrl.submit();
             });
 
             it ('should call the Product SaveAssignment method', function() {
+                productCreateAssignmentCtrl.assignBuyer = true;
                 expect(oc.Products.SaveAssignment).toHaveBeenCalledWith(productCreateAssignmentCtrl.model);
             });
         });

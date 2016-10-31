@@ -253,7 +253,7 @@ function CategoryTreeController(Tree, CategoryTreeService) {
     };
 }
 
-function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory, BuyerID) {
+function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory) {
     var vm = this;
     vm.Category = SelectedCategory;
     vm.list = UserGroupList;
@@ -272,7 +272,7 @@ function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, 
             UserID: null,
             UserGroupID: ItemID,
             CategoryID: vm.Category.ID,
-            BuyerID: BuyerID.Get()
+            BuyerID: OrderCloud.BuyerID.Get()
         });
     }
 

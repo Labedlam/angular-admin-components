@@ -253,7 +253,7 @@ function CategoryTreeController(Tree, CategoryTreeService) {
     };
 }
 
-function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory) {
+function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, Paging, UserGroupList, AssignedUserGroups, SelectedCategory, BuyerID) {
     var vm = this;
     vm.Category = SelectedCategory;
     vm.list = UserGroupList;

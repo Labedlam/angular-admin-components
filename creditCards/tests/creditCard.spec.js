@@ -3,6 +3,9 @@ describe('Component: CreditCards', function() {
         q,
         creditCard,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -21,9 +24,14 @@ describe('Component: CreditCards', function() {
 
     describe('State: creditCards', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('creditCards');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.CreditCards, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve CreditCardList', inject(function($injector) {
             $injector.invoke(state.resolve.CreditCardList);
@@ -168,7 +176,7 @@ describe('Component: CreditCards', function() {
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 creditCardAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {

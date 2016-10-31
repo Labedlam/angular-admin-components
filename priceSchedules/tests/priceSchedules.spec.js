@@ -3,6 +3,9 @@ describe('Component: PriceSchedules', function() {
         q,
         priceSchedule,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope,OrderCloud) {
@@ -30,9 +33,14 @@ describe('Component: PriceSchedules', function() {
 
     describe('State: priceSchedules', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('priceSchedules');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.PriceSchedules, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve PriceScheduleList', inject(function($injector) {
             $injector.invoke(state.resolve.PriceScheduleList);

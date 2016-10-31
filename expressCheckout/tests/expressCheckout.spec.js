@@ -11,6 +11,9 @@ describe('Component: ExpressCheckout', function() {
         order;
     beforeEach(module('orderCloud', function($provide) {
         $provide.value('CurrentUser', user);
+        $provide.value('Order', order);
+        $provide.value('LineItems', {});
+        $provide.value('OrderPayments', {});
     }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -56,7 +59,7 @@ describe('Component: ExpressCheckout', function() {
 
     describe('State: expressCheckout', function() {
         var state;
-        beforeEach(inject(function($state, CurrentOrder) {
+        beforeEach(inject(function($state, CurrentOrder, LineItems) {
             state = $state.get('expressCheckout');
 
             var defer = q.defer();
@@ -70,6 +73,7 @@ describe('Component: ExpressCheckout', function() {
             orderdfd.resolve(order);
             spyOn(CurrentOrder, 'Get').and.returnValue(orderdfd.promise);
             spyOn(oc.Orders, 'Get').and.returnValue(orderdfd.promise);
+            spyOn(oc.LineItems, 'List').and.returnValue(orderdfd.promise);
 
 
             var paymentsdfd = q.defer();
@@ -90,6 +94,10 @@ describe('Component: ExpressCheckout', function() {
             $injector.invoke(state.resolve.CurrentUser);
             expect(oc.Me.Get).toHaveBeenCalled();
         }));
+        it('should resolve LineItems', inject(function($injector) {
+            $injector.invoke(state.resolve.LineItems);
+            expect(oc.LineItems.List).toHaveBeenCalledWith(order.ID);
+        }));
         it('should resolve Order', inject(function($injector, CurrentOrder) {
             $injector.invoke(state.resolve.Order);
             expect(CurrentOrder.Get).toHaveBeenCalled();
@@ -99,9 +107,8 @@ describe('Component: ExpressCheckout', function() {
             expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, patchObj);
             expect(oc.Orders.Get).toHaveBeenCalledWith(order.ID);
         }));
-        it('should resolve OrderPayments', inject(function($injector, CurrentOrder) {
+        it('should resolve OrderPayments', inject(function($injector) {
             $injector.invoke(state.resolve.OrderPayments);
-            expect(CurrentOrder.Get).toHaveBeenCalled();
             scope.$digest();
             expect(oc.Payments.List).toHaveBeenCalledWith(order.ID);
             expect(oc.Me.ListCreditCards).toHaveBeenCalled();
@@ -163,45 +170,38 @@ describe('Component: ExpressCheckout', function() {
                 },
                 CreditCards: CCs,
                 SpendingAccounts: {},
+                currentOrder: {},
                 ShippingAddresses: addresses,
                 BillingAddresses: addresses
             });
         }));
         describe('saveBillAddress', function() {
-           beforeEach(inject(function($state) {
+           beforeEach(function() {
                expressCheckoutOrdeCtrl.currentOrder = order;
                expressCheckoutOrdeCtrl.currentOrder.BillingAddressID = "TestAddress123456789";
                var dfd = q.defer();
                dfd.resolve();
                spyOn(oc.Orders, 'Patch').and.returnValue(dfd.promise);
-               spyOn($state, 'reload').and.returnValue(true);
                expressCheckoutOrdeCtrl.saveBillAddress();
                scope.$digest();
-           }));
+           });
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {BillingAddressID: expressCheckoutOrdeCtrl.currentOrder.BillingAddressID});
-            })
-            it('should call the $state reload method', inject(function($state) {
-                expect($state.reload).toHaveBeenCalled();
-            }));
+            });
         });
         describe('saveShipAddress', function() {
-            beforeEach(inject(function($state) {
+            beforeEach(function() {
                 expressCheckoutOrdeCtrl.currentOrder = order;
                 expressCheckoutOrdeCtrl.currentOrder.ShippingAddressID = "TestAddress123456789";
                 var dfd = q.defer();
                 dfd.resolve();
                 spyOn(oc.Orders, 'Patch').and.returnValue(dfd.promise);
-                spyOn($state, 'reload').and.returnValue(true);
                 expressCheckoutOrdeCtrl.saveShipAddress();
                 scope.$digest();
-            }));
+            });
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {ShippingAddressID: expressCheckoutOrdeCtrl.currentOrder.ShippingAddressID});
-            })
-            it('should call the $state reload method', inject(function($state) {
-                expect($state.reload).toHaveBeenCalled();
-            }));
+            });
         });
         describe('setPaymentMethod', function() {
             beforeEach(inject(function($state) {
@@ -300,7 +300,7 @@ describe('Component: ExpressCheckout', function() {
             })
         });
 
-        describe('removeFromavorites', function() {
+        describe('removeFromFavorites', function() {
             beforeEach(inject(function() {
                 var defer = q.defer();
                 defer.resolve();

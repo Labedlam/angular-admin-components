@@ -25,9 +25,9 @@ describe('Component: Catalog', function() {
 
 
     describe('Controller: ProductQuickViewController', function() {
-        var quickViewCtrl;
+        var ProductQuickViewCtrl;
         beforeEach(inject(function($controller) {
-            quickViewCtrl = $controller('QuickViewCtrl', {
+            ProductQuickViewCtrl = $controller('ProductQuickViewCtrl', {
                 $scope: scope
             });
             var defer = q.defer();
@@ -35,19 +35,18 @@ describe('Component: Catalog', function() {
             scope.$digest();
             spyOn(oc.Me, 'GetProduct').and.returnValue(defer.promise);
             spyOn(oc.Specs, 'ListProductAssignments').and.returnValue(defer.promise);
-            quickViewCtrl.open(fakeProduct);
+            ProductQuickViewCtrl.open(fakeProduct);
         }));
-        it('Should reslove SelectedProduct and SpecList', function() {
+        it('Should resolve SelectedProduct and SpecList', function() {
             expect(oc.Me.GetProduct).toHaveBeenCalledWith(fakeProduct.ID);
             expect(oc.Specs.ListProductAssignments).toHaveBeenCalledWith(null,fakeProduct.ID);
         });
-
     });
 
     describe('Controller: ProductQuickViewModalController', function() {
-        var quickViewModalCtrl;
+        var ProductQuickViewModalCtrl;
         beforeEach(inject(function($controller) {
-            quickViewModalCtrl = $controller('QuickViewModalCtrl', {
+            ProductQuickViewModalCtrl = $controller('ProductQuickViewModalCtrl', {
                 $scope: scope,
                 $uibModalInstance: uibModalInstance,
                 SelectedProduct: fakeProduct,
@@ -60,8 +59,8 @@ describe('Component: Catalog', function() {
                 var defer = q.defer();
                 defer.resolve(fakeProduct);
                 spyOn(addToOrder, 'Add').and.returnValue(defer.promise);
-                quickViewModalCtrl.selectedProduct = fakeProduct;
-                quickViewModalCtrl.addToCart(fakeProduct);
+                ProductQuickViewModalCtrl.selectedProduct = fakeProduct;
+                ProductQuickViewModalCtrl.addToCart(fakeProduct);
             });
             it('Should call Add method and pass product object', function() {
                 expect(addToOrder.Add).toHaveBeenCalledWith(fakeProduct);

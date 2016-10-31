@@ -271,7 +271,8 @@ function CategoryAssignPartyController($scope, toastr, OrderCloud, Assignments, 
         return OrderCloud.Categories.SaveAssignment({
             UserID: null,
             UserGroupID: ItemID,
-            CategoryID: vm.Category.ID
+            CategoryID: vm.Category.ID,
+            BuyerID: BuyerID.Get()
         });
     }
 

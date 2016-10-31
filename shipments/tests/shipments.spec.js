@@ -6,10 +6,10 @@ describe('Component: Shipments', function() {
     beforeEach(module(function($provide) {
         $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
     }));
-    //beforeEach(module(function($provide){
-    //    $provide.value('SelectedShipment', {ID: "TestShipment123456789", Shipper: "USPS", DateShipped: null, Cost: 7,
-    //        Items: [{OrderID: "TestOrder123456789", LineItemId: "TestLineItem123456789", QuantityShipped: 2}]})
-    //}));
+    beforeEach(module(function($provide){
+        $provide.value('SelectedShipment', {ID: "TestShipment123456789", Shipper: "USPS", DateShipped: null, Cost: 7,
+            Items: [{OrderID: "TestOrder123456789", LineItemId: "TestLineItem123456789", QuantityShipped: 2}]})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -62,7 +62,7 @@ describe('Component: Shipments', function() {
         }));
         it('should resolve OrderList', inject(function($injector) {
             $injector.invoke(state.resolve.OrderList);
-            expect(oc.Orders.ListIncoming).toHaveBeenCalledWith(shipment.Items[0].OrderID);
+            expect(oc.Orders.ListIncoming).toHaveBeenCalledWith(null, null, shipment.Items[0].OrderID);
         }));
     });
 

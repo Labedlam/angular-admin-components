@@ -176,44 +176,32 @@ describe('Component: ExpressCheckout', function() {
             });
         }));
         describe('saveBillAddress', function() {
-           beforeEach(inject(function($state) {
+           beforeEach(function() {
                expressCheckoutOrdeCtrl.currentOrder = order;
-               //expressCheckoutOrdeCtrl.currentOrder = {
-               //    ShippingAddressID: addresses,
-               //    BillingAddressID: addresses
-               //};
                expressCheckoutOrdeCtrl.currentOrder.BillingAddressID = "TestAddress123456789";
                var dfd = q.defer();
                dfd.resolve();
                spyOn(oc.Orders, 'Patch').and.returnValue(dfd.promise);
-               spyOn($state, 'reload').and.returnValue(true);
                expressCheckoutOrdeCtrl.saveBillAddress();
                scope.$digest();
-           }));
+           });
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {BillingAddressID: expressCheckoutOrdeCtrl.currentOrder.BillingAddressID});
             });
-            it('should call the $state reload method', inject(function($state) {
-                expect($state.reload).toHaveBeenCalled();
-            }));
         });
         describe('saveShipAddress', function() {
-            beforeEach(inject(function($state) {
+            beforeEach(function() {
                 expressCheckoutOrdeCtrl.currentOrder = order;
                 expressCheckoutOrdeCtrl.currentOrder.ShippingAddressID = "TestAddress123456789";
                 var dfd = q.defer();
                 dfd.resolve();
                 spyOn(oc.Orders, 'Patch').and.returnValue(dfd.promise);
-                spyOn($state, 'reload').and.returnValue(true);
                 expressCheckoutOrdeCtrl.saveShipAddress();
                 scope.$digest();
-            }));
+            });
             it('should call the Orders Patch method', function() {
                 expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, {ShippingAddressID: expressCheckoutOrdeCtrl.currentOrder.ShippingAddressID});
             });
-            it('should call the $state reload method', inject(function($state) {
-                expect($state.reload).toHaveBeenCalled();
-            }));
         });
         describe('setPaymentMethod', function() {
             beforeEach(inject(function($state) {

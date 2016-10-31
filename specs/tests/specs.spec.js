@@ -201,13 +201,17 @@ describe('Component: Specs', function() {
         var specCreateCtrl;
         beforeEach(inject(function($state, $controller) {
             specCreateCtrl = $controller('SpecCreateCtrl', {
-                $scope: scope
+                $scope: scope,
+                Option: {}
             });
             spyOn($state, 'go').and.returnValue(true);
         }));
         describe('addSpecOpt', function() {
             beforeEach(inject(function() {
                 specCreateCtrl.spec = spec;
+                specCreateCtrl.Option = {
+                    ID: 'specID'
+                };
                 specCreateCtrl.addSpecOpt();
             }));
             it ('should push the option to the Spec Options array', function() {

@@ -208,7 +208,7 @@ describe('Component: Products', function() {
         describe('toggleReplenishmentPS', function() {
             beforeEach(inject(function() {
             productCreateAssignmentCtrl.model= {
-                ReplenishmentPriceScheduleID: "TestPriceSchedule123456789"
+                ReplenishmentPriceScheduleID: null
             };
                 productCreateAssignmentCtrl.toggleReplenishmentPS(productCreateAssignmentCtrl.model.ReplenishmentPriceScheduleID);
 
@@ -222,7 +222,7 @@ describe('Component: Products', function() {
             beforeEach(inject(function() {
                 var id = "TestPriceSchedule123456789";
                 productCreateAssignmentCtrl.model= {
-                   StandardPriceScheduleID: null
+                   StandardPriceScheduleID: "TestPriceSchedule123456789"
                 };
                 productCreateAssignmentCtrl.toggleStandardPS(id);
 

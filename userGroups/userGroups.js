@@ -192,6 +192,7 @@ function UserGroupAssignController($scope, toastr, OrderCloud, Assignments, Pagi
     });
 
     function SaveFunc(ItemID) {
+        console.log("this is ItemID", ItemID);
         return OrderCloud.UserGroups.SaveUserAssignment({
             UserID: ItemID,
             UserGroupID: vm.UserGroup.ID

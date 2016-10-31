@@ -3,6 +3,9 @@ describe('Component: Products', function() {
         q,
         product,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -27,9 +30,14 @@ describe('Component: Products', function() {
 
     describe('State: products', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('products', {}, {reload: true});
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Products, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve ProductList', inject(function($injector) {
             $injector.invoke(state.resolve.ProductList);
@@ -51,14 +59,19 @@ describe('Component: Products', function() {
 
     describe('State: products.assignments', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('products.assignments', {}, {reload: true});
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Products, 'ListAssignments').and.returnValue(null);
             spyOn(oc.Products, 'Get').and.returnValue(null);
         }));
-        it('should resolve Assignments', inject(function($injector, $stateParams) {
+        it('should resolve Parameters', inject(function($injector, $stateParams, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
+        }));
+        it('should resolve Assignments', inject(function($injector, $stateParams, Parameters) {
             $injector.invoke(state.resolve.Assignments);
-            expect(oc.Products.ListAssignments).toHaveBeenCalledWith($stateParams.productid);
+            expect(oc.Products.ListAssignments).toHaveBeenCalledWith($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
         }));
         it('should resolve SelectedProduct', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedProduct);
@@ -195,7 +208,7 @@ describe('Component: Products', function() {
         describe('toggleReplenishmentPS', function() {
             beforeEach(inject(function() {
             productCreateAssignmentCtrl.model= {
-                ReplenishmentPriceScheduleID: "TestPriceSchedule123456789"
+                ReplenishmentPriceScheduleID: null
             };
                 productCreateAssignmentCtrl.toggleReplenishmentPS(productCreateAssignmentCtrl.model.ReplenishmentPriceScheduleID);
 
@@ -209,7 +222,7 @@ describe('Component: Products', function() {
             beforeEach(inject(function() {
                 var id = "TestPriceSchedule123456789";
                 productCreateAssignmentCtrl.model= {
-                   StandardPriceScheduleID: null
+                   StandardPriceScheduleID: "TestPriceSchedule123456789"
                 };
                 productCreateAssignmentCtrl.toggleStandardPS(id);
 
@@ -230,11 +243,11 @@ describe('Component: Products', function() {
                     UserGroupID: "TestUserGroup123456789",
                     StandardPriceScheduleID: "TestPriceSchedule123456789"
                 };
-                productCreateAssignmentCtrl.assignBuyer = true;
                 productCreateAssignmentCtrl.submit();
             });
 
             it ('should call the Product SaveAssignment method', function() {
+                productCreateAssignmentCtrl.assignBuyer = true;
                 expect(oc.Products.SaveAssignment).toHaveBeenCalledWith(productCreateAssignmentCtrl.model);
             });
         });

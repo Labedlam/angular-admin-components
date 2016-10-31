@@ -178,10 +178,10 @@ describe('Component: ExpressCheckout', function() {
         describe('saveBillAddress', function() {
            beforeEach(inject(function($state) {
                expressCheckoutOrdeCtrl.currentOrder = order;
-               expressCheckoutOrdeCtrl.currentOrder = {
-                   ShippingAddressID: addresses,
-                   BillingAddressID: addresses
-               };
+               //expressCheckoutOrdeCtrl.currentOrder = {
+               //    ShippingAddressID: addresses,
+               //    BillingAddressID: addresses
+               //};
                expressCheckoutOrdeCtrl.currentOrder.BillingAddressID = "TestAddress123456789";
                var dfd = q.defer();
                dfd.resolve();

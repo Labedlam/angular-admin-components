@@ -13,6 +13,7 @@ describe('Component: ExpressCheckout', function() {
         $provide.value('CurrentUser', user);
         $provide.value('Order', order);
         $provide.value('LineItems', {});
+        $provide.value('OrderPayments', {});
     }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -106,9 +107,8 @@ describe('Component: ExpressCheckout', function() {
             expect(oc.Orders.Patch).toHaveBeenCalledWith(order.ID, patchObj);
             expect(oc.Orders.Get).toHaveBeenCalledWith(order.ID);
         }));
-        it('should resolve OrderPayments', inject(function($injector, CurrentOrder) {
+        it('should resolve OrderPayments', inject(function($injector) {
             $injector.invoke(state.resolve.OrderPayments);
-            expect(CurrentOrder.Get).toHaveBeenCalled();
             scope.$digest();
             expect(oc.Payments.List).toHaveBeenCalledWith(order.ID);
             expect(oc.Me.ListCreditCards).toHaveBeenCalled();

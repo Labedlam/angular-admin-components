@@ -1,0 +1,67 @@
+<ng-form>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                Choose the assignee(s)
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <button class="btn btn-lg btn-block btn-default" ng-class="{active: bogo.assignBuyer}"
+                                ng-click="bogo.assignBuyer = !bogo.assignBuyer">
+                            <i class="fa"
+                               ng-class="{'fa-square-o':!bogo.assignBuyer, 'fa-check-square-o': bogo.assignBuyer}"></i>
+                            Assign
+                            at the Buyer Level
+                        </button>
+                    </div>
+                    <div uib-collapse="bogo.assignBuyer">
+                        <ordercloud-search servicename="UserGroups" controlleras="bogo"
+                                           model="userGroups"></ordercloud-search>
+                        <div class="well well-lg text-center" ng-if="!bogo.userGroups.Items.length">
+                            <b><i class="fa fa-search"></i> No UserGroups match your search</b>
+                        </div>
+
+                        <table class="table table-hover oc-table-responsive">
+                            <thead>
+                            <tr>
+                                <th>
+                                </th>
+                                <th>
+                                    <div>ID</div>
+                                </th>
+                                <th>
+                                    <div>Name</div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="group in bogo.userGroups.Items track by $index">
+                                <td class="text-center">
+                                    <input type="checkbox" ng-model="bogo.checkbox[$index]"
+                                           ng-change="bogo.checkUserAssignment()">
+                                </td>
+                                <th scope="row">{{group.ID}}</th>
+                                <td>{{group.Name}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <p class="text-muted">You can assign a product to a specific UserGroup or to the entire Buyer Company. UserGroup
+        assignments will take precedent over Buyer assignments.</p>
+
+    <div class="row">
+        <button ng-if="bogo.showReviewBtn || bogo.assignBuyer" class="btn btn-lg btn-primary col-md-4 col-md-offset-4"
+                ui-sref="^.review">Next
+        </button>
+    </div>
+</ng-form>

@@ -1,0 +1,38 @@
+
+<article id="COMPONENT_BOGO" class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+
+            <div id="form-container">
+
+                <div class="text-center">
+                    <h2>Buy One Get One</h2>
+
+                    <!-- the links to our nested states using relative paths -->
+                    <!-- add the active class if the state matches our ui-sref -->
+
+                    <ul class="nav nav-tabs">
+                        <li role="presentation"><a ui-sref-active="active" ui-sref=".products"><span>1</span> Products</a></li>
+                        <li role="presentation"><a ui-sref-active="active" ui-sref=".promotions"><span>2</span> Promotions</a></li>
+                        <li role="presentation"><a ui-sref-active="active" ui-sref=".access"><span>3</span> Customers</a></li>
+                        <li role="presentation"><a ui-sref-active="active" ui-sref=".review"><span>4</span> Review</a></li>
+                    </ul>
+                </div>
+                <!-- use ng-submit to catch the form submission and use our Angular function -->
+
+
+                    <form id="signup-form" ng-submit="bogoSubmit()">
+
+                        <div id="bogo-views" ui-view></div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</article>
+

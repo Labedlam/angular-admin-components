@@ -1,0 +1,76 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Create a BOGO Promotion Details
+        </div>
+    </div>
+    <div class="panel-body">
+        <ng-form name="PromotionBogoCreateForm">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="promotionIDInput">ID</label>
+                    <input id="promotionIDInput" ordercloud-auto-id type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" class="form-control" ng-model="bogo.promotion.ID"/>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="promotionNameInput">Promotion Name</label>
+                    <input id="promotionNameInput" type="text" class="form-control" ng-model="bogo.promotion.Name" ng-required="true"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="promotionCodeInput">Promotion Code</label>
+                    <input id="promotionCodeInput" type="text" class="form-control" ng-model="bogo.promotion.Code" ng-required="true"/>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="promotionRedemptionCountInput">Redemption Count</label>
+                    <input id="promotionRedemptionCountInput" type="number" class="form-control" ng-model="bogo.promotion.RedemptionCount"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="promotionRedemptionLimitInput">Redemption Limit</label>
+                    <input id="promotionRedemptionLimitInput" type="number" class="form-control" ng-model="bogo.promotion.RedemptionLimit"/>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="promotionRedemptionLimitPerUserInput">Redemption Limit Per User</label>
+                    <input id="promotionRedemptionLimitPerUserInput" type="number" class="form-control" ng-model="bogo.promotion.RedemptionLimitPerUser"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label for="promotionDescriptionInput">Description</label>
+                    <textarea id="promotionDescriptionInput" class="form-control" ng-model="bogo.promotion.Description"></textarea>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <label for="promotionFinePrintInput">Fine Print</label>
+                    <textarea id="promotionFinePrintInput" class="form-control" ng-model="bogo.promotion.FinePrint"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="promotionStartDateInput">Start Date</label>
+                    <input class="form-control" ng-show="application.isTouchDevice" type="date" id="promotionStartDateInput2" ng-model="promotionCreate.promotion.StartDate"/>
+                    <input id="promotionStartDateInput" ng-hide="application.isTouchDevice" type="text" ng-click="open1 = !open1" is-open="open1" uib-datepicker-popup="MM/dd/yyyy" datepicker-append-to-body="true" class="form-control" ng-model="bogo.promotion.StartDate">
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="promotionEndDateInput">End Date</label>
+                    <input class="form-control" ng-show="application.isTouchDevice" type="date" id="promotionEndDateInput2" ng-model="promotionCreate.promotion.ExpirationDate"/>
+                    <input id="promotionEndDateInput" ng-hide="application.isTouchDevice" type="text" ng-click="open2 = !open2" is-open="open2" uib-datepicker-popup="MM/dd/yyyy" datepicker-append-to-body="true" class="form-control" ng-model="bogo.promotion.EndDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="promotionCanCombineInput">
+                    <input id="promotionCanCombineInput" type="checkbox" ng-model="bogo.promotion.CanCombine"/>
+                    Can Combine
+                </label>
+            </div>
+
+        </ng-form>
+
+    </div>
+</div>
+<button type="button" class="btn btn-lg btn-primary col-md-4 col-md-offset-4" ng-if="!PromotionBogoCreateForm.$invalid" ui-sref="^.access">Next</button>
+
+
+
+

@@ -3,6 +3,9 @@ describe('Component: GiftCards', function() {
         q,
         giftCard,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -23,13 +26,18 @@ describe('Component: GiftCards', function() {
 
     describe('State: giftCards', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('giftCards');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.SpendingAccounts, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve GiftCardList', inject(function($injector) {
             $injector.invoke(state.resolve.GiftCardList);
-            expect(oc.SpendingAccounts.List).toHaveBeenCalledWith(null, null, null, null, null, {'RedemptionCode': '*'});
+            expect(oc.SpendingAccounts.List).toHaveBeenCalledWith(null, null, 12, null, null, {'RedemptionCode': '*'});
         }));
     });
 
@@ -37,7 +45,9 @@ describe('Component: GiftCards', function() {
         var state;
         beforeEach(inject(function($state) {
             state = $state.get('giftCards.edit');
-            spyOn(oc.SpendingAccounts, 'Get').and.returnValue(null);
+            var defer = q.defer();
+            defer.resolve();
+            spyOn(oc.SpendingAccounts, 'Get').and.returnValue(defer.promise);
         }));
         it('should resolve SelectedGiftCard', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedGiftCard);

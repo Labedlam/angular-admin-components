@@ -39,11 +39,11 @@ describe('Factory: PriceBreak', function() {
             ]
         };
     }));
-    describe('setMinMax', function() {
+    describe('SetMinMax', function() {
         beforeEach(inject(function(PriceBreak) {
             priceBreakService = PriceBreak;
             priceSchedule.RestrictedQuantity = true;
-            priceBreakService.setMinMax(priceSchedule);
+            priceBreakService.SetMinMax(priceSchedule);
         }));
         it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);
@@ -51,29 +51,29 @@ describe('Factory: PriceBreak', function() {
         });
     });
 
-    describe('addPriceBreak', function() {
+    describe('AddPriceBreak', function() {
         beforeEach(inject(function(PriceBreak) {
             var price = 3;
             var quantity = 5;
             priceBreakService = PriceBreak;
             priceSchedule.RestrictedQuantity = true;
-            priceBreakService.addPriceBreak(priceSchedule, price, quantity);
+            priceBreakService.AddPriceBreak(priceSchedule, price, quantity);
         }));
         it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);
-            expect(priceSchedule.MaxQuantity).toEqual(5);
+            expect(priceSchedule.MaxQuantity).toEqual(4);
         });
         it('should add a PriceBreak', function() {
-            expect(priceSchedule.PriceBreaks.length).toEqual(5);
+            expect(priceSchedule.PriceBreaks.length).toEqual(4);
         });
     });
 
-    describe('deletePriceBreak', function() {
+    describe('DeletePriceBreak', function() {
         beforeEach(inject(function(PriceBreak) {
             var index = 3;
             priceBreakService = PriceBreak;
             priceSchedule.RestrictedQuantity = true;
-            priceBreakService.deletePriceBreak(priceSchedule, index);
+            priceBreakService.DeletePriceBreak(priceSchedule, index);
         }));
         it('should set Min and Max Quantity', function() {
             expect(priceSchedule.MinQuantity).toEqual(1);

@@ -26,7 +26,7 @@ function AdminUserGroupsConfig($stateProvider) {
         })
         .state('adminUserGroups.edit', {
             url: '/:adminusergroupid/edit',
-            templateUrl: '/adminUserGroups/templates/adminUserGroupEdit.tpl.html',
+            templateUrl: 'adminUserGroups/templates/adminUserGroupEdit.tpl.html',
             controller: 'AdminUserGroupEditCtrl',
             controllerAs: 'adminUserGroupEdit',
             resolve: {
@@ -37,13 +37,13 @@ function AdminUserGroupsConfig($stateProvider) {
         })
         .state('adminUserGroups.create', {
             url: '/create',
-            templateUrl: '/adminUserGroups/templates/adminUserGroupCreate.tpl.html',
+            templateUrl: 'adminUserGroups/templates/adminUserGroupCreate.tpl.html',
             controller: 'AdminUserGroupCreateCtrl',
             controllerAs: 'adminUserGroupCreate'
         })
         .state('adminUserGroups.assign', {
             url: '/:adminusergroupid/assign',
-            templateUrl: '/adminUserGroups/templates/adminUserGroupAssign.tpl.html',
+            templateUrl: 'adminUserGroups/templates/adminUserGroupAssign.tpl.html',
             controller: 'AdminUserGroupAssignCtrl',
             controllerAs: 'adminUserGroupAssign',
             resolve: {

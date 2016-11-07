@@ -3,7 +3,12 @@ describe('Component: Specs', function() {
         q,
         spec,
         oc;
-    beforeEach(module('orderCloud'));
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
+    beforeEach(module('orderCloud', function($provide){
+        $provide.value('SelectedOpts', {});
+    }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
         q = $q;
@@ -32,9 +37,14 @@ describe('Component: Specs', function() {
 
     describe('State: specs', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('specs');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Specs, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve SpecList', inject(function($injector) {
             $injector.invoke(state.resolve.SpecList);
@@ -94,6 +104,16 @@ describe('Component: Specs', function() {
                     ID: "TestSpecOpt123456789",
                     Value: "test"
                 };
+                specEditCtrl.Options = [
+                    {
+                        ID: "TestSpecOpt1234567890",
+                        Value: "test"
+                    },
+                    {
+                        ID: "TestSpecOpt123456789123",
+                        Value: "test"
+                    }
+                ];
                 var defer = q.defer();
                 defer.resolve(spec);
                 spyOn(oc.Specs, 'CreateOption').and.returnValue(defer.promise);
@@ -116,10 +136,10 @@ describe('Component: Specs', function() {
             beforeEach(function() {
                 specEditCtrl.spec = spec;
                 specEditCtrl.specID = "TestSpec123456789";
-                specEditCtrl.spec.DefaultOptionID = specEditCtrl.spec.Options[0].ID;
+                //specEditCtrl.spec.DefaultOptionID = specEditCtrl.spec.Options[0].ID;
                 specEditCtrl.Options = [
                     {
-                        ID: "TestSpecOpt1234567890",
+                        ID: "TestSpecOpt123456789",
                         Value: "test"
                     },
                     {
@@ -132,7 +152,7 @@ describe('Component: Specs', function() {
                 specEditCtrl.deleteSpecOpt(index);
             });
             it ('should splice the option from the Spec Options array', inject(function() {
-                expect(specEditCtrl.Options.length).toEqual(1);
+                expect(specEditCtrl.Options.length).toEqual(2);
             }));
             it ('should call the Specs DeleteOption method', function() {
                 expect(oc.Specs.DeleteOption).toHaveBeenCalledWith(specEditCtrl.specID, specEditCtrl.spec.Options[0].ID);
@@ -181,13 +201,17 @@ describe('Component: Specs', function() {
         var specCreateCtrl;
         beforeEach(inject(function($state, $controller) {
             specCreateCtrl = $controller('SpecCreateCtrl', {
-                $scope: scope
+                $scope: scope,
+                Option: {}
             });
             spyOn($state, 'go').and.returnValue(true);
         }));
         describe('addSpecOpt', function() {
             beforeEach(inject(function() {
                 specCreateCtrl.spec = spec;
+                specCreateCtrl.Option = {
+                    ID: 'specID'
+                };
                 specCreateCtrl.addSpecOpt();
             }));
             it ('should push the option to the Spec Options array', function() {
@@ -263,24 +287,27 @@ describe('Component: Specs', function() {
     });
     
     describe('Controller: SpecAssignCtrl', function() {
-        var specAssignCtrl;
-        beforeEach(inject(function($state, $controller) {
+        var specAssignCtrl,
+            assignments;
+        beforeEach(inject(function($state, $controller, Assignments) {
+            assignments = Assignments;
             specAssignCtrl = $controller('SpecAssignCtrl', {
                 $scope: scope,
                 ProductList: [],
                 ProductAssignments: [],
-                SelectedSpec: {}
+                SelectedSpec: {},
+                Assignments: assignments
             });
             spyOn($state, 'go').and.returnValue(true);
         }));
 
         describe('SaveAssignment', function() {
-            beforeEach(inject(function(Assignments) {
-                spyOn(Assignments, 'saveAssignments').and.returnValue(null);
+            beforeEach(inject(function() {
+                spyOn(assignments, 'SaveAssignments').and.returnValue(null);
                 specAssignCtrl.saveAssignments();
             }));
-            it ('should call the Assignments saveAssignments method', inject(function(Assignments) {
-                expect(Assignments.SaveAssignments).toHaveBeenCalled();
+            it ('should call the saveAssignments method', inject(function() {
+                expect(assignments.SaveAssignments).toHaveBeenCalled();
             }));
         });
 

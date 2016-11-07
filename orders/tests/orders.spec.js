@@ -7,6 +7,9 @@ describe('Component: Orders', function() {
         lineItemList,
         product,
         spendingAccount;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -108,10 +111,15 @@ describe('Component: Orders', function() {
 
     describe('State: orders', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('orders');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Auth, 'ReadToken').and.returnValue('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3IiOiJDT05OT1JfSk9ITlNPTiIsImNpZCI6ImY1NjdjZTQ2LTNjMjQtNDZiZS1hOWM5LTMyN2ZhYmFkZWJiMyIsImltcCI6ImMxIiwidXNydHlwZSI6ImJ1eWVyIiwicm9sZSI6IkZ1bGxBY2Nlc3MiLCJpc3MiOiJodHRwczovL2F1dGgub3JkZXJjbG91ZC5pbyIsImF1ZCI6Imh0dHBzOi8vYXBpLm9yZGVyY2xvdWQuaW8iLCJleHAiOjE0NTQ5NzI2MDgsIm5iZiI6MTQ1NDk2OTAwOH0.RmWy4hoDzSLaWmlY3pxkOZ3OC2ZTRgzmpiEu_SN8YMk');
-            spyOn(oc.Orders, 'List').and.returnValue(null);
+            spyOn(oc.Orders, 'ListOutgoing').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve UserType', inject(function($injector) {
             var userType = $injector.invoke(state.resolve.UserType);
@@ -120,14 +128,7 @@ describe('Component: Orders', function() {
         it('should resolve OrderList', inject(function($injector) {
             var userType = $injector.invoke(state.resolve.UserType);
             $injector.invoke(state.resolve.OrderList, scope, {OrderCloud: oc, UserType: userType});
-            expect(oc.Orders.List).toHaveBeenCalled();
-        }));
-        it('should resolve BuyerCompanies', inject(function($injector) {
-            var userType = $injector.invoke(state.resolve.UserType);
-            $injector.invoke(state.resolve.BuyerCompanies, scope, {$q: q, OrderCloud: oc, UserType: userType});
-            if (userType == 'admin') {
-                expect(oc.Buyers.List).toHaveBeenCalled();
-            }
+            expect(oc.Orders.ListOutgoing).toHaveBeenCalled();
         }));
     });
 
@@ -171,10 +172,10 @@ describe('Component: Orders', function() {
             productDefer.resolve(product);
             spendingAccountDefer.resolve(spendingAccount);
             spyOn(oc.Orders, 'Get').and.returnValue(orderDefer.promise);
-            spyOn(oc.Orders, 'List').and.returnValue(orderListDefer.promise);
             spyOn(oc.LineItems, 'List').and.returnValue(lineItemDefer.promise);
             spyOn(oc.Products, 'Get').and.returnValue(productDefer.promise);
             spyOn(oc.SpendingAccounts, 'Get').and.returnValue(spendingAccountDefer.promise);
+            spyOn(oc.Orders, 'ListIncoming').and.returnValue(orderListDefer.promise);
             //scope.$digest();
         }));
 
@@ -182,6 +183,7 @@ describe('Component: Orders', function() {
             beforeEach(function() {
                 orderID = "TestOrder123456789";
                 productID = "TestProduct1234";
+                order.SpendingAccountID = "TestSpendingAccount1234";
                 ordersService.GetOrderDetails(orderID);
                 scope.$digest();
             });
@@ -189,23 +191,27 @@ describe('Component: Orders', function() {
                 expect(oc.Orders.Get).toHaveBeenCalledWith(orderID);
             });
             it ('should call a Line Item List', function() {
-                expect(oc.LineItems.List).toHaveBeenCalledWith(orderID, 1, 100);
+                expect(oc.LineItems.List).toHaveBeenCalledWith(orderID, null, 1, 100);
             });
             it ('should call a Product Get', function() {
                 expect(oc.Products.Get).toHaveBeenCalledWith(productID);
+            });
+            it ('should call a SpendingAccounts Get', function(){
+                expect(oc.SpendingAccounts.Get).toHaveBeenCalledWith(order.SpendingAccountID);
             });
         });
 
         describe('SearchOrders', function() {
             beforeEach(function() {
-                filters = {OrderID: "TestOrder123456789", Status: "Open", FromCompanyID: "TestCompany", FromDate: new Date(), ToDate: new Date(), searchTerm: "TestTerm"};
+                filters = {OrderID: "TestOrder123456789", Status: "Open", FromCompanyID: "TestCompany", FromDate: new Date(), ToDate: new Date(), searchTerm: "TestTerm", sortType: null, groupOrders: null};
                 ordersService.SearchOrders(filters, 'admin');
                 scope.$digest();
 
             });
             it ('should call an Order List', function() {
-                expect(oc.Orders.List).toHaveBeenCalledWith('incoming', filters.FromCompanyID, filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, null, {ID: filters.OrderID, Status: filters.Status});
+                expect(oc.Orders.ListIncoming).toHaveBeenCalledWith(filters.FromDate, filters.ToDate, filters.searchTerm, 1, 100, null, null, {ID: filters.OrderID, Status: filters.Status, FromUserID: filters.groupOrders}, filters.FromCompanyID);
             });
         })
+        //TODO: these tests are incomplete
     });
 });

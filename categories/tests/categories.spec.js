@@ -3,6 +3,9 @@ describe('Component: Categories', function() {
         q,
         category,
         oc;
+    beforeEach(module(function($provide) {
+        $provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
+    }));
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(inject(function($q, $rootScope, OrderCloud) {
@@ -20,9 +23,14 @@ describe('Component: Categories', function() {
 
     describe('State: categories', function() {
         var state;
-        beforeEach(inject(function($state) {
+        beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('categories');
+            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
             spyOn(oc.Categories, 'List').and.returnValue(null);
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalled();
         }));
         it('should resolve CategoryList', inject(function($injector) {
             $injector.invoke(state.resolve.CategoryList);
@@ -185,22 +193,6 @@ describe('Component: Categories', function() {
                 expect(CategoryTreeService.UpdateCategoryNode).toHaveBeenCalled();
             }));
         });
-
-        describe('toggle', function() {
-            var test;
-            beforeEach(function() {
-                var bool = {
-                    toggle: function() {
-                        test = true;
-                    }
-                };
-                categoryTreeCtrl.toggle(bool);
-
-            });
-            it ('should call scope toggle method', function() {
-                expect(test).toBe(true);
-            });
-        });
     });
 
     describe('Controller: CategoryAssignPartyCtrl', function() {
@@ -227,7 +219,7 @@ describe('Component: Categories', function() {
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 categoryAssignCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
@@ -260,7 +252,7 @@ describe('Component: Categories', function() {
 
         describe('PagingFunction', function() {
             beforeEach(inject(function(Paging) {
-                spyOn(Paging, 'paging').and.returnValue(null);
+                spyOn(Paging, 'Paging').and.returnValue(null);
                 categoryAssignProductCtrl.pagingfunction();
             }));
             it ('should call the Paging paging method', inject(function(Paging) {
@@ -284,7 +276,7 @@ describe('Component: Categories', function() {
             });
 
             it ('should call the Categories List method', function() {
-                expect(oc.Categories.List).toHaveBeenCalledWith(null, 1, 100, null, null, null, null, 'all');
+                expect(oc.Categories.List).toHaveBeenCalledWith(null, 1, 100, null, null, null, 'all');
             });
         });
     });

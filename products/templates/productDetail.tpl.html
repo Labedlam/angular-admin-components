@@ -1,0 +1,23 @@
+<div class="container-fluid">
+    <h3 class="page-header">
+        {{productDetail.product.Name}}
+        <td class="text-center" data-title="Active">
+            <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':productDetail.product.Active}"></i>
+        </td>
+    </h3>
+    <div class="row">
+        <div class="col-sm-6">
+            <h5><b>Name: </b> {{productDetail.product.Name}}</h5>
+            <h5><b>ID: </b> {{productDetail.product.ID}}</h5>
+            <h5><b>Description: </b> {{productDetail.product.Description}}</h5>
+        </div>
+        <div class="col-sm-6">
+            <img class="img-responsive" ng-src="{{productDetail.product.xp.image.URL || 'http://placehold.it/300x300'}}" alt="Product Image">
+        </div>
+    </div>
+    <button ui-sref=".edit({productid:product.ID})" class="btn btn-default">Edit</button>
+    <button class="btn btn-default">Delete</button>
+    <div
+         ng-include="'products/templates/productAssignments.tpl.html'">
+    </div>
+</div>

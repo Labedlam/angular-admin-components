@@ -1,10 +1,11 @@
 angular.module('orderCloud')
     .config(ProductsConfig)
+    .factory('ConfirmDeleteService', ConfirmDeleteService)
     .controller('ProductsCtrl', ProductsController)
     .controller('ProductDetailCtrl', ProductDetailController)
     .controller('ProductEditModalCtrl', ProductEditModalController)
+    .controller('ConfirmDeleteModalCtrl', ConfirmDeleteModalController)
     .controller('ProductCreateCtrl', ProductCreateController)
-    .controller('ProductAssignmentsCtrl', ProductAssignmentsController)
     .controller('ProductCreateAssignmentCtrl', ProductCreateAssignmentController)
 ;
 
@@ -37,10 +38,10 @@ function ProductsConfig($stateProvider) {
                 },
                 SelectedProduct: function ($stateParams, OrderCloud) {
                     return OrderCloud.Products.Get($stateParams.productid);
+                },
+                Assignments: function($stateParams, OrderCloud, Parameters) {
+                    return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
                 }
-                //Assignments: function($stateParams, OrderCloud, Parameters) {
-                //    return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
-                //}
             }
         })
         .state('products.create', {
@@ -48,24 +49,6 @@ function ProductsConfig($stateProvider) {
             templateUrl: 'products/templates/productCreate.tpl.html',
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'
-        })
-        .state('products.assignments', {
-            parent: 'products.detail',
-            templateUrl: 'products/templates/productAssignments.tpl.html',
-            controller: 'ProductAssignmentsCtrl',
-            controllerAs: 'productAssignments',
-            url: '/:productid/assignments',
-            resolve: {
-                Parameters: function($stateParams, OrderCloudParameters) {
-                    return OrderCloudParameters.Get($stateParams);
-                },
-                SelectedProduct: function($stateParams, OrderCloud) {
-                    return OrderCloud.Products.Get($stateParams.productid);
-                },
-                Assignments: function($stateParams, OrderCloud, Parameters) {
-                    return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
-                }
-            }
         })
         .state('products.createAssignment', {
             url: '/:productid/assignments/new',
@@ -83,7 +66,25 @@ function ProductsConfig($stateProvider) {
         });
 }
 
-function ProductsController($state, $ocMedia, $uibModal, OrderCloud, OrderCloudParameters, ProductList, Parameters) {
+function ConfirmDeleteService($uibModal){
+    var service = {
+        ConfirmDelete: _confirmDelete
+    };
+
+    function _confirmDelete(){
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'products/templates/confirmDelete.modal.tpl.html',
+            controller: 'ConfirmDeleteModalCtrl',
+            controllerAs: 'confirmDelete',
+            size: 'md'
+        })
+    }
+
+    return service;
+}
+
+function ProductsController($state, $ocMedia, OrderCloud, OrderCloudParameters, ProductList, Parameters) {
     var vm = this;
     vm.list = ProductList;
     vm.parameters = Parameters;
@@ -158,12 +159,14 @@ function ProductsController($state, $ocMedia, $uibModal, OrderCloud, OrderCloudP
     };
 }
 
-function ProductDetailController($stateParams, $uibModal, Assignments, SelectedProduct){
+function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $state, toastr, OrderCloud , Assignments, SelectedProduct){
     var vm = this;
     vm.product = SelectedProduct;
+    vm.list = Assignments;
     vm.listAssignments = Assignments.Items;
     vm.productID = $stateParams.productid;
     vm.productName = angular.copy(SelectedProduct.Name);
+    //vm.pagingfunction = PagingFunction;
 
     vm.editProduct = function(){
         $uibModal.open({
@@ -180,9 +183,30 @@ function ProductDetailController($stateParams, $uibModal, Assignments, SelectedP
             }
         });
     };
+
+    vm.DeleteAssignment = function(scope) {
+        OrderCloud.Products.DeleteAssignment($stateParams.productid, null, scope.assignment.UserGroupID)
+            .then(function() {
+                $state.reload();
+                toastr.success('Product Assignment Deleted', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+    };
+
+    //function PagingFunction() {
+    //    if (vm.list.Meta.Page < vm.list.Meta.TotalPages) {
+    //        OrderCloud.Products.ListAssignments($stateParams.productid, null, null, null, null, vm.list.Meta.Page + 1, vm.list.Meta.PageSize)
+    //            .then(function(data) {
+    //                vm.list.Items = [].concat(vm.list.Items, data.Items);
+    //                vm.list.Meta = data.Meta;
+    //            });
+    //    }
+    //}
 }
 
-function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, SelectedProduct) {
+function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, SelectedProduct, ConfirmDeleteService) {
     var vm = this,
         productid = angular.copy(SelectedProduct.ID);
     vm.productName = angular.copy(SelectedProduct.Name);
@@ -200,7 +224,23 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
             });
     };
 
-    vm.Delete = function() {
+    vm.deleteProduct = function(){
+        ConfirmDeleteService.ConfirmDelete();
+    };
+
+    vm.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    vm.submit = function() {
+        $uibModalInstance.close();
+    };
+};
+
+function ConfirmDeleteModalController(OrderCloud, $uibModalInstance){
+    var vm = this;
+
+    vm.Confirm = function() {
         OrderCloud.Products.Delete(productid)
             .then(function() {
                 $state.go('products', {}, {reload: true});
@@ -211,12 +251,8 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
             });
     };
 
-    vm.cancel = function() {
+    vm.Cancel = function(){
         $uibModalInstance.dismiss('cancel');
-    };
-
-    vm.submit = function() {
-        $uibModalInstance.close();
     };
 }
 
@@ -234,37 +270,6 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud) 
                 $exceptionHandler(ex)
             });
     };
-}
-
-function ProductAssignmentsController($exceptionHandler, $stateParams, $state, toastr, OrderCloud, Assignments, SelectedProduct) {
-    var vm = this;
-    vm.list = Assignments.Items;
-    vm.productID = $stateParams.productid;
-    vm.productName = angular.copy(SelectedProduct.Name);
-    vm.pagingfunction = PagingFunction;
-
-    console.log('product info', vm.productName);
-
-    vm.Delete = function(scope) {
-        OrderCloud.Products.DeleteAssignment($stateParams.productid, null, scope.assignment.UserGroupID)
-            .then(function() {
-                $state.reload();
-                toastr.success('Product Assignment Deleted', 'Success');
-            })
-            .catch(function(ex) {
-                $exceptionHandler(ex)
-            });
-    };
-
-    function PagingFunction() {
-        if (vm.list.Meta.Page < vm.list.Meta.TotalPages) {
-            OrderCloud.Products.ListAssignments($stateParams.productid, null, null, null, null, vm.list.Meta.Page + 1, vm.list.Meta.PageSize)
-                .then(function(data) {
-                    vm.list.Items = [].concat(vm.list.Items, data.Items);
-                    vm.list.Meta = data.Meta;
-                });
-        }
-    }
 }
 
 function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList) {

@@ -2,7 +2,7 @@
     <h3 class="page-header">
         {{productDetail.product.Name}}
         <td class="text-center" data-title="Active">
-            <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':productDetail.product.Active}"></i>
+            <i class="fa" ng-class="{'fa-circle text-success': productDetail.product.Active, 'fa-circle text-muted': !productDetail.product.Active}"></i>
         </td>
     </h3>
     <div class="row">
@@ -15,7 +15,7 @@
             <img class="img-responsive" ng-src="{{productDetail.product.xp.image.URL || 'http://placehold.it/300x300'}}" alt="Product Image">
         </div>
     </div>
-    <button ui-sref=".edit({productid:product.ID})" class="btn btn-default">Edit</button>
+    <button class="btn btn-default" ng-click="productDetail.editProduct()">Edit</button>
     <button class="btn btn-default">Delete</button>
     <div
          ng-include="'products/templates/productAssignments.tpl.html'">

@@ -1,0 +1,106 @@
+<form name="EditForm" ng-submit="productEditModal.Update()" novalidate>
+    <h3 class="modal-header">
+        <button type="button" class="close" aria-label="Close" ng-click="productEditModal.cancel()"><span aria-hidden="true">&times;</span></button>
+        <b>Edit Product:</b> {{productEditModal.productName}}
+    </h3>
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="productIDInput">Product ID</label>
+                    <input id="productIDInput" type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="productEditModal.product.ID" ng-required="true"/>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <label for="productNameInput">Product Name</label>
+                    <input id="productNameInput" type="text" class="form-control" ng-model="productEditModal.product.Name" ng-required="true"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <label for="productDescriptionInput">Description</label>
+                    <textarea id="productDescriptionInput" type="text" class="form-control" ng-model="productEditModal.product.Description"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="productQuantityMultInput">Quantity Multiplier</label>
+                    <input id="productQuantityMultInput" type="number" pattern="^[0-9]*[1-9][0-9]*$" pattern-err-type="positiveInteger" class="form-control" ng-model="productEditModal.product.QuantityMultiplier" ng-required="true"/>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="productShipWeightInput">Ship Weight</label>
+                    <input id="productShipWeightInput" type="number" step="any" class="form-control" ng-model="productEditModal.product.ShipWeight"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <label for="productTypeInput">Product Type</label>
+                    <select id="productTypeInput" class="form-control" ng-model="productEditModal.product.Type" ng-required="true">
+                        <option value="Static">Static</option>
+                        <option value="VariableText">Variable Text</option>
+                        <option value="Kit">Kit</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="productInventoryInput">Inventory Notification Point</label>
+                    <input id="productInventoryInput" type="number" class="form-control" ng-model="productEditModal.product.InventoryNotificationPoint"/>
+                </div>
+            </div>
+            <div class="panel panel-default col-sm-6">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            Inventory Options:
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="productInventory2Input">
+                                <input id="productInventory2Input" type="checkbox" ng-model="productEditModal.product.InventoryEnabled"/>
+                                Track Inventory
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="productInventory3Input">
+                                <input id="productInventory3Input" type="checkbox" ng-model="productEditModal.product.VariantLevelInventory"/>
+                                Variant Level Inventory
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="productInventory4Input">
+                                <input id="productInventory4Input" type="checkbox" ng-model="productEditModal.product.ExceedInventory"/>
+                                Can Exceed Inventory
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="productInventory5Input">
+                                <input id="productInventory5Input" type="checkbox" ng-model="productEditModal.product.DisplayInventory"/>
+                                Display Inventory
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <ordercloud-file-upload model="productEditModal.product" keyname="image" label="Image" extensions="jpg, png, gif, jpeg, tiff"></ordercloud-file-upload>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label for="productActiveInput">
+                        <input id="productActiveInput" type="checkbox" ng-model="productEditModal.product.Active"/>
+                        Active
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" ng-disabled="ProductEditForm.$invalid">Save</button>
+                <button type="button" class="btn btn-default" ng-click="productEditModal.Delete()"><i class="fa fa-trash text-danger"></i></button>
+            </div>
+        </div>
+    </div>
+</form>

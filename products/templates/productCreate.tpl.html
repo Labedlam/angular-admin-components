@@ -1,23 +1,32 @@
 <form name="CreateForm" ng-submit="productCreate.Submit()" novalidate>
     <h3 class="page-header">
         <b>New Product</b>
-        <div class="form-group pull-right" ng-click="productCreate.product.Active = !productCreate.product.Active">
-            <!--<label for="productActiveInput">-->
-            <!--<input id="productActiveInput" type="checkbox" ng-model="productCreate.product.Active"/>-->
-            <span ng-if="productCreate.product.Active">Active</span>
-            <span ng-if="!productCreate.product.Active">Inactive</span>
 
-            <i class="fa"
-               ng-class="{'fa-circle text-success': productCreate.product.Active, 'fa-circle text-muted': !productCreate.product.Active}"></i>
-        </div>
     </h3>
+    <div class="row">
+        <div class="col-md-10 form-group">
+            <label for="productIDInput">Product ID</label>
+            <input id="productIDInput" type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)"
+                   pattern-err-type="ID_Name" ng-model="productCreate.product.ID"/>
+        </div>
+        <!--<div class="col-md-1 form-group" ng-click="productCreate.product.Active = !productCreate.product.Active">-->
+            <!--&lt;!&ndash;<label for="productActiveInput">&ndash;&gt;-->
+            <!--&lt;!&ndash;<input id="productActiveInput" type="checkbox" ng-model="productCreate.product.Active"/>&ndash;&gt;-->
+            <!--<span ng-if="productCreate.product.Active">Active</span>-->
+            <!--<span ng-if="!productCreate.product.Active">Inactive</span>-->
 
-    <div class="form-group">
-        <label for="productIDInput">Product ID</label>
-        <input id="productIDInput" ordercloud-auto-id type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)"
-               pattern-err-type="ID_Name" ng-model="productCreate.product.ID"/>
+            <!--<i class="fa"-->
+               <!--ng-class="{'fa-circle text-success': productCreate.product.Active, 'fa-circle text-muted': !productCreate.product.Active}"></i>-->
+        <!--</div>-->
+        <div class="col-md-2 form-group">
+            <label>Status</label>
+            <label class="btn btn-default c-label-btn-default" for="productActiveInput">
+                <input class="badgebox" id="productActiveInput" type="checkbox"
+                       ng-model="productCreate.product.Active"/>
+                Active <span class="badge">&check;</span>
+            </label>
+        </div>
     </div>
-
     <div class="form-group">
         <label for="productNameInput">Product Name</label>
         <input id="productNameInput" type="text" class="form-control" ng-model="productCreate.product.Name"

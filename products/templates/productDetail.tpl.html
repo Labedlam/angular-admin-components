@@ -23,16 +23,10 @@
     <button class="btn btn-default">Delete</button>
 
     <div
-         ng-include="'products/templates/productAssignments.tpl.html'">
+        ng-include="'products/templates/productAssignments.tpl.html'">
     </div>
-    <div>
-        <h3 class="page-header">
-            Price Schedules for {{productDetail.product.Name}}
-        </h3>
-        <div class="row">
-            <div ng-repeat="assignments in productDetail.list">
-                {{assignments}}
-            </div>
-        </div>
+    <div
+        ng-include="'products/templates/productPriceSchedules.tpl.html'">
     </div>
+
 </div>

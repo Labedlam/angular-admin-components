@@ -41,7 +41,25 @@ function ProductsConfig($stateProvider) {
                 },
                 Assignments: function($stateParams, OrderCloud, Parameters) {
                     return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
+                },
+                PriceSchedule: function (OrderCloud, $q, Assignments){
+                    //OrderCloud.PriceSchedules.List()
+
+                            var priceSchedules = [];
+                            var dfd = $q.defer();
+                            angular.forEach(Assignments.Items, function(v, k){
+                                priceSchedules.push(OrderCloud.PriceSchedules.Get(v.StandardPriceScheduleID))
+                                console.log('v', v);
+                            });
+                            $q.all(priceSchedules)
+                                .then(function(data){
+                                    dfd.resolve(data);
+                                    console.log('data', data);
+                                });
+                        return dfd.promise;
                 }
+
+
             }
         })
 
@@ -177,14 +195,17 @@ function ProductsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
     };
 }
 
-function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $state, toastr, OrderCloud , Assignments, SelectedProduct){
+function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $state, toastr, OrderCloud , Assignments, SelectedProduct, PriceSchedule){
     var vm = this;
+    vm.schedule = PriceSchedule;
+
     vm.product = SelectedProduct;
     vm.list = Assignments;
     vm.listAssignments = Assignments.Items;
     vm.productID = $stateParams.productid;
     vm.productName = angular.copy(SelectedProduct.Name);
     //vm.pagingfunction = PagingFunction;
+    console.log('schedule', vm.schedule);
 
     vm.editProduct = function(){
         $uibModal.open({
@@ -203,7 +224,8 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     };
 
     vm.DeleteAssignment = function(scope) {
-        OrderCloud.Products.DeleteAssignment($stateParams.productid, null, scope.assignment.UserGroupID)
+        console.log('scope', scope);
+        OrderCloud.Products.DeleteAssignment(scope.assignment.ProductID, null, scope.assignment.UserGroupID)
             .then(function() {
                 $state.reload();
                 toastr.success('Product Assignment Deleted', 'Success');
@@ -255,11 +277,12 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
     };
 };
 
-function ConfirmDeleteModalController(OrderCloud, $uibModalInstance){
+function ConfirmDeleteModalController(OrderCloud, $uibModalInstance, SelectedProduct){
     var vm = this;
+    vm.product = SelectedProduct;
 
     vm.Confirm = function() {
-        OrderCloud.Products.Delete(productid)
+        OrderCloud.Products.Delete(vm.product.ID)
             .then(function() {
                 $state.go('products', {}, {reload: true});
                 toastr.success('Product Deleted', 'Success')

@@ -49,16 +49,21 @@ function ProductsConfig($stateProvider) {
             controller: 'ProductEditCtrl',
             controllerAs: 'productEdit',
             resolve: {
-                SelectedProduct: function($stateParams, OrderCloud) {
-                    return OrderCloud.Products.Get($stateParams.productid);
+                Parameters: function($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SelectedProduct: function ($stateParams, OrderCloud,Parameters) {
+                    return OrderCloud.Products.Get(Parameters.productid);
                 }
             }
+
         })
         .state('products.create', {
-            url: '/create',
+            url: '/create?productid',
             templateUrl: 'products/templates/productCreate.tpl.html',
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'
+
         })
         //.state('products.assignments', {
         //    templateUrl: 'products/templates/productAssignments.tpl.html',
@@ -218,11 +223,13 @@ function ProductEditController($exceptionHandler, $state, toastr, OrderCloud, Se
     };
 }
 
-function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud) {
+function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud ) {
     var vm = this;
     vm.product = {};
+    vm.product.Active = true;
 
     vm.Submit = function() {
+        !vm.product.QuantityMultiplier? vm.product.QuantityMultiplier = 1 : angular.noop();
         OrderCloud.Products.Create(vm.product)
             .then(function() {
                 $state.go('products', {}, {reload: true});

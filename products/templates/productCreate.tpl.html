@@ -120,8 +120,8 @@
 
 
         <div class="form-group">
-            <button type="submit" class="btn btn-primary" ng-disabled="CreateForm.$invalid">Save</button>
+            <button type="button" class="btn btn-primary" ng-disabled="CreateForm.$invalid" ng-click="productCreate.saveProduct()">Save</button>
             <button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
-            <button class="btn pull-right">Next</button>
+            <button type="submit" class="btn btn-default pull-right" >Next</button>
         </div>
 </form>

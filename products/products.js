@@ -62,11 +62,29 @@ function ProductsConfig($stateProvider) {
 
             }
         })
+
+        .state('products.edit', {
+            url: '/:productid/edit',
+            templateUrl: 'products/templates/productEdit.tpl.html',
+            controller: 'ProductEditCtrl',
+            controllerAs: 'productEdit',
+            resolve: {
+                Parameters: function($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SelectedProduct: function ($stateParams, OrderCloud,Parameters) {
+                    return OrderCloud.Products.Get(Parameters.productid);
+                }
+            }
+
+        })
+
         .state('products.create', {
-            url: '/create',
+            url: '/create?productid',
             templateUrl: 'products/templates/productCreate.tpl.html',
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'
+
         })
         .state('products.createAssignment', {
             url: '/:productid/assignments/new',
@@ -279,11 +297,28 @@ function ConfirmDeleteModalController(OrderCloud, $uibModalInstance, SelectedPro
     };
 }
 
-function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud) {
+function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud ) {
     var vm = this;
     vm.product = {};
+    vm.product.Active = true;
+    vm.product.QuantityMultiplier = 1
+
+    vm.saveProduct = function(){
+        OrderCloud.Products.Create(vm.product)
+            .then(function(data) {
+                console.log(data);
+                 vm.product.ID = data.ID;
+                // $state.go('products', {}, {reload: true});
+                toastr.success('Product Created', 'Click next to assign prices to your product');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+
+    }
 
     vm.Submit = function() {
+        // !vm.product.QuantityMultiplier? vm.product.QuantityMultiplier = 1 : angular.noop();
         OrderCloud.Products.Create(vm.product)
             .then(function() {
                 $state.go('products', {}, {reload: true});

@@ -1,0 +1,84 @@
+<div class="page-header">
+    <div class="btn-toolbar pull-right">
+        <button class="btn btn-success" ui-sref="^.createAssignment({productid:productDetail.productID})"><i class="fa fa-plus-circle"></i> New Assignment</button>
+    </div>
+    <h3>
+        Price Schedules for {{productDetail.product.Name}}
+    </h3>
+</div>
+<div class="well well-lg text-center" ng-if="!productDetail.schedule.length">
+    <b>This product does not have any assignments for the active Buyer company.</b>
+</div>
+
+<div class="row">
+    <div class="col-sm-6"  ng-repeat="priceSchedule in productDetail.schedule">
+        <div class="panel panel-default" id="panels">
+            <div class="panel-heading">
+                <b>{{priceSchedule.ID}}</b>
+            </div>
+            <div class="panel-body">
+                <b>Name:</b>
+                <p>{{priceSchedule.Name}}</p>
+                <b>ID:</b>
+                <p>{{priceSchedule.ID}}</p>
+                <b>Party ID:</b>
+                <div ng-repeat="assignment in productDetail.listAssignments">
+                    <p>{{assignment.UserID || assignment.UserGroupID || assignment.BuyerID}}
+                        <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>
+                        <small class="text-muted" ng-if="!assignment.UserID && !assignment.BuyerID">(User Group)</small>
+                    </p>
+                </div>
+                <p ng-if="priceSchedule.BuyerID">{{priceSchedule.BuyerID}}</p>
+                <p ng-if="priceSchedule.UserGroupID">{{priceSchedule.UserGroupID}}</p>
+                <b>Apply Shipping:</b>
+                <p>{{priceSchedule.ApplyShipping}}</p>
+                <b>Apply Tax:</b>
+                <p>{{priceSchedule.ApplyTax}}</p>
+                <b>Price Breaks:</b>
+                <p>{{priceSchedule.PriceBreaks.length}}</p>
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <colgroup>
+                            <col class="action-column"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>
+                                Quantity
+                            </th>
+                            <th>
+                                Price per Unit
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="price in priceSchedule.PriceBreaks">
+                            <td>
+                                {{price.Quantity}}
+                            </td>
+                            <td>
+                                {{price.Price | currency}}
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-danger" uib-tooltip="Delete Assignment" tooltip-placement="left" ng-click="productDetail.DeleteAssignment(this)">
+                                    Delete <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>

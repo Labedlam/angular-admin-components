@@ -302,32 +302,53 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     vm.product = {};
     vm.product.Active = true;
     vm.product.QuantityMultiplier = 1;
+    vm.productCreated = false;
 
     vm.saveProduct = function(){
+            if(vm.productCreated){
+                OrderCloud.Products.Update(vm.product.ID ,vm.product)
+                    .then(function(data) {
+                        toastr.success('Product Saved', 'Click next to assign prices');
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
+            }else{
+                OrderCloud.Products.Create(vm.product)
+                    .then(function(data) {
+                        vm.product.ID = data.ID;
+                        vm.productCreated = true;
+                        // $state.go('products', {}, {reload: true});
+                        toastr.success('Product Saved', 'Click next to assign prices');
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
+            }
 
+    };
+
+    vm.Submit = function() {
+        if(vm.productCreated){
             OrderCloud.Products.Update(vm.product.ID ,vm.product)
                 .then(function(data) {
-                    console.log(data);
-                    vm.product.ID = data.ID;
-                    // $state.go('products', {}, {reload: true});
                     toastr.success('Product Saved', 'Click next to assign prices');
                 })
                 .catch(function(ex) {
                     $exceptionHandler(ex)
-                  });
-    };
+                });
+        }else{
+            OrderCloud.Products.Create(vm.product)
+                .then(function(data) {
+                    vm.product.ID = data.ID;
+                    vm.productCreated = true;
+                    toastr.success('Product Saved', 'Click next to assign prices');
+                })
+                .catch(function(ex) {
+                    $exceptionHandler(ex)
+                });
+        }
 
-
-
-    vm.Submit = function() {
-        OrderCloud.Products.Update(vm.product.ID,vm.product)
-            .then(function() {
-                $state.go('products', {}, {reload: true});
-                toastr.success('Product Saved', 'Success');
-            })
-            .catch(function(ex) {
-                $exceptionHandler(ex)
-            });
     };
 }
 

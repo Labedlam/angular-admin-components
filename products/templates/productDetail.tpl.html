@@ -2,7 +2,7 @@
     <h3 class="page-header">
         {{productDetail.product.Name}}
         <td class="text-center" data-title="Active">
-            <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':productDetail.product.Active}"></i>
+            <i class="fa" ng-class="{'fa-circle text-success': productDetail.product.Active, 'fa-circle text-muted': !productDetail.product.Active}"></i>
         </td>
     </h3>
     <div class="row">
@@ -10,14 +10,29 @@
             <h5><b>Name: </b> {{productDetail.product.Name}}</h5>
             <h5><b>ID: </b> {{productDetail.product.ID}}</h5>
             <h5><b>Description: </b> {{productDetail.product.Description}}</h5>
+            <h5><b>Quantity Multiplier: </b> {{productDetail.product.QuantityMultiplier}}x</h5>
+            <h5><b>Inventory Enabled: </b> {{productDetail.product.InventoryEnabled}}</h5>
+            <h5><b>Inventory Visible: </b> {{productDetail.product.InventoryVisible}}</h5>
+            <h5 ng-if="productDetail.product.ShipFromAddressID"><b>Ship From Address: </b> {{productDetail.product.ShipFromAddressID}}</h5>
         </div>
         <div class="col-sm-6">
             <img class="img-responsive" ng-src="{{productDetail.product.xp.image.URL || 'http://placehold.it/300x300'}}" alt="Product Image">
         </div>
     </div>
-    <button ui-sref="^.edit({productid: productDetail.product.ID})" class="btn btn-default">Edit</button> {{product.ID}}
+    <button ui-sref="^.edit({productid: productDetail.product.ID})" ng-click="productDetail.editProduct()" class="btn btn-default">Edit</button> {{product.ID}}
     <button class="btn btn-default">Delete</button>
+
     <div
          ng-include="'products/templates/productAssignments.tpl.html'">
+    </div>
+    <div>
+        <h3 class="page-header">
+            Price Schedules for {{productDetail.product.Name}}
+        </h3>
+        <div class="row">
+            <div ng-repeat="assignments in productDetail.list">
+                {{assignments}}
+            </div>
+        </div>
     </div>
 </div>

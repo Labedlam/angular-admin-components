@@ -175,6 +175,10 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     //vm.pagingfunction = PagingFunction;
     console.log('schedule', vm.schedule);
 
+    //vm.go = function(){
+    //    $state.go('priceSchedules.create');
+    //}
+
     vm.editProduct = function() {
         $uibModal.open({
             animation: true,
@@ -300,7 +304,9 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     };
 }
 
-function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
+
+function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
+
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
@@ -336,10 +342,25 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
     vm.toggleStandardPS = function(id) {
         vm.StandardPriceScheduleID == id ? vm.StandardPriceScheduleID = null : vm.StandardPriceScheduleID = id;
     };
+
     //Reload the state with the incremented page parameter
     vm.pageChanged = function() {
         $state.go('.', {page:vm.list.Meta.Page});
     };
+
+
+    vm.createScheduleModal = function(){
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'priceSchedules/templates/priceScheduleCreate.modal.tpl.html',
+            controller: 'PriceScheduleCreateModalCtrl',
+            controllerAs: 'priceScheduleCreateModal',
+            backdrop:'static',
+            size: 'lg'
+        })
+    };
+
+
     vm.saveAssignment = function() {
         vm.ReplenishmentPriceScheduleID ? vm.selectedPriceSchedules.push(vm.ReplenishmentPriceScheduleID) : angular.noop();
         vm.StandardPriceScheduleID ? vm.selectedPriceSchedules.push(vm.StandardPriceScheduleID) : angular.noop();

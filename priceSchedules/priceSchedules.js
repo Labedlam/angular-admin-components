@@ -117,16 +117,6 @@ function PriceSchedulesController($state, $ocMedia, $uibModal, OrderCloud, Order
             });
     };
 
-    vm.createScheduleModal = function(){
-        $uibModal.open({
-            animation: true,
-            templateUrl: 'priceSchedules/templates/priceScheduleCreate.modal.tpl.html',
-            controller: 'PriceScheduleCreateModalCtrl',
-            controllerAs: 'priceScheduleCreateModal',
-            backdrop:'static',
-            size: 'lg',
-        })
-    }
 }
 
 function PriceScheduleEditController($scope, $exceptionHandler, $state, toastr, OrderCloud, SelectedPriceSchedule, PriceBreak) {

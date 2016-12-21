@@ -3,6 +3,7 @@ angular.module('orderCloud')
     .controller('PriceSchedulesCtrl', PriceSchedulesController)
     .controller('PriceScheduleEditCtrl', PriceScheduleEditController)
     .controller('PriceScheduleCreateCtrl', PriceScheduleCreateController)
+    .controller('PriceScheduleCreateModalCtrl', PriceScheduleCreateModalController)
 ;
 
 function PriceSchedulesConfig($stateProvider) {
@@ -43,9 +44,10 @@ function PriceSchedulesConfig($stateProvider) {
     ;
 }
 
-function PriceSchedulesController($state, $ocMedia, OrderCloud, OrderCloudParameters, PriceScheduleList, Parameters) {
+function PriceSchedulesController($state, $ocMedia, $uibModal, OrderCloud, OrderCloudParameters, PriceScheduleList, Parameters) {
     var vm = this;
     vm.list = PriceScheduleList;
+    console.log('schedules list', vm.list);
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
@@ -114,6 +116,17 @@ function PriceSchedulesController($state, $ocMedia, OrderCloud, OrderCloudParame
                 vm.list.Meta = data.Meta;
             });
     };
+
+    vm.createScheduleModal = function(){
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'priceSchedules/templates/priceScheduleCreate.modal.tpl.html',
+            controller: 'PriceScheduleCreateModalCtrl',
+            controllerAs: 'priceScheduleCreateModal',
+            backdrop:'static',
+            size: 'lg',
+        })
+    }
 }
 
 function PriceScheduleEditController($scope, $exceptionHandler, $state, toastr, OrderCloud, SelectedPriceSchedule, PriceBreak) {
@@ -205,4 +218,54 @@ function PriceScheduleCreateController($scope, $exceptionHandler, $state, toastr
             vm.priceHeader =  'Price Per Unit';
         }
     });
+}
+
+
+function PriceScheduleCreateModalController($scope, $exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, PriceBreak) {
+    var vm = this;
+    vm.priceSchedule = {};
+    vm.priceSchedule.RestrictedQuantity = false;
+    vm.priceSchedule.PriceBreaks = [];
+    vm.priceSchedule.MinQuantity = 1;
+    vm.priceSchedule.OrderType = 'Standard';
+    //vm.priceSchedule = SelectedPriceSchedule;
+
+    vm.addPriceBreak = function() {
+        PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
+        vm.quantity = null;
+        vm.price = null;
+    };
+
+    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
+
+    vm.savePriceSchedule = function() {
+        vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
+        OrderCloud.PriceSchedules.Create(vm.priceSchedule)
+            .then(function() {
+                vm.submit();
+                $state.reload();
+                toastr.success('Price Schedule Created', 'Success')
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+    };
+
+    $scope.$watch(function() {
+        return vm.priceSchedule.RestrictedQuantity;
+    },function(value) {
+        if (vm.priceSchedule.RestrictedQuantity) {
+            vm.priceHeader = 'Total Price';
+        } else {
+            vm.priceHeader =  'Price Per Unit';
+        }
+    });
+
+    vm.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+
+    vm.submit = function() {
+        $uibModalInstance.close();
+    };
 }

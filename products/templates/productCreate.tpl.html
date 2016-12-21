@@ -1,7 +1,6 @@
 <form name="CreateForm" ng-submit="productCreate.Submit()" novalidate>
     <h3 class="page-header">
         <b>New Product</b>
-
     </h3>
     <div class="row">
         <div class="col-md-10 form-group">
@@ -131,6 +130,6 @@
         <div class="form-group">
             <button type="button" class="btn btn-primary" ng-disabled="CreateForm.$invalid" ng-click="productCreate.saveProduct()">Save</button>
             <button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
-            <button type="submit" class="btn btn-default pull-right" >Next</button>
+            <button type="submit" class="btn btn-default pull-right" ng-disabled="CreateForm.$invalid" ui-sref="^.createAssignment({productid:productDetail.productID})">Next</button>
         </div>
 </form>

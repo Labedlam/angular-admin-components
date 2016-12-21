@@ -1,3 +1,4 @@
+<!--<<<<<<< HEAD-->
 <div class="well well-lg text-center"
      ng-if="(!((productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length) && !((productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length))">
     <b>The selected buyer does not have any Standard or Replenishment price schedules.</b><br>
@@ -41,18 +42,29 @@
         assignments will take precedent over Buyer assignments.</p>
     <div class="row">
         <div class="col-sm-6">
+
+            <div class="form-group">
+                <label>Select Buyer</label>
+                <select class="form-control"
+                        ng-options="buyer.Name for buyer in productCreateAssignment.buyers.Items"
+                        ng-model="productCreateAssignment.selectedBuyer"
+                        ng-change="productCreateAssignment.getUserList(productCreateAssignment.selectedBuyer)">
+                </select>
+            </div>
+            <br>
             <div class="form-group">
                 <button class="btn btn-block btn-default" ng-class="{active: productCreateAssignment.assignBuyer}"
                         ng-click="productCreateAssignment.assignBuyer = !productCreateAssignment.assignBuyer">
                     <i class="fa"
                        ng-class="{'fa-square-o':!productCreateAssignment.assignBuyer, 'fa-check-square-o':productCreateAssignment.assignBuyer}"></i>
-                    Assign at the Buyer Level
+                    Assign Price at the Buyer Level
                 </button>
+
             </div>
             <div uib-collapse="productCreateAssignment.assignBuyer">
                 <ordercloud-search servicename="UserGroups" controlleras="productCreateAssignment"></ordercloud-search>
                 <div class="well well-lg text-center" ng-if="!productCreateAssignment.list.Items.length">
-                    <b><i class="fa fa-search"></i> No UserGroups match your search</b>
+                    <b><i class="fa fa-search"></i> No UserGroups under this buyer</b>
                 </div>
                 <section class="table-fixed-header" ng-if="productCreateAssignment.list.Items.length">
                     <div class="table-header-bg"></div>
@@ -191,3 +203,4 @@
     Save Assignment
 </button>
 
+</div>

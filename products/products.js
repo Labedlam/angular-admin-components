@@ -1,10 +1,8 @@
 angular.module('orderCloud')
     .config(ProductsConfig)
-    //.factory('ConfirmDeleteService', ConfirmDeleteService)
     .controller('ProductsCtrl', ProductsController)
     .controller('ProductDetailCtrl', ProductDetailController)
     .controller('ProductEditModalCtrl', ProductEditModalController)
-    //.controller('ConfirmDeleteModalCtrl', ConfirmDeleteModalController)
     .controller('ProductCreateCtrl', ProductCreateController)
     .controller('ProductCreateAssignmentCtrl', ProductCreateAssignmentController)
 ;
@@ -58,22 +56,6 @@ function ProductsConfig($stateProvider) {
             }
         })
 
-        //.state('products.edit', {
-        //    url: '/:productid/edit',
-        //    templateUrl: 'products/templates/productEdit.tpl.html',
-        //    controller: 'ProductEditCtrl',
-        //    controllerAs: 'productEdit',
-        //    resolve: {
-        //        Parameters: function($stateParams, OrderCloudParameters) {
-        //            return OrderCloudParameters.Get($stateParams);
-        //        },
-        //        SelectedProduct: function ($stateParams, OrderCloud,Parameters) {
-        //            return OrderCloud.Products.Get(Parameters.productid);
-        //        }
-        //    }
-        //
-        //})
-
         .state('products.create', {
             url: '/create?productid',
             templateUrl: 'products/templates/productCreate.tpl.html',
@@ -99,27 +81,12 @@ function ProductsConfig($stateProvider) {
                 SelectedProduct: function ($stateParams, OrderCloud) {
                     return OrderCloud.Products.Get($stateParams.productid);
                 },
+                Buyers: function(OrderCloud){
+                    return OrderCloud.Buyers.List();
+                }
             }
         });
 }
-
-//function ConfirmDeleteService($uibModal){
-//    var service = {
-//        ConfirmDelete: _confirmDelete
-//    };
-//
-//    function _confirmDelete(){
-//        console.log('hello');
-//        return $uibModal.open({
-//            templateUrl: 'products/templates/confirmDelete.modal.tpl.html',
-//            controller: 'ConfirmDeleteModalCtrl',
-//            controllerAs: 'confirmDelete',
-//            size: 'md',
-//            animation: true
-//        }).result
-//    }
-//    return service;
-//}
 
 function ProductsController($state, $ocMedia, OrderCloud, OrderCloudParameters, ProductList, Parameters) {
     var vm = this;
@@ -228,25 +195,6 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
         OrderCloudConfirm.Confirm('Are you sure you want to delete this product?');
     };
 
-    //vm.createProductAssignment = function() {
-    //    $uibModal.open({
-    //        animation: true,
-    //        templateUrl: 'products/templates/productCreateAssignment.tpl.html',
-    //        controller: 'ProductCreateAssignmentModalCtrl',
-    //        controllerAs: 'createAssignmentModal',
-    //        backdrop:'static',
-    //        size: 'lg',
-    //        resolve: {
-    //            UserGroupList: function(OrderCloud) {
-    //                return OrderCloud.UserGroups.List(null, 1, 20);
-    //            },
-    //            PriceScheduleList: function(OrderCloud) {
-    //                return OrderCloud.PriceSchedules.List(null,1, 20);
-    //            }
-    //        }
-    //    });
-    //};
-
     vm.DeleteAssignment = function(scope) {
         OrderCloud.Products.DeleteAssignment(scope.assignment.ProductID, null, scope.assignment.UserGroupID)
             .then(function() {
@@ -296,27 +244,6 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
     };
 }
 
-//function ConfirmDeleteModalController(OrderCloud, $uibModalInstance){
-//    var vm = this;
-//    //vm.product = SelectedProduct;
-//
-//
-//    vm.Confirm = function() {
-//        OrderCloud.Products.Delete(vm.product.ID)
-//            .then(function() {
-//                $state.go('products', {}, {reload: true});
-//                toastr.success('Product Deleted', 'Success')
-//            })
-//            .catch(function(ex) {
-//                $exceptionHandler(ex)
-//            });
-//    };
-//
-//    vm.Cancel = function(){
-//        $uibModalInstance.dismiss('cancel');
-//    };
-//}
-
 function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud ) {
     var vm = this;
     vm.product = {};
@@ -325,25 +252,25 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     vm.productCreated = false;
 
     vm.saveProduct = function(){
-            if(vm.productCreated){
-                OrderCloud.Products.Update(vm.product.ID ,vm.product)
-                    .then(function(data) {
-                        toastr.success('Product Saved', 'Click next to assign prices');
-                    })
-                    .catch(function(ex) {
-                        $exceptionHandler(ex)
-                    });
-            }else{
-                OrderCloud.Products.Create(vm.product)
-                    .then(function(data) {
-                        vm.product.ID = data.ID;
-                        vm.productCreated = true;
-                        // $state.go('products', {}, {reload: true});
-                        toastr.success('Product Saved', 'Click next to assign prices');
-                    })
-                    .catch(function(ex) {
-                        $exceptionHandler(ex)
-                    });
+        if(vm.productCreated){
+            OrderCloud.Products.Update(vm.product.ID ,vm.product)
+                .then(function(data) {
+                    toastr.success('Product Saved', 'Click next to assign prices');
+                })
+                .catch(function(ex) {
+                    $exceptionHandler(ex)
+                });
+        } else {
+            OrderCloud.Products.Create(vm.product)
+                .then(function(data) {
+                    vm.product.ID = data.ID;
+                    vm.productCreated = true;
+                    // $state.go('products', {}, {reload: true});
+                    toastr.success('Product Saved', 'Click next to assign prices');
+                })
+                .catch(function(ex) {
+                    $exceptionHandler(ex)
+                });
             }
 
     };
@@ -373,15 +300,17 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     };
 }
 
-function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct) {
+function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
     vm.assignments =  Assignments;
     vm.product = SelectedProduct;
+    vm.buyers = Buyers;
     vm.StandardPriceScheduleID;
     vm.ReplenishmentPriceScheduleID;
     vm.selectedPriceSchedules = [];
+
 
     vm.assignBuyer = false;
     vm.model = {
@@ -389,6 +318,15 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
         BuyerID: OrderCloud.BuyerID.Get(),
         UserGroupID: null,
         PriceScheduleID: null
+    };
+
+    vm.getUserList = function(buyer){
+        console.log("hello");
+        OrderCloud.UserGroups.List(null, 1, 20, null, null, null, buyer.ID)
+            .then(function(data){
+                console.log(data);
+                vm.list = data;
+            })
     };
 
     vm.toggleReplenishmentPS = function(id) {

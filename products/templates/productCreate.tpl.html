@@ -130,6 +130,6 @@
         <div class="form-group">
             <button type="button" class="btn btn-primary" ng-disabled="CreateForm.$invalid" ng-click="productCreate.saveProduct()">Save</button>
             <button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
-            <button type="submit" class="btn btn-default pull-right" ng-disabled="CreateForm.$invalid" ui-sref="^.createAssignment({productid:productDetail.productID})">Next</button>
+            <button type="submit" class="btn btn-default pull-right" ng-disabled="CreateForm.$invalid" ui-sref="^.createAssignment({productid:productCreate.product.ID})">Next</button>
         </div>
 </form>

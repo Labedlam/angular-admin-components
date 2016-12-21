@@ -166,6 +166,10 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     //vm.pagingfunction = PagingFunction;
     console.log('schedule', vm.schedule);
 
+    //vm.go = function(){
+    //    $state.go('priceSchedules.create');
+    //}
+
     vm.editProduct = function() {
         $uibModal.open({
             animation: true,
@@ -291,7 +295,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     };
 }
 
-function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList) {
+function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, $uibModal) {
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
@@ -314,6 +318,17 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
 
     vm.toggleStandardPS = function(id) {
         vm.StandardPriceScheduleID == id ? vm.StandardPriceScheduleID = null : vm.StandardPriceScheduleID = id;
+    };
+
+    vm.createScheduleModal = function(){
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'priceSchedules/templates/priceScheduleCreate.modal.tpl.html',
+            controller: 'PriceScheduleCreateModalCtrl',
+            controllerAs: 'priceScheduleCreateModal',
+            backdrop:'static',
+            size: 'lg'
+        })
     };
 
     vm.saveAssignment = function() {

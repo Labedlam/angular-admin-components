@@ -6,7 +6,7 @@ angular.module('orderCloud')
     .controller('ProductEditModalCtrl', ProductEditModalController)
     //.controller('ConfirmDeleteModalCtrl', ConfirmDeleteModalController)
     .controller('ProductCreateCtrl', ProductCreateController)
-    .controller('ProductCreateAssignmentModalCtrl', ProductCreateAssignmentModalController)
+    .controller('ProductCreateAssignmentCtrl', ProductCreateAssignmentController)
 ;
 
 function ProductsConfig($stateProvider) {
@@ -80,21 +80,21 @@ function ProductsConfig($stateProvider) {
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'
 
+        })
+        .state('products.createAssignment', {
+            url: '/:productid/assignments/new',
+            templateUrl: 'products/templates/productCreateAssignment.tpl.html',
+            controller: 'ProductCreateAssignmentCtrl',
+            controllerAs: 'productCreateAssignment',
+            resolve: {
+                UserGroupList: function(OrderCloud) {
+                    return OrderCloud.UserGroups.List(null, 1, 20);
+                },
+                PriceScheduleList: function(OrderCloud) {
+                    return OrderCloud.PriceSchedules.List(null,1, 20);
+                }
+            }
         });
-    //.state('products.createAssignment', {
-    //    url: '/:productid/assignments/new',
-    //    templateUrl: 'products/templates/productCreateAssignment.modal.tpl.html',
-    //    controller: 'ProductCreateAssignmentCtrl',
-    //    controllerAs: 'productCreateAssignment',
-    //    resolve: {
-    //        UserGroupList: function(OrderCloud) {
-    //            return OrderCloud.UserGroups.List(null, 1, 20);
-    //        },
-    //        PriceScheduleList: function(OrderCloud) {
-    //            return OrderCloud.PriceSchedules.List(null,1, 20);
-    //        }
-    //    }
-    //});
 }
 
 //function ConfirmDeleteService($uibModal){
@@ -222,24 +222,24 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
         OrderCloudConfirm.Confirm('Are you sure you want to delete this product?');
     };
 
-    vm.createProductAssignment = function() {
-        $uibModal.open({
-            animation: true,
-            templateUrl: 'products/templates/productCreateAssignment.modal.tpl.html',
-            controller: 'ProductCreateAssignmentModalCtrl',
-            controllerAs: 'createAssignmentModal',
-            backdrop:'static',
-            size: 'lg',
-            resolve: {
-                UserGroupList: function(OrderCloud) {
-                    return OrderCloud.UserGroups.List(null, 1, 20);
-                },
-                PriceScheduleList: function(OrderCloud) {
-                    return OrderCloud.PriceSchedules.List(null,1, 20);
-                }
-            }
-        });
-    };
+    //vm.createProductAssignment = function() {
+    //    $uibModal.open({
+    //        animation: true,
+    //        templateUrl: 'products/templates/productCreateAssignment.tpl.html',
+    //        controller: 'ProductCreateAssignmentModalCtrl',
+    //        controllerAs: 'createAssignmentModal',
+    //        backdrop:'static',
+    //        size: 'lg',
+    //        resolve: {
+    //            UserGroupList: function(OrderCloud) {
+    //                return OrderCloud.UserGroups.List(null, 1, 20);
+    //            },
+    //            PriceScheduleList: function(OrderCloud) {
+    //                return OrderCloud.PriceSchedules.List(null,1, 20);
+    //            }
+    //        }
+    //    });
+    //};
 
     vm.DeleteAssignment = function(scope) {
         OrderCloud.Products.DeleteAssignment(scope.assignment.ProductID, null, scope.assignment.UserGroupID)
@@ -345,7 +345,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     };
 }
 
-function ProductCreateAssignmentModalController($q, $stateParams, $state, $uibModalInstance, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList) {
+function ProductCreateAssignmentController($q, $stateParams, $state, $uibModalInstance, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList) {
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
@@ -373,32 +373,32 @@ function ProductCreateAssignmentModalController($q, $stateParams, $state, $uibMo
     vm.saveAssignment = function() {
         vm.ReplenishmentPriceScheduleID ? vm.selectedPriceSchedules.push(vm.ReplenishmentPriceScheduleID) : angular.noop();
         vm.StandardPriceScheduleID ? vm.selectedPriceSchedules.push(vm.StandardPriceScheduleID) : angular.noop();
-        if (!(vm.StandardPriceScheduleID || vm.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !Underscore.where(vm.list.Items, {selected:true}).length)) return;
+        if (!(vm.StandardPriceScheduleID || vm.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !Underscore.where(vm.list.Items, {selected: true}).length)) return;
         if (vm.assignBuyer) {
             var assignmentQueue = [];
             var df = $q.defer();
-            angular.forEach(vm.selectedPriceSchedules, function(priceSchedule){
+            angular.forEach(vm.selectedPriceSchedules, function (priceSchedule) {
                 var assignment = angular.copy(vm.model);
                 assignment.PriceScheduleID = priceSchedule;
                 assignmentQueue.push(OrderCloud.Products.SaveAssignment(assignment));
             });
             $q.all(assignmentQueue)
-                .then(function(){
+                .then(function () {
                     df.resolve();
                     vm.submit();
                     toastr.success('Assignment Updated', 'Success');
                     $state.reload();
                 })
-                .catch(function(error){
+                .catch(function (error) {
                     vm.submit();
                     toastr.error('An error occurred while trying to save your product assignment', 'Error');
                 })
             return df.promise;
         } else {
             var assignmentQueue = [];
-            var df =$q.defer();
-            angular.forEach(Underscore.where(vm.list.Items, {selected: true}), function(group){
-                angular.forEach(vm.selectedPriceSchedules, function(priceSchedule){
+            var df = $q.defer();
+            angular.forEach(Underscore.where(vm.list.Items, {selected: true}), function (group) {
+                angular.forEach(vm.selectedPriceSchedules, function (priceSchedule) {
                     var assignment = angular.copy(vm.model);
                     assignment.UserGroupID = group.ID;
                     assignment.PriceScheduleID = priceSchedule;
@@ -406,26 +406,18 @@ function ProductCreateAssignmentModalController($q, $stateParams, $state, $uibMo
                 });
             })
             $q.all(assignmentQueue)
-                .then(function(){
+                .then(function () {
                     df.resolve();
                     vm.submit();
                     toastr.success('Assignment Updated', 'Success');
                     $state.reload();
                 })
-                .catch(function(error){
+                .catch(function (error) {
                     vm.submit();
                     toastr.error('An error occurred while trying to save your product assignment', 'Error');
                 })
             return df.promise;
         }
-    };
-
-    vm.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    };
-
-    vm.submit = function() {
-        $uibModalInstance.close();
     };
 }
 

@@ -173,11 +173,6 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     vm.productID = $stateParams.productid;
     vm.productName = angular.copy(SelectedProduct.Name);
     //vm.pagingfunction = PagingFunction;
-    console.log('schedule', vm.schedule);
-
-    //vm.go = function(){
-    //    $state.go('priceSchedules.create');
-    //}
 
     vm.editProduct = function() {
         $uibModal.open({
@@ -185,7 +180,6 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
             templateUrl: 'products/templates/productEdit.modal.tpl.html',
             controller: 'ProductEditModalCtrl',
             controllerAs: 'productEditModal',
-            backdrop:'static',
             size: 'lg',
             resolve: {
                 SelectedProduct: function ($stateParams, OrderCloud) {
@@ -196,7 +190,20 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     };
 
     vm.deleteProduct = function(){
-        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?');
+        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
+            .then(function(){
+                OrderCloud.Products.Delete(vm.productID)
+                    .then(function() {
+                        $state.go('products', {}, {reload: true});
+                        toastr.success('Product Deleted', 'Success')
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
+        });
+
+        console.log('ocConfirm', OrderCloudConfirm);
+
     };
 
     vm.DeleteAssignment = function(scope) {
@@ -221,7 +228,7 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     //}
 }
 
-function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, SelectedProduct, ConfirmDeleteService) {
+function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, SelectedProduct) {
     var vm = this,
         productid = angular.copy(SelectedProduct.ID);
     vm.productName = angular.copy(SelectedProduct.Name);
@@ -276,7 +283,6 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
                     $exceptionHandler(ex)
                 });
             }
-
     };
 
     vm.Submit = function() {
@@ -284,23 +290,23 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
             OrderCloud.Products.Update(vm.product.ID ,vm.product)
                 .then(function(data) {
                     toastr.success('Product Saved', 'Click next to assign prices');
+                    $state.go('products.createAssignment', {productid: vm.product.ID}, {reload: true});
                 })
                 .catch(function(ex) {
                     $exceptionHandler(ex)
                 });
-        }else{
+        } else {
             OrderCloud.Products.Create(vm.product)
                 .then(function(data) {
                     vm.product.ID = data.ID;
                     vm.productCreated = true;
                     toastr.success('Product Saved', 'Click next to assign prices');
+                    $state.go('products.createAssignment', {productid: vm.product.ID}, {reload: true});
                 })
                 .catch(function(ex) {
                     $exceptionHandler(ex)
                 });
         }
-
-
     };
 }
 
@@ -313,6 +319,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     vm.assignments =  Assignments;
     vm.product = SelectedProduct;
     vm.buyers = Buyers;
+
     vm.StandardPriceScheduleID;
     vm.ReplenishmentPriceScheduleID;
     vm.selectedPriceSchedules = [];

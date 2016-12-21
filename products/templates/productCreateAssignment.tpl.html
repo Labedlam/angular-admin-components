@@ -62,43 +62,68 @@
                 </button>
 
             </div>
+            <div class="form-group">
+                <label>Select User Group(s)</label>
+                <ui-select multiple ng-model="productCreateAssignment.selectedUserGroups" close-on-select="false"  >
+                    <ui-select-match>
+                        <span ng-bind="$select.selected.Name"></span>
+                    </ui-select-match>
+                    <ui-select-choices repeat="group in (productCreateAssignment.list.Items | filter: $select.search) track by $index">
+                        <span ng-bind="group.Name"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
             <div uib-collapse="productCreateAssignment.assignBuyer">
-                <ordercloud-search servicename="UserGroups" controlleras="productCreateAssignment"></ordercloud-search>
-                <div class="well well-lg text-center" ng-if="!productCreateAssignment.list.Items.length">
-                    <b><i class="fa fa-search"></i> No UserGroups under this buyer</b>
-                </div>
-                <section class="table-fixed-header" ng-if="productCreateAssignment.list.Items.length">
-                    <div class="table-header-bg"></div>
-                    <div class="table-container" ordercloud-infinite-scroll servicename="UserGroups"
-                         controlleras="productCreateAssignment" style="max-height:160px;">
-                        <table class="table table-hover">
-                            <colgroup>
-                                <col class="action-column"/>
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th>
-                                </th>
-                                <th>
-                                    <div>ID</div>
-                                </th>
-                                <th>
-                                    <div>Name</div>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="group in productCreateAssignment.list.Items track by $index">
-                                <td class="text-center">
-                                    <input type="checkbox" ng-model="group.selected">
-                                </td>
-                                <td>{{group.ID}}</td>
-                                <td>{{group.Name}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!--<ordercloud-search servicename="UserGroups" controlleras="productCreateAssignment"></ordercloud-search>-->
+                <!--<div class="well well-lg text-center" ng-if="!productCreateAssignment.list.Items.length">-->
+                    <!--<b><i class="fa fa-search"></i> No UserGroups under this buyer</b>-->
+                <!--</div>-->
+                <!--<section class="table-fixed-header" ng-if="productCreateAssignment.list.Items.length">-->
+                    <!--<div class="table-header-bg"></div>-->
+                    <!--<div class="table-container" ordercloud-infinite-scroll servicename="UserGroups"-->
+                         <!--controlleras="productCreateAssignment" style="max-height:160px;">-->
+                        <!--<table class="table table-hover">-->
+                            <!--<colgroup>-->
+                                <!--<col class="action-column"/>-->
+                            <!--</colgroup>-->
+                            <!--<thead>-->
+                            <!--<tr>-->
+                                <!--<th>-->
+                                <!--</th>-->
+                                <!--<th>-->
+                                    <!--<div>ID</div>-->
+                                <!--</th>-->
+                                <!--<th>-->
+                                    <!--<div>Name</div>-->
+                                <!--</th>-->
+                            <!--</tr>-->
+                            <!--</thead>-->
+                            <!--<tbody>-->
+                            <!--<tr ng-repeat="group in productCreateAssignment.list.Items track by $index">-->
+                                <!--<td class="text-center">-->
+                                    <!--<input type="checkbox" ng-model="group.selected">-->
+                                <!--</td>-->
+                                <!--<td>{{group.ID}}</td>-->
+                                <!--<td>{{group.Name}}</td>-->
+                            <!--</tr>-->
+                            <!--</tbody>-->
+                        <!--</table>-->
+                    <!--</div>-->
+                <!--</section>-->
             </div>
         </div>
         <div class="col-sm-6" uib-collapse="productCreateAssignment.assignBuyer"
@@ -199,8 +224,8 @@
         ui-sref="products.detail({productid:productCreateAssignment.model.ProductID})">Cancel
 </button>
 <!--<button type="button" class="btn btn-default" ng-click="productCreateAssignment.cancel()">Cancel</button>-->
-<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()"
-        ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">
+<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()">
+        <!--ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">-->
     Save Assignment
 </button>
 

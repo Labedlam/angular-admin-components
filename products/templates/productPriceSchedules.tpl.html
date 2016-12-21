@@ -1,3 +1,4 @@
+<!--This template is displayed when choosing a price schedule (products/templates/productCreateAssignment.tpl.html)-->
 <div class="row">
     <div class="col-sm-6">
         <div ng-if="productCreateAssignment.StandardPriceScheduleID" ng-repeat="scheduleInfo in productCreateAssignment.priceSchedules | filter:{ID: productCreateAssignment.StandardPriceScheduleID} track by $index">

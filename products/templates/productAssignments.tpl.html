@@ -17,10 +17,7 @@
 				<div>Party ID</div>
 			</th>
 			<th>
-				<div>Standard Price Schedule</div>
-			</th>
-			<th>
-				<div>Replenishment Price Schedule</div>
+				<div>Standard Price Schedule ID</div>
 			</th>
 			<th></th>
 		</tr>
@@ -32,9 +29,6 @@
 			</th>
 			<td data-title="Standard Price Schedule">{{assignment.StandardPriceScheduleID}}
 				<span class="text-muted" ng-if="!assignment.StandardPriceScheduleID">None</span>
-			</td>
-			<td data-title="Replenishment Price Schedule">{{assignment.ReplenishmentPriceScheduleID}}
-				<span class="text-muted" ng-if="!assignment.ReplenishmentPriceScheduleID">None</span>
 			</td>
 			<td class="actions-cell">
 				<button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment" tooltip-placement="left" ng-click="productDetail.DeleteAssignment(this)">

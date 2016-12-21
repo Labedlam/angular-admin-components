@@ -92,7 +92,13 @@ function ProductsConfig($stateProvider) {
                 },
                 PriceScheduleList: function(OrderCloud) {
                     return OrderCloud.PriceSchedules.List(null,1, 20);
-                }
+                },
+                Assignments: function($stateParams, OrderCloud, Parameters) {
+                    return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
+                },
+                SelectedProduct: function ($stateParams, OrderCloud) {
+                    return OrderCloud.Products.Get($stateParams.productid);
+                },
             }
         });
 }
@@ -367,11 +373,12 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
     };
 }
 
-function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList) {
+function ProductCreateAssignmentController($q, $stateParams, $state, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct) {
     var vm = this;
     vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
-    console.log('data', vm.priceSchedules);
+    vm.assignments =  Assignments;
+    vm.product = SelectedProduct;
     vm.StandardPriceScheduleID;
     vm.ReplenishmentPriceScheduleID;
     vm.selectedPriceSchedules = [];
@@ -391,7 +398,10 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
     vm.toggleStandardPS = function(id) {
         vm.StandardPriceScheduleID == id ? vm.StandardPriceScheduleID = null : vm.StandardPriceScheduleID = id;
     };
-
+    //Reload the state with the incremented page parameter
+    vm.pageChanged = function() {
+        $state.go('.', {page:vm.list.Meta.Page});
+    };
     vm.saveAssignment = function() {
         vm.ReplenishmentPriceScheduleID ? vm.selectedPriceSchedules.push(vm.ReplenishmentPriceScheduleID) : angular.noop();
         vm.StandardPriceScheduleID ? vm.selectedPriceSchedules.push(vm.StandardPriceScheduleID) : angular.noop();
@@ -408,7 +418,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
                 .then(function () {
                     df.resolve();
                     // vm.submit();
-                    $state.go('products', {}, {reload: true});
+                    $state.go('.', {}, {reload: true});
                     toastr.success('Assignment Updated', 'Success');
 
                 })
@@ -433,7 +443,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, Underscore,
                     df.resolve();
                     // vm.submit();
                     toastr.success('Assignment Updated', 'Success');
-                    $state.go('products', {}, {reload: true});
+                    $state.go('.', {}, {reload: true});
                 })
                 .catch(function (error) {
                     // vm.submit();

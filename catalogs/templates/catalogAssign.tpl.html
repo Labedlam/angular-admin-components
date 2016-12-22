@@ -1,10 +1,24 @@
 <div class="modal-body">
     <div class="page-header"><h3>Assign Catalog to a Buyer</h3></div>
-    <ul class="list-group" ng-repeat="buyers in catalogAssign.buyers.Items track by $index">
-        <li class="list-group-item" ng-click="" ng-model="buyers.selected">
-            {{buyers.Name}}
-        </li>
-    </ul>
-    <button class="btn btn-default" type="button" ng-click="catalogAssignModal.saveAssignments()">Save</button>
-    <button class="btn btn-default" type="button" ng-click="catalogAssignModal.cancel()">Cancel</button>
+    <!--<ul class="list-group" ng-repeat="buyers in catalogAssign.buyers.Items track by $index">-->
+        <!--<li class="list-group-item" ng-click="" ng-model="buyers.selected">-->
+            <!--{{buyers.Name}}-->
+        <!--</li>-->
+    <!--</ul>-->
+    <div class="form-group">
+        <label>Select Buyer(s)</label>
+        <ui-select multiple ng-model="catalogAssign.selectedBuyers"
+                   close-on-select="false">
+            <ui-select-match>
+                {{$item.Name}}
+                <span ng-bind="$select.selected.Name"></span>
+            </ui-select-match>
+            <ui-select-choices
+                    repeat="group in (catalogAssign.buyers.Items | filter: $select.search) track by $index">
+                <span ng-bind="group.Name"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+    <!--<button class="btn btn-default" type="button" ng-click="catalogAssign.saveAssignments()">Save</button>-->
+    <button class="btn btn-default" type="button" ui-sref="catalogs">Cancel</button>
 </div>

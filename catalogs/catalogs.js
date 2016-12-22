@@ -73,8 +73,33 @@ function CatalogsController(BuyersList, CatalogsList){
     console.log('list',vm.list);
 }
 
-function CatalogCreateController(){
+function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
     var vm = this;
+    vm.catalog = {};
+    vm.catalog.Active = true;
+    vm.catalogCreated = false;
+
+    vm.saveCatalog = function(){
+        if(vm.catalogCreated) {
+            OrderCloud.Catalogs.Update(vm.catalog.ID, vm.catalog)
+                .then(function(){
+                    toastr.success('Catalog Saved');
+                })
+                .catch(function(ex){
+                    $exceptionHandler(ex)
+                })
+        } else {
+            OrderCloud.Catalogs.Create(vm.catalog)
+                .then(function(data){
+                    vm.catalog.ID = data.ID;
+                    vm.catalogCreated = true;
+                    toastr.success('Catalog Created')
+                })
+                .catch(function(ex){
+                    $exceptionHandler(ex)
+                });
+        }
+    }
 
 }
 

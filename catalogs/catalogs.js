@@ -2,15 +2,16 @@ angular.module('orderCloud')
     .config(CatalogsConfig)
     .controller('CatalogsCtrl', CatalogsController)
     .controller('CatalogDetailsCtrl', CatalogDetailsController)
-    .controller('CatalogAssignModalCtrl', CatalogAssignModalController)
+    .controller('CatalogCreateCtrl', CatalogCreateController)
+    .controller('CatalogAssignCtrl', CatalogAssignController)
 ;
 
 function CatalogsConfig($stateProvider){
     $stateProvider
         .state('catalogs', {
             parent: 'base',
-            templateUrl: 'catalogs/templates/catalogs.tpl.html',
             url: '/catalogs?search?page?pageSize?searchOn?sortBy?filters',
+            templateUrl: 'catalogs/templates/catalogs.tpl.html',
             controller: 'CatalogsCtrl',
             controllerAs: 'catalogs',
             resolve: {
@@ -24,6 +25,12 @@ function CatalogsConfig($stateProvider){
                     return OrderCloud.Buyers.List(Parameters.search, Parameters.page, Parameters.pageSize, Parameters.searchOn, Parameters.sortBy);
                 }
             }
+        })
+        .state('catalogs.create', {
+            url: '/create?catalogid',
+            templateUrl: 'catalogs/templates/createNewCatalog.tpl.html',
+            controller: 'CatalogCreateCtrl',
+            controllerAs: 'catalogCreate'
         })
         .state('catalogs.details', {
             url: '/:catalogid/details',
@@ -42,30 +49,33 @@ function CatalogsConfig($stateProvider){
                 }
             }
         })
+        .state('catalogs.createAssignment', {
+            url: '/:catalogid/assignments/new',
+            templateUrl: 'catalogs/templates/catalogAssign.tpl.html',
+            controller: 'CatalogAssignCtrl',
+            controllerAs: 'catalogAssign',
+            resolve: {
+                SelectedCatalog: function ($stateParams, OrderCloud) {
+                    return OrderCloud.Catalogs.Get($stateParams.catalogid);
+                },
+                Assignments: function($stateParams, OrderCloud, Parameters) {
+                    return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
+                }
+            }
+        })
 }
 
-function CatalogsController($uibModal, BuyersList, CatalogsList){
+function CatalogsController(BuyersList, CatalogsList){
     var vm = this;
     vm.buyers = BuyersList;
     vm.list = CatalogsList;
 
-    vm.assignCatalogModal = function() {
-        $uibModal.open({
-            animation: true,
-            templateUrl: 'catalogs/templates/catalogAssign.modal.tpl.html',
-            controller: 'CatalogAssignModalCtrl',
-            controllerAs: 'catalogAssignModal',
-            size: 'lg',
-            resolve: {
-                BuyersList : function() {
-                    return vm.buyers;
-                },
-                CatalogsList: function() {
-                    return vm.list;
-                }
-            }
-        });
-    };
+    console.log('list',vm.list);
+}
+
+function CatalogCreateController(){
+    var vm = this;
+
 }
 
 function CatalogDetailsController(SelectedCatalog, Assignments){
@@ -77,7 +87,7 @@ function CatalogDetailsController(SelectedCatalog, Assignments){
     console.log('assign', vm.assignments);
 }
 
-function CatalogAssignModalController(OrderCloud, $uibModalInstance, Assignments, BuyersList){
+function CatalogAssignController(OrderCloud, Assignments, BuyersList){
     var vm = this;
     vm.buyers = BuyersList;
     //list all buyers;
@@ -99,8 +109,4 @@ function CatalogAssignModalController(OrderCloud, $uibModalInstance, Assignments
     function SaveAssignment() {
         return Assignments.SaveAssignment(vm.buyers.Items, vm.list.Items, SaveFunc, DeleteFunc, 'buyerID');
     }
-
-    vm.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    };
 }

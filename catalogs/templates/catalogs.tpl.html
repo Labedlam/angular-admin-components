@@ -1,7 +1,7 @@
-<article id="catalogs">
+<article id="catalogs" ui-view>
     <div class="page-header">
         <div class="btn-toolbar pull-right">
-            <button class="btn btn-success"><i class="fa fa-plus-circle"></i> New Catalog</button>
+            <button class="btn btn-success" ui-sref=".create"><i class="fa fa-plus-circle"></i> New Catalog</button>
         </div>
         <h3>Catalogs</h3>
     </div>
@@ -42,7 +42,7 @@
                     <button class="btn btn-default md" ui-sref=".details({catalogid:catalog.ID})">
                         Details
                     </button>
-                    <button class="btn btn-default md" ng-click="catalogs.assignCatalogModal(catalogID)">
+                    <button class="btn btn-default md" ui-sref=".createAssignment({catalogid:catalog.ID})">
                         Assign
                     </button>
                 </td>

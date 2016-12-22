@@ -1,4 +1,7 @@
 <div class="container-fluid">
+    <button type="button" class="btn btn-default" aria-label="Close"
+            ui-sref="products"><i class="fa fa-angle-left" aria-hidden="true"></i> Products
+    </button>
     <h3 class="page-header">
         {{productDetail.product.Name}}
         <td class="text-center" data-title="Active">
@@ -14,8 +17,8 @@
             <h5><b>Inventory Enabled: </b> {{productDetail.product.InventoryEnabled}}</h5>
             <h5><b>Inventory Visible: </b> {{productDetail.product.InventoryVisible}}</h5>
             <h5><b>Ship Weight: </b> {{productDetail.product.ShipWeight}}</h5>
-            <h5><b>Ship Width: </b> {{productDetail.product.ShipWidth}}</h5>
             <h5><b>Ship Height: </b> {{productDetail.product.ShipHeight}}</h5>
+            <h5><b>Ship Width: </b> {{productDetail.product.ShipWidth}}</h5>
             <h5><b>Ship Length: </b> {{productDetail.product.ShipLength}}</h5>
             <h5 ng-if="productDetail.product.ShipFromAddressID"><b>Ship From Address: </b> {{productDetail.product.ShipFromAddressID}}</h5>
         </div>

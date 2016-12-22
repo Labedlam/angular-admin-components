@@ -53,115 +53,36 @@
                 </select>
             </div>
             <br>
-            <div class="form-group">
-                <button class="btn btn-block btn-default" ng-class="{active: productCreateAssignment.assignBuyer}"
-                        ng-click="productCreateAssignment.assignBuyer = !productCreateAssignment.assignBuyer">
-                    <i class="fa"
-                       ng-class="{'fa-square-o':!productCreateAssignment.assignBuyer, 'fa-check-square-o':productCreateAssignment.assignBuyer}"></i>
-                    Assign Price at the Buyer Level
-                </button>
-
-            </div>
-            <div class="form-group">
-                <label>Select User Group(s)</label>
-                <ui-select multiple ng-model="productCreateAssignment.selectedUserGroups" close-on-select="false"  >
-                    <ui-select-match>
-                        <span ng-bind="$select.selected.Name"></span>
-                    </ui-select-match>
-                    <ui-select-choices repeat="group in (productCreateAssignment.list.Items | filter: $select.search) track by $index">
-                        <span ng-bind="group.Name"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </div>
-
-            <div uib-collapse="productCreateAssignment.assignBuyer">
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <!--<ordercloud-search servicename="UserGroups" controlleras="productCreateAssignment"></ordercloud-search>-->
-                <!--<div class="well well-lg text-center" ng-if="!productCreateAssignment.list.Items.length">-->
-                    <!--<b><i class="fa fa-search"></i> No UserGroups under this buyer</b>-->
-                <!--</div>-->
-                <!--<section class="table-fixed-header" ng-if="productCreateAssignment.list.Items.length">-->
-                    <!--<div class="table-header-bg"></div>-->
-                    <!--<div class="table-container" ordercloud-infinite-scroll servicename="UserGroups"-->
-                         <!--controlleras="productCreateAssignment" style="max-height:160px;">-->
-                        <!--<table class="table table-hover">-->
-                            <!--<colgroup>-->
-                                <!--<col class="action-column"/>-->
-                            <!--</colgroup>-->
-                            <!--<thead>-->
-                            <!--<tr>-->
-                                <!--<th>-->
-                                <!--</th>-->
-                                <!--<th>-->
-                                    <!--<div>ID</div>-->
-                                <!--</th>-->
-                                <!--<th>-->
-                                    <!--<div>Name</div>-->
-                                <!--</th>-->
-                            <!--</tr>-->
-                            <!--</thead>-->
-                            <!--<tbody>-->
-                            <!--<tr ng-repeat="group in productCreateAssignment.list.Items track by $index">-->
-                                <!--<td class="text-center">-->
-                                    <!--<input type="checkbox" ng-model="group.selected">-->
-                                <!--</td>-->
-                                <!--<td>{{group.ID}}</td>-->
-                                <!--<td>{{group.Name}}</td>-->
-                            <!--</tr>-->
-                            <!--</tbody>-->
-                        <!--</table>-->
-                    <!--</div>-->
-                <!--</section>-->
-            </div>
-        </div>
-        <div class="col-sm-6" uib-collapse="productCreateAssignment.assignBuyer"
-             ng-if="productCreateAssignment.list.Items.length  || (!productCreateAssignment.list.Items.length && productCreateAssignment.groupSearchTerm)">
-            <div class="well well-lg text-center"
-                 ng-if="!(productCreateAssignment.list.Items | filter:{selected:true}).length">
-                <b>No User Group(s) Selected</b>
-            </div>
-            <section class="table-fixed-header"
-                     ng-if="(productCreateAssignment.list.Items | filter:{selected:true}).length">
-                <div class="table-header-bg"></div>
-                <div class="table-container" style="max-height:160px;">
-                    <table class="table table-hover">
-                        <colgroup>
-                            <col class="action-column"/>
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>
-                                ID
-                                <div>ID</div>
-                            </th>
-                            <th>
-                                Name
-                                <div>Name</div>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="group in productCreateAssignment.list.Items | filter:{selected:true} track by $index">
-                            <td>{{group.ID}}</td>
-                            <td>{{group.Name}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div uib-collapse="!(productCreateAssignment.selectedBuyer)">
+                <div class="form-group">
+                    <button class="btn btn-block btn-default" ng-class="{active: productCreateAssignment.assignBuyer}"
+                            ng-click="productCreateAssignment.assignBuyer = !productCreateAssignment.assignBuyer">
+                        <i class="fa"
+                           ng-class="{'fa-square-o':!productCreateAssignment.assignBuyer, 'fa-check-square-o':productCreateAssignment.assignBuyer}"></i>
+                        Assign Price at the Buyer Level
+                    </button>
                 </div>
-            </section>
+                <br>
+                <div uib-collapse="productCreateAssignment.assignBuyer">
+                    <div class="well well-lg text-center" ng-if="!productCreateAssignment.list.Items.length">
+                        <b><i class="fa fa-search"></i> No UserGroups under this buyer</b>
+                    </div>
+                    <div class="form-group" uib-collapse="!productCreateAssignment.list.Items.length">
+                        <label>Select User Group(s)</label>
+                        <ui-select multiple ng-model="productCreateAssignment.selectedUserGroups" close-on-select="false" >
+                            <ui-select-match>
+                                {{$item.Name}}
+                                <span ng-bind="$select.selected.Name"></span>
+                            </ui-select-match>
+                            <ui-select-choices repeat="group in (productCreateAssignment.list.Items | filter: $select.search) track by $index">
+                                <span ng-bind="group.Name | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+            </div>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -224,9 +145,9 @@
         ui-sref="products.detail({productid:productCreateAssignment.model.ProductID})">Cancel
 </button>
 <!--<button type="button" class="btn btn-default" ng-click="productCreateAssignment.cancel()">Cancel</button>-->
-<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()">
-        <!--ng-disabled="!(((productCreateAssignment.list.Items | filter:{selected:true}).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">-->
+<button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()"
+        ng-disabled="!(((productCreateAssignment.selectedUserGroups).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">
     Save Assignment
 </button>
-
+<button class="btn btn-default">Done</button>
 </div>

@@ -69,9 +69,9 @@ function ProductsConfig($stateProvider) {
             controller: 'ProductCreateAssignmentCtrl',
             controllerAs: 'productCreateAssignment',
             resolve: {
-                UserGroupList: function(OrderCloud) {
-                    return OrderCloud.UserGroups.List(null, 1, 20);
-                },
+                // UserGroupList: function(OrderCloud) {
+                //     return OrderCloud.UserGroups.List(null, 1, 20);
+                // },
                 PriceScheduleList: function(OrderCloud) {
                     return OrderCloud.PriceSchedules.List(null,1, 20);
                 },
@@ -309,10 +309,10 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud, 
 }
 
 
-function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, UserGroupList, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
+function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
 
     var vm = this;
-    vm.list = UserGroupList;
+    // vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
     vm.assignments =  Assignments;
     vm.product = SelectedProduct;
@@ -327,16 +327,15 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     vm.assignBuyer = false;
     vm.model = {
         ProductID:$stateParams.productid,
-        BuyerID: OrderCloud.BuyerID.Get(),
+        BuyerID: vm.selectedBuyer,
         UserGroupID: null,
         PriceScheduleID: null
     };
 
     vm.getUserList = function(buyer){
-
+        vm.model.BuyerID = buyer.ID;
         OrderCloud.UserGroups.List(null, 1, 20, null, null, null, buyer.ID)
             .then(function(data){
-
                 vm.list = data;
             })
     };
@@ -370,7 +369,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     vm.saveAssignment = function() {
         vm.ReplenishmentPriceScheduleID ? vm.selectedPriceSchedules.push(vm.ReplenishmentPriceScheduleID) : angular.noop();
         vm.StandardPriceScheduleID ? vm.selectedPriceSchedules.push(vm.StandardPriceScheduleID) : angular.noop();
-        if (!(vm.StandardPriceScheduleID || vm.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !Underscore.where(vm.list.Items, {selected: true}).length)) return;
+        if (!(vm.StandardPriceScheduleID || vm.ReplenishmentPriceScheduleID) || (!vm.assignBuyer && !vm.selectedUserGroups.length)) return;
         if (vm.assignBuyer) {
             var assignmentQueue = [];
             var df = $q.defer();
@@ -383,7 +382,8 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
                 .then(function () {
                     df.resolve();
                     // vm.submit();
-                    vm.fromState == "productCreate" ? $state.go('products', {}, {reload: true}) : $state.go('products.detail', {productid: vm.product.ID}, {reload: true})
+                    $state.go('.',{},{reload: true});
+                    // vm.fromState == "productCreate" ? $state.go('products', {}, {reload: true}) : $state.go('products.detail', {productid: vm.product.ID}, {reload: true})
                     toastr.success('Assignment Updated', 'Success');
 
                 })
@@ -395,32 +395,47 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
         } else {
             var assignmentQueue = [];
             var df = $q.defer();
-            angular.forEach(Underscore.where(vm.list.Items, {selected: true}), function (group) {
-                angular.forEach(vm.selectedPriceSchedules, function (priceSchedule) {
+            angular.forEach(vm.selectedUserGroups, function (group) {
+                // angular.forEach(vm.selectedPriceSchedules, function (priceSchedule) {
+                console.log(vm.model);
                     var assignment = angular.copy(vm.model);
                     assignment.UserGroupID = group.ID;
-                    assignment.PriceScheduleID = priceSchedule;
+                    assignment.PriceScheduleID = vm.StandardPriceScheduleID;
                     assignmentQueue.push(OrderCloud.Products.SaveAssignment(assignment));
-                });
+                // });
             })
             $q.all(assignmentQueue)
                 .then(function () {
                     df.resolve();
                     // vm.submit();
                     toastr.success('Assignment Updated', 'Success');
-                    if(vm.fromState == "productCreate"){
-                        $state.go('products', {}, {reload: true})
-                    }else{
-                        $state.go('products.details',{}, {reload: true})
-                    }
+                    $state.go('.',{},{reload: true});
+                    // if(vm.fromState == "productCreate"){
+                    //     $state.go('products', {}, {reload: true})
+                    // }else{
+                    //     $state.go('products.details',{}, {reload: true})
+                    // }
 
                 })
                 .catch(function (error) {
                     // vm.submit();
+                    console.log(error);
                     toastr.error('An error occurred while trying to save your product assignment', 'Error');
                 })
             return df.promise;
         }
     };
+
+    vm.DeleteAssignment = function(scope) {
+        OrderCloud.Products.DeleteAssignment(scope.assignment.ProductID, null, scope.assignment.UserGroupID)
+            .then(function() {
+                $state.reload();
+                toastr.success('Product Assignment Deleted', 'Success');
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+    };
+
 }
 

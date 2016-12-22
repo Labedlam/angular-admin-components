@@ -80,7 +80,7 @@ function ProductsConfig($stateProvider) {
                 },
                 Assignments: function($q, $resource, OrderCloud, Parameters) {
                     var apiUrl = 'https://api.ordercloud.io/v1/products/assignments';
-                    var parameters = { 'productID': Parameters.productid, 'buyerID': null, 'userID': Parameters.userID, 'userGroupID': Parameters.userGroupID, 'level': Parameters.level, 'priceScheduleID': Parameters.priceScheduleID, 'page': Parameters.page , 'pageSize': Parameters.pageSize || 15 }
+                    var parameters = { 'productID': Parameters.productid, 'buyerID': null, 'userID': Parameters.userID, 'userGroupID': Parameters.userGroupID, 'level': Parameters.level, 'priceScheduleID': Parameters.priceScheduleID, 'page': Parameters.page , 'pageSize': Parameters.pageSize || 5 }
                     var d = $q.defer();
                     $resource(apiUrl, parameters, {
                         callApi: {
@@ -326,7 +326,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud, 
 }
 
 
-function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers) {
+function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers, Parameters) {
 
     var vm = this;
     // vm.list = UserGroupList;
@@ -356,6 +356,11 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
         OrderCloud.UserGroups.List(null, 1, 20, null, null, null, buyer.ID)
             .then(function(data){
                 vm.list = data;
+            })
+        OrderCloud.Products.ListAssignments($stateParams.productid, null, null, null, null, null, null, buyer.ID)
+            .then(function(data){
+                console.log("assignments after buyer is selected",data);
+                vm.assignments = data;
             })
     };
 

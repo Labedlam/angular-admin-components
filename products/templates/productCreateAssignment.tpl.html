@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div>
     <div class="well well-lg text-center"
          ng-if="(!((productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length) && !((productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length))">
         <b>The selected buyer does not have any Standard or Replenishment price schedules.</b><br>
@@ -6,40 +6,80 @@
     </div>
 
 
-    <button type="button" class="btn btn-success pull-right" ng-click="productCreateAssignment.createScheduleModal()"><i
-            class="fa fa-plus-circle"></i> Create New
-    </button>
 
-    <h3>Choose a price schedule</h3>
-    <p class="text-muted">Each product assignment can have one Standard and/or one Replenishment price schedule. You
-        must
-        choose at least one.</p>
+    <h3>Choose a price</h3>
+    <p class="text-muted">Choose a price to assign to product.</p>
     <div class="row">
-        <div class="col-sm-6" ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length">
-            <h4>Standard Price Schedules</h4>
-            <ul class="list-group">
-                <li class="list-group-item"
-                    ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'} track by $index"
-                    ng-class="{active: priceSchedule.ID == productCreateAssignment.StandardPriceScheduleID}"
-                    ng-click="productCreateAssignment.toggleStandardPS(priceSchedule.ID)">
-                    {{priceSchedule.ID}}
-                </li>
-            </ul>
+        <div class="col-md-10">
+            <label>Select Standard Price Schedule</label>
+            <ui-select ng-model="productCreateAssignment.selectPriceSchedule"
+                       close-on-select="true">
+                <ui-select-match>
+                    <!--{{$item.MinQuantity}}-->
+                    <span ng-bind="$select.selected.Name"></span>
+                </ui-select-match>
+                <ui-select-choices
+                        repeat="group in (productCreateAssignment.priceSchedules | filter: OrderType:'Standard' | filter: $select.search ) track by $index">
+                    <b><span ng-bind="group.Name"></span></b>
+                    <br>
+                    <small>
+                        <div class="row">
+                            <div class="col-md-6">
+                                ID: {{group.ID}}
+                                <br>
+                                Min: {{group.MinQuantity}}
+                                Max: {{group.MaxQuantity}}
+                                <br>
+                                <span ng-if="group.ApplyTax">Tax Applied<br></span>
+                                <span ng-if="group.ApplyShipping">Shipping Applied</span>
+                            </div>
+                            <div class="col-md-6">
+                                PriceBreaks:
+                                <span ng-repeat="price in group.PriceBreaks"><br>Quantity: {{price.Quantity}}  Price: {{price.Price}} </span>
+                            </div>
+                        </div>
+                        <br>
+                        <!--<span ng-bind-html="''+person.age | highlight: $select.search"></span>-->
+                    </small>
+                </ui-select-choices>
+            </ui-select>
+            <br>
         </div>
-        <div class="col-sm-6"
-             ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length">
-            <h4>Replenishment Price Schedules</h4>
-            <ul class="list-group">
-                <li class="list-group-item"
-                    ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'} track by $index"
-                    ng-class="{active: priceSchedule.ID == productCreateAssignment.ReplenishmentPriceScheduleID}"
-                    ng-click="productCreateAssignment.toggleReplenishmentPS(priceSchedule.ID)">
-                    {{priceSchedule.ID}}
-                </li>
-            </ul>
-        </div>
-        <div ng-include="'products/templates/productPriceSchedules.tpl.html'"></div>
+            <div class="form-group col-md-2">
+                <label></label>
+                <button type="button" class="btn btn-primary form-control" ng-click="productCreateAssignment.createScheduleModal()"><i
+                        class="fa fa-plus-circle"></i> Create New
+                </button>
+            </div>
     </div>
+    <hr>
+
+    <!--<div class="row">-->
+        <!--<div class="col-sm-6" ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length">-->
+            <!--<h4>Standard Price Schedules</h4>-->
+            <!--<ul class="list-group">-->
+                <!--<li class="list-group-item"-->
+                    <!--ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'} track by $index"-->
+                    <!--ng-class="{active: priceSchedule.ID == productCreateAssignment.StandardPriceScheduleID}"-->
+                    <!--ng-click="productCreateAssignment.toggleStandardPS(priceSchedule.ID)">-->
+                    <!--{{priceSchedule.ID}}-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="col-sm-6"-->
+             <!--ng-show="(productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length">-->
+            <!--<h4>Replenishment Price Schedules</h4>-->
+            <!--<ul class="list-group">-->
+                <!--<li class="list-group-item"-->
+                    <!--ng-repeat="priceSchedule in productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'} track by $index"-->
+                    <!--ng-class="{active: priceSchedule.ID == productCreateAssignment.ReplenishmentPriceScheduleID}"-->
+                    <!--ng-click="productCreateAssignment.toggleReplenishmentPS(priceSchedule.ID)">-->
+                    <!--{{priceSchedule.ID}}-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div ng-include="'products/templates/productPriceSchedules.tpl.html'"></div>-->
+    <!--</div>-->
 
     <div ng-if="(productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length || (productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length">
         <h3>Choose the assignee(s)</h3>
@@ -93,7 +133,7 @@
             </div>
         </div>
     </div>
-
+    <hr>
     <div>
         <h3>Existing Assignments</h3>
         <!--ng-include="'products/templates/productAssignments.tpl.html'">-->
@@ -119,6 +159,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                <!--| buyerID: productCreateAssignment.selectedBuyer-->
                 <tr ng-repeat="assignment in productCreateAssignment.assignments.Items">
                     <th scope="row">{{assignment.UserID || assignment.UserGroupID || assignment.BuyerID}}
                         <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>

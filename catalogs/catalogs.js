@@ -86,7 +86,7 @@ function CatalogsController($stateParams, $exceptionHandler, toastr, OrderCloudC
     };
 }
 
-function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
+function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
     var vm = this;
     vm.catalog = {};
     vm.catalog.Active = true;
@@ -96,7 +96,8 @@ function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
         if(vm.catalogCreated) {
             OrderCloud.Catalogs.Update(vm.catalog.ID, vm.catalog)
                 .then(function(){
-                    toastr.success('Catalog Saved');
+                    toastr.success('Catalog Saved', 'Success');
+                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex)
@@ -106,7 +107,8 @@ function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
                 .then(function(data){
                     vm.catalog.ID = data.ID;
                     vm.catalogCreated = true;
-                    toastr.success('Catalog Created')
+                    toastr.success('Catalog Created', 'Success');
+                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex)

@@ -45,7 +45,7 @@ function ProductsConfig($stateProvider) {
                     var dfd = $q.defer();
                     angular.forEach(Assignments.Items, function(v, k){
                         priceSchedules.push(OrderCloud.PriceSchedules.Get(v.StandardPriceScheduleID))
-                        console.log('v', v);
+
                     });
                     $q.all(priceSchedules)
                         .then(function(data){
@@ -64,7 +64,7 @@ function ProductsConfig($stateProvider) {
 
         })
         .state('products.createAssignment', {
-            url: '/:productid/assignments/new',
+            url: '/:productid/assignments/new?fromstate',
             templateUrl: 'products/templates/productCreateAssignment.tpl.html',
             controller: 'ProductCreateAssignmentCtrl',
             controllerAs: 'productCreateAssignment',
@@ -201,9 +201,6 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
                         $exceptionHandler(ex)
                     });
         });
-
-        console.log('ocConfirm', OrderCloudConfirm);
-
     };
 
     vm.DeleteAssignment = function(scope) {
@@ -255,12 +252,13 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
     };
 }
 
-function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud ) {
+function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud, $stateParams ) {
     var vm = this;
     vm.product = {};
     vm.product.Active = true;
     vm.product.QuantityMultiplier = 1;
     vm.productCreated = false;
+
 
     vm.saveProduct = function(){
         if(vm.productCreated){
@@ -290,7 +288,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
             OrderCloud.Products.Update(vm.product.ID ,vm.product)
                 .then(function(data) {
                     toastr.success('Product Saved', 'Click next to assign prices');
-                    $state.go('products.createAssignment', {productid: vm.product.ID}, {reload: true});
+                    $state.go('products.createAssignment', {productid: vm.product.ID, fromstate: "productCreate"}, {reload: true});
                 })
                 .catch(function(ex) {
                     $exceptionHandler(ex)
@@ -301,7 +299,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud )
                     vm.product.ID = data.ID;
                     vm.productCreated = true;
                     toastr.success('Product Saved', 'Click next to assign prices');
-                    $state.go('products.createAssignment', {productid: vm.product.ID}, {reload: true});
+                    $state.go('products.createAssignment', {productid: vm.product.ID, fromstate: "productCreate"}, {reload: true});
                 })
                 .catch(function(ex) {
                     $exceptionHandler(ex)
@@ -319,6 +317,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     vm.assignments =  Assignments;
     vm.product = SelectedProduct;
     vm.buyers = Buyers;
+    vm.fromState = $stateParams.fromstate;
 
     vm.StandardPriceScheduleID;
     vm.ReplenishmentPriceScheduleID;
@@ -334,10 +333,10 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     };
 
     vm.getUserList = function(buyer){
-        console.log("hello");
+
         OrderCloud.UserGroups.List(null, 1, 20, null, null, null, buyer.ID)
             .then(function(data){
-                console.log(data);
+
                 vm.list = data;
             })
     };
@@ -384,7 +383,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
                 .then(function () {
                     df.resolve();
                     // vm.submit();
-                    $state.go('.', {}, {reload: true});
+                    vm.fromState == "productCreate" ? $state.go('products', {}, {reload: true}) : $state.go('products.detail', {productid: vm.product.ID}, {reload: true})
                     toastr.success('Assignment Updated', 'Success');
 
                 })
@@ -409,7 +408,12 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
                     df.resolve();
                     // vm.submit();
                     toastr.success('Assignment Updated', 'Success');
-                    $state.go('.', {}, {reload: true});
+                    if(vm.fromState == "productCreate"){
+                        $state.go('products', {}, {reload: true})
+                    }else{
+                        $state.go('products.details',{}, {reload: true})
+                    }
+
                 })
                 .catch(function (error) {
                     // vm.submit();

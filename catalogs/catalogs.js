@@ -137,12 +137,14 @@ function CatalogAssignController(OrderCloud, SelectedCatalog, Assignments, toast
         });
     }
 
-    function DeleteFunc(){
+    function DeleteFunc(ItemID){
         return OrderCloud.Catalogs.DeleteAssignment(vm.selectedCatalog.ID, ItemID);
     }
 
     function SaveAssignment() {
-        toastr.success('Assignment Updated', 'Success');
-        return Assignments.SaveAssignment(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID');
+        return Assignments.SaveAssignments(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID')
+            .then(function(){
+                toastr.success('Assignment Updated', 'Success')
+            });
     }
 }

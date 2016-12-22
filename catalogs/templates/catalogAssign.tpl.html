@@ -1,10 +1,5 @@
 <div class="modal-body">
     <div class="page-header"><h3>Assign Catalog {{catalogAssignd.selectedCatalog.Name}} to a Buyer Organization</h3></div>
-    <!--<ul class="list-group" ng-repeat="buyers in catalogAssign.buyers.Items track by $index">-->
-        <!--<li class="list-group-item" ng-click="" ng-model="buyers.selected">-->
-            <!--{{buyers.Name}}-->
-        <!--</li>-->
-    <!--</ul>-->
     <div class="form-group">
         <label>Select Buyer(s)</label>
         <ui-select multiple ng-model="catalogAssign.selectedBuyers"
@@ -22,12 +17,12 @@
     <div>
         <h3>Existing Assignments</h3>
         <!--ng-include="'products/templates/productAssignments.tpl.html'">-->
-        <div class="well well-lg text-center" ng-if="!catalogAssign.assignments.Items.length">
+        <div class="well well-lg text-center" ng-if="!catalogAssign.assignedBuyers.Items.length">
             <b>This product does not have any assignments for the active Buyer company.</b>
         </div>
 
         <!--====== LIST ======-->
-        <div ng-if="catalogAssign.assignments.Items.length">
+        <div ng-if="catalogAssign.assignedBuyers.Items.length">
             <table class="table table-hover table-condensed oc-table-responsive" controlleras="catalogAssignment">
                 <thead>
                 <tr>
@@ -38,7 +33,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="assignment in catalogAssign.assignments.Items">
+                <tr ng-repeat="assignment in catalogAssign.assignedBuyers.Items">
                     <th scope="row">{{assignment.BuyerID}}
                         <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>
                     </th>
@@ -52,7 +47,7 @@
                 </tbody>
             </table>
             <div class="text-center"
-                 ng-if="application.$ocMedia('min-width:768px') && productCreateAssignment.assignments.Meta.TotalPages > 1">
+                 ng-if="application.$ocMedia('min-width:768px') && productCreateAssignment.assignedBuyers.Meta.TotalPages > 1">
                 <uib-pagination boundary-links="productCreateAssignment.assignments.Meta.TotalPages > 5"
                                 max-size="10" total-items="productCreateAssignment.assignments.Meta.TotalCount"
                                 items-per-page="productCreateAssignment.assignments.Meta.PageSize"

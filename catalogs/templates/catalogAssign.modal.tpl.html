@@ -1,0 +1,10 @@
+<div class="modal-body">
+    <div class="page-header"><h3>Assign Catalog to a Buyer</h3></div>
+    <ul class="list-group" ng-repeat="buyers in catalogAssign.buyers.Items track by $index">
+        <li class="list-group-item" ng-click="" ng-model="buyers.selected">
+            {{buyers.Name}}
+        </li>
+    </ul>
+    <button class="btn btn-default" type="button" ng-click="catalogAssign.saveAssignments()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="catalogAssign.cancel()">Cancel</button>
+</div>

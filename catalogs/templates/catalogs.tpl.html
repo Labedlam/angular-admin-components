@@ -1,0 +1,37 @@
+<article id="catalogs">
+    <div class="page-header">
+        <h2>Catalogs</h2>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" ng-repeat="catalog in catalogs.catalogs.Items">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{catalog.Name || catalog.ID}}
+                    <div class="pull-right">
+                        <a href="" ng-click="">Delete</a> |
+                        <a href="" ng-click="">Edit</a> |
+                        <a href="" ng-click="catalogs.assignCatalogModal(catalogID)">Assign</a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-6" ng-if="catalog.Description">
+                            <b>Description</b>
+                            <p>{{catalog.Description}}</p>
+                        </div>
+                        <div class="col-xs-6">
+                            <b>ID</b>
+                            <p>{{catalog.ID}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <b>Category Count</b>
+                            <p>{{catalog.CategoryCount}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

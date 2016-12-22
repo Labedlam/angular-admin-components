@@ -153,6 +153,7 @@
 </div>
 
 <div style="padding-bottom: 20px">
+    <input  type="checkbox" class="btn btn-default" ng-model="productCreateAssignment.makeAnotherAssignment">Create another
     <button type="button" class="btn btn-default" aria-label="Close"
             ui-sref="products.detail({productid:productCreateAssignment.model.ProductID})">Cancel
     </button>
@@ -161,7 +162,7 @@
             ng-disabled="!(((productCreateAssignment.selectedUserGroups).length || productCreateAssignment.assignBuyer) && (productCreateAssignment.StandardPriceScheduleID || productCreateAssignment.ReplenishmentPriceScheduleID))">
         Save Assignment
     </button>
-    <button class="btn btn-default">Done</button>
+
 </div>
 
 

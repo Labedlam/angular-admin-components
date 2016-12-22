@@ -381,14 +381,11 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
             $q.all(assignmentQueue)
                 .then(function () {
                     df.resolve();
-                    // vm.submit();
-                    $state.go('.',{},{reload: true});
-                    // vm.fromState == "productCreate" ? $state.go('products', {}, {reload: true}) : $state.go('products.detail', {productid: vm.product.ID}, {reload: true})
+                    vm.makeAnotherAssignment ? $state.go('.',{},{reload: true}) :( (vm.fromState == "productCreate") ?  $state.go('products', {}, {reload: true}) : $state.go('products.detail',{productid: vm.product.ID}, {reload: true}) );
                     toastr.success('Assignment Updated', 'Success');
 
                 })
                 .catch(function (error) {
-                    // vm.submit();
                     toastr.error('An error occurred while trying to save your product assignment', 'Error');
                 })
             return df.promise;
@@ -407,14 +404,8 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
             $q.all(assignmentQueue)
                 .then(function () {
                     df.resolve();
-                    // vm.submit();
                     toastr.success('Assignment Updated', 'Success');
-                    $state.go('.',{},{reload: true});
-                    // if(vm.fromState == "productCreate"){
-                    //     $state.go('products', {}, {reload: true})
-                    // }else{
-                    //     $state.go('products.details',{}, {reload: true})
-                    // }
+                    vm.makeAnotherAssignment ? $state.go('.',{},{reload: true}) :( (vm.fromState == "productCreate") ?  $state.go('products', {}, {reload: true}) : $state.go('products.detail',{productid: vm.product.ID}, {reload: true}) );
 
                 })
                 .catch(function (error) {
@@ -436,6 +427,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
                 $exceptionHandler(ex)
             });
     };
+
 
 }
 

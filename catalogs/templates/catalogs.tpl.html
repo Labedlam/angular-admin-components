@@ -1,37 +1,53 @@
 <article id="catalogs">
     <div class="page-header">
-        <h2>Catalogs</h2>
-    </div>
-    <div class="row">
-        <div class="col-sm-6" ng-repeat="catalog in catalogs.catalogs.Items">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    {{catalog.Name || catalog.ID}}
-                    <div class="pull-right">
-                        <a href="" ng-click="">Delete</a> |
-                        <a href="" ng-click="">Edit</a> |
-                        <a href="" ng-click="catalogs.assignCatalogModal(catalogID)">Assign</a>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-6" ng-if="catalog.Description">
-                            <b>Description</b>
-                            <p>{{catalog.Description}}</p>
-                        </div>
-                        <div class="col-xs-6">
-                            <b>ID</b>
-                            <p>{{catalog.ID}}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <b>Category Count</b>
-                            <p>{{catalog.CategoryCount}}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="btn-toolbar pull-right">
+            <button class="btn btn-success"><i class="fa fa-plus-circle"></i> New Catalog</button>
         </div>
+        <h3>Catalogs</h3>
+    </div>
+    <div class="well well-lg text-center" ng-if="!catalogs.list.Items.length">
+        <b>This product does not have any assignments for the active Buyer company.</b>
+    </div>
+    <div ng-if="catalogs.list.Items.length">
+        <table class="table table-hover oc-table-responsive" servicename="Catalogs" controlleras="catalogs">
+            <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Category Count
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="catalog in catalogs.list.Items">
+            <tr>
+                <td>
+                    {{catalog.Name}}
+                </td>
+                <td>
+                    {{catalog.ID}}
+                </td>
+                <td>
+                    {{catalog.CategoryCount}}
+                </td>
+                <td class="pull-right">
+                    <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment" tooltip-placement="left" ng-click="">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <button class="btn btn-default md" ui-sref=".details({catalogid:catalog.ID})">
+                        Details
+                    </button>
+                    <button class="btn btn-default md" ng-click="catalogs.assignCatalogModal(catalogID)">
+                        Assign
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </article>

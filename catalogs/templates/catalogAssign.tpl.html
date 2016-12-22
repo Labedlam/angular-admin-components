@@ -1,5 +1,5 @@
 <div class="modal-body">
-    <div class="page-header"><h3>Assign Catalog to a Buyer</h3></div>
+    <div class="page-header"><h3>Assign Catalog {{catalogAssignd.selectedCatalog.Name}} to a Buyer Organization</h3></div>
     <!--<ul class="list-group" ng-repeat="buyers in catalogAssign.buyers.Items track by $index">-->
         <!--<li class="list-group-item" ng-click="" ng-model="buyers.selected">-->
             <!--{{buyers.Name}}-->
@@ -19,6 +19,48 @@
             </ui-select-choices>
         </ui-select>
     </div>
-    <!--<button class="btn btn-default" type="button" ng-click="catalogAssign.saveAssignments()">Save</button>-->
+    <div>
+        <h3>Existing Assignments</h3>
+        <!--ng-include="'products/templates/productAssignments.tpl.html'">-->
+        <div class="well well-lg text-center" ng-if="!catalogAssign.assignments.Items.length">
+            <b>This product does not have any assignments for the active Buyer company.</b>
+        </div>
+
+        <!--====== LIST ======-->
+        <div ng-if="catalogAssign.assignments.Items.length">
+            <table class="table table-hover table-condensed oc-table-responsive" controlleras="catalogAssignment">
+                <thead>
+                <tr>
+                    <th>
+                        <div>Party ID</div>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="assignment in catalogAssign.assignments.Items">
+                    <th scope="row">{{assignment.BuyerID}}
+                        <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>
+                    </th>
+                    <td class="actions-cell">
+                        <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment"
+                                tooltip-placement="left" ng-click="">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-center"
+                 ng-if="application.$ocMedia('min-width:768px') && productCreateAssignment.assignments.Meta.TotalPages > 1">
+                <uib-pagination boundary-links="productCreateAssignment.assignments.Meta.TotalPages > 5"
+                                max-size="10" total-items="productCreateAssignment.assignments.Meta.TotalCount"
+                                items-per-page="productCreateAssignment.assignments.Meta.PageSize"
+                                ng-model="productCreateAssignment.assignments.Meta.Page"
+                                ng-change="productCreateAssignment.pageChanged()"></uib-pagination>
+            </div>
+        </div>
+    </div>
     <button class="btn btn-default" type="button" ui-sref="catalogs">Cancel</button>
+    <button class="btn btn-default" type="button" ng-click="catalogAssign.saveAssignments()">Save</button>
 </div>

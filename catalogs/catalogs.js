@@ -44,7 +44,7 @@ function CatalogsConfig($stateProvider){
                 SelectedCatalog: function ($stateParams, OrderCloud) {
                     return OrderCloud.Catalogs.Get($stateParams.catalogid);
                 },
-                Assignments: function($stateParams, OrderCloud, Parameters) {
+                AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
                     return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
                 }
             }
@@ -58,19 +58,32 @@ function CatalogsConfig($stateProvider){
                 SelectedCatalog: function ($stateParams, OrderCloud) {
                     return OrderCloud.Catalogs.Get($stateParams.catalogid);
                 },
-                Assignments: function($stateParams, OrderCloud, Parameters) {
+                AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
                     return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
                 }
             }
         })
 }
 
-function CatalogsController(BuyersList, CatalogsList){
+function CatalogsController($stateParams, $exceptionHandler, toastr, OrderCloudConfirm, BuyersList, CatalogsList){
     var vm = this;
     vm.buyers = BuyersList;
     vm.list = CatalogsList;
+    vm.catalogID = $stateParams.catalogid;
 
-    console.log('list',vm.list);
+    vm.deleteCatalog = function(){
+        OrderCloudConfirm.Confirm('Are you sure you want to delete this catalog?')
+            .then(function(){
+                OrderCloud.Catalogs.Delete(vm.catalogID)
+                    .then(function() {
+                        $state.reload();
+                        toastr.success('Catalog Deleted', 'Success')
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
+            });
+    };
 }
 
 function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
@@ -103,35 +116,33 @@ function CatalogCreateController(OrderCloud, $exceptionHandler, toastr){
 
 }
 
-function CatalogDetailsController(SelectedCatalog, Assignments){
+function CatalogDetailsController(SelectedCatalog, AssignedBuyers){
     var vm = this;
     vm.selectedCatalog = SelectedCatalog;
-    vm.assignments = Assignments;
-
-    console.log('catalog', vm.selectedCatalog);
-    console.log('assign', vm.assignments);
+    vm.assignments = AssignedBuyers;
 }
 
-function CatalogAssignController(OrderCloud, Assignments, BuyersList){
+function CatalogAssignController(OrderCloud, SelectedCatalog, Assignments, toastr, AssignedBuyers, BuyersList){
     var vm = this;
+    vm.selectedCatalog = SelectedCatalog;
     vm.buyers = BuyersList;
-    //list all buyers;
-    //vm.assignments = AssignedBuyers
+    vm.assignedBuyers = AssignedBuyers;
     //vm.catalogs = CatalogsList;
     vm.saveAssignments = SaveAssignment;
 
-    function SaveFunc(buyerID) {
+    function SaveFunc(ItemID) {
         return OrderCloud.Catalogs.SaveAssignment({
-            BuyerID: buyerID,
-            CatalogID: vm.list.Items.ID
+            BuyerID: ItemID,
+            CatalogID: vm.selectedCatalog.ID
         });
     }
 
     function DeleteFunc(){
-        return OrderCloud.Catalogs.DeleteAssignment(vm.buyers.Items.ID, vm.list.Items.ID);
+        return OrderCloud.Catalogs.DeleteAssignment(vm.selectedCatalog.ID, ItemID);
     }
 
     function SaveAssignment() {
-        return Assignments.SaveAssignment(vm.buyers.Items, vm.list.Items, SaveFunc, DeleteFunc, 'buyerID');
+        toastr.success('Assignment Updated', 'Success');
+        return Assignments.SaveAssignment(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID');
     }
 }

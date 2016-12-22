@@ -84,7 +84,7 @@
                                 </ui-select-match>
                                 <ui-select-choices
                                         repeat="group in (productCreateAssignment.list.Items | filter: $select.search) track by $index">
-                                    <span ng-bind="group.Name | highlight: $select.search"></span>
+                                    <span ng-bind="group.Name"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>

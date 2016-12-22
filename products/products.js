@@ -69,21 +69,38 @@ function ProductsConfig($stateProvider) {
             controller: 'ProductCreateAssignmentCtrl',
             controllerAs: 'productCreateAssignment',
             resolve: {
-                // UserGroupList: function(OrderCloud) {
-                //     return OrderCloud.UserGroups.List(null, 1, 20);
-                // },
+                Parameters: function($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
                 PriceScheduleList: function(OrderCloud) {
                     return OrderCloud.PriceSchedules.List(null,1, 20);
                 },
-                Assignments: function($stateParams, OrderCloud, Parameters) {
-                    return OrderCloud.Products.ListAssignments($stateParams.productid, Parameters.productID, Parameters.userID, Parameters.userGroupID, Parameters.level, Parameters.priceScheduleID, Parameters.page, Parameters.pageSize);
+                Buyers: function(OrderCloud){
+                    return OrderCloud.Buyers.List();
+                },
+                Assignments: function($q, $resource, OrderCloud, Parameters) {
+                    var apiUrl = 'https://api.ordercloud.io/v1/products/assignments';
+                    var parameters = { 'productID': Parameters.productid, 'buyerID': null, 'userID': Parameters.userID, 'userGroupID': Parameters.userGroupID, 'level': Parameters.level, 'priceScheduleID': Parameters.priceScheduleID, 'page': Parameters.page , 'pageSize': Parameters.pageSize || 15 }
+                    var d = $q.defer();
+                    $resource(apiUrl, parameters, {
+                        callApi: {
+                            method: 'GET',
+                            headers: {'Authorization': 'Bearer ' + OrderCloud.Auth.ReadToken()}
+                        }
+                    }).callApi(null).$promise
+                        .then(function(data) {
+                            d.resolve(data);
+                        })
+                        .catch(function(ex) {
+                            d.reject(ex);
+                        });
+
+                    return d.promise;
                 },
                 SelectedProduct: function ($stateParams, OrderCloud) {
                     return OrderCloud.Products.Get($stateParams.productid);
-                },
-                Buyers: function(OrderCloud){
-                    return OrderCloud.Buyers.List();
                 }
+
             }
         });
 }
@@ -315,6 +332,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     // vm.list = UserGroupList;
     vm.priceSchedules = PriceScheduleList.Items;
     vm.assignments =  Assignments;
+    console.log(Assignments);
     vm.product = SelectedProduct;
     vm.buyers = Buyers;
     vm.fromState = $stateParams.fromstate;
@@ -333,6 +351,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     };
 
     vm.getUserList = function(buyer){
+        vm.selectedUserGroups = null;
         vm.model.BuyerID = buyer.ID;
         OrderCloud.UserGroups.List(null, 1, 20, null, null, null, buyer.ID)
             .then(function(data){
@@ -350,7 +369,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
 
     //Reload the state with the incremented page parameter
     vm.pageChanged = function() {
-        $state.go('.', {page:vm.list.Meta.Page});
+        $state.go('.', {page:vm.assignments.Meta.Page});
     };
 
 

@@ -180,7 +180,7 @@ function ProductsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
     };
 }
 
-function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $state, toastr, OrderCloud, OrderCloudConfirm, Assignments, SelectedProduct, PriceSchedule){
+function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $state, toastr, OrderCloud, Assignments, SelectedProduct, PriceSchedule){
     var vm = this;
     vm.schedule = PriceSchedule;
 
@@ -206,20 +206,6 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
         });
     };
 
-    vm.deleteProduct = function(){
-        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
-            .then(function(){
-                OrderCloud.Products.Delete(vm.productID)
-                    .then(function() {
-                        $state.go('products', {}, {reload: true});
-                        toastr.success('Product Deleted', 'Success')
-                    })
-                    .catch(function(ex) {
-                        $exceptionHandler(ex)
-                    });
-        });
-    };
-
     vm.DeleteAssignment = function(scope) {
         OrderCloud.Products.DeleteAssignment(scope.assignment.ProductID, null, scope.assignment.UserGroupID)
             .then(function() {
@@ -242,13 +228,14 @@ function ProductDetailController($stateParams, $uibModal, $exceptionHandler, $st
     //}
 }
 
-function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, toastr, OrderCloud, SelectedProduct) {
+function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, $stateParams, toastr, OrderCloud, OrderCloudConfirm, SelectedProduct) {
     var vm = this,
         productid = angular.copy(SelectedProduct.ID);
     vm.productName = angular.copy(SelectedProduct.Name);
+    vm.productID = $stateParams.productid;
     vm.product = SelectedProduct;
 
-    vm.Update = function() {
+    vm.updateProduct = function() {
         OrderCloud.Products.Update(productid, vm.product)
             .then(function() {
                 $state.go('products.detail', {}, {reload: true});
@@ -257,6 +244,21 @@ function ProductEditModalController($exceptionHandler, $uibModalInstance, $state
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
+            });
+    };
+
+    vm.deleteProduct = function(){
+        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
+            .then(function(){
+                OrderCloud.Products.Delete(vm.productID)
+                    .then(function() {
+                        toastr.success('Product Deleted', 'Success');
+                        vm.submit();
+                        $state.go('products', {}, {reload: true});
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
             });
     };
 

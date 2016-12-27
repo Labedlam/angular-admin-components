@@ -1,9 +1,7 @@
 angular.module('orderCloud')
     .config(CatalogsConfig)
     .controller('CatalogsCtrl', CatalogsController)
-    .controller('CatalogDetailsCtrl', CatalogDetailsController)
     .controller('CatalogCreateCtrl', CatalogCreateController)
-    .controller('CatalogAssignCtrl', CatalogAssignController)
 ;
 
 function CatalogsConfig($stateProvider){
@@ -31,38 +29,21 @@ function CatalogsConfig($stateProvider){
             templateUrl: 'catalogs/templates/createNewCatalog.tpl.html',
             controller: 'CatalogCreateCtrl',
             controllerAs: 'catalogCreate'
-        })
-        .state('catalogs.details', {
-            url: '/:catalogid/details',
-            templateUrl: 'catalogs/templates/catalogDetails.tpl.html',
-            controller: 'CatalogDetailsCtrl',
-            controllerAs: 'catalogDetails',
-            resolve: {
-                Parameters: function ($stateParams, OrderCloudParameters) {
-                    return OrderCloudParameters.Get($stateParams);
-                },
-                SelectedCatalog: function ($stateParams, OrderCloud) {
-                    return OrderCloud.Catalogs.Get($stateParams.catalogid);
-                },
-                AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
-                    return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
-                }
-            }
-        })
-        .state('catalogs.createAssignment', {
-            url: '/:catalogid/assignments/new',
-            templateUrl: 'catalogs/templates/catalogAssign.tpl.html',
-            controller: 'CatalogAssignCtrl',
-            controllerAs: 'catalogAssign',
-            resolve: {
-                SelectedCatalog: function ($stateParams, OrderCloud) {
-                    return OrderCloud.Catalogs.Get($stateParams.catalogid);
-                },
-                AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
-                    return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
-                }
-            }
-        })
+        });
+        //.state('catalogs.createAssignment', {
+        //    url: '/:catalogid/assignments/new',
+        //    templateUrl: 'catalogs/templates/catalogAssign.tpl.html',
+        //    controller: 'CatalogAssignCtrl',
+        //    controllerAs: 'catalogAssign',
+        //    resolve: {
+        //        SelectedCatalog: function ($stateParams, OrderCloud) {
+        //            return OrderCloud.Catalogs.Get($stateParams.catalogid);
+        //        },
+        //        AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
+        //            return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
+        //        }
+        //    }
+        //})
 }
 
 function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, CatalogsList){
@@ -184,50 +165,44 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
 }
 
-function CatalogDetailsController(SelectedCatalog, AssignedBuyers){
-    var vm = this;
-    vm.selectedCatalog = SelectedCatalog;
-    vm.assignments = AssignedBuyers;
-}
-
-function CatalogAssignController(OrderCloud, SelectedCatalog, Assignments, Paging, toastr, AssignedBuyers, BuyersList){
-    var vm = this;
-    vm.selectedCatalog = SelectedCatalog;
-    vm.buyers = BuyersList;
-    vm.assignedBuyers = AssignedBuyers;
-    vm.saveAssignments = SaveAssignment;
-    vm.pagingFunction = PagingFunction;
-
-
-    vm.deleteAssignments = function(scope) {
-        console.log('scope', scope);
-        OrderCloud.Catalogs.DeleteAssignment(scope.assignment.CatalogID, null, scope.assignment.BuyerID)
-            .then(function(){
-                $state.reload();
-                toastr.success('Catalog Assignment Deleted', 'Success');
-            })
-    };
-
-    function SaveFunc(ItemID) {
-        return OrderCloud.Catalogs.SaveAssignment({
-            BuyerID: ItemID,
-            CatalogID: vm.selectedCatalog.ID
-        });
-    }
-
-    function SaveAssignment() {
-        return Assignments.SaveAssignments(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID')
-            .then(function(){
-                $state.reload();
-                toastr.success('Catalog Assignment Updated', 'Success')
-            });
-    }
-
-    function AssignmentFunc() {
-        return OrderCloud.Catalogs.ListAssignments(vm.selectedCatalog.ID, null, vm.assignedBuyers.Meta.PageSize, 'buyerID');
-    }
-
-    function PagingFunction() {
-        return Paging.Paging(vm.buyers, 'Buyers', vm.assignedBuyers, AssignmentFunc);
-    }
-}
+//function CatalogAssignController(OrderCloud, SelectedCatalog, Assignments, Paging, toastr, AssignedBuyers, BuyersList){
+//    var vm = this;
+//    vm.selectedCatalog = SelectedCatalog;
+//    vm.buyers = BuyersList;
+//    vm.assignedBuyers = AssignedBuyers;
+//    vm.saveAssignments = SaveAssignment;
+//    vm.pagingFunction = PagingFunction;
+//
+//
+//    vm.deleteAssignments = function(scope) {
+//        console.log('scope', scope);
+//        OrderCloud.Catalogs.DeleteAssignment(scope.assignment.CatalogID, null, scope.assignment.BuyerID)
+//            .then(function(){
+//                $state.reload();
+//                toastr.success('Catalog Assignment Deleted', 'Success');
+//            })
+//    };
+//
+//    function SaveFunc(ItemID) {
+//        return OrderCloud.Catalogs.SaveAssignment({
+//            BuyerID: ItemID,
+//            CatalogID: vm.selectedCatalog.ID
+//        });
+//    }
+//
+//    function SaveAssignment() {
+//        return Assignments.SaveAssignments(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID')
+//            .then(function(){
+//                $state.reload();
+//                toastr.success('Catalog Assignment Updated', 'Success')
+//            });
+//    }
+//
+//    function AssignmentFunc() {
+//        return OrderCloud.Catalogs.ListAssignments(vm.selectedCatalog.ID, null, vm.assignedBuyers.Meta.PageSize, 'buyerID');
+//    }
+//
+//    function PagingFunction() {
+//        return Paging.Paging(vm.buyers, 'Buyers', vm.assignedBuyers, AssignmentFunc);
+//    }
+//}

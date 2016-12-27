@@ -30,26 +30,10 @@ function CatalogsConfig($stateProvider){
             controller: 'CatalogCreateCtrl',
             controllerAs: 'catalogCreate'
         });
-        //.state('catalogs.createAssignment', {
-        //    url: '/:catalogid/assignments/new',
-        //    templateUrl: 'catalogs/templates/catalogAssign.tpl.html',
-        //    controller: 'CatalogAssignCtrl',
-        //    controllerAs: 'catalogAssign',
-        //    resolve: {
-        //        SelectedCatalog: function ($stateParams, OrderCloud) {
-        //            return OrderCloud.Catalogs.Get($stateParams.catalogid);
-        //        },
-        //        AssignedBuyers: function($stateParams, OrderCloud, Parameters) {
-        //            return OrderCloud.Catalogs.ListAssignments(Parameters.page, Parameters.pageSize, Parameters.buyerID, Parameters.catalogID);
-        //        }
-        //    }
-        //})
 }
 
 function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, CatalogsList){
     var vm = this;
-    //vm.buyers = BuyersList;
-    //vm.catalogID = $stateParams.catalogid;
     vm.list = CatalogsList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
@@ -136,73 +120,17 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
 function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
     var vm = this;
     vm.catalog = {};
-    vm.catalog.Active = true;
-    vm.catalogCreated = false;
 
     vm.saveCatalog = function(){
-        if(vm.catalogCreated) {
-            OrderCloud.Catalogs.Update(vm.catalog.ID, vm.catalog)
-                .then(function(){
-                    toastr.success('Catalog Saved', 'Success');
-                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
-                })
-                .catch(function(ex){
-                    $exceptionHandler(ex)
-                })
-        } else {
-            OrderCloud.Catalogs.Create(vm.catalog)
-                .then(function(data){
-                    vm.catalog.ID = data.ID;
-                    vm.catalogCreated = true;
-                    toastr.success('Catalog Created', 'Success');
-                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
-                })
-                .catch(function(ex){
-                    $exceptionHandler(ex)
-                });
-        }
+        OrderCloud.Catalogs.Create(vm.catalog)
+            .then(function(data){
+                vm.catalog.ID = data.ID;
+                toastr.success('Catalog Created', 'Success');
+                $state.go('catalogs', {}, {reload: true});
+            })
+            .catch(function(ex){
+                $exceptionHandler(ex)
+            });
     }
 
 }
-
-//function CatalogAssignController(OrderCloud, SelectedCatalog, Assignments, Paging, toastr, AssignedBuyers, BuyersList){
-//    var vm = this;
-//    vm.selectedCatalog = SelectedCatalog;
-//    vm.buyers = BuyersList;
-//    vm.assignedBuyers = AssignedBuyers;
-//    vm.saveAssignments = SaveAssignment;
-//    vm.pagingFunction = PagingFunction;
-//
-//
-//    vm.deleteAssignments = function(scope) {
-//        console.log('scope', scope);
-//        OrderCloud.Catalogs.DeleteAssignment(scope.assignment.CatalogID, null, scope.assignment.BuyerID)
-//            .then(function(){
-//                $state.reload();
-//                toastr.success('Catalog Assignment Deleted', 'Success');
-//            })
-//    };
-//
-//    function SaveFunc(ItemID) {
-//        return OrderCloud.Catalogs.SaveAssignment({
-//            BuyerID: ItemID,
-//            CatalogID: vm.selectedCatalog.ID
-//        });
-//    }
-//
-//    function SaveAssignment() {
-//        return Assignments.SaveAssignments(vm.buyers.Items, vm.assignedBuyers.Items, SaveFunc, DeleteFunc, 'buyerID')
-//            .then(function(){
-//                $state.reload();
-//                toastr.success('Catalog Assignment Updated', 'Success')
-//            });
-//    }
-//
-//    function AssignmentFunc() {
-//        return OrderCloud.Catalogs.ListAssignments(vm.selectedCatalog.ID, null, vm.assignedBuyers.Meta.PageSize, 'buyerID');
-//    }
-//
-//    function PagingFunction() {
-//        return Paging.Paging(vm.buyers, 'Buyers', vm.assignedBuyers, AssignmentFunc);
-//    }
-//}

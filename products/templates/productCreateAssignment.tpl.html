@@ -131,7 +131,7 @@
     </div>
     <div class="pull-right">
         <button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()"
-                ng-disabled="!(((productCreateAssignment.selectedUserGroups).length || productCreateAssignment.selectedBuyer))">
+                ng-disabled="!(productCreateAssignment.selectedBuyer && productCreateAssignment.selectedPriceSchedule )">
             Save Assignment
         </button>
 

@@ -18,9 +18,6 @@ function CatalogsConfig($stateProvider){
                 },
                 CatalogsList: function (OrderCloud, Parameters) {
                     return OrderCloud.Catalogs.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy);
-                },
-                BuyersList: function (OrderCloud, Parameters) {
-                    return OrderCloud.Buyers.List(Parameters.search, Parameters.page, Parameters.pageSize, Parameters.searchOn, Parameters.sortBy);
                 }
             }
         })
@@ -37,7 +34,6 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
     vm.list = CatalogsList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
 
     //check if filters are applied:
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width: 767px') && vm.sortSelection);

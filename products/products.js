@@ -55,7 +55,6 @@ function ProductsConfig($stateProvider) {
                 }
             }
         })
-
         .state('products.create', {
             url: '/create?productid',
             templateUrl: 'products/templates/productCreate.tpl.html',
@@ -325,8 +324,7 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud, 
     };
 }
 
-
-function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers, Parameters) {
+function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, Underscore, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers, ProductManagementModal) {
 
     var vm = this;
     // vm.list = UserGroupList;
@@ -388,7 +386,23 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
             size: 'lg'
         })
     };
-
+    vm.editPriceSchedule =  function(priceSchedule){
+        ProductManagementModal.EditPriceSchedule(priceSchedule)
+            .then(function(data){
+                angular.forEach(vm.priceSchedules, function(priceSchedule,index){
+                    if(priceSchedule.ID == data.ID){
+                        console.log("hello priceSchedule", priceSchedule, data, index );
+                        vm.priceSchedules[index] = data;
+                        vm.selectedPriceSchedule = data;
+                    }
+                });
+                // var b= Underscore.find(vm.priceSchedules,function(priceSchedule) {return priceSchedule.ID == data.ID});
+                console.log("here is the index",data) ;
+                console.log("this is the array of price schedules", vm.priceSchedules);
+                toastr.success('Price Schedule modified', 'Success');
+                // $state.go('.', {},{reload: true});
+            })
+    }
 
     vm.saveAssignment = function() {
 

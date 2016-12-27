@@ -57,7 +57,7 @@ function ProductsConfig($stateProvider) {
         })
 
         .state('products.create', {
-            url: '/create?productid',
+            url: '/create',
             templateUrl: 'products/templates/productCreate.tpl.html',
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'

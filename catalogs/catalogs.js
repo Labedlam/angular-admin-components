@@ -224,6 +224,13 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
             });
      }
 
+     vm.listAllProducts = function(product){
+         return OrderCloud.Products.List(product)
+             .then(function(data){
+                 vm.listProducts = data;
+             });
+     };
+
      vm.addProductModal = function(){
          ProductModalFactory.Assign();
      };

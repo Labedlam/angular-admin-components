@@ -1,49 +1,83 @@
 <uib-tabset>
     <uib-tab>
         <uib-tab-heading>Products</uib-tab-heading>
-        <button class="btn btn-success" ng-click="catalogAssignments.addProductModal()">Add Product</button>
-        <table class="table table-hover oc-table-responsive" ng-if="catalogAssignments.products">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="product in catalogAssignments.products">
-                    <th scope="row">{{product.ID}}</th>
-                    <td data-title="Name">{{product.Name}}</td>
-                    <td data-title="Description">{{product.Description}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div ng-if="!catalogAssignments.categoryid" class="well text-center">
-            Select a category to view details
-        </div>
-        <div ng-if="!catalogAssignments.products && catalogAssignments.categoryid" class="well text-center">
-            This category has no products assigned to it
-        </div>
     </uib-tab>
-    <uib-tab>
-        <!--<uib-tab-heading>Availability Summary</uib-tab-heading>
-        <table>
-            <thead>
-                <tr>
-                    <th> Total Assignments:</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{catalogAssignments.assignments.Meta.TotalCount}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div ng-if="!catalogAssignments.categoryid" class="well text-center">
-            Select a category to view details
-        </div>
-        <div ng-if="!catalogAssignments.Meta.TotalCount && catalogAssignments.categoryid" class="well text-center">
-            This category has no parties assigned to it
-        </div>
-    </uib-tab>-->
+    <!--<uib-tab>-->
+        <!--<uib-tab-heading>Availability Summary</uib-tab-heading>-->
+        <!--<table>-->
+            <!--<thead>-->
+                <!--<tr>-->
+                    <!--<th> Total Assignments:</th>-->
+                <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+                <!--<tr>-->
+                    <!--<td>{{catalogAssignments.assignments.Meta.TotalCount}}</td>-->
+                <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+        <!--<div ng-if="!catalogAssignments.categoryid" class="well text-center">-->
+            <!--Select a category to view details-->
+        <!--</div>-->
+        <!--<div ng-if="!catalogAssignments.Meta.TotalCount && catalogAssignments.categoryid" class="well text-center">-->
+            <!--This category has no parties assigned to it-->
+        <!--</div>-->
+    <!--</uib-tab>-->
 </uib-tabset>
+<br>
+<div class="row" ng-if="catalogAssignments.products">
+    <div class="col-xs-12">
+        <label>Select Product(s) to Add to Category {{categoryTree.selectedCategory}}</label>
+        <ui-select multiple ng-model="catalogAssignments.selectedProducts" close-on-select="false">
+            <ui-select-match>
+                {{$item.Name}}
+                <span ng-bind="$select.selected.Name"></span>
+            </ui-select-match>
+            <ui-select-choices
+                    repeat="product in (catalogAssignments.listProducts.Items | filter: $select.search) track by $index"
+                    refresh="catalogAssignments.listAllProducts($select.search)"
+                    refresh-delay="1000">
+                <b><span ng-bind="product.Name"></span></b>
+                <br>
+                <small>
+                    <div class="row">
+                        <div class="col-md-6">
+                            ID: {{product.ID}}
+                            <br>
+                            Description: {{product.Description}}
+                        </div>
+                    </div>
+                </small>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+    <button class="btn btn-success pull-right" ng-click="catalogAssignments.addProductModal()"><i class="fa fa-plus-circle"></i>Add Product</button>
+</div>
+
+
+<div>
+    <hr>
+</div>
+
+<div ng-if="!catalogAssignments.categoryid" class="well text-center">
+    Select a category to view details
+</div>
+<div ng-if="!catalogAssignments.products && catalogAssignments.categoryid" class="well text-center">
+    This category has no products assigned to it
+</div>
+<table class="table table-hover oc-table-responsive" ng-if="catalogAssignments.products">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="product in catalogAssignments.products">
+        <th scope="row">{{product.ID}}</th>
+        <td data-title="Name">{{product.Name}}</td>
+        <td data-title="Description">{{product.Description}}</td>
+    </tr>
+    </tbody>
+</table>

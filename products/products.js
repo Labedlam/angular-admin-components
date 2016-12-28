@@ -304,16 +304,14 @@ function ProductCreateController($exceptionHandler, $state, toastr, OrderCloud, 
 
 
 function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, toastr, OrderCloud, PriceScheduleList, Assignments, SelectedProduct, Buyers, ProductManagementModal) {
-
-
     var vm = this;
-    // vm.list = UserGroupList;
-    vm.priceSchedules = PriceScheduleList;
+    vm.priceSchedules = PriceScheduleList.Items;
     vm.assignments =  Assignments;
     console.log(Assignments);
     vm.product = SelectedProduct;
     vm.buyers = Buyers;
     vm.fromState = $stateParams.fromstate;
+    vm.productsAssignedToPriceSchedule = [];
 
     vm.StandardPriceScheduleID;
     vm.ReplenishmentPriceScheduleID;
@@ -340,6 +338,9 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
 
     }
 
+    vm.priceScheduleAssignments = function(priceSchedule){
+
+    }
     vm.getUserList = function(buyer){
         vm.selectedUserGroups = null;
         vm.model.BuyerID = buyer.ID;
@@ -381,11 +382,16 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     vm.editPriceSchedule =  function(priceSchedule){
 
         ProductManagementModal.EditPriceSchedule(priceSchedule)
-            .then(function(){
+            .then(function(data){
+                angular.forEach(vm.priceSchedules.Items, function(priceSchedule,index){
+                    if(priceSchedule.ID == data.ID){
+                        vm.priceSchedules.Items[index] = data;
+                        vm.selectedPriceSchedule = data;
+                    }
+                });
                 toastr.success('Price Schedule modified', 'Success');
-                $state.reload('.');
             })
-    }
+    };
 
     vm.saveAssignment = function() {
 
@@ -406,12 +412,9 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
                 .then(function () {
                     df.resolve();
                     toastr.success('Assignment Updated', 'Success');
-                    // vm.makeAnotherAssignment ? $state.go('.',{},{reload: true}) :( (vm.fromState == "productCreate") ?  $state.go('products', {}, {reload: true}) : $state.go('products.detail',{productid: vm.product.ID}, {reload: true}) );
                     $state.go('.',{},{reload: true});
                 })
                 .catch(function (error) {
-                    // vm.submit();
-                    console.log(error);
                     toastr.error('An error occurred while trying to save your product assignment', 'Error');
                 })
             return df.promise;

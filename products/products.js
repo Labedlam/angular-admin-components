@@ -368,7 +368,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
     };
     vm.editPriceSchedule =  function(priceSchedule){
 
-        ProductManagementModal.editPriceSchedule(priceSchedule)
+        ProductManagementModal.EditPriceSchedule(priceSchedule)
             .then(function(){
                 toastr.success('Price Schedule modified', 'Success');
                 $state.reload('.');

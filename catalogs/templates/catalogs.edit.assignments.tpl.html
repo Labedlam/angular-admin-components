@@ -1,0 +1,48 @@
+<uib-tabset>
+    <uib-tab>
+        <uib-tab-heading>Products</uib-tab-heading>
+        <table class="table table-hover oc-table-responsive" ng-if="catalogAssignments.products">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="product in catalogAssignments.products">
+                    <th scope="row">{{product.ID}}</th>
+                    <td data-title="Name">{{product.Name}}</td>
+                    <td data-title="Description">{{product.Description}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-if="!catalogAssignments.categoryid" class="well text-center">
+            Select a category to view details
+        </div>
+        <div ng-if="!catalogAssignments.products && catalogAssignments.categoryid" class="well text-center">
+            This category has no products assigned to it
+        </div>
+    </uib-tab>
+    <uib-tab>
+        <!--<uib-tab-heading>Availability Summary</uib-tab-heading>
+        <table>
+            <thead>
+                <tr>
+                    <th> Total Assignments:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{catalogAssignments.assignments.Meta.TotalCount}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-if="!catalogAssignments.categoryid" class="well text-center">
+            Select a category to view details
+        </div>
+        <div ng-if="!catalogAssignments.Meta.TotalCount && catalogAssignments.categoryid" class="well text-center">
+            This category has no parties assigned to it
+        </div>
+    </uib-tab>-->
+</uib-tabset>

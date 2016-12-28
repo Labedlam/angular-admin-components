@@ -38,7 +38,7 @@ function CreateCategoryModalController($state, $exceptionHandler, $uibModalInsta
         }
         vm.loading = {
             templateUrl:'common/loading-indicators/templates/view.loading.tpl.html',
-            message:'Creating Address'
+            message:'Creating Category'
         };
         vm.loading.promise = OrderCloud.Categories.Create(vm.category)
             .then(function(category) {

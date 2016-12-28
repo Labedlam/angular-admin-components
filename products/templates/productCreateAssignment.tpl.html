@@ -1,23 +1,20 @@
 <div>
-    <!--<div class="well well-lg text-center"-->
-         <!--ng-if="(!((productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length) && !((productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length))">-->
-        <!--<b>The selected buyer does not have any Standard or Replenishment price schedules.</b><br>-->
-        <!--<b>If you have included the Price Schedules component you can create them there.</b>-->
-    <!--</div>-->
     <h1>Configure product settings for {{productCreateAssignment.product.Name}}</h1>
     <h3>Choose a price</h3>
     <p class="text-muted">Choose a price to assign to product.</p>
     <div class="row">
         <div class="col-md-10">
             <label>Select Standard Price Schedule</label>
-            <ui-select ng-model="productCreateAssignment.selectedPriceSchedule"
+            <ui-select tagging-label="false" ng-model="productCreateAssignment.selectedPriceSchedule"
                        close-on-select="true">
                 <ui-select-match>
                     <!--{{$item.MinQuantity}}-->
                     <span ng-bind="$select.selected.Name"></span>
                 </ui-select-match>
                 <ui-select-choices
-                        repeat="group in (productCreateAssignment.priceSchedules | filter: OrderType:'Standard' | filter: $select.search ) track by $index">
+                        repeat="group in (productCreateAssignment.priceSchedules.Items | filter: $select.search ) track by $index"
+                        refresh="productCreateAssignment.searchPriceSchedule($select.search)"
+                        refresh-delay="1000">
                     <b><span ng-bind="group.Name"></span></b>
                     <br>
                     <small>
@@ -86,7 +83,7 @@
 
     </div>
     <hr>
-    <div ng-if="(productCreateAssignment.priceSchedules | filter:{OrderType:'Replenishment'}).length || (productCreateAssignment.priceSchedules | filter:{OrderType:'Standard'}).length">
+    <div ng-if="(productCreateAssignment.priceSchedules.Items)">
         <h3>Choose product availability </h3>
         <p class="text-muted">You can assign a product to a specific UserGroup or to the entire Buyer Company. UserGroup
             assignments will take precedent over Buyer assignments.</p>
@@ -128,50 +125,12 @@
                 </div>
             </div>
         </div>
-
-    </div>
-    <div class="pull-right">
-        <button type="button" class="btn btn-primary" ng-click="productCreateAssignment.saveAssignment()"
+        <button type="button" class="btn btn-primary pull-right" ng-click="productCreateAssignment.saveAssignment()"
                 ng-disabled="!(productCreateAssignment.selectedBuyer && productCreateAssignment.selectedPriceSchedule )">
             Save Assignment
         </button>
-        <!--====== LIST ======-->
-        <div ng-if="productCreateAssignment.assignments.Items.length">
-            <table class="table table-hover table-condensed oc-table-responsive" controlleras="productCreateAssignment">
-                <thead>
-                <tr>
-                    <th>
-                        <div>Party ID</div>
-                    </th>
-                    <th>
-                        <div>Standard Price Schedule</div>
-                    </th>
-                    <th>
-                        <div>Replenishment Price Schedule</div>
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="assignment in productCreateAssignment.assignments.Items">
-                    <th scope="row">{{assignment.UserID || assignment.UserGroupID || assignment.BuyerID}}
-                        <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>
-                    </th>
-                    <td data-title="Standard Price Schedule">{{assignment.StandardPriceScheduleID}}
-                        <span class="text-muted" ng-if="!assignment.StandardPriceScheduleID">None</span>
-                    </td>
-                    <!--<td data-title="Replenishment Price Schedule">{{assignment.ReplenishmentPriceScheduleID}}-->
-                    <!--<span class="text-muted" ng-if="!assignment.ReplenishmentPriceScheduleID">None</span>-->
-                    <!--</td>-->
-                    <td class="actions-cell">
-                        <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment"
-                                tooltip-placement="left" ng-click="productCreateAssignment.deleteAssignment(this)">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    </div>
+
             <div class="text-center"
                  ng-if="application.$ocMedia('min-width:768px') && productCreateAssignment.assignments.Meta.TotalPages > 1">
                 <uib-pagination boundary-links="productCreateAssignment.assignments.Meta.TotalPages > 5"
@@ -185,9 +144,6 @@
 </div>
 <hr>
 <div>
-
-    <h3>Existing Assignments</h3>
-
     <!--ng-include="'products/templates/productAssignments.tpl.html'">-->
     <div class="well well-lg text-center" ng-if="!productCreateAssignment.assignments.Items.length">
         <b>This product does not have any assignments for the active Buyer company.</b>

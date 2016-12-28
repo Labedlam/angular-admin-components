@@ -72,7 +72,7 @@ function ProductsConfig($stateProvider) {
                     return OrderCloudParameters.Get($stateParams);
                 },
                 PriceScheduleList: function(OrderCloud) {
-                    return OrderCloud.PriceSchedules.List(null,1, 20);
+                    return OrderCloud.PriceSchedules.List(null,1, 2);
                 },
                 Buyers: function(OrderCloud){
                     return OrderCloud.Buyers.List();
@@ -308,7 +308,7 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
 
     var vm = this;
     // vm.list = UserGroupList;
-    vm.priceSchedules = PriceScheduleList.Items;
+    vm.priceSchedules = PriceScheduleList;
     vm.assignments =  Assignments;
     console.log(Assignments);
     vm.product = SelectedProduct;
@@ -327,6 +327,18 @@ function ProductCreateAssignmentController($q, $stateParams, $state, $uibModal, 
         UserGroupID: null,
         PriceScheduleID: null
     };
+    vm.searchPriceSchedule = function(search){
+        if (search == null || ""){
+            return;
+        }else{
+            return OrderCloud.PriceSchedules.List(search, null, 10)
+                .then(function(data){
+                    console.log("hiiii", data);
+                    vm.priceSchedules= data
+                });
+        }
+
+    }
 
     vm.getUserList = function(buyer){
         vm.selectedUserGroups = null;

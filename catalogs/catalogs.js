@@ -186,7 +186,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($rootScope, Underscore, OrderCloud){
+ function CatalogAssignmentsController($rootScope, Underscore, OrderCloud, ProductModalFactory){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -223,6 +223,10 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
                 }
             });
      }
+
+     vm.addProductModal = function(){
+         ProductModalFactory.Assign();
+     };
      
  }
 

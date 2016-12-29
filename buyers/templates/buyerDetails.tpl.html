@@ -1,0 +1,38 @@
+<article ui-view>
+    <div class="container-fluid">
+        <h3 class="page-header">{{buyerDetails.selectedBuyer.Name}}</h3>
+        <uib-tabset>
+            <uib-tab>
+                <br>
+                <uib-tab-heading>Users</uib-tab-heading>
+                <div>
+                    {{users.Username}}
+                    <table class="table table-hover oc-table-responsive">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="users in buyerDetails.userList.Items">
+                            <th scope="row">{{users.ID}}</th>
+                            <td data-title="Name">{{users.Username}}</td>
+                            <td data-title="Description">{{users.FirstName}}&nbsp;{{users.LastName}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </uib-tab>
+            <uib-tab>
+                <br>
+                <uib-tab-heading>User Groups</uib-tab-heading>
+            </uib-tab>
+            <uib-tab>
+                <br>
+                <uib-tab-heading>Catalogs</uib-tab-heading>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</article>

@@ -2,6 +2,7 @@ angular.module('orderCloud')
     .config(BuyerConfig)
     .controller('BuyerCtrl', BuyerController)
     .controller('BuyerEditCtrl', BuyerEditController)
+    .controller('BuyerDetailsCtrl', BuyerDetailsController)
     .controller('BuyerCreateCtrl', BuyerCreateController)
 ;
 
@@ -32,6 +33,23 @@ function BuyerConfig($stateProvider) {
             resolve: {
                 SelectedBuyer: function($stateParams, OrderCloud) {
                     return OrderCloud.Buyers.Get($stateParams.buyerid);
+                }
+            }
+        })
+        .state('buyers.details', {
+            url: '/:buyerid/details',
+            templateUrl: 'buyers/templates/buyerDetails.tpl.html',
+            controller: 'BuyerDetailsCtrl',
+            controllerAs: 'buyerDetails',
+            resolve: {
+                Parameters: function($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SelectedBuyer: function ($stateParams, OrderCloud) {
+                    return OrderCloud.Buyers.Get($stateParams.buyerid);
+                },
+                UserList: function(OrderCloud, Parameters) {
+                    return OrderCloud.Users.List(Parameters.userGroupID, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
                 }
             }
         })
@@ -131,6 +149,14 @@ function BuyerEditController($exceptionHandler, $state, toastr, OrderCloud, Sele
                 $exceptionHandler(ex);
             });
     };
+}
+
+function BuyerDetailsController(SelectedBuyer, UserList){
+    var vm = this;
+    vm.selectedBuyer = SelectedBuyer;
+    vm.userList = UserList;
+
+    console.log('users', vm.userList);
 }
 
 function BuyerCreateController($exceptionHandler, $state, toastr, OrderCloud) {

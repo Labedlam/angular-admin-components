@@ -172,7 +172,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($q, $stateParams, $state, toastr, $rootScope, Underscore, OrderCloud){
+ function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -182,7 +182,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      //vm.selectedProducts = [];
 
 
-     $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
+     $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, id){
          vm.categoryid = id;
          getAssignments();
          getProducts();
@@ -221,6 +221,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
      vm.saveAssignment = function(){
          var productQueue = [];
+         var df = $q.defer();
          angular.forEach(vm.selectedProducts, function(product){
              productQueue.push(OrderCloud.Categories.SaveProductAssignment(
                  {
@@ -232,6 +233,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
          });
          $q.all(productQueue)
              .then(function(data){
+                 df.resolve();
                  toastr.success('All Products Saved', 'Success');
              })
              .catch(function(error){
@@ -239,8 +241,12 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
              })
              .finally(function(){
                  getProducts();
-                 vm.selectedProducts = null;
              });
+         return df.promise;
+     }
+         
+     vm.addProductModal = function(){
+         ProductManagementModal.ProductCategoryAssignment(vm.categoryid, $stateParams.catalogid);
      };
 
      vm.deleteAssignment = function(product){
@@ -271,7 +277,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
      function SetCategoryID(category){
          catalogid = category;
-         $rootScope.$broadcast('CatalogViewManagement:CatalogIDChanged', catalogid);
+         $rootScope.$broadcast('CatalogViewManagement:CategoryIDChanged', catalogid);
      }
      return service;
  }

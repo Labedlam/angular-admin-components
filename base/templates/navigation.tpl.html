@@ -7,10 +7,13 @@
           {{application.name}}
         </a>
       </div>
-      <!--&lt;!&ndash;PRODUCT / CATEGORY BROWSE&ndash;&gt;-->
-      <!--<div class="c-topnav__item c-topnav__browse">-->
-        <!--<a ui-sref="productBrowse.products({page:'', favorites:'', sortBy:'', categoryid:''})"><i class="fa fa-th"></i> <span class="hidden-xs hidden-sm">Browse</span></a>-->
-      <!--</div>-->
+      <!--Catalog Management-->
+      <div class="c-topnav__item">
+        <a ui-sref="catalogs"><i class="fa fa-th" aria-hidden="true"></i> <span class="hidden-xs hidden-sm">Catalog Management</span></a>
+      </div>
+      <div class="c-topnav__item">
+        <a ui-sref="products"><i class="fa fa-archive" aria-hidden="true"></i> <span class="hidden-xs hidden-sm">Product Management</span></a>
+      </div>
       <!--&lt;!&ndash;MOBILE PRODUCT SEARCH&ndash;&gt;-->
       <!--<div class="c-topnav__item c-topnav__search hidden-lg hidden-md">-->
         <!--<a href="" ng-click="base.mobileSearch()"><i class="fa fa-search"></i></a>-->

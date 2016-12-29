@@ -41,6 +41,9 @@ function CatalogsConfig($stateProvider){
                     controller:'CatalogTreeCtrl',
                     controllerAs:'categoryTree',
                     resolve: {
+                        CatalogID: function($stateParams){
+                            return $stateParams.catalogid;
+                        },
                         Tree: function(CategoryTreeService, $stateParams){
                             return CategoryTreeService.GetCategoryTree($stateParams.catalogid);
                         }
@@ -57,12 +60,9 @@ function CatalogsConfig($stateProvider){
 
 function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, CatalogsList){
     var vm = this;
-    //vm.buyers = BuyersList;
-    //vm.catalogID = $stateParams.catalogid;
     vm.list = CatalogsList;
     vm.parameters = Parameters;
-    vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-
+    vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') === 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
     //check if filters are applied:
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width: 767px') && vm.sortSelection);
@@ -111,7 +111,7 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
     };
 
     vm.reverseSort = function() {
-        Parameters.sortBy.indexOf('!') == 0 ? vm.parameters.sortBy = Parameters.sortBy.split("!")[1] : vm.parameters.sortBy = '!' + Parameters.sortBy;
+        Parameters.sortBy.indexOf('!') === 0 ? vm.parameters.sortBy = Parameters.sortBy.split("!")[1] : vm.parameters.sortBy = '!' + Parameters.sortBy;
         vm.filter(false);
     };
 
@@ -124,7 +124,7 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
             .then(function(data){
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
-            })
+            });
     };
 }
 
@@ -160,19 +160,26 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
 }
 
- function CatalogTreeController($rootScope, Tree, CatalogViewManagement, CategoryModalFactory){
+ function CatalogTreeController(CatalogViewManagement, CategoryModalFactory, Tree, CatalogID){
      var vm = this;
      vm.tree = Tree;
+     vm.catalogid = CatalogID;
      vm.categorySelected = function(category){
          CatalogViewManagement.SetCategoryID(category);
          vm.selectedCategory = category;
      };
      vm.createCategory = function(parentid){
-         CategoryModalFactory.Create(parentid);
+         CategoryModalFactory.Create(parentid, vm.catalogid);
+     };
+     vm.editCategory = function(id){
+         CategoryModalFactory.Edit(id, vm.catalogid);
+     };
+     vm.deleteCategory = function(id) {
+         CategoryModalFactory.Delete(id, vm.catalogid);
      };
  }
 
- function CatalogAssignmentsController($q, $stateParams, $state, toastr, $rootScope, Underscore, OrderCloud){
+ function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -181,8 +188,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      vm.products = null;
      //vm.selectedProducts = [];
 
-
-     $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
+     $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, id){
          vm.categoryid = id;
          getAssignments();
          getProducts();
@@ -241,8 +247,13 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
              })
              .finally(function(){
                  getProducts();
+                 vm.selectedProducts = null;
              });
          return df.promise;
+     }
+         
+     vm.addProductModal = function(){
+         ProductManagementModal.ProductCategoryAssignment(vm.categoryid, $stateParams.catalogid);
      };
 
      vm.deleteAssignment = function(product){
@@ -273,7 +284,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
      function SetCategoryID(category){
          catalogid = category;
-         $rootScope.$broadcast('CatalogViewManagement:CatalogIDChanged', catalogid);
+         $rootScope.$broadcast('CatalogViewManagement:CategoryIDChanged', catalogid);
      }
      return service;
  }

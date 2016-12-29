@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-sm-6">
         <div ng-if="!categoryTree.tree.length" class="well text-center">
-            <b>There are no categories in this catalog</b>
+            <b>There are no categories in this catalog. <a ng-click="categoryTree.createCategory()">Create</a> one now.</b>
         </div>
         <script type="text/ng-template" id="nodes_renderer.html">
             <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'inactive-node':!node.Active}">
@@ -21,7 +21,8 @@
                     }">
                 </i>
                 <p ng-click="categoryTree.categorySelected(node.ID)">{{node.Name}}</p>
-                <!--<a class="btn btn-default" data-nodrag ui-sref="^.edit({categoryid: node.ID})"><i class="fa fa-edit"></i> Edit</a>-->
+                <a class="btn btn-sm btn-default" data-nodrag ng-click="categoryTree.editCategory(node.ID)"><i class="fa fa-edit"></i> Edit</a>
+                <a class="btn btn-sm btn-danger" data-nodrag ng-click="categoryTree.deleteCategory(node.ID)"><i class="fa fa-trash"></i></a>
             </div>
             <ol ui-tree-nodes ng-model="node.children" uib-collapse="!collapsed">
                 <li ng-repeat-start="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'"></li>

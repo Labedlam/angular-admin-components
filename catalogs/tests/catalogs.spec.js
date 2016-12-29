@@ -1,4 +1,4 @@
-describe('Component: Catalogs', function(){
+fdescribe('Component: Catalogs', function(){
     var scope,
         q,
         oc,
@@ -22,8 +22,8 @@ describe('Component: Catalogs', function(){
         var state;
         beforeEach(inject(function($state, OrderCloudParameters){
             state = $state.get('catalogs', {}, {reload: true});
-            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
-            spyOn(oc.Catalogs, 'List').and.returnValue(null);
+            spyOn(OrderCloudParameters, 'Get');
+            spyOn(oc.Catalogs, 'List');
         }));
         it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
@@ -35,13 +35,31 @@ describe('Component: Catalogs', function(){
         }))
     });
 
-    describe('Controller: CatalogCreateCtrl', function(){
-        var catalogCreateCtrl;
+    describe('Controller: CatalogsCtrl', function(){
+        var catalogsCtrl;
         beforeEach(inject(function($state, $controller){
-            catalogCreateCtrl = $controller('CatalogCreateCtrl', {
-                $scope: scope
+            catalogsCtrl = $controller('CatalogsCtrl', {
+
             });
-            spyOn($state, 'go').and.returnValue(true);
+        }));
+        describe('filter', function(){
+            beforeEach(function(){
+                catalogsCtrl
+            })
+            it('should refresh the page with the')
+        })
+    });
+
+    describe('Controller: CatalogCreateCtrl', function(){
+        var catalogCreateCtrl,
+            toaster;
+        beforeEach(inject(function($state, $controller, toastr){
+            toaster = toastr;
+            catalogCreateCtrl = $controller('CatalogCreateCtrl', {
+                $scope: scope,
+                toastr: toaster
+            });
+            spyOn($state, 'go');
         }));
         describe('saveCatalog', function(){
             beforeEach(function(){
@@ -49,11 +67,15 @@ describe('Component: Catalogs', function(){
                 var defer = q.defer();
                 defer.resolve(catalog);
                 spyOn(oc.Catalogs, 'Create').and.returnValue(defer.promise);
+                spyOn(toaster, 'success');
                 catalogCreateCtrl.saveCatalog();
                 scope.$digest();
             });
             it('should call the Catalogs Create method', function(){
                 expect(oc.Catalogs.Create).toHaveBeenCalledWith(catalog);
+            });
+            it('should display success toastr upon success', function(){
+                expect(toaster.success).toHaveBeenCalledWith('Catalog Created', 'Success');
             });
             it('should enter the catalogs state and reload the state', inject(function($state){
                 expect($state.go).toHaveBeenCalledWith('catalogs', {}, {reload: true});

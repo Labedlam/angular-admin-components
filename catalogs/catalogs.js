@@ -97,20 +97,6 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
                 vm.list.Meta = data.Meta;
             })
     };
-
-    //vm.deleteCatalog = function(){
-    //    OrderCloudConfirm.Confirm('Are you sure you want to delete this catalog?')
-    //        .then(function(){
-    //            OrderCloud.Catalogs.Delete(vm.catalogID)
-    //                .then(function() {
-    //                    $state.reload();
-    //                    toastr.success('Catalog Deleted', 'Success')
-    //                })
-    //                .catch(function(ex) {
-    //                    $exceptionHandler(ex)
-    //                });
-    //        });
-    //};
 }
 
 function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){

@@ -247,6 +247,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
              })
              .finally(function(){
                  getProducts();
+                 vm.selectedProducts = null;
              });
          return df.promise;
      }

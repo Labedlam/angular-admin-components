@@ -2,6 +2,9 @@ angular.module('orderCloud')
     .config(CatalogsConfig)
     .controller('CatalogsCtrl', CatalogsController)
     .controller('CatalogCreateCtrl', CatalogCreateController)
+    .controller('CatalogTreeCtrl', CatalogTreeController)
+    .controller('CatalogAssignmentsCtrl', CatalogAssignmentsController)
+    .factory('CatalogViewManagement', CatalogViewManagement)
 ;
 
 function CatalogsConfig($stateProvider){
@@ -18,22 +21,48 @@ function CatalogsConfig($stateProvider){
                 },
                 CatalogsList: function (OrderCloud, Parameters) {
                     return OrderCloud.Catalogs.List(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy);
+                },
+                BuyersList: function (OrderCloud, Parameters) {
+                    return OrderCloud.Buyers.List(Parameters.search, Parameters.page, Parameters.pageSize, Parameters.searchOn, Parameters.sortBy);
                 }
             }
         })
         .state('catalogs.create', {
-            url: '/create?catalogid',
+            url: '/create',
             templateUrl: 'catalogs/templates/createNewCatalog.tpl.html',
             controller: 'CatalogCreateCtrl',
             controllerAs: 'catalogCreate'
+        })
+        .state('catalogs.edit', {
+            url:'/edit/:catalogid',
+            views:{
+                '': {
+                    templateUrl:'catalogs/templates/catalogs.edit.tree.tpl.html',
+                    controller:'CatalogTreeCtrl',
+                    controllerAs:'categoryTree',
+                    resolve: {
+                        Tree: function(CategoryTreeService, $stateParams){
+                            return CategoryTreeService.GetCategoryTree($stateParams.catalogid);
+                        }
+                    }
+                },
+                'assignments@catalogs.edit': {
+                    templateUrl:'catalogs/templates/catalogs.edit.assignments.tpl.html',
+                    controller:'CatalogAssignmentsCtrl',
+                    controllerAs:'catalogAssignments'
+                }
+            }
         });
 }
 
 function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, CatalogsList){
     var vm = this;
+    //vm.buyers = BuyersList;
+    //vm.catalogID = $stateParams.catalogid;
     vm.list = CatalogsList;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
+
 
     //check if filters are applied:
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width: 767px') && vm.sortSelection);
@@ -102,17 +131,149 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
 function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
     var vm = this;
     vm.catalog = {};
+    vm.catalog.Active = true;
+    vm.catalogCreated = false;
 
     vm.saveCatalog = function(){
-        OrderCloud.Catalogs.Create(vm.catalog)
-            .then(function(data){
-                vm.catalog.ID = data.ID;
-                toastr.success('Catalog Created', 'Success');
-                $state.go('catalogs', {}, {reload: true});
-            })
-            .catch(function(ex){
-                $exceptionHandler(ex)
-            });
+        if(vm.catalogCreated) {
+            OrderCloud.Catalogs.Update(vm.catalog.ID, vm.catalog)
+                .then(function(){
+                    toastr.success('Catalog Saved', 'Success');
+                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
+                })
+                .catch(function(ex){
+                    $exceptionHandler(ex)
+                })
+        } else {
+            OrderCloud.Catalogs.Create(vm.catalog)
+                .then(function(data){
+                    vm.catalog.ID = data.ID;
+                    vm.catalogCreated = true;
+                    toastr.success('Catalog Created', 'Success');
+                    $state.go('catalogs', {catalogid: vm.catalog.ID, fromstate: "catalogCreate"}, {reload: true});
+                })
+                .catch(function(ex){
+                    $exceptionHandler(ex)
+                });
+        }
     }
 
 }
+
+ function CatalogTreeController($rootScope, Tree, CatalogViewManagement, CategoryModalFactory){
+     var vm = this;
+     vm.tree = Tree;
+     vm.categorySelected = function(category){
+         CatalogViewManagement.SetCategoryID(category);
+         vm.selectedCategory = category;
+     };
+     vm.createCategory = function(parentid){
+         CategoryModalFactory.Create(parentid);
+     };
+ }
+
+ function CatalogAssignmentsController($q, $stateParams, $state, toastr, $rootScope, Underscore, OrderCloud){
+     var vm = this;
+     vm.productIds = null;
+     vm.pageSize = 10;
+     vm.categoryid = null;
+     vm.assignments = null;
+     vm.products = null;
+     //vm.selectedProducts = [];
+
+
+     $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
+         vm.categoryid = id;
+         getAssignments();
+         getProducts();
+     });
+     
+     function getAssignments(){
+         OrderCloud.Categories.ListAssignments(vm.categoryid)   
+            .then(function(assignments){
+                vm.assignments = assignments;
+            });
+     }
+
+     function getProducts(){
+         OrderCloud.Categories.ListProductAssignments(vm.categoryid)
+            .then(function(assignmentList){
+                vm.productIds = Underscore.pluck(assignmentList.Items, 'ProductID');
+                if(!vm.productIds.length) {
+                    vm.products = null;
+                } else {
+                    var pageone = vm.productIds.length > vm.pageSize ? vm.productIds.slice(0, vm.pageSize) : vm.productIds;
+                    var filter = {ID: pageone.join('|')};
+                    OrderCloud.Products.List(null, null, null, null, null, filter)
+                        .then(function(productList){
+                            vm.products = productList.Items;
+                        });
+                }
+            });
+     }
+
+     vm.listAllProducts = function(product){
+         return OrderCloud.Products.List(product)
+             .then(function(data){
+                 vm.listProducts = data;
+             });
+     };
+
+     vm.saveAssignment = function(){
+         var productQueue = [];
+         var df = $q.defer();
+         angular.forEach(vm.selectedProducts, function(product){
+             productQueue.push(OrderCloud.Categories.SaveProductAssignment(
+                 {
+                    ProductID :  product.ID,
+                    CategoryID : vm.categoryid
+                 },
+                 $stateParams.catalogid
+             ));
+         });
+         $q.all(productQueue)
+             .then(function(data){
+                 df.resolve();
+                 toastr.success('All Products Saved', 'Success');
+             })
+             .catch(function(error){
+                 toastr.error(error.data.Errors[0].Message);
+             })
+             .finally(function(){
+                 getProducts();
+             });
+         return df.promise;
+     };
+
+     vm.deleteAssignment = function(product){
+         OrderCloud.Categories.DeleteProductAssignment(vm.categoryid, product.ID, $stateParams.catalogid)
+             .then(function(){
+                 toastr.success('Product ' + product.Name + ' Removed from Category ' + vm.categoryid);
+             })
+             .catch(function(error){
+                 toastr.error('There was an error removing products from the category');
+             })
+             .finally(function(){
+                 getProducts();
+             })
+     }
+     
+ }
+
+ function CatalogViewManagement($rootScope){
+     var service = {
+         GetCategoryID: GetCategoryID,
+         SetCategoryID: SetCategoryID
+     };
+     var catalogid = null;
+
+     function GetCategoryID(){
+         return catalogid;
+     }
+
+     function SetCategoryID(category){
+         catalogid = category;
+         $rootScope.$broadcast('CatalogViewManagement:CatalogIDChanged', catalogid);
+     }
+     return service;
+ }

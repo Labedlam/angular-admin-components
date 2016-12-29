@@ -68,6 +68,9 @@
                 <th>
                     Category Count
                 </th>
+                <th class="text-center">
+                    Active
+                </th>
                 <th></th>
             </tr>
             </thead>
@@ -76,9 +79,18 @@
                 <th scope="row">{{catalog.ID}}</th>
                 <td data-title="Name">{{catalog.Name}}</td>
                 <td data-title="CategoryCount">{{catalog.CategoryCount}}</td>
+                <td class="text-center" data-title="Active">
+                    <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':catalog.Active}"></i>
+                </td>
                 <td class="actions-cell">
                     <button class="btn btn-default md" ui-sref=".details({catalogid:catalog.ID})">
                         Details
+                    </button>
+                    <button class="btn btn-default md" ui-sref=".createAssignment({catalogid:catalog.ID})">
+                        Assign
+                    </button>
+                    <button class="btn btn-default md" ui-sref=".edit({catalogid:catalog.ID})">
+                        Edit
                     </button>
                 </td>
             </tr>

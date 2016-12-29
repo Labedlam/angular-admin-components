@@ -25,10 +25,12 @@
     <!--</uib-tab>-->
 </uib-tabset>
 <br>
-<div class="row" ng-if="catalogAssignments.products">
+<div class="row">
     <div class="col-xs-12">
         <label>Select Product(s) to Add to Category {{categoryTree.selectedCategory}}</label>
-        <ui-select multiple ng-model="catalogAssignments.selectedProducts" close-on-select="false">
+        <ui-select multiple
+                   ng-model="catalogAssignments.selectedProducts"
+                   close-on-select="false">
             <ui-select-match>
                 {{$item.Name}}
                 <span ng-bind="$select.selected.Name"></span>
@@ -51,7 +53,7 @@
             </ui-select-choices>
         </ui-select>
     </div>
-    <button class="btn btn-success pull-right" ng-click="catalogAssignments.addProductModal()"><i class="fa fa-plus-circle"></i>Add Product</button>
+    <button class="btn btn-info pull-right" ng-click="catalogAssignments.saveAssignment()"><i class="fa fa-plus-circle"></i> Add Product</button>
 </div>
 
 

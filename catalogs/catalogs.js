@@ -186,13 +186,19 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($rootScope, Underscore, OrderCloud, ProductModalFactory){
+ function CatalogAssignmentsController($q, $stateParams, $rootScope, Underscore, OrderCloud){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
      vm.categoryid = null;
      vm.assignments = null;
      vm.products = null;
+     vm.selectedProducts = [];
+
+     vm.model = {
+         ProductID: vm.selectedProducts,
+         CatalogID: $stateParams.catalogid
+     };
 
      $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
          vm.categoryid = id;
@@ -231,9 +237,29 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
              });
      };
 
-     vm.addProductModal = function(){
-         ProductModalFactory.Assign();
+     vm.saveAssignment = function(){
+         var productQueue = [];
+         var df = $q.defer();
+         angular.forEach(vm.selectedProducts, function(product){
+             var assignment = angular.copy(vm.model);
+             assignment.ProductID = product.ID;
+             productQueue.push(OrderCloud.Categories.SaveProductAssignment);
+         });
+         $q.all(productQueue)
+             .then(function(){
+                 df.resolve();
+                 toastr.success('Assignment Updated', 'Success');
+             })
+             .catch(function(error){
+                 toastr.error('An error occurred while trying to save your product assignment', 'Error');
+             });
+         return df.promise;
      };
+
+
+     //vm.addProductModal = function(){
+     //    ProductModalFactory.Assign();
+     //};
      
  }
 

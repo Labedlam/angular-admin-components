@@ -25,36 +25,38 @@
     <!--</uib-tab>-->
 </uib-tabset>
 <br>
-<div class="row">
-    <div class="col-xs-12">
-        <label>Select Product(s) to Add to Category {{categoryTree.selectedCategory}}</label>
-        <ui-select multiple
-                   ng-model="catalogAssignments.selectedProducts"
-                   close-on-select="false">
-            <ui-select-match>
-                {{$item.Name}}
-                <span ng-bind="$select.selected.Name"></span>
-            </ui-select-match>
-            <ui-select-choices
-                    repeat="product in (catalogAssignments.listProducts.Items | filter: $select.search) track by $index"
-                    refresh="catalogAssignments.listAllProducts($select.search)"
-                    refresh-delay="1000">
-                <b><span ng-bind="product.Name"></span></b>
-                <br>
-                <small>
-                    <div class="row">
-                        <div class="col-md-6">
-                            ID: {{product.ID}}
-                            <br>
-                            Description: {{product.Description}}
+<form name="selectProductsForm" ng-submit="catalogAssignments.saveAssignment()">
+    <div class="row" ng-if="catalogAssignments.categoryid">
+        <div class="col-xs-12">
+            <label>Select Product(s) to Add to Category {{categoryTree.selectedCategory}}</label>
+            <ui-select multiple
+                       ng-model="catalogAssignments.selectedProducts"
+                       close-on-select="false">
+                <ui-select-match>
+                    {{$item.Name}}
+                    <span ng-bind="$select.selected.Name"></span>
+                </ui-select-match>
+                <ui-select-choices
+                        repeat="product in (catalogAssignments.listProducts.Items | filter: $select.search) track by $index"
+                        refresh="catalogAssignments.listAllProducts($select.search)"
+                        refresh-delay="1000">
+                    <b><span ng-bind="product.Name"></span></b>
+                    <br>
+                    <small>
+                        <div class="row">
+                            <div class="col-md-6">
+                                ID: {{product.ID}}
+                                <br>
+                                Description: {{product.Description}}
+                            </div>
                         </div>
-                    </div>
-                </small>
-            </ui-select-choices>
-        </ui-select>
+                    </small>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        <button class="btn btn-info pull-right" ng-disabled="!catalogAssignments.selectedProducts" type="submit"><i class="fa fa-plus-circle"></i> Add Product</button>
     </div>
-    <button class="btn btn-info pull-right" ng-click="catalogAssignments.saveAssignment()"><i class="fa fa-plus-circle"></i> Add Product</button>
-</div>
+</form>
 
 
 <div>

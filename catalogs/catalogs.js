@@ -126,20 +126,6 @@ function CatalogsController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
                 vm.list.Meta = data.Meta;
             })
     };
-
-    //vm.deleteCatalog = function(){
-    //    OrderCloudConfirm.Confirm('Are you sure you want to delete this catalog?')
-    //        .then(function(){
-    //            OrderCloud.Catalogs.Delete(vm.catalogID)
-    //                .then(function() {
-    //                    $state.reload();
-    //                    toastr.success('Catalog Deleted', 'Success')
-    //                })
-    //                .catch(function(ex) {
-    //                    $exceptionHandler(ex)
-    //                });
-    //        });
-    //};
 }
 
 function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
@@ -186,19 +172,15 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($q, $stateParams, $rootScope, Underscore, OrderCloud){
+ function CatalogAssignmentsController($q, $stateParams, $state, toastr, $rootScope, Underscore, OrderCloud){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
      vm.categoryid = null;
      vm.assignments = null;
      vm.products = null;
-     vm.selectedProducts = [];
+     //vm.selectedProducts = [];
 
-     vm.model = {
-         ProductID: vm.selectedProducts,
-         CatalogID: $stateParams.catalogid
-     };
 
      $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
          vm.categoryid = id;
@@ -241,25 +223,40 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
          var productQueue = [];
          var df = $q.defer();
          angular.forEach(vm.selectedProducts, function(product){
-             var assignment = angular.copy(vm.model);
-             assignment.ProductID = product.ID;
-             productQueue.push(OrderCloud.Categories.SaveProductAssignment);
+             productQueue.push(OrderCloud.Categories.SaveProductAssignment(
+                 {
+                    ProductID :  product.ID,
+                    CategoryID : vm.categoryid
+                 },
+                 $stateParams.catalogid
+             ));
          });
          $q.all(productQueue)
-             .then(function(){
+             .then(function(data){
                  df.resolve();
-                 toastr.success('Assignment Updated', 'Success');
+                 toastr.success('All Products Saved', 'Success');
              })
              .catch(function(error){
-                 toastr.error('An error occurred while trying to save your product assignment', 'Error');
+                 toastr.error(error.data.Errors[0].Message);
+             })
+             .finally(function(){
+                 getProducts();
              });
          return df.promise;
      };
 
-
-     //vm.addProductModal = function(){
-     //    ProductModalFactory.Assign();
-     //};
+     vm.deleteAssignment = function(product){
+         OrderCloud.Categories.DeleteProductAssignment(vm.categoryid, product.ID, $stateParams.catalogid)
+             .then(function(){
+                 toastr.success('Product ' + product.Name + ' Removed from Category ' + vm.categoryid);
+             })
+             .catch(function(error){
+                 toastr.error('There was an error removing products from the category');
+             })
+             .finally(function(){
+                 getProducts();
+             })
+     }
      
  }
 

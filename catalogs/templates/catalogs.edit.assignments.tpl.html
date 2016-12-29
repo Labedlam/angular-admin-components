@@ -73,6 +73,7 @@
         <th scope="col">ID</th>
         <th>Name</th>
         <th>Description</th>
+        <th></tH>
     </tr>
     </thead>
     <tbody>
@@ -80,6 +81,7 @@
         <th scope="row">{{product.ID}}</th>
         <td data-title="Name">{{product.Name}}</td>
         <td data-title="Description">{{product.Description}}</td>
+        <td class="text-center"><a class="fa fa-trash text-danger" ng-click="catalogAssignments.deleteAssignment(product)"></a></td>
     </tr>
     </tbody>
 </table>

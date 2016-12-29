@@ -172,7 +172,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($q, $stateParams, $state, toastr, $rootScope, Underscore, OrderCloud){
+ function CatalogAssignmentsController($rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -182,7 +182,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      //vm.selectedProducts = [];
 
 
-     $rootScope.$on('CatalogViewManagement:CatalogIDChanged', function(e, id){
+     $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, id){
          vm.categoryid = id;
          getAssignments();
          getProducts();
@@ -243,6 +243,9 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
                  getProducts();
              });
          return df.promise;
+         
+     vm.addProductModal = function(){
+         ProductManagementModal.ProductCategoryAssignment(vm.categoryid, $stateParams.catalogid);
      };
 
      vm.deleteAssignment = function(product){
@@ -273,7 +276,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
      function SetCategoryID(category){
          catalogid = category;
-         $rootScope.$broadcast('CatalogViewManagement:CatalogIDChanged', catalogid);
+         $rootScope.$broadcast('CatalogViewManagement:CategoryIDChanged', catalogid);
      }
      return service;
  }

@@ -172,7 +172,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
+ function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -243,6 +243,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
                  getProducts();
              });
          return df.promise;
+     }
          
      vm.addProductModal = function(){
          ProductManagementModal.ProductCategoryAssignment(vm.categoryid, $stateParams.catalogid);

@@ -130,6 +130,35 @@
                 </section>
             </div>
         </div>
+        <div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="table-fixed-header">
+                        <div class="table-header-bg"></div>
+                        <div class="table-container">
+                            <table class="table table-hover">
+                                <colgroup>
+                                    <col class="action-column"/>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div>Products assigned to this Price</div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="productID in editPriceSchedule.productsAssignedToPriceSchedule track by $index">
+                                    <td ng-if="editPriceSchedule.productsAssignedToPriceSchedule.length">{{productID}}</td>
+                                    <td ng-if="!editPriceSchedule.productsAssignedToPriceSchedule.length">No Assignments assigned to this price</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
         <div class="modal-footer">
             <div class="pull-right">
                 <button type="submit" class="btn btn-primary" ng-disabled="editPriceScheduleForm.$invalid || !editPriceSchedule.priceSchedule.PriceBreaks.length">Save</button>

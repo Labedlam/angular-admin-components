@@ -221,7 +221,6 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
 
      vm.saveAssignment = function(){
          var productQueue = [];
-         var df = $q.defer();
          angular.forEach(vm.selectedProducts, function(product){
              productQueue.push(OrderCloud.Categories.SaveProductAssignment(
                  {
@@ -233,7 +232,6 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
          });
          $q.all(productQueue)
              .then(function(data){
-                 df.resolve();
                  toastr.success('All Products Saved', 'Success');
              })
              .catch(function(error){
@@ -241,8 +239,8 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
              })
              .finally(function(){
                  getProducts();
+                 vm.selectedProducts = null;
              });
-         return df.promise;
      };
 
      vm.deleteAssignment = function(product){

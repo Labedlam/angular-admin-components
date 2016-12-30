@@ -13,6 +13,7 @@
                             <th scope="col">ID</th>
                             <th>Username</th>
                             <th>Name</th>
+                            <th class="text-center">Active</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -20,6 +21,9 @@
                             <th scope="row">{{users.ID}}</th>
                             <td data-title="Name">{{users.Username}}</td>
                             <td data-title="Description">{{users.FirstName}}&nbsp;{{users.LastName}}</td>
+                            <td class="text-center" data-title="Active">
+                                <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':users.Active}"></i>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

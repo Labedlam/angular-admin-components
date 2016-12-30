@@ -27,7 +27,7 @@ function ProductModalFactory($uibModal){
 function AssignProductModalController($state, $exceptionHandler, $uibModalInstance, OrderCloud, ProductList){
     var vm = this;
     vm.list = ProductList;
-    vm.parameters = {}; 
+    vm.parameters = {};
     vm.parameters.pageSize = 10;
 
     //check if search was used
@@ -90,6 +90,6 @@ function AssignProductModalController($state, $exceptionHandler, $uibModalInstan
         //TODO: finish func
     };
 
-    
+
 
 }

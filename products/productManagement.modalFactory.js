@@ -108,7 +108,7 @@ function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibMod
     }
 }
 
-function ProductCategoryAssignmentModalController($state, $exceptionHandler, $uibModalInstance, toastr, OrderCloud, Underscore, CatalogID, Category, ProductList) {
+function ProductCategoryAssignmentModalController($state, $exceptionHandler, $uibModalInstance, toastr, OrderCloud, CatalogID, Category, ProductList) {
     var vm = this;
     vm.list = ProductList;
     vm.parameters = {};
@@ -161,7 +161,7 @@ function ProductCategoryAssignmentModalController($state, $exceptionHandler, $ui
     };
 
     vm.pageChanged = function() {
-        vm.selected = Underscore.where(vm.list.Items)
+        vm.selected = _.where(vm.list.Items)
         vm.filter();
     };
 

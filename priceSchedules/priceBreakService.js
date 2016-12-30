@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .factory('PriceBreak', PriceBreakFactory)
 ;
 
-function PriceBreakFactory(Underscore, toastr) {
+function PriceBreakFactory(toastr) {
     var service = {
         AddPriceBreak : _addPriceBreak,
         SetMinMax: _setMinMax,
@@ -11,7 +11,7 @@ function PriceBreakFactory(Underscore, toastr) {
     };
 
     function _addPriceBreak(priceSchedule, price, quantity) {
-        var numberExist = Underscore.findWhere(priceSchedule.PriceBreaks, {Quantity: quantity});
+        var numberExist = _.findWhere(priceSchedule.PriceBreaks, {Quantity: quantity});
         if (quantity > priceSchedule.MaxQuantity) {
             toastr.error('Max quantity exceeded','Error');
         } else {
@@ -22,10 +22,10 @@ function PriceBreakFactory(Underscore, toastr) {
     }
 
     function _setMinMax(priceSchedule) {
-        var quantities =  Underscore.pluck(priceSchedule.PriceBreaks, 'Quantity');
-        priceSchedule.MinQuantity = Underscore.min(quantities);
+        var quantities =  _.pluck(priceSchedule.PriceBreaks, 'Quantity');
+        priceSchedule.MinQuantity = _.min(quantities);
         if (priceSchedule.RestrictedQuantity) {
-            priceSchedule.MaxQuantity = Underscore.max(quantities);
+            priceSchedule.MaxQuantity = _.max(quantities);
         }
         return priceSchedule;
     }
@@ -52,7 +52,7 @@ function PriceBreakFactory(Underscore, toastr) {
                 priceSchedule.PriceBreaks[i].displayQuantity = priceSchedule.PriceBreaks[i].Quantity + '+';
             } else {
                 //otherwise get the range of numbers between the current index quantity , and the next index Quantity
-                var itemQuantityRange = Underscore.range(priceSchedule.PriceBreaks[i].Quantity, priceSchedule.PriceBreaks[i + 1].Quantity);
+                var itemQuantityRange = _.range(priceSchedule.PriceBreaks[i].Quantity, priceSchedule.PriceBreaks[i + 1].Quantity);
                 itemQuantityRange;
                 // If the difference between the range of numbers is only 1 . then just display that quantity number
                 if (itemQuantityRange.length === 1) {

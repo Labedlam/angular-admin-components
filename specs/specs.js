@@ -149,7 +149,7 @@ function SpecsController($state, $ocMedia, OrderCloud, OrderCloudParameters, Par
     };
 }
 
-function SpecEditController($exceptionHandler, $state, Underscore, toastr, OrderCloud, SelectedSpec, SelectedOpts) {
+function SpecEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedSpec, SelectedOpts) {
     var vm = this,
         specid = angular.copy(SelectedSpec.ID);
     vm.specName = angular.copy(SelectedSpec.Name);
@@ -160,12 +160,12 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
 
     vm.addSpecOpt = function() {
 
-        if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (_.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.overwrite = true;
             toastr.warning('There is already a spec option with that ID, select Update Spec Option to continue', 'Warning');
         }
 
-        if (!Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (!_.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.Options.push(vm.Option);
             if (vm.DefaultOptionID) {
                 vm.spec.DefaultOptionID = vm.Option.ID;
@@ -181,7 +181,7 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
     vm.updateSpecOpt = function() {
         var specOptIndex;
 
-        if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (_.where(vm.Options, {ID: vm.Option.ID}).length) {
             angular.forEach(vm.Options, function(option, index) {
                 if (option.ID == vm.Option.ID) {
                     specOptIndex = index;
@@ -238,7 +238,7 @@ function SpecEditController($exceptionHandler, $state, Underscore, toastr, Order
     };
 }
 
-function SpecCreateController($exceptionHandler, $q, $state, toastr, Underscore, OrderCloud) {
+function SpecCreateController($exceptionHandler, $q, $state, toastr, OrderCloud) {
     var vm = this;
     vm.spec = {};
     vm.Options = [];
@@ -246,11 +246,11 @@ function SpecCreateController($exceptionHandler, $q, $state, toastr, Underscore,
     vm.overwrite = false;
 
     vm.addSpecOpt = function() {
-        if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (_.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.overwrite = true;
             toastr.warning('There is already a spec option with that ID, select Update Spec Option to continue', 'Warning');
         }
-        if (!Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (!_.where(vm.Options, {ID: vm.Option.ID}).length) {
             vm.Options.push(vm.Option);
             if (vm.DefaultOptionID) {
                 DefaultOptionID = vm.Option.ID;
@@ -263,7 +263,7 @@ function SpecCreateController($exceptionHandler, $q, $state, toastr, Underscore,
     vm.updateSpecOpt = function() {
         var specOptIndex;
 
-        if (Underscore.where(vm.Options, {ID: vm.Option.ID}).length) {
+        if (_.where(vm.Options, {ID: vm.Option.ID}).length) {
             angular.forEach(vm.Options, function(option, index) {
                 if (option.ID == vm.Option.ID) {
                     specOptIndex = index;

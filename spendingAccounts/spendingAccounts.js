@@ -266,7 +266,7 @@ function SpendingAccountAssignUserController($scope, toastr, Paging, UserList, A
 	}
 }
 
-function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud, Assignments) {
+function SpendingAccountAssignment($q, $state, $injector, OrderCloud, Assignments) {
 	return {
 		SaveAssignments: _saveAssignments,
 		SetSelected: _setSelected,
@@ -275,10 +275,10 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 
 	function _saveAssignments(SpendingAccountID, List, AssignmentList, Party) {
 		var PartyID = (Party === 'User') ? 'UserID' : 'UserGroupID';
-		var assigned = Underscore.pluck(AssignmentList, PartyID);
-		var selected = Underscore.pluck(Underscore.where(List, {selected: true}), 'ID');
+		var assigned = _.pluck(AssignmentList, PartyID);
+		var selected = _.pluck(_.where(List, {selected: true}), 'ID');
 		var toAdd = Assignments.GetToAssign(List, AssignmentList, PartyID);
-		var toUpdate = Underscore.intersection(selected, assigned);
+		var toUpdate = _.intersection(selected, assigned);
 		var toDelete = Assignments.GetToDelete(List, AssignmentList, PartyID);
 		var queue = [];
 		var dfd = $q.defer();
@@ -289,10 +289,10 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 			else if (toUpdate.indexOf(item.ID) > -1) {
 				var AssignmentObject;
 				if (Party === 'User') {
-					AssignmentObject = Underscore.where(AssignmentList, {UserID: item.ID})[0]; //should be only one
+					AssignmentObject = _.where(AssignmentList, {UserID: item.ID})[0]; //should be only one
 				}
 				else {
-					AssignmentObject = Underscore.where(AssignmentList, {UserGroupID: item.ID})[0]; //should be only one
+					AssignmentObject = _.where(AssignmentList, {UserGroupID: item.ID})[0]; //should be only one
 				}
 				if (AssignmentObject.AllowExceed !== item.allowExceed) {
 					saveAndUpdate(queue, SpendingAccountID, item, Party);
@@ -329,7 +329,7 @@ function SpendingAccountAssignment($q, $state, $injector, Underscore, OrderCloud
 	function _setSelected(List, AssignmentList, Party) {
 		var PartyID = (Party === 'User') ? 'UserID' : 'UserGroupID';
 		var assigned = Assignments.GetAssigned(AssignmentList, PartyID);
-		var exceed = Underscore.pluck(Underscore.where(AssignmentList, {AllowExceed: true}), PartyID);
+		var exceed = _.pluck(_.where(AssignmentList, {AllowExceed: true}), PartyID);
 		angular.forEach(List, function(item) {
 			if (assigned.indexOf(item.ID) > -1) {
 				item.selected = true;

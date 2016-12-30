@@ -1,41 +1,33 @@
 angular.module('orderCloud')
     .factory('ProductManagementModal', ProductManagementModalFactory)
-    .controller('ProductEditModalCtrl', ProductEditModalController)
-    .controller('PriceScheduleCreateModalCtrl', PriceScheduleCreateModalController)
+    .controller('CreatePriceScheduleModalCtrl', CreatePriceScheduleModalController)
     .controller('EditPriceScheduleModalCtrl', EditPriceScheduleModalController)
+    .controller('EditProductModalCtrl', EditProductModalController)
 ;
 
 function ProductManagementModalFactory($uibModal, $q, OrderCloud, Underscore) {
     return {
-        EditProduct : _editProduct,
         CreatePriceSchedule : _createPriceSchedule,
-        EditPriceSchedule : _editPriceSchedule
+        EditPriceSchedule : _editPriceSchedule,
+        EditProduct : _editProduct,
     };
 
-
-    function _editProduct(productID){
-        console.log("helloz")
+    function _createPriceSchedule(){
         $uibModal.open({
-            animation: true,
-            templateUrl: 'productManagement/productDetail/templates/productEdit.modal.tpl.html',
-            controller: 'ProductEditModalCtrl',
-            controllerAs: 'productEditModal',
-            size: 'lg',
-            resolve: {
-                SelectedProduct: function ($stateParams, OrderCloud) {
-                    return OrderCloud.Products.Get(productID);
-                }
-            }
-        });
-
+            templateUrl: 'productManagement/modals/templates/createPriceSchedule.html',
+            controller: 'CreatePriceScheduleModalCtrl',
+            controllerAs: 'createPriceScheduleModal',
+            size: 'lg'
+        })
     }
+
     function _editPriceSchedule(priceSchedule) {
 
         var priceSchedule = angular.copy(priceSchedule);
         return $uibModal.open({
-            templateUrl: 'productManagement/modals/templates/productManagement.editPriceSchedule.modal.tpl.html',
+            templateUrl: 'productManagement/modals/templates/editPriceSchedule.html',
             controller: 'EditPriceScheduleModalCtrl',
-            controllerAs: 'editPriceSchedule',
+            controllerAs: 'editPriceScheduleModal',
             size: 'lg',
             resolve: {
                 SelectedPriceSchedule: function() {
@@ -58,61 +50,56 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud, Underscore) {
             }
         }).result
     }
-    function _createPriceSchedule(){
+
+    function _editProduct(productID){
         $uibModal.open({
-            templateUrl: 'productManagement/modals/templates/priceScheduleCreate.modal.tpl.html',
-            controller: 'PriceScheduleCreateModalCtrl',
-            controllerAs: 'priceScheduleCreateModal',
-            size: 'lg'
-        })
+            animation: true,
+            templateUrl: 'productManagement/modals/templates/editProduct.html',
+            controller: 'EditProductModalCtrl',
+            controllerAs: 'editProductModal',
+            size: 'lg',
+            resolve: {
+                SelectedProduct: function ($stateParams, OrderCloud) {
+                    return OrderCloud.Products.Get(productID);
+                }
+            }
+        });
+
     }
-
-
 }
-function ProductEditModalController($exceptionHandler, $uibModalInstance, $state, $stateParams, toastr, OrderCloud, OrderCloudConfirm, SelectedProduct) {
-    var vm = this,
-        productid = angular.copy(SelectedProduct.ID);
-    vm.productName = angular.copy(SelectedProduct.Name);
-    vm.productID = $stateParams.productid;
-    vm.product = SelectedProduct;
 
-    vm.updateProduct = function() {
-        OrderCloud.Products.Update(productid, vm.product)
-            .then(function() {
-                $state.go('products.detail', {}, {reload: true});
-                toastr.success('Product Updated', 'Success');
-                vm.submit();
+function CreatePriceScheduleModalController($uibModalInstance, $exceptionHandler, toastr, OrderCloud, PriceBreak) {
+    var vm = this;
+    vm.priceSchedule = {};
+    vm.priceSchedule.RestrictedQuantity = false;
+    vm.priceSchedule.PriceBreaks = [];
+    vm.priceSchedule.MinQuantity = 1;
+    vm.priceSchedule.OrderType = 'Standard';
+
+    vm.addPriceBreak = function () {
+        PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
+        vm.quantity = null;
+        vm.price = null;
+    };
+
+    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
+
+    vm.submit = function () {
+        vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
+        OrderCloud.PriceSchedules.Create(vm.priceSchedule)
+            .then(function (data) {
+                $uibModalInstance.close(data);
+                toastr.success('Price Schedule Created', 'Success')
             })
-            .catch(function(ex) {
+            .catch(function (ex) {
                 $exceptionHandler(ex)
             });
-    };
-
-    vm.deleteProduct = function(){
-        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
-            .then(function(){
-                OrderCloud.Products.Delete(vm.productID)
-                    .then(function() {
-                        toastr.success('Product Deleted', 'Success');
-                        vm.submit();
-                        $state.go('products', {}, {reload: true});
-                    })
-                    .catch(function(ex) {
-                        $exceptionHandler(ex)
-                    });
-            });
-    };
-
-    vm.submit = function() {
-        $uibModalInstance.close();
     };
 
     vm.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
-
-}
-
+};
 
 function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibModalInstance, toastr, OrderCloud, SelectedPriceSchedule, PriceBreak , ProductsAssignedToPriceSchedule, OrderCloudConfirm) {
     var vm = this;
@@ -177,35 +164,48 @@ function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibMod
     }
 }
 
-function PriceScheduleCreateModalController($uibModalInstance, $exceptionHandler, $state, toastr, OrderCloud, PriceBreak) {
-    var vm = this;
-    vm.priceSchedule = {};
-    vm.priceSchedule.RestrictedQuantity = false;
-    vm.priceSchedule.PriceBreaks = [];
-    vm.priceSchedule.MinQuantity = 1;
-    vm.priceSchedule.OrderType = 'Standard';
+function EditProductModalController($exceptionHandler, $uibModalInstance, $state, $stateParams, toastr, OrderCloud, OrderCloudConfirm, SelectedProduct) {
+    var vm = this,
+        productid = angular.copy(SelectedProduct.ID);
+    vm.productName = angular.copy(SelectedProduct.Name);
+    vm.productID = $stateParams.productid;
+    vm.product = SelectedProduct;
 
-    vm.addPriceBreak = function () {
-        PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
-        vm.quantity = null;
-        vm.price = null;
-    };
-
-    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
-
-    vm.submit = function () {
-        vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
-        OrderCloud.PriceSchedules.Create(vm.priceSchedule)
-            .then(function (data) {
-                $uibModalInstance.close(data);
-                toastr.success('Price Schedule Created', 'Success')
+    vm.updateProduct = function() {
+        OrderCloud.Products.Update(productid, vm.product)
+            .then(function() {
+                $state.go('products.detail', {}, {reload: true});
+                toastr.success('Product Updated', 'Success');
+                vm.submit();
             })
-            .catch(function (ex) {
+            .catch(function(ex) {
                 $exceptionHandler(ex)
             });
+    };
+
+    vm.deleteProduct = function(){
+        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
+            .then(function(){
+                OrderCloud.Products.Delete(vm.productID)
+                    .then(function() {
+                        toastr.success('Product Deleted', 'Success');
+                        vm.submit();
+                        $state.go('products', {}, {reload: true});
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
+            });
+    };
+
+    vm.submit = function() {
+        $uibModalInstance.close();
     };
 
     vm.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
-};
+
+}
+
+

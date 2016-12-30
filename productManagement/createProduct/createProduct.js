@@ -8,7 +8,7 @@ function ProductCreateConfig($stateProvider) {
 
         .state('products.create', {
             url: '/create',
-            templateUrl: 'productManagement/productCreate/templates/productCreate.tpl.html',
+            templateUrl: 'productManagement/createProduct/templates/createProduct.html',
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate'
 

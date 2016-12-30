@@ -8,7 +8,7 @@ function ProductAssignmentConfig($stateProvider) {
 
         .state('products.createAssignment', {
             url: '/:productid/assignments/new?fromstate',
-            templateUrl: 'productManagement/productAssignment/templates/productCreateAssignment.tpl.html',
+            templateUrl: 'productManagement/createAssignment/templates/createAssignment.html',
             controller: 'ProductCreateAssignmentCtrl',
             controllerAs: 'productCreateAssignment',
             resolve: {
@@ -20,25 +20,6 @@ function ProductAssignmentConfig($stateProvider) {
                 },
                 Buyers: function(OrderCloud){
                     return OrderCloud.Buyers.List();
-                },
-                Assignments: function($q, $resource, OrderCloud, Parameters) {
-                    var apiUrl = 'https://api.ordercloud.io/v1/products/assignments';
-                    var parameters = { 'productID': Parameters.productid, 'buyerID': null, 'userID': Parameters.userID, 'userGroupID': Parameters.userGroupID, 'level': Parameters.level, 'priceScheduleID': Parameters.priceScheduleID, 'page': Parameters.page , 'pageSize': Parameters.pageSize || 5 }
-                    var d = $q.defer();
-                    $resource(apiUrl, parameters, {
-                        callApi: {
-                            method: 'GET',
-                            headers: {'Authorization': 'Bearer ' + OrderCloud.Auth.ReadToken()}
-                        }
-                    }).callApi(null).$promise
-                        .then(function(data) {
-                            d.resolve(data);
-                        })
-                        .catch(function(ex) {
-                            d.reject(ex);
-                        });
-
-                    return d.promise;
                 },
                 SelectedProduct: function ($stateParams, OrderCloud) {
                     return OrderCloud.Products.Get($stateParams.productid);

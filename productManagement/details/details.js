@@ -1,15 +1,15 @@
 angular.module('orderCloud')
     .config(ProductDetailConfig)
-    .controller('ProductDetailCtrl', ProductDetailController)
+    .controller('DetailsCtrl', DetailsController)
 ;
 
 function ProductDetailConfig($stateProvider) {
     $stateProvider
         .state('products.detail', {
             url: '/:productid/detail',
-            templateUrl: 'productManagement/productDetail/templates/productDetail.tpl.html',
-            controller: 'ProductDetailCtrl',
-            controllerAs: 'productDetail',
+            templateUrl: 'productManagement/details/templates/details.html',
+            controller: 'DetailsCtrl',
+            controllerAs: 'details',
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
@@ -23,7 +23,7 @@ function ProductDetailConfig($stateProvider) {
                 PriceSchedule: function (OrderCloud, $q, Assignments){
                     var priceSchedules = [];
                     var dfd = $q.defer();
-                    angular.forEach(Assignments.Items, function(v, k){
+                    angular.forEach(Assignments.Items, function(v){
                         priceSchedules.push(OrderCloud.PriceSchedules.Get(v.StandardPriceScheduleID))
 
                     });
@@ -39,7 +39,7 @@ function ProductDetailConfig($stateProvider) {
 }
 
 
-function ProductDetailController($stateParams, $exceptionHandler, $state, toastr, OrderCloud, Assignments, SelectedProduct, PriceSchedule, ProductManagementModal){
+function DetailsController($stateParams, $exceptionHandler, $state, toastr, OrderCloud, Assignments, SelectedProduct, PriceSchedule, ProductManagementModal){
     var vm = this;
 
     vm.list = Assignments;

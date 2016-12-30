@@ -253,7 +253,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      }
          
      vm.addProductModal = function(){
-         ProductManagementModal.ProductCategoryAssignment(vm.categoryid, $stateParams.catalogid);
+         ProductManagementModal.AssignProductToCategory(vm.categoryid, $stateParams.catalogid);
      };
 
      vm.deleteAssignment = function(product){

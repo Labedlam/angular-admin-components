@@ -1,6 +1,6 @@
 <article ui-view>
     <div class="page-header">
-        <button type="button" class="btn btn-primary pull-right" ui-sref=".create"><i class="fa fa-plus-circle"></i> Create New</button>
+        <button type="button" class="btn btn-primary pull-right" ui-sref="products.create"><i class="fa fa-plus-circle"></i> Create New</button>
         <h3>Products</h3>
     </div>
 
@@ -75,7 +75,7 @@
                     <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':product.Active}"></i>
                 </td>
                 <td class="actions-cell">
-                    <button ui-sref=".detail({productid:product.ID})" class="btn btn-default btn-sm">Details</button>
+                    <button ui-sref="products.detail({productid:product.ID})" class="btn btn-default btn-sm">Details</button>
                 </td>
             </tr>
             </tbody>

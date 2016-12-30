@@ -1,0 +1,39 @@
+<!--&lt;!&ndash;This template is displayed when choosing a price schedule (products/templates/productCreateAssignment.tpl.html)&ndash;&gt;-->
+<!--<div class="row">-->
+    <!--<div class="col-sm-6">-->
+        <!--<div ng-if="productCreateAssignment.StandardPriceScheduleID" ng-repeat="scheduleInfo in productCreateAssignment.priceSchedules | filter:{ID: productCreateAssignment.StandardPriceScheduleID} track by $index">-->
+            <!--<h5><b>Name:</b> {{scheduleInfo.Name}}</h5>-->
+            <!--<h5><b>ID:</b> {{scheduleInfo.ID}}</h5>-->
+            <!--<h5><b>Apply Shipping:</b> {{scheduleInfo.ApplyShipping}}</h5>-->
+            <!--<h5><b>Apply Tax:</b> {{scheduleInfo.ApplyTax}}</h5>-->
+            <!--<h5><b>Price Breaks:</b> {{scheduleInfo.PriceBreaks.length}}</h5>-->
+            <!--<div class="table-container">-->
+                <!--<table class="table table-hover">-->
+                    <!--<colgroup>-->
+                        <!--<col class="action-column"/>-->
+                    <!--</colgroup>-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th>-->
+                            <!--Quantity-->
+                        <!--</th>-->
+                        <!--<th>-->
+                            <!--Price per Unit-->
+                        <!--</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr ng-repeat="price in scheduleInfo.PriceBreaks">-->
+                        <!--<td>-->
+                            <!--{{price.Quantity}}-->
+                        <!--</td>-->
+                        <!--<td>-->
+                            <!--{{price.Price | currency}}-->
+                        <!--</td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->

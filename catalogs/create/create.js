@@ -6,7 +6,7 @@ function CreateCatalogConfig($stateProvider) {
     $stateProvider
         .state('catalogs.create', {
             url: '/create',
-            templateUrl: 'catalogs/createCatalog/templates/createCatalog.html',
+            templateUrl: 'catalogs/create/templates/create.html',
             controller: 'CreateCatalogCtrl',
             controllerAs: 'createCatalog'
         });

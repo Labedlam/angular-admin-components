@@ -6,8 +6,8 @@ angular.module('orderCloud')
 function CatalogManagementConfig($stateProvider){
     $stateProvider
         .state('catalogManagement', {
-            parent:'base',
-            url:'/catalogManagement/:catalogid',
+            parent:'buyers.details',
+            url:'/catalogManagement',
             views:{
                 '': {
                     templateUrl:'catalogManagement/categoryTreeView/templates/categoryTreeView.html',
@@ -15,10 +15,11 @@ function CatalogManagementConfig($stateProvider){
                     controllerAs:'categoryTree',
                     resolve: {
                         CatalogID: function($stateParams){
-                            return $stateParams.catalogid;
+                            //set catalog id instead to use non-default catalog
+                            return $stateParams.buyerid;
                         },
                         Tree: function(CategoryTreeService, $stateParams){
-                            return CategoryTreeService.GetCategoryTree($stateParams.catalogid);
+                            return CategoryTreeService.GetCategoryTree($stateParams.buyerid);
                         }
                     }
                 },
@@ -28,7 +29,7 @@ function CatalogManagementConfig($stateProvider){
                     controllerAs:'catalogAssignments',
                     resolve: {
                         CatalogID: function($stateParams){
-                            return $stateParams.catalogid;
+                            return $stateParams.buyerid;
                         }
                     }
                 }

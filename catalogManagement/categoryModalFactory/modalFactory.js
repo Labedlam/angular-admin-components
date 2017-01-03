@@ -50,7 +50,7 @@ function CategoryModalFactory($state, $exceptionHandler, OrderCloud, OrderCloudC
                 OrderCloud.Categories.Delete(id, catalogid)
                     .then(function() {
                         //TODO: replace state reload with something less resource intensive
-                        $state.reload();
+                        $state.go('catalogManagement', {buyerID: catalogid, activeTab: 2}, {reload:true});
                     })
                     .catch(function(err){
                         $exceptionHandler(err);
@@ -83,7 +83,7 @@ function CreateCategoryModalController($state, $exceptionHandler, $uibModalInsta
             .then(function(category) {
                 $uibModalInstance.close(category);
                 //TODO: replace state reload with something less resource intensive
-                $state.reload();
+                $state.go('catalogManagement', {buyerID: vm.catalogid, activeTab: 2}, {reload:true});
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
@@ -113,7 +113,7 @@ function EditCategoryModalController($state, $exceptionHandler, $uibModalInstanc
             .then(function(category) {
                 $uibModalInstance.close(category);
                 //TODO: replace state reload with something less resource intensive
-                $state.reload();
+                $state.go('catalogManagement', {buyerID: vm.catalogid, activeTab: 2}, {reload:true});
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);

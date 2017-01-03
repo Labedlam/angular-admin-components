@@ -1,6 +1,6 @@
 <article id="COMPONENT_Buyers" ui-view class="container-fluid">
     <div class="page-header">
-        <button type="button" class="btn btn-success pull-right" ui-sref=".create"><i class="fa fa-plus-circle"></i> Create New</button>
+        <button type="button" class="btn btn-primary pull-right" ui-sref=".create"><i class="fa fa-plus-circle"></i> Create New</button>
         <h3>Buyers</h3>
     </div>
 
@@ -84,6 +84,8 @@
                                                                ng-class="{'active':buyer.Active}"></i></td>
                 <td class="actions-cell">
                     <button type="button" ui-sref="buyers.edit({buyerid: buyer.ID})" class="btn btn-default btn-sm">Edit
+                    </button>
+                    <button type="button" ui-sref="buyers.details({buyerid: buyer.ID})" class="btn btn-default btn-sm">Details
                     </button>
                 </td>
             </tr>

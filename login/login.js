@@ -22,11 +22,12 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, clientid, buyerid, anonymous) {
+function LoginService($q, $window, $state, $cookies, toastr, OrderCloud, TokenRefresh, clientid, buyerid, anonymous) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
         RememberMe: _rememberMe,
+        AuthAnonymous: _authAnonymous,
         Logout: _logout
     };
 
@@ -70,31 +71,39 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
         return deferred.promise;
     }
 
-    function _logout(){
-        OrderCloud.Auth.RemoveToken();
-        OrderCloud.Auth.RemoveImpersonationToken();
-        OrderCloud.BuyerID.Set(null);
-        TokenRefresh.RemoveToken();
+    function _authAnonymous() {
+        return OrderCloud.Auth.GetToken('')
+            .then(function(data) {
+                OrderCloud.BuyerID.Set(buyerid);
+                OrderCloud.Auth.SetToken(data.access_token);
+                $state.go('home');
+            })
+    }
+
+    function _logout() {
+        angular.forEach($cookies.getAll(), function(val, key) {
+            $cookies.remove(key);
+        });
         $state.go(anonymous ? 'home' : 'login', {}, {reload: true});
     }
 
     function _rememberMe() {
-        TokenRefresh.GetToken()
-            .then(function (refreshToken) {
-                if (refreshToken) {
-                    TokenRefresh.Refresh(refreshToken)
-                        .then(function(token) {
-                            OrderCloud.BuyerID.Set(buyerid);
-                            OrderCloud.Auth.SetToken(token.access_token);
-                            $state.go('home');
-                        })
-                        .catch(function () {
-                            toastr.error('Your token has expired, please log in again.');
-                        });
-                } else {
+        var availableRefreshToken = TokenRefresh.GetToken() || null;
+
+        if (availableRefreshToken) {
+            TokenRefresh.Refresh(availableRefreshToken)
+                .then(function(data) {
+                    OrderCloud.BuyerID.Set(buyerid);
+                    OrderCloud.Auth.SetToken(data.access_token);
+                    $state.go('home');
+                })
+                .catch(function () {
+                    toastr.error('Your token has expired, please log in again.');
                     _logout();
-                }
-            });
+                });
+        } else {
+            _logout();
+        }
     }
 }
 

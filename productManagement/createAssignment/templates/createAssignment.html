@@ -43,13 +43,12 @@
         <div class="form-group col-md-2">
             <label></label>
             <button type="button" class="btn btn-primary form-control"
-                    ng-click="productCreateAssignment.createScheduleModal()"><i
+                    ng-click="productCreateAssignment.createPriceSchedule()"><i
                     class="fa fa-plus-circle"></i> Create New
             </button>
         </div>
     </div>
-    <div uib-collapse="!productCreateAssignment.selectedPriceSchedule">
-        <div class="panel panel-default">
+    <div uib-collapse="!productCreateAssignment.selectedPriceSchedule"><div class="panel panel-default">
             <div class="panel-heading">
                 Price Schedule Details
             </div>
@@ -129,57 +128,7 @@
             Save Assignment
         </button>
     </div>
-    <div>
-        <h3>Existing Assignments</h3>
-
-        <!--====== LIST ======-->
-        <div ng-if="productCreateAssignment.assignments.Items.length">
-            <table class="table table-hover table-condensed oc-table-responsive" controlleras="productCreateAssignment">
-                <thead>
-                <tr>
-                    <th>
-                        <div>Party ID</div>
-                    </th>
-                    <th>
-                        <div>Standard Price Schedule</div>
-                    </th>
-                    <th>
-                        <div>Delete Price Assignment</div>
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="assignment in productCreateAssignment.assignments.Items">
-                    <th scope="row">{{assignment.UserID || assignment.UserGroupID || assignment.BuyerID}}
-                        <small class="text-muted" ng-if="!assignment.UserID && !assignment.UserGroupID">(Buyer)</small>
-                    </th>
-                    <td data-title="Standard Price Schedule">{{assignment.StandardPriceScheduleID}}
-                        <span class="text-muted" ng-if="!assignment.StandardPriceScheduleID">None</span>
-                    </td>
-                    <!--<td data-title="Replenishment Price Schedule">{{assignment.ReplenishmentPriceScheduleID}}-->
-                    <!--<span class="text-muted" ng-if="!assignment.ReplenishmentPriceScheduleID">None</span>-->
-                    <!--</td>-->
-                    <td class="actions-cell">
-                        <button type="button" class="btn btn-danger btn-sm" uib-tooltip="Delete Assignment"
-                                tooltip-placement="left" ng-click="productCreateAssignment.deleteAssignment(this)">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="text-center"
-                 ng-if="application.$ocMedia('min-width:768px') && productCreateAssignment.assignments.Meta.TotalPages > 1">
-                <uib-pagination boundary-links="productCreateAssignment.assignments.Meta.TotalPages > 5"
-                                max-size="10" total-items="productCreateAssignment.assignments.Meta.TotalCount"
-                                items-per-page="productCreateAssignment.assignments.Meta.PageSize"
-                                ng-model="productCreateAssignment.assignments.Meta.Page"
-                                ng-change="productCreateAssignment.pageChanged()"></uib-pagination>
-            </div>
-        </div>
-    </div>
+    <oc-assignment-list productid="productCreateAssignment.product.ID" buyerid="productCreateAssignment.selectedBuyer"></oc-assignment-list>
 </div>
 <hr>
 

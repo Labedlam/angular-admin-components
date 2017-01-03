@@ -3,18 +3,10 @@
         New Catalog
     </h3>
     <div class="row">
-        <div class="form-group col-sm-10">
+        <div class="form-group col-sm-12">
             <label for="catalogIDInput">Catalog ID</label>
             <input id="catalogIDInput" type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)"
                    pattern-err-type="ID_Name" ng-model="catalogCreate.catalog.ID"/>
-        </div>
-        <div class="form-group col-md-2">
-            <label>Status</label>
-            <label class="btn btn-default c-product_label" for="productActiveInput">
-                <input class="badgebox" id="productActiveInput" type="checkbox"
-                       ng-model="catalogCreate.catalog.Active"/>
-                Active <span class="badge"><i class="fa fa-check"></i></span>
-            </label>
         </div>
     </div>
     <div class="row">
@@ -31,5 +23,5 @@
         </div>
     </div>
     <button class="btn btn-default" ui-sref="catalogs">Cancel</button>
-    <button class="btn btn-default" ng-click="catalogCreate.saveCatalog()">Save Catalog</button>
+    <button class="btn btn-default" type="submit">Save Catalog</button>
 </form>

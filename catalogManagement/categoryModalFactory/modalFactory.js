@@ -12,7 +12,7 @@ function CategoryModalFactory($state, $exceptionHandler, OrderCloud, OrderCloudC
 
     function _create(parentid, catalogid) {
         $uibModal.open({
-            templateUrl: 'categories/templates/create.modal.tpl.html',
+            templateUrl: 'catalogManagement/categoryModalFactory/templates/create.html',
             controller: 'CreateCategoryModalCtrl',
             controllerAs: 'createCategory',
             size: 'md',
@@ -29,7 +29,7 @@ function CategoryModalFactory($state, $exceptionHandler, OrderCloud, OrderCloudC
 
     function _edit(categoryid, catalogid) {
         $uibModal.open({
-            templateUrl: 'categories/templates/edit.modal.tpl.html',
+            templateUrl: 'catalogManagement/categoryModalFactory/templates/edit.html',
             controller: 'EditCategoryModalCtrl',
             controllerAs: 'editCategory',
             size: 'md',

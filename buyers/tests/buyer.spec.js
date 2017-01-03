@@ -167,11 +167,14 @@ fdescribe('Component: Buyers', function() {
     });
 
     describe('Controller: BuyerEditCtrl', function() {
-        var buyerEditCtrl;
-        beforeEach(inject(function($state, $controller) {
+        var buyerEditCtrl,
+            toaster;
+        beforeEach(inject(function($state, $controller, toastr) {
+            toaster = toastr;
             buyerEditCtrl = $controller('BuyerEditCtrl', {
                 $scope: scope,
-                SelectedBuyer: buyer
+                SelectedBuyer: buyer,
+                toastr: toaster
             });
             spyOn($state, 'go');
         }));
@@ -182,23 +185,30 @@ fdescribe('Component: Buyers', function() {
                 var defer = q.defer();
                 defer.resolve(buyer);
                 spyOn(oc.Buyers, 'Update').and.returnValue(defer.promise);
+                spyOn(toaster, 'success');
                 buyerEditCtrl.Submit();
                 scope.$digest();
             });
-            it ('should call the Buyers Update method', function() {
+            it('should call the Buyers Update method', function() {
                 expect(oc.Buyers.Update).toHaveBeenCalledWith(buyerEditCtrl.buyer, buyerEditCtrl.buyer.ID);
             });
-            it ('should enter the buyers state', inject(function($state) {
+            it('should enter the buyers state', inject(function($state) {
                 expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload: true});
             }));
+            it('should display success toastr upon success', function() {
+                expect(toaster.success).toHaveBeenCalledWith('Buyer Updated', 'Success');
+            })
         });
     });
 
     describe('Controller: BuyerCreateCtrl', function() {
-        var buyerCreateCtrl;
-        beforeEach(inject(function($state, $controller) {
+        var buyerCreateCtrl,
+            toaster;
+        beforeEach(inject(function($state, $controller, toastr) {
+            toaster = toastr;
             buyerCreateCtrl = $controller('BuyerCreateCtrl', {
-                $scope: scope
+                $scope: scope,
+                toastr: toaster
             });
             spyOn($state, 'go');
         }));
@@ -209,15 +219,19 @@ fdescribe('Component: Buyers', function() {
                 var defer = q.defer();
                 defer.resolve(buyer);
                 spyOn(oc.Buyers, 'Create').and.returnValue(defer.promise);
+                spyOn(toaster, 'success');
                 buyerCreateCtrl.Submit();
                 scope.$digest();
             });
-            it ('should call the Buyers Create method', function() {
+            it('should call the Buyers Create method', function() {
                 expect(oc.Buyers.Create).toHaveBeenCalledWith(buyer);
             });
-            it ('should enter the buyers state', inject(function($state) {
+            it('should enter the buyers state', inject(function($state) {
                 expect($state.go).toHaveBeenCalledWith('buyers', {}, {reload: true});
             }));
+            it('should display toastr success upon success', function() {
+                expect(toaster.success).toHaveBeenCalledWith('Buyer Created', 'Success');
+            })
         });
     });
 });

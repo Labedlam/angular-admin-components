@@ -52,10 +52,17 @@ function UserGroupsConfig($stateProvider) {
         })
         .state('userGroups.assign', {
             url: '/:usergroupid/assign',
+            params: {
+                fromRoute: null,
+                buyerid: null
+            },
             templateUrl: 'userGroups/templates/userGroupAssign.tpl.html',
             controller: 'UserGroupAssignCtrl',
             controllerAs: 'userGroupAssign',
             resolve: {
+                Parameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
                 UserList: function(OrderCloud) {
                     return OrderCloud.Users.List(null, null, 1, 20);
                 },
@@ -191,13 +198,14 @@ function UserGroupCreateController($exceptionHandler, $state, toastr, OrderCloud
     };
 }
 
-function UserGroupAssignController($scope, toastr, OrderCloud, Assignments, Paging, UserList, AssignedUsers, SelectedUserGroup) {
+function UserGroupAssignController($scope, $state, toastr, OrderCloud, Assignments, Paging, Parameters, UserList, AssignedUsers, SelectedUserGroup) {
     var vm = this;
     vm.UserGroup = SelectedUserGroup;
     vm.list = UserList;
     vm.assignments = AssignedUsers;
     vm.saveAssignments = SaveAssignment;
     vm.pagingfunction = PagingFunction;
+    vm.cancel = Cancel;
 
     $scope.$watchCollection(function() {
         return vm.list;
@@ -206,7 +214,6 @@ function UserGroupAssignController($scope, toastr, OrderCloud, Assignments, Pagi
     });
 
     function SaveFunc(ItemID) {
-        console.log("this is ItemID", ItemID);
         return OrderCloud.UserGroups.SaveUserAssignment({
             UserID: ItemID,
             UserGroupID: vm.UserGroup.ID
@@ -228,5 +235,13 @@ function UserGroupAssignController($scope, toastr, OrderCloud, Assignments, Pagi
 
     function PagingFunction() {
         return Paging.Paging(vm.list, 'Users', vm.assignments, AssignmentFunc);
+    }
+
+    function Cancel() {
+        if(Parameters.fromRoute == "buyerDetails") {
+            $state.go('buyers.details', {buyerid: Parameters.buyerid}, {reload: false});
+        } else {
+            $state.go('userGroups');
+        }
     }
 }

@@ -72,7 +72,7 @@
         <td data-title="Description">{{userGroups.Description}}</td>
         <td class="actions-cell">
             <button ui-sref="userGroups.edit({usergroupid:userGroups.ID})" class="btn btn-default btn-sm">Edit</button>
-            <button ui-sref="userGroups.assign({usergroupid:userGroups.ID})" class="btn btn-default btn-sm">Assign</button>
+            <button ui-sref="userGroups.assign({fromRoute: 'buyerDetails', usergroupid:userGroups.ID, buyerid: buyerDetails.selectedBuyer.ID})" class="btn btn-default btn-sm">Assign</button>
         </td>
     </tr>
     </tbody>

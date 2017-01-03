@@ -1,4 +1,4 @@
-fdescribe('Component: Buyers', function() {
+describe('Component: Buyers', function() {
     var scope,
         q,
         buyer,

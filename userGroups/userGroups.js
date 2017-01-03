@@ -37,9 +37,18 @@ function UserGroupsConfig($stateProvider) {
         })
         .state('userGroups.create', {
             url: '/create',
+            params: {
+                fromRoute: null,
+                buyerid: null
+            },
             templateUrl: 'userGroups/templates/userGroupCreate.tpl.html',
             controller: 'UserGroupCreateCtrl',
-            controllerAs: 'userGroupCreate'
+            controllerAs: 'userGroupCreate',
+            resolve: {
+                Parameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                }
+            }
         })
         .state('userGroups.assign', {
             url: '/:usergroupid/assign',
@@ -162,14 +171,19 @@ function UserGroupEditController($exceptionHandler, $state, toastr, OrderCloud, 
     };
 }
 
-function UserGroupCreateController($exceptionHandler, $state, toastr, OrderCloud) {
+function UserGroupCreateController($exceptionHandler, $state, toastr, OrderCloud, Parameters) {
     var vm = this;
 
     vm.Submit = function() {
         OrderCloud.UserGroups.Create(vm.userGroup)
             .then(function() {
-                $state.go('userGroups', {}, {reload: true});
-                toastr.success('User Group Created', 'Success');
+                if(Parameters.fromRoute == "buyerDetails") {
+                    $state.go('buyers.details', {buyerid: Parameters.buyerid}, {reload: true});
+                    toastr.success('User Group Created', 'Success');
+                } else {
+                    $state.go('userGroups', {}, {reload: true});
+                    toastr.success('User Group Created', 'Success');
+                }
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)

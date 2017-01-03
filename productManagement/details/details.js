@@ -39,7 +39,7 @@ function ProductDetailConfig($stateProvider) {
 }
 
 
-function DetailsController($stateParams, $exceptionHandler, $state, toastr, OrderCloud, Assignments, SelectedProduct, PriceSchedule, ProductManagementModal){
+function DetailsController($stateParams, $exceptionHandler, $state, toastr, OrderCloud, OrderCloudConfirm, Assignments, SelectedProduct, PriceSchedule, ProductManagementModal){
     var vm = this;
 
     vm.list = Assignments;
@@ -50,13 +50,17 @@ function DetailsController($stateParams, $exceptionHandler, $state, toastr, Orde
     vm.schedule = PriceSchedule;
 
     vm.DeleteAssignment = DeleteAssignment;
+    vm.deleteProduct = deleteProduct;
     vm.editProduct = editProduct;
 
 
 
     function editProduct() {
-        console.log("hello");
          ProductManagementModal.EditProduct($stateParams.productid)
+             .then(function(data){
+                 console.log("here is the product update", data);
+                 vm.product = data;
+             })
     };
 
     function DeleteAssignment(scope) {
@@ -67,6 +71,20 @@ function DetailsController($stateParams, $exceptionHandler, $state, toastr, Orde
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
+            });
+    };
+
+    function deleteProduct(){
+        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
+            .then(function(){
+                OrderCloud.Products.Delete(vm.productID)
+                    .then(function() {
+                        toastr.success('Product Deleted', 'Success');
+                        $state.go('products', {}, {reload: true});
+                    })
+                    .catch(function(ex) {
+                        $exceptionHandler(ex)
+                    });
             });
     };
 }

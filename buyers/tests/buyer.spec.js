@@ -1,4 +1,4 @@
-describe('Component: Buyers', function() {
+fdescribe('Component: Buyers', function() {
     var scope,
         q,
         buyer,
@@ -23,16 +23,16 @@ describe('Component: Buyers', function() {
         var state;
         beforeEach(inject(function($state, OrderCloudParameters) {
             state = $state.get('buyers');
-            spyOn(OrderCloudParameters, 'Get').and.returnValue(null);
-            spyOn(oc.Buyers, 'List').and.returnValue(null);
+            spyOn(OrderCloudParameters, 'Get');
+            spyOn(oc.Buyers, 'List');
         }));
-        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters, $stateParams){
             $injector.invoke(state.resolve.Parameters);
-            expect(OrderCloudParameters.Get).toHaveBeenCalled();
+            expect(OrderCloudParameters.Get).toHaveBeenCalledWith($stateParams);
         }));
-        it('should resolve BuyerList', inject(function($injector) {
+        it('should resolve BuyersList', inject(function($injector, Parameters) {
             $injector.invoke(state.resolve.BuyerList);
-            expect(oc.Buyers.List).toHaveBeenCalled();
+            expect(oc.Buyers.List).toHaveBeenCalledWith(Parameters.search, Parameters.page, Parameters.pageSize || 12);
         }));
     });
 
@@ -40,13 +40,38 @@ describe('Component: Buyers', function() {
         var state;
         beforeEach(inject(function($state) {
             state = $state.get('buyers.edit');
-            var defer = q.defer();
-            defer.resolve();
-            spyOn(oc.Buyers, 'Get').and.returnValue(defer.promise);
+            spyOn(oc.Buyers, 'Get');
         }));
         it('should resolve SelectedBuyer', inject(function($injector, $stateParams) {
             $injector.invoke(state.resolve.SelectedBuyer);
             expect(oc.Buyers.Get).toHaveBeenCalledWith($stateParams.buyerid);
+        }));
+    });
+
+    describe('State: buyers.details', function(){
+        var state;
+        beforeEach(inject(function($state, OrderCloudParameters){
+            state = $state.get('buyers.details');
+            spyOn(OrderCloudParameters, 'Get');
+            spyOn(oc.Buyers, 'Get');
+            spyOn(oc.Users, 'List');
+            spyOn(oc.UserGroups, 'List');
+        }));
+        it('should resolve Parameters', inject(function($injector, OrderCloudParameters, $stateParams) {
+            $injector.invoke(state.resolve.Parameters);
+            expect(OrderCloudParameters.Get).toHaveBeenCalledWith($stateParams)
+        }));
+        it('should resolve SelectedBuyer', inject(function($injector, $stateParams){
+            $injector.invoke(state.resolve.SelectedBuyer);
+            expect(oc.Buyers.Get).toHaveBeenCalledWith($stateParams.buyerid);
+        }));
+        it('should resolve UserList', inject(function($injector, $stateParams, Parameters){
+            $injector.invoke(state.resolve.UserList);
+            expect(oc.Users.List).toHaveBeenCalledWith(Parameters.userGroupID, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters, $stateParams.buyerid)
+        }));
+        it('should resolve UserGroupList', inject(function($injector, $stateParams, Parameters){
+            $injector.invoke(state.resolve.UserGroupList);
+            expect(oc.UserGroups.List).toHaveBeenCalledWith(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters, $stateParams.buyerid);
         }));
     });
 

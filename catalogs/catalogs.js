@@ -250,7 +250,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
                  vm.selectedProducts = null;
              });
          return df.promise;
-     }
+     };
          
      vm.addProductModal = function(){
          ProductManagementModal.AssignProductToCategory(vm.categoryid, $stateParams.catalogid);

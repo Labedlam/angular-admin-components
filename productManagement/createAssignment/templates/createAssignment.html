@@ -51,6 +51,7 @@
     <div uib-collapse="!productCreateAssignment.selectedPriceSchedule"><div class="panel panel-default">
             <div class="panel-heading">
                 Price Schedule Details
+                <button class="btn btn-default pull-right" ng-click="productCreateAssignment.editPriceSchedule(productCreateAssignment.selectedPriceSchedule)">Edit</button>
             </div>
             <div class="panel-body">
               <div class="row">
@@ -68,8 +69,6 @@
                   </div>
                   <div class="col-md-6">
                       <label>Price Breaks</label>
-                      <button class="btn btn-default pull-right" ng-click="productCreateAssignment.editPriceSchedule(productCreateAssignment.selectedPriceSchedule)">Edit</button>
-
                       <hr>
                       <span ng-repeat="price in productCreateAssignment.selectedPriceSchedule.PriceBreaks"><label>Quantity: </label> {{price.Quantity}}  <label>Price: </label> {{price.Price}} <br></span>
 

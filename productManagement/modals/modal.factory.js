@@ -9,16 +9,16 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud) {
     return {
         CreatePriceSchedule : _createPriceSchedule,
         EditPriceSchedule : _editPriceSchedule,
-        EditProduct : _editProduct,
+        EditProduct : _editProduct
     };
 
     function _createPriceSchedule(){
-        $uibModal.open({
+       return $uibModal.open({
             templateUrl: 'productManagement/modals/templates/createPriceSchedule.html',
             controller: 'CreatePriceScheduleModalCtrl',
             controllerAs: 'createPriceScheduleModal',
             size: 'lg'
-        })
+        }).result
     }
 
     function _editPriceSchedule(priceSchedule) {
@@ -52,7 +52,7 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud) {
     }
 
     function _editProduct(productID){
-        $uibModal.open({
+       return $uibModal.open({
             animation: true,
             templateUrl: 'productManagement/modals/templates/editProduct.html',
             controller: 'EditProductModalCtrl',
@@ -63,12 +63,12 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud) {
                     return OrderCloud.Products.Get(productID);
                 }
             }
-        });
+        }).result
 
     }
 }
 
-function CreatePriceScheduleModalController($uibModalInstance, $exceptionHandler, toastr, OrderCloud, PriceBreak) {
+function CreatePriceScheduleModalController($q, $uibModalInstance, $exceptionHandler, toastr, OrderCloud, PriceBreak) {
     var vm = this;
     vm.priceSchedule = {};
     vm.priceSchedule.RestrictedQuantity = false;
@@ -76,18 +76,28 @@ function CreatePriceScheduleModalController($uibModalInstance, $exceptionHandler
     vm.priceSchedule.MinQuantity = 1;
     vm.priceSchedule.OrderType = 'Standard';
 
-    vm.addPriceBreak = function () {
+    vm.addPriceBreak = addPriceBreak;
+    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
+    vm.submit = submit;
+    vm.cancel = cancel;
+
+    function addPriceBreak() {
         PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
         vm.quantity = null;
         vm.price = null;
     };
 
-    vm.deletePriceBreak = PriceBreak.DeletePriceBreak;
+    function submit () {
+        //loading indicator promise
+        var df =  $q.defer();
+        df.templateUrl = 'common/loading-indicators/templates/view.loading.tpl.html';
+        df.message = 'Creating Price Schedule';
+        vm.loading = df;
 
-    vm.submit = function () {
         vm.priceSchedule = PriceBreak.SetMinMax(vm.priceSchedule);
         OrderCloud.PriceSchedules.Create(vm.priceSchedule)
             .then(function (data) {
+                df.resolve(data);
                 $uibModalInstance.close(data);
                 toastr.success('Price Schedule Created', 'Success')
             })
@@ -96,35 +106,39 @@ function CreatePriceScheduleModalController($uibModalInstance, $exceptionHandler
             });
     };
 
-    vm.cancel = function() {
+    function cancel() {
         $uibModalInstance.dismiss('cancel');
     };
 };
 
 function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibModalInstance, toastr, OrderCloud, SelectedPriceSchedule, PriceBreak , ProductsAssignedToPriceSchedule, OrderCloudConfirm) {
     var vm = this;
-
     vm.priceSchedule = SelectedPriceSchedule;
     vm.productsAssignedToPriceSchedule = ProductsAssignedToPriceSchedule;
 
     PriceBreak.AddDisplayQuantity(vm.priceSchedule);
+    vm.addPriceBreak = addPriceBreak;
+    vm.cancel = cancel;
+    vm.Delete = Delete;
+    vm.deletePriceBreak = deletePriceBreak;
+    vm.submit = submit;
 
 
-
-    vm.addPriceBreak =  function(){
+    function addPriceBreak(){
         PriceBreak.AddPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
         vm.quantity = null;
         vm.price = null;
     };
-    vm.deletePriceBreak = function(priceSchedule, index){
+
+    function deletePriceBreak(priceSchedule, index){
         PriceBreak.DeletePriceBreak(priceSchedule, index)
     };
 
-    vm.cancel = function() {
+    function cancel() {
         $uibModalInstance.dismiss();
     };
 
-    vm.submit = function() {
+    function submit() {
         //loading indicator promise
         var df =  $q.defer();
         df.templateUrl = 'common/loading-indicators/templates/view.loading.tpl.html';
@@ -135,13 +149,14 @@ function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibMod
             .then(function(data){
                 df.resolve(data);
                 $uibModalInstance.close(data);
+                toastr.success('Price Schedule modified', 'Success');
             })
             .catch(function(error){
                 $exceptionHandler(error);
             });
     };
 
-    vm.Delete = function(){
+    function Delete(){
         OrderCloudConfirm.Confirm("Are you sure you want to delete this Price Schedule, it may be assigned to other products?")
             .then(function(){
                 var df = $q.defer();
@@ -151,7 +166,6 @@ function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibMod
 
                 OrderCloud.PriceSchedules.Delete(vm.priceSchedule.ID)
                     .then(function(){
-
                         df.resolve();
                         $uibModalInstance.close();
                         toastr.success('Price Schedule Deleted', 'Success');

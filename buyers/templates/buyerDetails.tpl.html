@@ -11,27 +11,7 @@
             <uib-tab>
                 <br>
                 <uib-tab-heading>User Groups</uib-tab-heading>
-                <table class="table table-hover oc-table-responsive">
-                    <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="userGroups in buyerDetails.userGroupList.Items">
-                        <th scope="row">{{userGroups.ID}}</th>
-                        <td data-title="Name">{{userGroups.Name}}</td>
-                        <td data-title="Description">{{userGroups.Description}}</td>
-                        <td class="actions-cell">
-                            <button ui-sref="userGroups.edit({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Edit</button>
-                            <button ui-sref="userGroups.assign({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Assign</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div ng-include="'buyers/templates/buyerDetails_userGroups.tpl.html'"></div>
             </uib-tab>
             <uib-tab>
                 <br>

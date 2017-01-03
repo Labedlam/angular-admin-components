@@ -14,7 +14,6 @@ function BuyerConfig($stateProvider) {
             controller: 'BuyerCtrl',
             controllerAs: 'buyers',
             url: '/buyers?search&page&pageSize&searchOn&sortBy',
-            data: {componentName: 'Buyers'},
             resolve : {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
@@ -221,14 +220,12 @@ function BuyerDetailsController(Parameters, OrderCloudParameters, OrderCloud, $o
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Buyers.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloud.Users.List(Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
             });
     };
-
-
 }
 
 function BuyerCreateController($exceptionHandler, $state, toastr, OrderCloud) {

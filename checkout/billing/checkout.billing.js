@@ -11,11 +11,11 @@ function checkoutBillingConfig($stateProvider) {
 			controller: 'CheckoutBillingCtrl',
 			controllerAs: 'checkoutBilling',
 			resolve: {
-				BillingAddresses: function($q, Underscore, OrderCloud) {
+				BillingAddresses: function($q, OrderCloud) {
                     var dfd = $q.defer();
                     OrderCloud.Me.ListAddresses()
                         .then(function(data) {
-                            dfd.resolve(Underscore.where(data.Items, {Billing: true}));
+                            dfd.resolve(_.where(data.Items, {Billing: true}));
                         });
                     return dfd.promise;
 				}

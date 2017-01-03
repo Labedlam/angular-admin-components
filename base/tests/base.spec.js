@@ -1,18 +1,16 @@
 describe('Component: Base', function() {
     var q,
         scope,
-        oc,
-        underscore;
+        oc;
     beforeEach(module('orderCloud', function($provide){
        $provide.value('ComponentList', {});
     }));
     beforeEach(module('orderCloud.sdk'));
     beforeEach(module('ui.router'));
-    beforeEach(inject(function($q, $rootScope, OrderCloud, Underscore) {
+    beforeEach(inject(function($q, $rootScope, OrderCloud) {
         q = $q;
         scope = $rootScope.$new();
         oc = OrderCloud;
-        underscore = Underscore;
     }));
     describe('State: Base', function() {
         var state;
@@ -46,7 +44,7 @@ describe('Component: Base', function() {
         }));
         it ('should resolve ComponentsList', inject(function($injector, $state) {
             var currentUser = $injector.invoke(state.resolve.CurrentUser);
-            var components = $injector.invoke(state.resolve.ComponentList, scope, {$state: $state, $q: q, Underscore: underscore, CurrentUser: currentUser});
+            var components = $injector.invoke(state.resolve.ComponentList, scope, {$state: $state, $q: q, CurrentUser: currentUser});
             expect(components.nonSpecific).not.toBe(null);
             expect(components.buyerSpecific).not.toBe(null);
         }));

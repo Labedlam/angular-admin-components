@@ -5,7 +5,7 @@ angular.module('orderCloud')
     .controller('EditProductModalCtrl', EditProductModalController)
 ;
 
-function ProductManagementModalFactory($uibModal, $q, OrderCloud, Underscore) {
+function ProductManagementModalFactory($uibModal, $q, OrderCloud) {
     return {
         CreatePriceSchedule : _createPriceSchedule,
         EditPriceSchedule : _editPriceSchedule,
@@ -42,7 +42,7 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud, Underscore) {
                             angular.forEach(data.Items, function(assignment){
                                 productsAssignedToPriceSchedule.push(assignment.ProductID)
                             });
-                            productsAssignedToPriceSchedule = Underscore.uniq(productsAssignedToPriceSchedule);
+                            productsAssignedToPriceSchedule = _.uniq(productsAssignedToPriceSchedule);
                             dfd.resolve(productsAssignedToPriceSchedule)
                         });
                     return dfd.promise;

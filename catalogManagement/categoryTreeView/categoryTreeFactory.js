@@ -4,7 +4,7 @@ angular.module('orderCloud')
     .directive('categoryNode', CategoryNode)
     .directive('categoryTree', CategoryTree)
 ;
-function CategoryTreeService($q, Underscore, OrderCloud) {
+function CategoryTreeService($q, OrderCloud) {
     return {
         GetCategoryTree: tree,
         UpdateCategoryNode: update
@@ -15,7 +15,7 @@ function CategoryTreeService($q, Underscore, OrderCloud) {
         var deferred = $q.defer();
         OrderCloud.Categories.List(null, 1, 100, null, null, null, 'all', catalogid)
             .then(function(list) {
-                var query = Underscore.where(list.Items, {
+                var query = _.where(list.Items, {
                     ParentID: null
                 });
                 angular.forEach(query, function(node) {
@@ -23,7 +23,7 @@ function CategoryTreeService($q, Underscore, OrderCloud) {
                 });
 
                 function getnode(node) {
-                    var children = Underscore.where(list.Items, {
+                    var children = _.where(list.Items, {
                         ParentID: node.ID
                     });
                     if (children.length > 0) {

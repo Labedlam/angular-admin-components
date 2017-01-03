@@ -109,7 +109,7 @@ fdescribe('Component: Buyers', function() {
             buyerCreateCtrl = $controller('BuyerCreateCtrl', {
                 $scope: scope
             });
-            spyOn($state, 'go').and.returnValue(true);
+            spyOn($state, 'go');
         }));
 
         describe('Submit', function() {

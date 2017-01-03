@@ -1,37 +1,37 @@
 <article ui-view>
+    <button class="btn btn-default" ui-sref="buyers">Buyers List</button>
     <div class="container-fluid">
         <h3 class="page-header">{{buyerDetails.selectedBuyer.Name}}</h3>
         <uib-tabset>
             <uib-tab>
                 <br>
                 <uib-tab-heading>Users</uib-tab-heading>
-                <div>
-                    {{users.Username}}
-                    <table class="table table-hover oc-table-responsive">
-                        <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th>Username</th>
-                            <th>Name</th>
-                            <th class="text-center">Active</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="users in buyerDetails.userList.Items">
-                            <th scope="row">{{users.ID}}</th>
-                            <td data-title="Name">{{users.Username}}</td>
-                            <td data-title="Description">{{users.FirstName}}&nbsp;{{users.LastName}}</td>
-                            <td class="text-center" data-title="Active">
-                                <i class="fa fa-circle" aria-hidden="true" ng-class="{'active':users.Active}"></i>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div ng-include="'buyers/templates/buyerDetails_users.tpl.html'"></div>
             </uib-tab>
             <uib-tab>
                 <br>
                 <uib-tab-heading>User Groups</uib-tab-heading>
+                <table class="table table-hover oc-table-responsive">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="userGroups in buyerDetails.userGroupList.Items">
+                        <th scope="row">{{userGroups.ID}}</th>
+                        <td data-title="Name">{{userGroups.Name}}</td>
+                        <td data-title="Description">{{userGroups.Description}}</td>
+                        <td class="actions-cell">
+                            <button ui-sref="userGroups.edit({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Edit</button>
+                            <button ui-sref="userGroups.assign({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Assign</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </uib-tab>
             <uib-tab>
                 <br>

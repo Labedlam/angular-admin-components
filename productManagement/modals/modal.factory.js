@@ -177,7 +177,7 @@ function EditPriceScheduleModalController($q, $state, $exceptionHandler, $uibMod
     }
 }
 
-function EditProductModalController($exceptionHandler, $uibModalInstance, $state, $stateParams, toastr, OrderCloud, OrderCloudConfirm, SelectedProduct) {
+function EditProductModalController($q, $exceptionHandler, $uibModalInstance, $state, $stateParams, toastr, OrderCloud, SelectedProduct) {
     var vm = this,
         productid = angular.copy(SelectedProduct.ID);
     vm.productName = angular.copy(SelectedProduct.Name);
@@ -185,34 +185,26 @@ function EditProductModalController($exceptionHandler, $uibModalInstance, $state
     vm.product = SelectedProduct;
 
     vm.updateProduct = updateProduct;
-    vm.deleteProduct = deleteProduct;
     vm.submit = submit;
     vm.cancel = cancel;
 
     function updateProduct() {
+        //loading indicator promise
+        var df =  $q.defer();
+        df.templateUrl = 'common/loading-indicators/templates/view.loading.tpl.html';
+        df.message = 'Updating Product';
+        vm.loading = df;
+
         OrderCloud.Products.Update(productid, vm.product)
-            .then(function() {
-                $state.go('products.detail', {}, {reload: true});
+            .then(function(data) {
+                df.resolve(data);
+                $uibModalInstance.close(data);
+                // $state.go('products.detail', {productid: data.ID}, {reload: false});
                 toastr.success('Product Updated', 'Success');
-                vm.submit();
+
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
-            });
-    };
-
-    function deleteProduct(){
-        OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
-            .then(function(){
-                OrderCloud.Products.Delete(vm.productID)
-                    .then(function() {
-                        toastr.success('Product Deleted', 'Success');
-                        vm.submit();
-                        $state.go('products', {}, {reload: true});
-                    })
-                    .catch(function(ex) {
-                        $exceptionHandler(ex)
-                    });
             });
     };
 

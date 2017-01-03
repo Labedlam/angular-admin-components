@@ -26,10 +26,10 @@ function ProductsConfig($stateProvider) {
 function ProductsController($state, $ocMedia, OrderCloud, OrderCloudParameters, ProductList, Parameters) {
     var vm = this;
     vm.list = ProductList;
-    //Check if filters are applied
-    vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection);
     //Set parameters
     vm.parameters = Parameters;
+    //Check if filters are applied
+    vm.filtersApplied = vm.parameters.filters || vm.parameters.from || vm.parameters.to || ($ocMedia('max-width:767px') && vm.sortSelection);
     //Sort by is a filter on mobile devices
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
     //Check if search was used

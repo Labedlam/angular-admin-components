@@ -75,6 +75,97 @@ fdescribe('Component: Buyers', function() {
         }));
     });
 
+    describe('Controller: BuyerCtrl', function() {
+        var buyerCtrl,
+            parameters,
+            buyerList;
+        beforeEach(inject(function($state, $controller, Parameters) {
+            parameters = Parameters;
+            buyerCtrl = $controller('BuyerCtrl', {
+                Parameters: parameters,
+                BuyerList: buyerList
+            });
+            spyOn($state, 'go');
+        }));
+        describe('filter', function() {
+            it('should refresh the page with the filter parameters', inject(function($state, OrderCloudParameters) {
+                buyerCtrl.filter();
+                expect($state.go).toHaveBeenCalledWith('.', OrderCloudParameters.Create(parameters));
+            }));
+        });
+        describe('search', function() {
+            beforeEach(function() {
+                spyOn(buyerCtrl, 'filter');
+            });
+            it('should call the filter method', function() {
+                buyerCtrl.search();
+                expect(buyerCtrl.filter).toHaveBeenCalledWith(true);
+            })
+        });
+        describe('clearSearch', function() {
+            beforeEach(function() {
+                spyOn(buyerCtrl, 'filter');
+                buyerCtrl.parameters.search = null;
+            });
+            it('should call the filter method with search parameters set to null', function() {
+                buyerCtrl.clearSearch();
+                expect(buyerCtrl.filter).toHaveBeenCalledWith(true);
+            })
+        });
+        describe('clearFilters', function() {
+            beforeEach(function() {
+                spyOn(buyerCtrl, 'filter');
+                buyerCtrl.parameters.filters = null;
+            });
+            it('should call the filter method with filter parameters set to null', function(){
+                buyerCtrl.clearFilters();
+                expect(buyerCtrl.filter).toHaveBeenCalledWith(true);
+            })
+        });
+        describe('updateSort', function() {
+            beforeEach(function() {
+                spyOn(buyerCtrl, 'filter');
+            });
+            it('should call the filter method', function() {
+                buyerCtrl.updateSort();
+                expect(buyerCtrl.filter).toHaveBeenCalledWith(false);
+            })
+        });
+        describe('pageChanged', function() {
+            beforeEach(function(){
+                buyerCtrl.list = {
+                    Meta: {
+                        Page: '',
+                        PageSize: ''
+                    }
+                };
+            });
+            it('should go to the specified page', inject(function($state) {
+                buyerCtrl.pageChanged();
+                expect($state.go).toHaveBeenCalledWith('.',{page: buyerCtrl.list.Meta.Page});
+            }));
+        });
+        describe('loadMore', function() {
+            beforeEach(function() {
+                var defer = q.defer();
+                buyerCtrl.list = {
+                    Meta: {
+                        Page: '',
+                        PageSize: ''
+                    },
+                    Items: {}
+                };
+                defer.resolve(buyerCtrl.list);
+                buyerCtrl.buyerList = buyerList;
+                spyOn(oc.Buyers, 'List').and.returnValue(defer.promise);
+            });
+            it('should call the loadMore method', inject(function(Parameters) {
+                buyerCtrl.loadMore();
+                expect(oc.Buyers.List).toHaveBeenCalledWith(Parameters.search, buyerCtrl.list.Meta.Page + 1, Parameters.pageSize || buyerCtrl.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+            }))
+        })
+    });
+
     describe('Controller: BuyerEditCtrl', function() {
         var buyerEditCtrl;
         beforeEach(inject(function($state, $controller) {
@@ -82,7 +173,7 @@ fdescribe('Component: Buyers', function() {
                 $scope: scope,
                 SelectedBuyer: buyer
             });
-            spyOn($state, 'go').and.returnValue(true);
+            spyOn($state, 'go');
         }));
 
         describe('Submit', function() {

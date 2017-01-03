@@ -159,7 +159,7 @@ function OrdersDetailLineItemController(SelectedLineItem) {
     vm.lineItem = SelectedLineItem;
 }
 
-function OrdersFactory($q, Underscore, OrderCloud) {
+function OrdersFactory($q, OrderCloud) {
     var service = {
         GetOrderDetails: _getOrderDetails,
         GetLineItemDetails: _getLineItemDetails,
@@ -197,7 +197,7 @@ function OrdersFactory($q, Underscore, OrderCloud) {
         }
 
         function gatherProducts() {
-            var productIDs = Underscore.uniq(Underscore.pluck(order.LineItems, 'ProductID'));
+            var productIDs = _.uniq(_.pluck(order.LineItems, 'ProductID'));
 
             angular.forEach(productIDs, function(productID) {
                 productQueue.push((function() {
@@ -205,7 +205,7 @@ function OrdersFactory($q, Underscore, OrderCloud) {
 
                     OrderCloud.Products.Get(productID)
                         .then(function(product) {
-                            angular.forEach(Underscore.where(order.LineItems, {ProductID: product.ID}), function(item) {
+                            angular.forEach(_.where(order.LineItems, {ProductID: product.ID}), function(item) {
                                 item.Product = product;
                             });
 

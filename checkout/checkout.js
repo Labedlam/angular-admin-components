@@ -49,11 +49,11 @@ function checkoutConfig($stateProvider) {
                         });
                     return dfd.promise;
                 },
-                ShippingAddresses: function($q, Underscore, OrderCloud) {
+                ShippingAddresses: function($q, OrderCloud) {
                     var dfd = $q.defer();
                     OrderCloud.Me.ListAddresses()
                         .then(function(data) {
-                            dfd.resolve(Underscore.where(data.Items, {Shipping: true}));
+                            dfd.resolve(_.where(data.Items, {Shipping: true}));
                         });
                     return dfd.promise;
                 },
@@ -342,7 +342,7 @@ function CheckoutLineItemsListDirective() {
     };
 }
 
-function CheckoutLineItemsController($rootScope, $scope, $q, Underscore, toastr, OrderCloud, LineItemHelpers, CheckoutService, CurrentOrder) {
+function CheckoutLineItemsController($rootScope, $scope, $q, toastr, OrderCloud, LineItemHelpers, CheckoutService, CurrentOrder) {
     var vm = this;
     vm.lineItems = {};
     vm.UpdateQuantity = LineItemHelpers.UpdateQuantity;
@@ -353,7 +353,7 @@ function CheckoutLineItemsController($rootScope, $scope, $q, Underscore, toastr,
 
     $scope.$on('LineItemAddressUpdated', function(event, LineItemID, address) {
         //vm.calculatingTax = true;
-        Underscore.where(vm.lineItems.Items, {ID: LineItemID})[0].ShippingAddress = address;
+        _.where(vm.lineItems.Items, {ID: LineItemID})[0].ShippingAddress = address;
         //TaxService.Calculate($scope.order.ID)
         //    .then(function(taxData) {
         //        if (taxData.calculatedTaxSummary) {

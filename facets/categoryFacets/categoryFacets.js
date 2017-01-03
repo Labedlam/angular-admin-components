@@ -114,7 +114,7 @@ function CategoryFacetsController($state, $ocMedia, OrderCloud, OrderCloudParame
     };
 }
 
-function FacetedCategoryManageController ($state, $uibModal, toastr, Underscore, OrderCloud, Category) {
+function FacetedCategoryManageController ($state, $uibModal, toastr, OrderCloud, Category) {
     var vm = this;
     Category.xp && Category.xp.OC_Facets ? vm.list = Category.xp.OC_Facets : vm.list = null;
     vm.category = Category;
@@ -173,7 +173,7 @@ function FacetedCategoryManageController ($state, $uibModal, toastr, Underscore,
                     OrderCloud.Products.List(null, 1, 100, null,null, filterObj)
                         .then(function(matchingProds) {
                             console.log(matchingProds);
-                            angular.forEach(Underscore.uniq(matchingProds.Items, true, 'ID'), function(prod) {
+                            angular.forEach(_.uniq(matchingProds.Items, true, 'ID'), function(prod) {
                                 delete prod.xp.OC_Facets[vm.category.ID];
                                 OrderCloud.Products.Update(prod.ID, prod);
                             });
@@ -189,7 +189,7 @@ function FacetedCategoryManageController ($state, $uibModal, toastr, Underscore,
                         filterObj[keyName] = '*';
                         OrderCloud.Products.List(null, 1, 100, null, null, filterObj)
                             .then(function(matchingProds) {
-                                angular.forEach(Underscore.uniq(matchingProds.Items, true, 'ID'), function(prod) {
+                                angular.forEach(_.uniq(matchingProds.Items, true, 'ID'), function(prod) {
                                     delete prod.xp.OC_Facets[vm.category.ID][facetName];
                                     OrderCloud.Products.Update(prod.ID, prod);
                                 });

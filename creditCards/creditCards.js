@@ -167,7 +167,7 @@ function creditCardExpirationDate() {
     return expirationDate;
 }
 
-function CreditCardEditController($exceptionHandler, $state, Underscore, toastr, OrderCloud, SelectedCreditCard, creditCardExpirationDate) {
+function CreditCardEditController($exceptionHandler, $state, toastr, OrderCloud, SelectedCreditCard, creditCardExpirationDate) {
     var vm = this,
         creditcardid = SelectedCreditCard.ID;
     vm.expireMonth = creditCardExpirationDate.expirationMonth;
@@ -177,7 +177,7 @@ function CreditCardEditController($exceptionHandler, $state, Underscore, toastr,
 
     if (vm.creditCard.ExpirationDate != null) {
         vm.creditCard.ExpirationDate = new Date(vm.creditCard.ExpirationDate);
-        vm.creditCard.selectedExpireMonth = Underscore.findWhere(vm.expireMonth, {number: vm.creditCard.ExpirationDate.getMonth() +1});
+        vm.creditCard.selectedExpireMonth = _.findWhere(vm.expireMonth, {number: vm.creditCard.ExpirationDate.getMonth() +1});
         vm.creditCard.selectedExpireYear = vm.expireYear[vm.expireYear.indexOf(vm.creditCard.ExpirationDate.getFullYear())];
     }
    

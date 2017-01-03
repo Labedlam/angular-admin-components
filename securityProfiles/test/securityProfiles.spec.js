@@ -3,8 +3,7 @@ describe('Component: Security Profiles', function(){
 		q,
 		oc,
 		OrderCloudParams,
-		SPFactory,
-		underscore
+		SPFactory
 		;
 		beforeEach(module(function($provide) {
         	$provide.value('Parameters', {search:null, page: null, pageSize: null, searchOn: null, sortBy: null, userID: null, userGroupID: null, level: null, buyerID: null})
@@ -14,13 +13,12 @@ describe('Component: Security Profiles', function(){
     	}));
 		beforeEach(module('orderCloud'));
 		beforeEach(module('orderCloud.sdk'));
-		beforeEach(inject(function($q, $rootScope, OrderCloud, OrderCloudParameters, SecurityProfileFactory, Underscore, $ocMedia){
+		beforeEach(inject(function($q, $rootScope, OrderCloud, OrderCloudParameters, SecurityProfileFactory, $ocMedia){
 			q = $q;
 			scope = $rootScope.$new();
 			oc = OrderCloud;
 			OrderCloudParams = OrderCloudParameters;
 			SPFactory = SecurityProfileFactory;
-			underscore = Underscore;
 		}));
 		describe('State: securityProfiles', function(){
 			var state;
@@ -45,7 +43,7 @@ describe('Component: Security Profiles', function(){
 				state = $state.get('securityProfiles.roles');
 				spyOn(oc.SecurityProfiles, 'Get').and.returnValue(['FullAccess', 'ProductAdmin']);
 				spyOn(SPFactory, 'AvailableRoles').and.returnValue(mockAvailableRoles)
-				spyOn(underscore, 'difference');
+				spyOn(_, 'difference');
 			}));
 			it('should resolve SelectedSecurityProfile', inject(function($injector, $stateParams){
 				$injector.invoke(state.resolve.SelectedSecurityProfile);
@@ -54,7 +52,7 @@ describe('Component: Security Profiles', function(){
 			it('should resolve NonAssignedRoles', inject(function($injector){
 				$injector.invoke(state.resolve.NonAssignedRoles);
 				expect(SPFactory.AvailableRoles).toHaveBeenCalled();
-				expect(underscore.difference).toHaveBeenCalledWith(mockAvailableRoles, ['FullAccess', 'ProductAdmin']);
+				expect(_.difference).toHaveBeenCalledWith(mockAvailableRoles, ['FullAccess', 'ProductAdmin']);
 			}));
 		});
 		describe('State: securityProfiles.assignments', function(){

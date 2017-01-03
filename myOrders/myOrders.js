@@ -239,7 +239,7 @@ function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, Or
     vm.billingAddressTypeAhead = MyOrdersTypeAheadSearchFactory.BillingAddressList;
 }
 
-function MyOrdersTypeAheadSearchFactory($q, Underscore, OrderCloud) {
+function MyOrdersTypeAheadSearchFactory($q, OrderCloud) {
     return {
         SpendingAccountList: _spendingAccountList,
         ShippingAddressList: _shippingAddressList,
@@ -259,8 +259,8 @@ function MyOrdersTypeAheadSearchFactory($q, Underscore, OrderCloud) {
         queue.push(OrderCloud.Addresses.ListAssignments(null, null, null, null, true));
         $q.all(queue)
             .then(function(result) {
-                var searchAssigned = Underscore.intersection(Underscore.pluck(result[0].Items, 'ID'), Underscore.pluck(result[1].Items, 'AddressID'));
-                var addressList = Underscore.filter(result[0].Items, function(address) {
+                var searchAssigned = _.intersection(_.pluck(result[0].Items, 'ID'), _.pluck(result[1].Items, 'AddressID'));
+                var addressList = _.filter(result[0].Items, function(address) {
                     if (searchAssigned.indexOf(address.ID) > -1) {
                         return address;
                     }
@@ -277,8 +277,8 @@ function MyOrdersTypeAheadSearchFactory($q, Underscore, OrderCloud) {
         queue.push(OrderCloud.Addresses.ListAssignments(null, null, null, null, null, true));
         $q.all(queue)
             .then(function(result) {
-                var searchAssigned = Underscore.intersection(Underscore.pluck(result[0].Items, 'ID'), Underscore.pluck(result[1].Items, 'AddressID'));
-                var addressList = Underscore.filter(result[0].Items, function(address) {
+                var searchAssigned = _.intersection(_.pluck(result[0].Items, 'ID'), _.pluck(result[1].Items, 'AddressID'));
+                var addressList = _.filter(result[0].Items, function(address) {
                     if (searchAssigned.indexOf(address.ID) > -1) {
                         return address;
                     }

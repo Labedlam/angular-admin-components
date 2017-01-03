@@ -35,9 +35,9 @@ function SecurityProfilesConfig($stateProvider){
             SelectedSecurityProfile: function(OrderCloud, $stateParams){
                 return OrderCloud.SecurityProfiles.Get($stateParams.securityprofileid);
             },
-            NonAssignedRoles: function(SelectedSecurityProfile, SecurityProfileFactory, Underscore){
+            NonAssignedRoles: function(SelectedSecurityProfile, SecurityProfileFactory){
                 var allRoles = SecurityProfileFactory.AvailableRoles();
-                return Underscore.difference(allRoles, SelectedSecurityProfile.Roles);
+                return _.difference(allRoles, SelectedSecurityProfile.Roles);
             }
         }
     })
@@ -187,7 +187,7 @@ function SecurityProfileAssignmentsController($state, $stateParams, $exceptionHa
     };
 }
 
-function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptionHandler,$stateParams, Underscore, toastr, OrderCloud, SecurityProfileFactory, UserGroupList, UserList){
+function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptionHandler, $stateParams, toastr, OrderCloud, SecurityProfileFactory, UserGroupList, UserList){
     var vm = this;
     vm.groupList = UserGroupList;
     vm.assignBuyer =false;
@@ -205,7 +205,7 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
     vm.toggleSelection = function(selection, party){
         //check if selection is in selected list, remove if it is, add if it isn't
         var partyName = 'selected' + party;
-        var selectedPartyIds = Underscore.pluck(vm[partyName], 'ID');
+        var selectedPartyIds = _.pluck(vm[partyName], 'ID');
 
         var index = selectedPartyIds.indexOf(selection.ID);
         if(index > -1) {
@@ -267,7 +267,7 @@ function SecurityProfileCreateAssignmentController($scope, $state, $q, $exceptio
     })
 }
 
-function SecurityProfileFactory(Underscore){
+function SecurityProfileFactory(){
     var service = {
         AvailableRoles:_availableRoles,
         SetSelected: _setSelected
@@ -318,7 +318,7 @@ function SecurityProfileFactory(Underscore){
         }
 
     function _setSelected(ListArray, AssignmentsArray){
-        var selected = Underscore.pluck(AssignmentsArray, 'ID');
+        var selected = _.pluck(AssignmentsArray, 'ID');
         angular.forEach(ListArray, function(item){
             if(selected.indexOf(item.ID) > -1){
                 item.selected = true;

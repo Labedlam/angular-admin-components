@@ -179,7 +179,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      };
  }
 
- function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, $stateParams){
+ function CatalogAssignmentsController($q, toastr, $rootScope, OrderCloud, ProductManagementModal, $stateParams){
      var vm = this;
      vm.productIds = null;
      vm.pageSize = 10;
@@ -204,7 +204,7 @@ function CatalogCreateController(OrderCloud, $state, $exceptionHandler, toastr){
      function getProducts(){
          OrderCloud.Categories.ListProductAssignments(vm.categoryid)
             .then(function(assignmentList){
-                vm.productIds = Underscore.pluck(assignmentList.Items, 'ProductID');
+                vm.productIds = _.pluck(assignmentList.Items, 'ProductID');
                 if(!vm.productIds.length) {
                     vm.products = null;
                 } else {

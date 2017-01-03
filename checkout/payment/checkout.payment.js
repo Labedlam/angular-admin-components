@@ -26,7 +26,7 @@ function checkoutPaymentConfig($stateProvider) {
     ;
 }
 
-function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, AvailableCreditCards, AvailableSpendingAccounts, OrderPayments, allowMultiplePayments, creditCardExpirationDate) {
+function CheckoutPaymentController($state, toastr, OrderCloud, AvailableCreditCards, AvailableSpendingAccounts, OrderPayments, allowMultiplePayments, creditCardExpirationDate) {
 	var vm = this;
     vm.allowMultiplePayments = allowMultiplePayments;
     vm.currentOrderPayments = OrderPayments.Items;
@@ -46,7 +46,7 @@ function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, Avail
     vm.creditCards = AvailableCreditCards.Items;
     vm.spendingAccounts = AvailableSpendingAccounts.Items;
     vm.months =['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-    vm.years = Underscore.range(vm.today.getFullYear(), vm.today.getFullYear() + 20, 1);
+    vm.years = _.range(vm.today.getFullYear(), vm.today.getFullYear() + 20, 1);
     vm.expireMonth = creditCardExpirationDate.expirationMonth;
     vm.expireYear = creditCardExpirationDate.expirationYear;
 
@@ -155,7 +155,7 @@ function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, Avail
         angular.forEach(payments, function(payment) {
             paymentTotal += payment.Amount;
         });
-        return ((paymentTotal < order.Total) && Underscore.pluck(vm.currentOrderPayments, ''));
+        return ((paymentTotal < order.Total) && _.pluck(vm.currentOrderPayments, ''));
     }
 
     function PatchPaymentAmount(order, index) {
@@ -169,7 +169,7 @@ function CheckoutPaymentController($state, Underscore, toastr, OrderCloud, Avail
 
     function SetAmountMax(order) {
         angular.forEach(vm.currentOrderPayments, function(payment) {
-            var maxAmount = order.Total - Underscore.reduce(Underscore.pluck(vm.currentOrderPayments, 'Amount'), function(a, b) {return a + b; });
+            var maxAmount = order.Total - _.reduce(_.pluck(vm.currentOrderPayments, 'Amount'), function(a, b) {return a + b; });
             payment.MaxAmount = (payment.Amount + maxAmount).toString();
         });
     }

@@ -70,11 +70,11 @@ function BaseConfig($stateProvider) {
     });
 }
 //CurrentOrder,
-function BaseController($rootScope, $state, Underscore, defaultErrorMessageResolver, CurrentUser,  OrderCloud) {
+function BaseController($rootScope, $state, defaultErrorMessageResolver, CurrentUser,  OrderCloud) {
     var vm = this;
     vm.currentUser = CurrentUser;
     // vm.currentOrder = CurrentOrder;
-    vm.registrationAvailable = Underscore.filter(vm.organizationItems, function(item) { return item.StateRef == 'registration' }).length;
+    vm.registrationAvailable = _.filter(vm.organizationItems, function(item) { return item.StateRef == 'registration' }).length;
 
     vm.mobileSearch = function() {
         ProductSearch.Open()

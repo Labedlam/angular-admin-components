@@ -669,7 +669,7 @@ function PromotionAssignUserController($scope, toastr, Paging, UserList, Assigne
     }
 }
 
-function PromotionAssignment($q, $state, $injector, Underscore, OrderCloud, Assignments) {
+function PromotionAssignment($q, $state, $injector, OrderCloud, Assignments) {
     return {
         SaveAssignments: _saveAssignments,
         SetSelected: _setSelected,
@@ -678,8 +678,8 @@ function PromotionAssignment($q, $state, $injector, Underscore, OrderCloud, Assi
 
     function _saveAssignments(PromotionID, List, AssignmentList, Party) {
         var PartyID = (Party === 'User') ? 'UserID' : 'UserGroupID';
-        var assigned = Underscore.pluck(AssignmentList, PartyID);
-        var selected = Underscore.pluck(Underscore.where(List, {selected: true}), 'ID');
+        var assigned = _.pluck(AssignmentList, PartyID);
+        var selected = _.pluck(_.where(List, {selected: true}), 'ID');
         var toAdd = Assignments.GetToAssign(List, AssignmentList, PartyID);
         var toDelete = Assignments.GetToDelete(List, AssignmentList, PartyID);
         var queue = [];

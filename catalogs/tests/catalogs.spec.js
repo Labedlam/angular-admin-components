@@ -32,9 +32,9 @@ describe('Component: Catalogs', function(){
             spyOn(oc.Catalogs, 'List');
             spyOn(oc.Buyers, 'List');
         }));
-        it('should resolve Parameters', inject(function($injector, OrderCloudParameters){
+        it('should resolve Parameters', inject(function($injector, $stateParams, OrderCloudParameters){
             $injector.invoke(state.resolve.Parameters);
-            expect(OrderCloudParameters.Get).toHaveBeenCalled();
+            expect(OrderCloudParameters.Get).toHaveBeenCalledWith($stateParams);
         }));
         it('should resolve CatalogsList', inject(function($injector, Parameters){
             $injector.invoke(state.resolve.CatalogsList);

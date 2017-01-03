@@ -22,7 +22,6 @@ function ProductManagementModalFactory($uibModal, $q, OrderCloud) {
     }
 
     function _editPriceSchedule(priceSchedule) {
-
         var priceSchedule = angular.copy(priceSchedule);
         return $uibModal.open({
             templateUrl: 'productManagement/modals/templates/editPriceSchedule.html',
@@ -185,7 +184,12 @@ function EditProductModalController($exceptionHandler, $uibModalInstance, $state
     vm.productID = $stateParams.productid;
     vm.product = SelectedProduct;
 
-    vm.updateProduct = function() {
+    vm.updateProduct = updateProduct;
+    vm.deleteProduct = deleteProduct;
+    vm.submit = submit;
+    vm.cancel = cancel;
+
+    function updateProduct() {
         OrderCloud.Products.Update(productid, vm.product)
             .then(function() {
                 $state.go('products.detail', {}, {reload: true});
@@ -197,7 +201,7 @@ function EditProductModalController($exceptionHandler, $uibModalInstance, $state
             });
     };
 
-    vm.deleteProduct = function(){
+    function deleteProduct(){
         OrderCloudConfirm.Confirm('Are you sure you want to delete this product?')
             .then(function(){
                 OrderCloud.Products.Delete(vm.productID)
@@ -212,11 +216,11 @@ function EditProductModalController($exceptionHandler, $uibModalInstance, $state
             });
     };
 
-    vm.submit = function() {
+    function submit() {
         $uibModalInstance.close();
     };
 
-    vm.cancel = function() {
+    function cancel() {
         $uibModalInstance.dismiss('cancel');
     };
 

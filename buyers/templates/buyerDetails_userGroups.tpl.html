@@ -16,7 +16,7 @@
                     class="btn btn-default"><i class="fa fa-times"></i></button>
 		</span>
     </fieldset>
-    <button type="button" class="btn btn-primary pull-right" ui-sref="userGroups.create"><i class="fa fa-plus-circle"></i> Create New</button>
+    <button type="button" class="btn btn-primary pull-right" ui-sref="userGroups.create({fromRoute: 'buyerDetails', buyerid: buyerDetails.selectedBuyer.ID})"><i class="fa fa-plus-circle"></i> Create New</button>
 </form>
 <div class="row" style="margin-top:15px;" uib-collapse="!buyerDetails.showFilters">
     <div class="col-md-6 col-lg-4">
@@ -71,8 +71,8 @@
         <td data-title="Name">{{userGroups.Name}}</td>
         <td data-title="Description">{{userGroups.Description}}</td>
         <td class="actions-cell">
-            <button ui-sref="userGroups.edit({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Edit</button>
-            <button ui-sref="userGroups.assign({usergroupid:userGroup.ID})" class="btn btn-default btn-sm">Assign</button>
+            <button ui-sref="userGroups.edit({usergroupid:userGroups.ID})" class="btn btn-default btn-sm">Edit</button>
+            <button ui-sref="userGroups.assign({fromRoute: 'buyerDetails', usergroupid:userGroups.ID, buyerid: buyerDetails.selectedBuyer.ID})" class="btn btn-default btn-sm">Assign</button>
         </td>
     </tr>
     </tbody>

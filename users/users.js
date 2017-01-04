@@ -36,9 +36,18 @@ function UsersConfig($stateProvider) {
         })
         .state('users.create', {
             url: '/create',
+            params: {
+                fromRoute: null,
+                buyerid: null
+            },
             templateUrl: 'users/templates/userCreate.tpl.html',
             controller: 'UserCreateCtrl',
-            controllerAs: 'userCreate'
+            controllerAs: 'userCreate',
+            resolve: {
+                Parameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                }
+            }
         })
     ;
 }
@@ -152,7 +161,7 @@ function UserEditController($exceptionHandler, $state, toastr, OrderCloud, Selec
     };
 }
 
-function UserCreateController($exceptionHandler, $state, toastr, OrderCloud) {
+function UserCreateController($exceptionHandler, $state, toastr, OrderCloud, Parameters) {
     var vm = this;
     vm.user = {Email: '', Password: ''};
     vm.user.Active = false;
@@ -160,11 +169,17 @@ function UserCreateController($exceptionHandler, $state, toastr, OrderCloud) {
         vm.user.TermsAccepted = new Date();
         OrderCloud.Users.Create(vm.user)
             .then(function() {
-                $state.go('users', {}, {reload: true});
-                toastr.success('User Created', 'Success');
+                if(Parameters.fromRoute == "buyerDetails") {
+                    $state.go('buyers.details', {buyerid: Parameters.buyerid}, {reload: true});
+                    toastr.success('User Created', 'Success');
+                } else {
+                    $state.go('users', {}, {reload: true});
+                    toastr.success('User Created', 'Success');
+                }
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
+
     };
 }

@@ -59,8 +59,11 @@ function ProductCreateAssignmentController($q, $stateParams, $state, toastr, Ord
 
 
     function createPriceSchedule(){
-        console.log("yo yo yo ");
         ProductManagementModal.CreatePriceSchedule()
+            .then(function(data){
+                vm.selectedPriceSchedule = data;
+                console.log("this is return from price schedule create",data, vm.selectedPriceSchedule)
+            });
 
     }
 
@@ -85,7 +88,6 @@ function ProductCreateAssignmentController($q, $stateParams, $state, toastr, Ord
                         vm.selectedPriceSchedule = data;
                     }
                 });
-                toastr.success('Price Schedule modified', 'Success');
             })
     };
 

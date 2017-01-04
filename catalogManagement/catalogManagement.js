@@ -1,56 +1,70 @@
 angular.module('orderCloud')
     .config(CatalogManagementConfig)
-    .factory('CatalogViewManagement', CatalogViewManagement)
-;
+    .controller('CatalogManagementCtrl', CatalogManagementController)
+    .factory('CatalogViewManagement', CatalogViewManagement);
 
-function CatalogManagementConfig($stateProvider){
+function CatalogManagementConfig($stateProvider) {
     $stateProvider
         .state('catalogManagement', {
-            parent:'buyers.details',
-            url:'/catalogManagement',
-            views:{
+            parent: 'buyers.details',
+            url: '/catalogManagement',
+            resolve: {
+                CatalogID: function($stateParams) {
+                    //set catalog id instead to use non-default catalog
+                    return $stateParams.buyerid;
+                },
+                Tree: function(CategoryTreeService, CatalogID) {
+                    return CategoryTreeService.GetCategoryTree(CatalogID);
+                }
+            },
+            views: {
                 '': {
-                    templateUrl:'catalogManagement/categoryTreeView/templates/categoryTreeView.html',
-                    controller:'CategoryTreeCtrl',
-                    controllerAs:'categoryTree',
-                    resolve: {
-                        CatalogID: function($stateParams){
-                            //set catalog id instead to use non-default catalog
-                            return $stateParams.buyerid;
-                        },
-                        Tree: function(CategoryTreeService, $stateParams){
-                            return CategoryTreeService.GetCategoryTree($stateParams.buyerid);
-                        }
-                    }
+                    templateUrl: 'catalogManagement/templates/catalogManagement.html',
+                    controller: 'CatalogManagementCtrl',
+                    controllerAs:'catalogManagement'
+                },
+                'category-tree@catalogManagement': {
+                    templateUrl: 'catalogManagement/categoryTreeView/templates/categoryTreeView.html',
+                    controller: 'CategoryTreeCtrl',
+                    controllerAs: 'categoryTree'
                 },
                 'assignments@catalogManagement': {
-                    templateUrl:'catalogManagement/assignmentsView/templates/assignmentsView.html',
-                    controller:'CatalogAssignmentsCtrl',
-                    controllerAs:'catalogAssignments',
-                    resolve: {
-                        CatalogID: function($stateParams){
-                            return $stateParams.buyerid;
-                        }
-                    }
+                    templateUrl: 'catalogManagement/assignmentsView/templates/assignmentsView.html',
+                    controller: 'CatalogAssignmentsCtrl',
+                    controllerAs: 'catalogAssignments'
                 }
             }
         });
 }
 
- function CatalogViewManagement($rootScope){
-     var service = {
-         GetCategoryID: GetCategoryID,
-         SetCategoryID: SetCategoryID
-     };
-     var catalogid = null;
+function CatalogManagementController($rootScope, Tree, CatalogID) {
+    var vm = this;
+    vm.tree = Tree;
+    vm.catalogid = CatalogID;
+    vm.selectedCategory = null;
 
-     function GetCategoryID(){
-         return catalogid;
-     }
+    $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, category){
+         vm.selectedCategory = category;
+     });
+}
 
-     function SetCategoryID(category){
-         catalogid = category;
-         $rootScope.$broadcast('CatalogViewManagement:CategoryIDChanged', catalogid);
-     }
-     return service;
- }
+function CatalogViewManagement($rootScope, OrderCloud) {
+    var service = {
+        GetCategoryID: GetCategoryID,
+        SetCategoryID: SetCategoryID
+    };
+    var categoryid = null;
+
+    function GetCategoryID() {
+        return categoryid;
+    }
+
+    function SetCategoryID(category, catalogid) {
+        categoryid = category;
+        OrderCloud.Categories.Get(category, catalogid)
+            .then(function(data){
+                $rootScope.$broadcast('CatalogViewManagement:CategoryIDChanged', data);
+            });
+    }
+    return service;
+}

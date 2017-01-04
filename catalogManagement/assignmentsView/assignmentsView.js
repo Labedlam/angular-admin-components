@@ -2,45 +2,41 @@ angular.module('orderCloud')
     .controller('CatalogAssignmentsCtrl', CatalogAssignmentsController)
 ;
 
- function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, CatalogID){
+ function CatalogAssignmentsController($q, toastr, $rootScope, Underscore, OrderCloud, ProductManagementModal, Tree, CatalogID){
      var vm = this;
      vm.productIds = null;
-     vm.pageSize = 10;
+     vm.pageSize = 10; //set pageSize for pagination. Max: 100
      vm.catalogID = CatalogID;
-     vm.categoryid = null;
-     vm.assignments = null;
+     vm.tree = Tree;
+     vm.category = null;
      vm.products = null;
      //vm.selectedProducts = [];
 
-     $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, id){
-         vm.categoryid = id;
-         getAssignments();
+     $rootScope.$on('CatalogViewManagement:CategoryIDChanged', function(e, category){
+         vm.category = category;
          getProducts();
      });
-     
-     function getAssignments(){
-         OrderCloud.Categories.ListAssignments(vm.categoryid)   
-            .then(function(assignments){
-                vm.assignments = assignments;
-            });
-     }
 
-     function getProducts(){
-         OrderCloud.Categories.ListProductAssignments(vm.categoryid)
+     function getProducts(page){
+         OrderCloud.Categories.ListProductAssignments(vm.category.ID, null, page, vm.pageSize, vm.catalogID)
             .then(function(assignmentList){
                 vm.productIds = Underscore.pluck(assignmentList.Items, 'ProductID');
                 if(!vm.productIds.length) {
                     vm.products = null;
                 } else {
-                    var pageone = vm.productIds.length > vm.pageSize ? vm.productIds.slice(0, vm.pageSize) : vm.productIds;
-                    var filter = {ID: pageone.join('|')};
-                    OrderCloud.Products.List(null, null, null, null, null, filter)
+                    var filter = {ID: vm.productIds.join('|')};
+                    OrderCloud.Products.List(null, null, 100, null, null, filter)
                         .then(function(productList){
-                            vm.products = productList.Items;
+                            productList.Meta = assignmentList.Meta;
+                            vm.products = productList;
                         });
                 }
             });
      }
+
+     vm.pageChanged = function() {
+         getProducts(vm.products.Meta.Page);
+    };
 
      vm.listAllProducts = function(product){
          return OrderCloud.Products.List(product)
@@ -56,13 +52,14 @@ angular.module('orderCloud')
              productQueue.push(OrderCloud.Categories.SaveProductAssignment(
                  {
                     ProductID :  product.ID,
-                    CategoryID : vm.categoryid
+                    CategoryID : vm.category.ID
                  },
                  vm.catalogID
              ));
          });
          $q.all(productQueue)
              .then(function(data){
+                 console.log(data);
                  df.resolve();
                  toastr.success('All Products Saved', 'Success');
              })
@@ -77,13 +74,13 @@ angular.module('orderCloud')
      }
          
      vm.addProductModal = function(){
-         ProductManagementModal.AssignProductToCategory(vm.categoryid, vm.catalogID);
+         ProductManagementModal.AssignProductToCategory(vm.category.ID, vm.catalogID);
      };
 
      vm.deleteAssignment = function(product){
-         OrderCloud.Categories.DeleteProductAssignment(vm.categoryid, product.ID, vm.catalogID)
+         OrderCloud.Categories.DeleteProductAssignment(vm.category.ID, product.ID, vm.catalogID)
              .then(function(){
-                 toastr.success('Product ' + product.Name + ' Removed from Category ' + vm.categoryid);
+                 toastr.success('Product ' + product.Name + ' Removed from Category ' + vm.category.ID);
              })
              .catch(function(error){
                  toastr.error('There was an error removing products from the category');

@@ -7,7 +7,7 @@ function CategoryTreeController(CatalogViewManagement, CategoryModalFactory, Tre
      vm.tree = Tree;
      vm.catalogid = CatalogID;
      vm.categorySelected = function(category){
-         CatalogViewManagement.SetCategoryID(category);
+         CatalogViewManagement.SetCategoryID(category, vm.catalogid);
          vm.selectedCategory = category;
      };
      vm.createCategory = function(parentid){
